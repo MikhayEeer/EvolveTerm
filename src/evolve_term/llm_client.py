@@ -6,7 +6,7 @@ import json
 import re
 from abc import ABC, abstractmethod
 
-import requests
+from openai import OpenAI
 
 from .config import load_json_config
 from .exceptions import LLMUnavailableError
@@ -21,42 +21,40 @@ class LLMClient(ABC):
 
 
 class APILLMClient(LLMClient):
-    """Generic HTTP-based LLM client."""
+    """LLM client implemented via the OpenAI SDK chat completions API."""
 
     def __init__(self, config_name: str = "llm_config.json"):
         config = load_json_config(config_name)
-        self.baseurl = config.get("baseurl")
+        self.base_url = config.get("base_url") or config.get("baseurl")
         self.api_key = config.get("api_key")
         self.model = config.get("model")
         self.payload_template = config.get("payload_template", {})
-        if not self.baseurl or not self.api_key:
-            raise LLMUnavailableError("LLM baseurl or API key missing")
+        if not self.base_url or not self.api_key:
+            raise LLMUnavailableError("LLM base_url or API key missing")
+        self.client = OpenAI(api_key=self.api_key, base_url=self.base_url)
 
     def complete(self, prompt: str) -> str:
-        payload = {
-            "model": self.model,
-            "prompt": prompt,
-        }
-        payload.update(self.payload_template)
-
-        response = requests.post(
-            self.baseurl,
-            headers={
-                "Content-Type": "application/json",
-                "Authorization": f"Bearer {self.api_key}",
-            },
-            data=json.dumps(payload),
-            timeout=60,
-        )
-        if response.status_code >= 400:
-            raise LLMUnavailableError(
-                f"LLM provider error {response.status_code}: {response.text[:200]}"
+        messages = [{"role": "user", "content": prompt}]
+        try:
+            response = self.client.chat.completions.create(
+                model=self.model,
+                messages=messages,
+                **self.payload_template,
             )
-        data = response.json()
-        # Support both OpenAI-style {choices: [{text: ...}]} and plain {output: str}
-        if "choices" in data:
-            return data["choices"][0].get("text") or ""
-        return data.get("output") or data.get("text") or ""
+        except Exception as exc:  # pragma: no cover - network path
+            raise LLMUnavailableError(f"LLM provider error: {exc}") from exc
+
+        if not response.choices:
+            raise LLMUnavailableError("LLM provider returned no choices")
+        message = response.choices[0].message
+        if message is None:
+            raise LLMUnavailableError("LLM provider returned empty message")
+        content = getattr(message, "content", None)
+        if content is None and isinstance(message, dict):
+            content = message.get("content")
+        if isinstance(content, list):
+            content = "".join(part.get("text", "") for part in content if isinstance(part, dict))
+        return content or ""
 
 
 class MockLLMClient(LLMClient):

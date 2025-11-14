@@ -14,9 +14,9 @@ requires-python = ">=3.10"
 dependencies = [
   "typer>=0.9.0",
   "rich>=13.7.0",
-  "requests>=2.31.0",
   "numpy>=1.26.0",
-  "hnswlib>=0.8.0"
+  "hnswlib>=0.8.0",
+  "openai>=1.42.0"
 ]
 
 [project.scripts]
