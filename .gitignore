@@ -1,6 +1,7 @@
 .vscode/*
 # some LLM service api key
 *.key
+*_config.json
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
