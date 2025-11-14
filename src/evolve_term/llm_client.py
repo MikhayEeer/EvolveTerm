@@ -95,3 +95,19 @@ def build_llm_client(config_name: str = "llm_config.json") -> LLMClient:
     if provider == "mock":
         return MockLLMClient()
     return APILLMClient(config_name=config_name)
+
+
+def _demo_completion(prompt: str = "Say hello in one short sentence.") -> None:
+    """Manual smoke test for the configured LLM service."""
+
+    client = build_llm_client()
+    response = client.complete(prompt)
+    print("LLM response:\n", response)
+
+
+if __name__ == "__main__":  # pragma: no cover - manual verification helper
+    print("[LLM Demo] Using config/llm_config.json")
+    try:
+        _demo_completion()
+    except LLMUnavailableError as exc:
+        print(f"LLM test failed: {exc}")

@@ -85,3 +85,20 @@ def build_embedding_client(config_name: str = "embed_config.json") -> EmbeddingC
         dimension = int(config.get("dimension", 64))
         return MockEmbeddingClient(dimension=dimension)
     return APIEmbeddingClient(config_name=config_name)
+
+
+def _demo_embedding(prompt: str = "int main() { return 0; }") -> None:
+    """Quick manual check for embedding provider availability."""
+
+    client = build_embedding_client()
+    vector = client.embed(prompt)
+    print(f"Embedding length: {len(vector)}")
+    print(f"First 5 values: {vector[:5]}")
+
+
+if __name__ == "__main__":  # pragma: no cover - manual verification helper
+    print("[Embedding Demo] Using config/embed_config.json")
+    try:
+        _demo_embedding()
+    except EmbeddingUnavailableError as exc:
+        print(f"Embedding test failed: {exc}")
