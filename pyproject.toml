@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "evolveterm"
+version = "0.1.0"
+description = "C termination analysis demo with RAG and LLM orchestration"
+authors = [
+  {name = "MikhayEeer"}
+]
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "typer>=0.9.0",
+  "rich>=13.7.0",
+  "requests>=2.31.0",
+  "numpy>=1.26.0",
+  "hnswlib>=0.8.0"
+]
+
+[project.scripts]
+evolveterm = "evolve_term.cli:app"
+
+[project.optional-dependencies]
+test = ["pytest>=7.4.0"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
