@@ -1,0 +1,4 @@
+Summarize the termination assessment in markdown bullet points using the provided JSON payload.
+Highlight the predicted label, supporting references, and any manual review notes.
+Input JSON:
+${payload}
