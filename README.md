@@ -1,7 +1,9 @@
 # Developer's Todo Lists
 - [ ] prompts与TermDatabase 进行组合优化
 - [ ] 判断RAG的可用性
-- [ ] 目前是text embedding，找到codeBERT的API服务
+- [x] 目前是text embedding，找到codeBERT的API服务
+    codebert/starcoder 只能本地部署
+    可以使用text embedding先行替代
 - [ ] 在linux部署环境，尝试跑通demo
 
 > test dir git config set
@@ -48,7 +50,7 @@ pip install -e .[test]
 ```json
 {
 	"provider": "mock",                // mock 或 real（HTTP）
-	"endpoint": "https://.../complete",
+	"baseurl": "https://.../complete",
 	"api_key": "REPLACE_ME",
 	"model": "code-termination-large",
 	"payload_template": { "max_tokens": 512, "temperature": 0.0 }
@@ -60,7 +62,7 @@ pip install -e .[test]
 ```json
 {
 	"provider": "mock",                // mock / real
-	"endpoint": "https://.../embeddings",
+	"baseurl": "https://.../embeddings",
 	"api_key": "REPLACE_ME",
 	"model": "codebert-base",
 	"dimension": 64,
@@ -69,7 +71,7 @@ pip install -e .[test]
 ```
 
 - 当 provider = `mock` 时，系统会使用内置的确定性 mock，方便离线演示。  
-- 当 provider ≠ `mock` 时，需保证 endpoint 可访问、API Key 可用；任一环节失败会以 `LLMUnavailableError` / `EmbeddingUnavailableError` 抛出。  
+- 当 provider ≠ `mock` 时，需保证 baseurl 可访问、API Key 可用；任一环节失败会以 `LLMUnavailableError` / `EmbeddingUnavailableError` 抛出。  
 - 根据真实 API 返回结构，确保响应体中含 `embedding`（数组）或 `choices[].text` / `output` 字段。
 
 ## 🚀 运行 Demo
