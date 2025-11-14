@@ -1,6 +1,6 @@
 {
   "provider": "mock",
-  "endpoint": "https://api.fake-llm.local/v1/complete",
+  "baseurl": "https://api.fake-llm.local/v1/complete",
   "api_key": "REPLACE_ME",
   "model": "code-termination-large",
   "payload_template": {

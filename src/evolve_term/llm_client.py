@@ -25,12 +25,12 @@ class APILLMClient(LLMClient):
 
     def __init__(self, config_name: str = "llm_config.json"):
         config = load_json_config(config_name)
-        self.endpoint = config.get("endpoint")
+        self.baseurl = config.get("baseurl")
         self.api_key = config.get("api_key")
         self.model = config.get("model")
         self.payload_template = config.get("payload_template", {})
-        if not self.endpoint or not self.api_key:
-            raise LLMUnavailableError("LLM endpoint or API key missing")
+        if not self.baseurl or not self.api_key:
+            raise LLMUnavailableError("LLM baseurl or API key missing")
 
     def complete(self, prompt: str) -> str:
         payload = {
@@ -40,7 +40,7 @@ class APILLMClient(LLMClient):
         payload.update(self.payload_template)
 
         response = requests.post(
-            self.endpoint,
+            self.baseurl,
             headers={
                 "Content-Type": "application/json",
                 "Authorization": f"Bearer {self.api_key}",
