@@ -1,0 +1,74 @@
+"""Typer-based CLI to interact with the termination pipeline."""
+
+from __future__ import annotations
+
+from pathlib import Path
+from typing import Optional
+
+import typer
+from rich.console import Console
+from rich.table import Table
+
+from .models import PendingReviewCase
+from .pipeline import TerminationPipeline
+
+app = typer.Typer(help="EvolveTerm CLI - analyze and curate C termination cases")
+console = Console()
+VALID_LABELS = {"terminating", "non-terminating", "unknown"}
+
+
+@app.command()
+def analyze(code_file: Path = typer.Option(..., exists=True, readable=True, help="Path to a C file"), top_k: int = 5) -> None:
+    """Analyze a C source snippet for termination likelihood."""
+
+    pipeline = TerminationPipeline()
+    code = code_file.read_text(encoding="utf-8")
+    result = pipeline.analyze(code, top_k=top_k)
+
+    console.rule("Prediction")
+    console.print(f"Label: [bold]{result.label}[/bold] (confidence {result.confidence:.2f})")
+    console.print(f"Reasoning: {result.reasoning}")
+    console.print(f"Report saved at: {result.report_path}")
+
+    table = Table(title="Referenced cases")
+    table.add_column("Case ID")
+    table.add_column("Label")
+    table.add_column("Similarity")
+    for ref in result.references:
+        table.add_row(ref.case_id, ref.label, ref.metadata.get("similarity", "n/a"))
+    console.print(table)
+
+
+@app.command()
+def review(
+    code_file: Path = typer.Option(..., exists=True, readable=True),
+    label: str = typer.Option(..., help="terminating|non-terminating|unknown"),
+    explanation: str = typer.Option(..., help="Brief reasoning"),
+    reviewer: Optional[str] = typer.Option(None, help="Reviewer identifier"),
+) -> None:
+    """Add a manually reviewed case back into the RAG store."""
+
+    pipeline = TerminationPipeline()
+    code = code_file.read_text(encoding="utf-8")
+    label_value = label.lower()
+    if label_value not in VALID_LABELS:
+        raise typer.BadParameter(f"label must be one of {', '.join(sorted(VALID_LABELS))}")
+    pending = PendingReviewCase(
+        code=code,
+        label=label_value,  # type: ignore[assignment]
+        explanation=explanation,
+        loops=pipeline.loop_extractor.extract(code),
+        reviewer=reviewer or "cli",
+    )
+    case = pipeline.ingest_reviewed_case(pending)
+    console.print(f"Stored case {case.case_id}. Pending rebuild: {pipeline.knowledge_base.needs_rebuild()}")
+
+
+@app.command()
+def rebuild_index() -> None:
+    """Force a full HNSW rebuild from the current knowledge base."""
+
+    pipeline = TerminationPipeline()
+    pipeline.index_manager.rebuild(pipeline.knowledge_base.cases)
+    pipeline.knowledge_base.mark_rebuilt()
+    console.print("Index rebuilt and persisted.")
