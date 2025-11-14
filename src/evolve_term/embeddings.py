@@ -3,12 +3,10 @@
 from __future__ import annotations
 
 import hashlib
-import json
 from abc import ABC, abstractmethod
-from typing import Iterable
 
 import numpy as np
-import requests
+from openai import OpenAI
 
 from .config import load_json_config
 from .exceptions import EmbeddingUnavailableError
@@ -26,15 +24,7 @@ class EmbeddingClient(ABC):
 
 
 class APIEmbeddingClient(EmbeddingClient):
-    """Generic HTTP-based embedding client.
-
-    The config file must contain:
-    - baseurl: URL for POST requests
-    - api_key: credential passed via Authorization header
-    - model: optional identifier included in the payload
-    - dimension: embedding vector size
-    - payload_template: optional dict merged into request body
-    """
+    """Embedding client implemented via the official OpenAI SDK."""
 
     def __init__(self, config_name: str = "embed_config.json"):
         config = load_json_config(config_name)
@@ -42,37 +32,29 @@ class APIEmbeddingClient(EmbeddingClient):
         if dimension <= 0:
             raise EmbeddingUnavailableError("Embedding dimension must be positive")
         super().__init__(dimension)
-        self.baseurl = config.get("baseurl")
+        self.base_url = config.get("base_url") or config.get("baseurl")
         self.api_key = config.get("api_key")
         self.model = config.get("model")
         self.payload_template = config.get("payload_template", {})
-        if not self.baseurl or not self.api_key:
-            raise EmbeddingUnavailableError("Embedding baseurl or API key missing")
+        if not self.base_url or not self.api_key:
+            raise EmbeddingUnavailableError("Embedding base_url or API key missing")
+        self.client = OpenAI(api_key=self.api_key, base_url=self.base_url)
 
     def embed(self, text: str) -> np.ndarray:
-        payload = {
-            "model": self.model,
-            "input": text,
-        }
-        payload.update(self.payload_template)
-
-        response = requests.post(
-            self.baseurl,
-            headers={
-                "Content-Type": "application/json",
-                "Authorization": f"Bearer {self.api_key}",
-            },
-            data=json.dumps(payload),
-            timeout=30,
-        )
-        if response.status_code >= 400:
-            raise EmbeddingUnavailableError(
-                f"Embedding provider error {response.status_code}: {response.text[:200]}"
+        try:
+            response = self.client.embeddings.create(
+                model=self.model,
+                input=text,
+                **self.payload_template,
             )
-        data = response.json()
-        vector = data.get("embedding") or (data.get("data") or [{}])[0].get("embedding")
+        except Exception as exc:  # pragma: no cover - network path
+            raise EmbeddingUnavailableError(f"Embedding provider error: {exc}") from exc
+
+        if not response.data:
+            raise EmbeddingUnavailableError("Embedding provider returned no data")
+        vector = response.data[0].embedding
         if not vector:
-            raise EmbeddingUnavailableError("Embedding provider returned no vector")
+            raise EmbeddingUnavailableError("Embedding provider returned empty vector")
         arr = np.array(vector, dtype=np.float32)
         if arr.shape[0] != self.dimension:
             raise EmbeddingUnavailableError(
