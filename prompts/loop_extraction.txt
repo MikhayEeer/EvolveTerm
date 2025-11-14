@@ -1,0 +1,9 @@
+You are a program analysis assistant. 
+Extract all loop constructs from the provided C code.
+Return a JSON object with a single key "loops" whose value is an ordered list of strings.
+Focus exclusively on `for` and `while` loops. 
+Ignore arrays and pointer intricacies per constraints.
+
+```c
+${code}
+```

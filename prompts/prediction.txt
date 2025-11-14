@@ -1,0 +1,19 @@
+You are an expert in termination analysis. 
+Decide whether the target code terminates.
+
+Context loops:
+${loops}
+
+Reference cases:
+${references}
+
+Return a JSON payload with keys: 
+"label" (terminating|non-terminating|unknown),
+"reasoning" (2 sentences),
+"report" (concise summary).
+Make sure the response is valid JSON.
+
+Target code:
+```c
+${code}
+```
