@@ -1,0 +1,10 @@
+{
+  "provider": "mock",
+  "endpoint": "https://api.fake-llm.local/v1/complete",
+  "api_key": "REPLACE_ME",
+  "model": "code-termination-large",
+  "payload_template": {
+    "max_tokens": 512,
+    "temperature": 0.0
+  }
+}

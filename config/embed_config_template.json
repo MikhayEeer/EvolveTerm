@@ -1,0 +1,8 @@
+{
+  "provider": "mock",
+  "endpoint": "https://api.fake-embed.local/v1/embeddings",
+  "api_key": "REPLACE_ME",
+  "model": "codebert-base",
+  "dimension": 64,
+  "payload_template": {}
+}
