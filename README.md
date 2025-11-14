@@ -5,6 +5,7 @@
     codebert/starcoder 只能本地部署
     可以使用text embedding先行替代
 - [ ] 在linux部署环境，尝试跑通demo
+- [ ] 运行embeddings.py和llm_client.py的自测demo
 
 > test dir git config set
 
