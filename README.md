@@ -1,13 +1,16 @@
 # Developer's Todo Lists
-- [ ] prompts与TermDatabase 进行组合优化
-- [ ] 判断RAG的可用性
-- [x] 目前是text embedding，找到codeBERT的API服务
+- [x] 目前是text embedding，找到codeBERT的API服务-1114
     codebert/starcoder 只能本地部署
     可以使用text embedding先行替代
 - [ ] 在linux部署环境，尝试跑通demo
-	- [x] 运行embeddings.py和llm_client.py的自测demo
-	- [ ] 选取少量代码，测试embedding和RAG的索引构建
+	- [x] 运行embeddings.py和llm_client.py的自测demo-1117
+	- [x] 选取少量代码，测试embedding-1117
+	- [ ] 测试RAG的索引构建
 	- [ ] 选取sample，测试RAG的命中
+- [ ] 判断RAG的可用性
+- [ ] prompts与TermDatabase 进行组合优化
+- [ ] 完成测试一轮流程，然后写软著
+- [ ] 用UniTerm再去写一个软著
 
 ## virtual env
 - switch to virtual environment
