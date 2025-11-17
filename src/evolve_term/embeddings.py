@@ -38,13 +38,15 @@ class APIEmbeddingClient(EmbeddingClient):
         self.payload_template = config.get("payload_template", {})
         if not self.base_url or not self.api_key:
             raise EmbeddingUnavailableError("Embedding base_url or API key missing")
-        self.client = OpenAI(api_key=self.api_key, base_url=self.base_url)
+        self.client = OpenAI(api_key=self.api_key, 
+                             base_url=self.base_url)
 
     def embed(self, text: str) -> np.ndarray:
         try:
             response = self.client.embeddings.create(
                 model=self.model,
                 input=text,
+                dimensions=self.dimension,
                 **self.payload_template,
             )
         except Exception as exc:  # pragma: no cover - network path
@@ -97,6 +99,10 @@ def _demo_embedding(prompt: str = "int main() { return 0; }") -> None:
 
 
 if __name__ == "__main__":  # pragma: no cover - manual verification helper
+    '''
+    cd $Project_Root$
+    python3 -m evolve_term.embeddings
+    '''
     print("[Embedding Demo] Using config/embed_config.json")
     try:
         _demo_embedding()

@@ -1,4 +1,5 @@
 .vscode/*
+eveloveterm/*
 # some LLM service api key
 *.key
 *_config.json
