@@ -7,13 +7,11 @@
 - [ ] 在linux部署环境，尝试跑通demo
 - [ ] 运行embeddings.py和llm_client.py的自测demo
 
-> test dir git config set
-
 # EvolveTerm
 
 EvolveTerm 是一个面向 C 代码的终止性分析演示系统，通过 **LLM + RAG** 组合流程来判断目标程序是否会在有限步骤内结束。系统聚焦循环结构，不考虑数组、指针与并发等复杂语义，便于快速验证终止性思路与工作流。
 
-## ✨ 核心能力一览
+## 核心能力一览
 
 - **循环提炼**：LLM 根据 `prompts/loop_extraction.txt` 提取 C 代码中的 `for/while` 结构，并输出 JSON 列表；若 LLM 不可用，则退回正则启发式。  
 - **相似案例检索**：使用 CodeBERT / StarCoder 等嵌入模型（通过 `config/embed_config.json` 配置）生成向量，基于 HNSW 索引 (`data/hnsw_index.bin`) 检索相似案例。  
