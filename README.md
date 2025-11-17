@@ -5,7 +5,9 @@
     codebert/starcoder 只能本地部署
     可以使用text embedding先行替代
 - [ ] 在linux部署环境，尝试跑通demo
-- [ ] 运行embeddings.py和llm_client.py的自测demo
+	- [x] 运行embeddings.py和llm_client.py的自测demo
+	- [ ] 选取少量代码，测试embedding和RAG的索引构建
+	- [ ] 选取sample，测试RAG的命中
 
 ## virtual env
 - switch to virtual environment
