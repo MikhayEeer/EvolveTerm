@@ -185,16 +185,23 @@ def bulk_vectorize_directory(
 
 def _run_cli() -> None:  # pragma: no cover - manual helper
     parser = argparse.ArgumentParser(description="Embedding utilities")
-    parser.add_argument("--config", default="embed_config.json", help="Path to embedding config JSON")
-    parser.add_argument("--bulk", action="store_true", help="Run bulk vectorization instead of single demo")
-    parser.add_argument("--source-dir", type=Path, help="Directory that holds .c files for bulk mode")
+    parser.add_argument("--config", default="embed_config.json", 
+                        help="Path to embedding config JSON, default is \nconfig=<config/embed_config.json>")
+    parser.add_argument("--bulk", action="store_true", 
+                        help="Run bulk vectorization instead of single demo, no --bulk signal will run a tiny test demo.")
+    parser.add_argument("--source-dir", type=Path, 
+                        help="Directory that holds .c files for bulk mode", 
+                        required=True)
     parser.add_argument(
         "--output",
         type=Path,
         default=DEFAULT_BULK_OUTPUT,
-        help="Where to write the generated JSON when --bulk is set",
+        help=f"Where to write the generated JSON when --bulk is set, default json now is \n output='{DEFAULT_BULK_OUTPUT}'",
     )
-    parser.add_argument("--label", default="unknown", help="Label to assign to bulk cases")
+    parser.add_argument("--label", default="NeedReview", 
+                        help="Label to assign to bulk cases, \
+                            default is \n label='NeedReview',\nthat means developers should\
+                            check the vectorized code snipates before using in RAG.")
     parser.add_argument(
         "--explanation",
         default="Bulk embedded via evolve_term.embeddings",
