@@ -5,11 +5,15 @@ from __future__ import annotations
 import json
 import re
 from abc import ABC, abstractmethod
+from pathlib import Path
 
 from openai import OpenAI
 
+#from src.evolve_term.config import load_json_config
 from .config import load_json_config
+#from src.evolve_term.exceptions import LLMUnavailableError
 from .exceptions import LLMUnavailableError
+from .prompts_loader import PromptRepository
 
 
 class LLMClient(ABC):
@@ -97,16 +101,55 @@ def build_llm_client(config_name: str = "llm_config.json") -> LLMClient:
     return APILLMClient(config_name=config_name)
 
 
-def _demo_completion(prompt: str = "Say hello in one short sentence.") -> None:
+REPO_ROOT = Path(__file__).resolve().parents[2]
+DEFAULT_SAMPLE = REPO_ROOT / "examples" / "sample.c"
+
+
+def _extract_loops_from_response(response: str) -> list[str]:
+    """Parse the loop extraction JSON payload."""
+
+    try:
+        payload = json.loads(response)
+        candidate = payload.get("loops") if isinstance(payload, dict) else payload
+        if isinstance(candidate, list):
+            return [str(item).strip() for item in candidate if str(item).strip()]
+    except json.JSONDecodeError:
+        pass
+    matches = re.findall(r"for\s*\(.*?\)|while\s*\(.*?\)", response, flags=re.DOTALL)
+    return [match.strip() for match in matches]
+
+
+def _demo_completion(code_file: str | Path = DEFAULT_SAMPLE) -> None:
     """Manual smoke test for the configured LLM service."""
 
+    code_path = Path(code_file)
+    if not code_path.is_absolute():
+        code_path = REPO_ROOT / code_path
+    if not code_path.exists():
+        raise FileNotFoundError(f"Sample code '{code_file}' does not exist at {code_path}")
+
+    code = code_path.read_text(encoding="utf-8")
+    prompt_repo = PromptRepository()
     client = build_llm_client()
-    response = client.complete(prompt)
-    print("LLM response:\n", response)
+
+    loop_prompt = prompt_repo.render("loop_extraction", code=code)
+    loop_response = client.complete(loop_prompt)
+    loops = _extract_loops_from_response(loop_response) or ["/* no loops detected */"]
+
+    prediction_prompt = prompt_repo.render(
+        "prediction",
+        code=code,
+        loops=json.dumps(loops, ensure_ascii=False, indent=2),
+        references="[]",
+    )
+    prediction_response = client.complete(prediction_prompt)
+
+    print(f"Loop extraction response for {code_path}:\n{loop_response}\n")
+    print("Prediction response:\n", prediction_response)
 
 
 if __name__ == "__main__":  # pragma: no cover - manual verification helper
-    print("[LLM Demo] Using config/llm_config.json")
+    print(f"[LLM Demo] Using config/llm_config.json with sample {DEFAULT_SAMPLE}")
     try:
         _demo_completion()
     except LLMUnavailableError as exc:

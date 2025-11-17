@@ -7,6 +7,16 @@
 - [ ] 在linux部署环境，尝试跑通demo
 - [ ] 运行embeddings.py和llm_client.py的自测demo
 
+## virtual env
+- switch to virtual environment
+```bash
+source evolveterm/bin/activate
+```
+- install project
+```bash
+pip install -e .
+```
+
 # EvolveTerm
 
 EvolveTerm 是一个面向 C 代码的终止性分析演示系统，通过 **LLM + RAG** 组合流程来判断目标程序是否会在有限步骤内结束。系统聚焦循环结构，不考虑数组、指针与并发等复杂语义，便于快速验证终止性思路与工作流。
