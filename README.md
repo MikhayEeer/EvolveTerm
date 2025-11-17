@@ -117,6 +117,19 @@ evolveterm review \
 - 当累积达到 10（可在 `KnowledgeBase(rebuild_threshold=10)` 调整）时，`ingest_reviewed_case` 自动触发 `hnsw_index.bin` 全量重建并将计数归零。  
 - 未达阈值时，系统会调用 `hnswlib.resize_index` 并增量写入，保持在线检索。
 
+### 📦 批量预向量化
+
+在系统上线前，可先对某个目录（如 `data/SVC25_c/`）做一次离线嵌入并写入 JSON：
+
+```powershell
+python -m evolve_term.embeddings --bulk \
+	--source-dir data/SVC25_c \
+	--output data/prebuilt_embeddings.json \
+	--label unknown
+```
+
+输出 JSON 会记录 `cases`、`embedding_info`（provider/model/dimension）及时间戳，方便后续并入 `knowledge_base.json` 并重建 HNSW。
+
 ## 🧠 约束与假设
 
 - 仅考虑 `for`/`while` 循环；数组、指针以及并发语义的终止性暂不处理。  

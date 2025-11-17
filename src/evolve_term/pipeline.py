@@ -85,7 +85,12 @@ class TerminationPipeline:
             explanation=reviewed.explanation,
             loops=list(reviewed.loops),
             embedding=embedding.astype(float).tolist(),
-            metadata={"reviewer": reviewed.reviewer},
+            metadata={
+                "reviewer": reviewed.reviewer,
+                "embedding_provider": self.embedding_client.provider,
+                "embedding_model": self.embedding_client.model_name,
+                "embedding_dimension": self.embedding_client.dimension,
+            },
         )
         self.knowledge_base.add_case(case)
         if self.knowledge_base.needs_rebuild():
