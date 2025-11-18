@@ -5,9 +5,9 @@
 - [ ] 在linux部署环境，尝试跑通demo
 	- [x] 运行embeddings.py和llm_client.py的自测demo-1117
 	- [x] 选取少量代码，测试embedding-1117
-	- [ ] 测试RAG的索引构建
-	- [ ] 选取sample，测试RAG的命中
-- [ ] 判断RAG的可用性
+	- [x] 测试RAG的索引构建
+	- [x] 选取sample，测试RAG的命中
+- [x] 判断RAG的可用性
 - [ ] prompts与TermDatabase 进行组合优化
 - [ ] 完成测试一轮流程，然后写软著
 - [ ] 用UniTerm再去写一个软著
@@ -29,6 +29,22 @@ pip install -e .
 ## unit test
 ```bash
 python -m evolve_term.embeddings --help
+```
+
+## Test Demo Output
+```bash
+evolveterm analyze --code-file data/SVC25_c_aug/Fibonacci04_aug3.c --top-k 3
+───────────────────────────────────────────────────────── Prediction ──────────────────────────────────────────────────────────
+Label: terminating (confidence 0.00)
+Reasoning: The function `fib` is recursive but only called with inputs `val <= 46` due to the guard in `main`. Since `fib`     
+decreases its argument on each recursive call and has base cases for `num < 1` and `num == 1`, all recursive calls eventually  
+terminate.
+Report saved at: /mnt/d/Users/mikhayeeer/Documents/Repos/EvolveTerm/data/reports/report_58d1cf2115704203b3fc1ab20a75d5f4.json  
+        Referenced cases        
+┏━━━━━━━━━┳━━━━━━━┳━━━━━━━━━━━━┓
+┃ Case ID ┃ Label ┃ Similarity ┃
+┡━━━━━━━━━╇━━━━━━━╇━━━━━━━━━━━━┩
+└─────────┴───────┴────────────┘
 ```
 
 # EvolveTerm
