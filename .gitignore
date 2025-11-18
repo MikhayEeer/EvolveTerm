@@ -1,5 +1,9 @@
+# vscode configurations
 .vscode/*
-eveloveterm/*
+
+# python virtual environment
+eveloveterm/
+evolveterm/
 # some LLM service api key
 *.key
 *_config.json
