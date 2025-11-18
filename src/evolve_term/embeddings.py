@@ -190,8 +190,7 @@ def _run_cli() -> None:  # pragma: no cover - manual helper
     parser.add_argument("--bulk", action="store_true", 
                         help="Run bulk vectorization instead of single demo, no --bulk signal will run a tiny test demo.")
     parser.add_argument("--source-dir", type=Path, 
-                        help="Directory that holds .c files for bulk mode", 
-                        required=True)
+                        help="Directory that holds .c files for bulk mode")
     parser.add_argument(
         "--output",
         type=Path,

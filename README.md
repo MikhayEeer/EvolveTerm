@@ -1,7 +1,7 @@
 # Developer's Todo Lists
 - [x] 目前是text embedding，找到codeBERT的API服务-1114
-    codebert/starcoder 只能本地部署
-    可以使用text embedding先行替代
+    **codebert/starcoder 只能本地部署**
+    可以使用**text_embedding**先行替代
 - [ ] 在linux部署环境，尝试跑通demo
 	- [x] 运行embeddings.py和llm_client.py的自测demo-1117
 	- [x] 选取少量代码，测试embedding-1117
@@ -13,6 +13,10 @@
 - [ ] 用UniTerm再去写一个软著
 
 ## virtual env
+- create virtual env
+```bash
+python -m venv <venv_name>
+```
 - switch to virtual environment
 ```bash
 source evolveterm/bin/activate
@@ -20,6 +24,11 @@ source evolveterm/bin/activate
 - install project
 ```bash
 pip install -e .
+```
+
+## unit test
+```bash
+python -m evolve_term.embeddings --help
 ```
 
 # EvolveTerm
