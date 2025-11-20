@@ -21,6 +21,8 @@ from .rag_index import HNSWIndexManager
 DATA_DIR = Path(__file__).resolve().parents[2] / "data"
 REPORTS_DIR = DATA_DIR / "reports"
 REPORTS_DIR.mkdir(parents=True, exist_ok=True)
+LOGS_DIR = DATA_DIR / "logs"
+LOGS_DIR.mkdir(parents=True, exist_ok=True)
 
 
 class TerminationPipeline:
@@ -36,17 +38,67 @@ class TerminationPipeline:
 
     # Core flow ------------------------------------------------------------
     def analyze(self, code: str, top_k: int = 5, auto_build_index: bool = True) -> PredictionResult:
+        """Run full analysis and produce a report+log capturing each stage.
+
+        The report JSON will include: input code, loop extraction (loops + method + llm_response),
+        embedding info, RAG neighbors, references (with similarity), raw LLM prediction and
+        the parsed prediction. A plain-text log will also be written for human inspection.
+        """
+        run_id = uuid.uuid4().hex
+        # Stage 1: loop extraction
         loops = self.loop_extractor.extract(code)
-        vector = self.embedding_client.embed("\n".join(loops))
+        loop_details = {
+            "loops": loops,
+            "method": getattr(self.loop_extractor, "last_method", None),
+            "llm_response": getattr(self.loop_extractor, "last_response", None),
+        }
+
+        # Stage 2: embedding
+        embedding_vector = self.embedding_client.embed("\n".join(loops))
+        try:
+            embedding_list = embedding_vector.astype(float).tolist()
+        except Exception:
+            # embedding client may already return list
+            embedding_list = list(embedding_vector)
+        embedding_info = {
+            "provider": getattr(self.embedding_client, "provider", None),
+            "model": getattr(self.embedding_client, "model_name", None),
+            "dimension": getattr(self.embedding_client, "dimension", None),
+            "vector": embedding_list,
+        }
+
+        # Ensure index ready
         if auto_build_index and self.index_manager.index is None:
             self._maybe_build_index()
-        neighbors = self.index_manager.search(vector, top_k=top_k)
+
+        # Stage 3: retrieval
+        neighbors = self.index_manager.search(embedding_vector, top_k=top_k)
         similarity_map = {case_id: score for case_id, score in neighbors}
         references = self.knowledge_base.bulk_get(case_id for case_id, _ in neighbors)
         for ref in references:
             ref.metadata["similarity"] = round(similarity_map.get(ref.case_id, 0.0), 3)
-        prediction = self._predict_with_llm(code, loops, references)
-        report_path = self._persist_report(prediction)
+
+        # Stage 4: LLM prediction
+        prediction, raw_prediction = self._predict_with_llm(code, loops, references)
+
+        # Build comprehensive report payload
+        report_payload = {
+            "run_id": run_id,
+            "code": code,
+            "loop_extraction": loop_details,
+            "embedding": embedding_info,
+            "neighbors": [
+                {"case_id": cid, "score": score} for cid, score in neighbors
+            ],
+            "references": [ref.__dict__ for ref in references],
+            "prediction_raw": raw_prediction,
+            "prediction": prediction,
+        }
+
+        report_path = self._persist_report(report_payload)
+        # Also write a human-readable log
+        self._persist_log(report_payload, report_path.stem)
+
         return PredictionResult(
             label=prediction["label"],
             reasoning=prediction.get("reasoning", ""),
@@ -55,7 +107,7 @@ class TerminationPipeline:
             report_path=report_path,
         )
 
-    def _predict_with_llm(self, code: str, loops: List[str], references: List[KnowledgeCase]) -> dict:
+    def _predict_with_llm(self, code: str, loops: List[str], references: List[KnowledgeCase]) -> tuple[dict, str]:
         prompt = self.prompt_repo.render(
             "prediction",
             code=code,
@@ -64,15 +116,46 @@ class TerminationPipeline:
         )
         raw = self.llm_client.complete(prompt)
         try:
-            return json.loads(raw)
+            parsed = json.loads(raw)
         except json.JSONDecodeError as exc:
             raise LLMUnavailableError("LLM returned non-JSON response") from exc
+        return parsed, raw
 
-    def _persist_report(self, prediction: dict) -> Path:
-        report_id = uuid.uuid4().hex
+    def _persist_report(self, report: dict) -> Path:
+        report_id = report.get("run_id", uuid.uuid4().hex)
         path = REPORTS_DIR / f"report_{report_id}.json"
-        path.write_text(json.dumps(prediction, indent=2, ensure_ascii=False), encoding="utf-8")
+        path.write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
         return path
+
+    def _persist_log(self, report: dict, report_stem: str) -> Path:
+        """Write a human-readable log summarizing the report (one log == one run)."""
+        log_path = LOGS_DIR / f"{report_stem}.log"
+        lines = []
+        lines.append(f"Run ID: {report.get('run_id')}")
+        lines.append("--- Input Code ---")
+        lines.append(report.get("code", ""))
+        lines.append("--- Loop Extraction ---")
+        le = report.get("loop_extraction", {})
+        lines.append(f"method: {le.get('method')}")
+        lines.append("loops:")
+        for lp in le.get("loops", []):
+            lines.append(lp)
+        if le.get("llm_response"):
+            lines.append("--- Raw LLM loop response ---")
+            lines.append(str(le.get("llm_response")))
+        lines.append("--- Embedding info ---")
+        emb = report.get("embedding", {})
+        lines.append(f"provider: {emb.get('provider')}, model: {emb.get('model')}, dimension: {emb.get('dimension')}")
+        lines.append(f"vector_length: {len(emb.get('vector', []))}")
+        lines.append("--- Neighbors ---")
+        for n in report.get("neighbors", []):
+            lines.append(f"{n.get('case_id')}: {n.get('score')}")
+        lines.append("--- Prediction (parsed) ---")
+        lines.append(json.dumps(report.get("prediction", {}), ensure_ascii=False, indent=2))
+        lines.append("--- Prediction (raw) ---")
+        lines.append(str(report.get("prediction_raw")))
+        log_path.write_text("\n".join(lines), encoding="utf-8")
+        return log_path
 
     # RAG maintenance ------------------------------------------------------
     def ingest_reviewed_case(self, reviewed: PendingReviewCase) -> KnowledgeCase:

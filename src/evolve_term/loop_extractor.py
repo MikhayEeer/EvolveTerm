@@ -16,13 +16,20 @@ class LoopExtractor:
     def __init__(self, llm_client: LLMClient, prompt_repo: PromptRepository):
         self.llm_client = llm_client
         self.prompt_repo = prompt_repo
+        # last LLM response and method used for extraction ('llm' or 'heuristic')
+        self.last_response: str | None = None
+        self.last_method: str | None = None
 
     def extract(self, code: str, max_loops: int = 5) -> List[str]:
         prompt = self.prompt_repo.render("loop_extraction", code=code)
         response = self.llm_client.complete(prompt)
+        self.last_response = response
         loops = self._parse_response(response)
-        if not loops:
+        if loops:
+            self.last_method = "llm"
+        else:
             loops = self._heuristic_loops(code)
+            self.last_method = "heuristic"
         return loops[:max_loops]
 
     def _parse_response(self, response: str) -> List[str]:
