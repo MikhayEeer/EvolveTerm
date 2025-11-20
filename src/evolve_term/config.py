@@ -22,3 +22,12 @@ def load_json_config(file_name: str) -> Dict[str, Any]:
 
     with file_path.open("r", encoding="utf-8") as handle:
         return json.load(handle)
+
+def auto_load_json_config(file_name: str,
+                          tag: str) -> Dict[str, Any]:
+    """
+    Using tag strategy to load multiple json config from a single file.
+    Return a {} item from [{},{}] in json config
+    """
+    print("- [ ] Need to complete auto_load_json_config function in config.py")
+    return {}
