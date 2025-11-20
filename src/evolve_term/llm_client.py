@@ -85,7 +85,6 @@ class MockLLMClient(LLMClient):
             label = "terminating" if any(token in body for token in ("--", "-=")) else "non-terminating" if "while(1" in body or "for(;;" in body else "unknown"
             result = {
                 "label": label,
-                "confidence": 0.73 if label != "unknown" else 0.4,
                 "reasoning": "Mock reasoning: heuristic result for offline demo.",
                 "report": "Predicted using mock LLM client with references.",
             }

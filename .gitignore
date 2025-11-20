@@ -8,6 +8,9 @@ evolveterm/
 *.key
 *_config.json
 
+# test reports
+report_*.json
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]

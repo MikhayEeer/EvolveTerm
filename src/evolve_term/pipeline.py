@@ -49,7 +49,6 @@ class TerminationPipeline:
         report_path = self._persist_report(prediction)
         return PredictionResult(
             label=prediction["label"],
-            confidence=float(prediction.get("confidence", 0.0)),
             reasoning=prediction.get("reasoning", ""),
             loops=loops,
             references=references,

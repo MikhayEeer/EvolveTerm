@@ -35,7 +35,7 @@ python -m evolve_term.embeddings --help
 ```bash
 evolveterm analyze --code-file data/SVC25_c_aug/Fibonacci04_aug3.c --top-k 3
 ───────────────────────────────────────────────────────── Prediction ──────────────────────────────────────────────────────────
-Label: terminating (confidence 0.00)
+Label: terminating 
 Reasoning: The function `fib` is recursive but only called with inputs `val <= 46` due to the guard in `main`. Since `fib`     
 decreases its argument on each recursive call and has base cases for `num < 1` and `num == 1`, all recursive calls eventually  
 terminate.
@@ -176,7 +176,7 @@ pytest
 
 ## 📄 报告与排错
 
-- 预测报告位于 `data/reports/`，每个 JSON 文件包含 label、confidence、reasoning、引用案例等字段。  
+- 预测报告位于 `data/reports/`，每个 JSON 文件包含 label、reasoning、引用案例等字段。  
 - 若出现 `IndexNotReadyError`，请确认已运行 `rebuild-index` 且 `data/knowledge_base.json` 不为空。  
 - 若 `KnowledgeBase` 写入失败，请检查 `data/` 的读写权限。
 

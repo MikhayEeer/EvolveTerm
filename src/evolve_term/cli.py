@@ -26,7 +26,7 @@ def analyze(code_file: Path = typer.Option(..., exists=True, readable=True, help
     result = pipeline.analyze(code, top_k=top_k)
 
     console.rule("Prediction")
-    console.print(f"Label: [bold]{result.label}[/bold] (confidence {result.confidence:.2f})")
+    console.print(f"Label: [bold]{result.label}[/bold]")
     console.print(f"Reasoning: {result.reasoning}")
     console.print(f"Report saved at: {result.report_path}")
 
