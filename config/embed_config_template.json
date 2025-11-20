@@ -1,8 +1,32 @@
-{
-  "provider": "mock",
-  "baseurl": "https://api.fake-embed.local/v1/embeddings",
-  "api_key": "REPLACE_ME",
-  "model": "codebert-base",
-  "dimension": 64,
-  "payload_template": {}
-}
+[
+  {
+    "provider": "qwen",
+    "baseurl": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+    "api_key": "sk-",
+    "model": "text-embedding-v4",
+    "dimension": 64,
+    "payload_template": {},
+    "pricing_per_millon_tokens_RMB": 0.5,
+    "tags": ["default", "better"]
+  },
+  {
+    "provider": "qwen",
+    "baseurl": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+    "api_key": "sk-",
+    "model": "text-embedding-v3",
+    "dimension": 64,
+    "payload_template": {},
+    "pricing_per_millon_tokens_RMB": 0.5,
+    "tags": ["outdated"]
+  },
+  {
+    "provider": "qwen",
+    "baseurl": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+    "api_key": "sk-",
+    "model": "qwen3-rerank",
+    "dimension": 64,
+    "payload_template": {},
+    "pricing_per_millon_tokens_RMB": 0.5,
+    "tags": ["rerank"]
+  }
+]
