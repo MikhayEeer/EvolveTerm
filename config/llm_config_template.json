@@ -1,10 +1,27 @@
-{
-  "provider": "mock",
-  "baseurl": "https://api.fake-llm.local/v1/complete",
-  "api_key": "REPLACE_ME",
-  "model": "code-termination-large",
-  "payload_template": {
-    "max_tokens": 512,
-    "temperature": 0.0
+[
+  {
+    "provider": "qwen",
+    "baseurl": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+    "api_key": "sk-",
+    "model": "qwen3-max",
+    "payload_template": {
+      "max_tokens": 2048,
+      "temperature": 0.0
+    },
+    "pricing_per_millon_tokens_RMB": 16,
+    "tags": ["default", "expensive", "better"]
+  },
+  {
+    "provider": "qwen",
+    "baseurl": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+    "api_key": "sk-",
+    "model": "qwen-plus",
+    "payload_template": {
+      "max_tokens": 2048,
+      "temperature": 0.0
+    },
+    "pricing_per_millon_tokens_RMB": 2.8,
+    "tags": ["cheap","quick"]
   }
-}
+]
+
