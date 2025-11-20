@@ -27,7 +27,6 @@ class PredictionResult:
     """Structured prediction returned to the user."""
 
     label: Label
-    confidence: float
     reasoning: str
     loops: List[str]
     references: List[KnowledgeCase]
