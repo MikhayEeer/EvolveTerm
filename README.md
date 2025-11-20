@@ -18,6 +18,7 @@
 - [ ] 考虑引入路由模块了
 - [ ] 多个LLM的config，让路由模块可以选择
 - [ ] 一个可以开启的泛化语言模块
+- [ ] 如何实现一个git检查脚本，使得提交前确认config json里面的api key不是完整的，可以不检查ignore的json
 
 ## virtual env
 - create virtual env
@@ -89,7 +90,10 @@ python -m venv .venv
 pip install -e .[test]
 ```
 
-## 🔐 配置说明
+## Config配置说明
+
+- `pricing_per_millon_tokens_RMB` 是一个估算
+  同时考虑了输入和输出两个价格，直接相加得到了这个成本
 
 ### LLM (`config/llm_config.json`)
 
