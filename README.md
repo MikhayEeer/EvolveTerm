@@ -18,7 +18,7 @@
 - [ ] 考虑引入路由模块了
 - [ ] 多个LLM的config，让路由模块可以选择
 - [ ] 一个可以开启的泛化语言模块
-- [ ] 如何实现一个git检查脚本，使得提交前确认config json里面的api key不是完整的，可以不检查ignore的json
+- [x] 如何实现一个git检查脚本，使得提交前确认config json里面的api key不是完整的，可以不检查ignore的json
 
 ## virtual env
 - create virtual env
