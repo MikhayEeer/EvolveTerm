@@ -126,6 +126,28 @@ pip install -e .[test]
 - 当 provider ≠ `mock` 时，需保证 baseurl 可访问、API Key 可用；任一环节失败会以 `LLMUnavailableError` / `EmbeddingUnavailableError` 抛出。  
 - 根据真实 API 返回结构，确保响应体中含 `embedding`（数组）或 `choices[].text` / `output` 字段。
 
+## Tag策略 模型路由Model Routing
+为不同的LLM config设计tag属性，记录不同LLM的技能，依据技能形成集合；
+路由决策模块，根据接下来的待办选定模块后，如果需要LLM，再判断LLM需要的一个稀疏技能矩阵[0.3,0.2,0.4,0.1]代表不同关注项的权重，
+再根据稀疏技能矩阵得到不同LLM的评分，给到LLM的选型；
+
+OpenAI/LangChain/LangGraph 都有类似的 "Model Routing"
+本系统的Model Routing的依据是 "tag"
+
+
+## Tag策略 的具体tag选型
+
+```json
+default
+//成本
+cheap / fast
+//质量
+better / long-context / reasoning
+// task
+code / content
+math / symbolic / verification / formal / translation
+```
+
 ## 🚀 运行 Demo
 
 1. **准备种子知识库**：`data/knowledge_base.json` 已包含终止与非终止两个示例。
