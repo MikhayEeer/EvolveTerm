@@ -10,7 +10,7 @@ from pathlib import Path
 from openai import OpenAI
 
 #from src.evolve_term.config import load_json_config
-from .config import load_json_config
+from .config import load_json_config, auto_load_json_config
 #from src.evolve_term.exceptions import LLMUnavailableError
 from .exceptions import LLMUnavailableError
 from .prompts_loader import PromptRepository
@@ -28,7 +28,7 @@ class APILLMClient(LLMClient):
     """LLM client implemented via the OpenAI SDK chat completions API."""
 
     def __init__(self, config_name: str = "llm_config.json"):
-        config = load_json_config(config_name)
+        config = auto_load_json_config(config_name, "default")
         self.base_url = config.get("base_url") or config.get("baseurl")
         self.api_key = config.get("api_key")
         self.model = config.get("model")
@@ -93,7 +93,7 @@ class MockLLMClient(LLMClient):
 
 
 def build_llm_client(config_name: str = "llm_config.json") -> LLMClient:
-    config = load_json_config(config_name)
+    config = auto_load_json_config(config_name, "default")
     provider = config.get("provider", "mock").lower()
     if provider == "mock":
         return MockLLMClient()

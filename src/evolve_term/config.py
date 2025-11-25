@@ -24,10 +24,23 @@ def load_json_config(file_name: str) -> Dict[str, Any]:
         return json.load(handle)
 
 def auto_load_json_config(file_name: str,
-                          tag: str) -> Dict[str, Any]:
+                          tag: str = "default") -> Dict[str, Any]:
     """
     Using tag strategy to load multiple json config from a single file.
     Return a {} item from [{},{}] in json config
     """
-    print("- [ ] Need to complete auto_load_json_config function in config.py")
-    return {}
+    config_data = load_json_config(file_name)
+
+    if isinstance(config_data, list):
+        if not config_data:
+            raise ValueError(f"Config file '{file_name}' is an empty list.")
+        
+        # Try to find the config with the specified tag
+        for config in config_data:
+            if tag in config.get("tags", []):
+                return config
+        
+        # Fallback to the first item if tag not found
+        return config_data[0]
+
+    return config_data
