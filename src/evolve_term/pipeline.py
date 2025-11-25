@@ -17,6 +17,7 @@ from .loop_extractor import LoopExtractor
 from .models import KnowledgeCase, Label, PendingReviewCase, PredictionResult
 from .prompts_loader import PromptRepository
 from .rag_index import HNSWIndexManager
+from .translator import CodeTranslator
 
 DATA_DIR = Path(__file__).resolve().parents[2] / "data"
 REPORTS_DIR = DATA_DIR / "reports"
@@ -28,13 +29,15 @@ LOGS_DIR.mkdir(parents=True, exist_ok=True)
 class TerminationPipeline:
     """Main façade that ties together embedding, retrieval, and LLM reasoning."""
 
-    def __init__(self, rebuild_threshold: int = 10, embed_config: str = "embed_config.json", llm_config: str = "llm_config.json"):
+    def __init__(self, rebuild_threshold: int = 10, embed_config: str = "embed_config.json", llm_config: str = "llm_config.json", enable_translation: bool = False):
         self.prompt_repo = PromptRepository()
         self.llm_client = build_llm_client(llm_config)
         self.loop_extractor = LoopExtractor(self.llm_client, self.prompt_repo)
         self.embedding_client = build_embedding_client(embed_config)
         self.knowledge_base = KnowledgeBase(rebuild_threshold=rebuild_threshold)
         self.index_manager = HNSWIndexManager(dimension=self.embedding_client.dimension)
+        self.enable_translation = enable_translation
+        self.translator = CodeTranslator(config_name=llm_config) if enable_translation else None
 
     # Core flow ------------------------------------------------------------
     def analyze(self, code: str, top_k: int = 5, auto_build_index: bool = True) -> PredictionResult:
@@ -45,6 +48,17 @@ class TerminationPipeline:
         the parsed prediction. A plain-text log will also be written for human inspection.
         """
         run_id = uuid.uuid4().hex
+
+        # Stage 0: Translation (if enabled)
+        original_code = code
+        if self.enable_translation and self.translator:
+            # We assume the input might not be C/C++ if translation is enabled.
+            # However, the translator is generic.
+            # For now, we just translate whatever is passed if enabled.
+            # Optimization: We could check if it looks like C++ but that's hard.
+            # The CLI handles the file extension check.
+            code = self.translator.translate(code)
+
         # Stage 1: loop extraction
         loops = self.loop_extractor.extract(code)
         loop_details = {

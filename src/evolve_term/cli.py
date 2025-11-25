@@ -18,10 +18,23 @@ VALID_LABELS = {"terminating", "non-terminating", "unknown"}
 
 
 @app.command()
-def analyze(code_file: Path = typer.Option(..., exists=True, readable=True, help="Path to a C file"), top_k: int = 5) -> None:
-    """Analyze a C source snippet for termination likelihood."""
+def analyze(
+    code_file: Path = typer.Option(..., exists=True, readable=True, help="Path to a source file"),
+    top_k: int = 5,
+    enable_translation: bool = typer.Option(False, "--enable-translation", "-t", help="Enable LLM-based translation to C++ for non-C/C++ files")
+) -> None:
+    """Analyze a source snippet for termination likelihood."""
 
-    pipeline = TerminationPipeline()
+    # Check file extension
+    suffix = code_file.suffix.lower()
+    is_cpp = suffix in {".c", ".cpp", ".h", ".hpp", ".cc", ".cxx"}
+    
+    if not is_cpp and not enable_translation:
+        console.print(f"[bold red]Error:[/bold red] File '{code_file.name}' does not appear to be a C/C++ file.")
+        console.print("Please use [bold]--enable-translation[/bold] to enable automatic translation.")
+        raise typer.Exit(code=1)
+
+    pipeline = TerminationPipeline(enable_translation=enable_translation)
     code = code_file.read_text(encoding="utf-8")
     result = pipeline.analyze(code, top_k=top_k)
 
