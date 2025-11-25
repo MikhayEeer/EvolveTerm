@@ -9,7 +9,8 @@
       "temperature": 0.0
     },
     "pricing_per_millon_tokens_RMB": 16,
-    "tags": ["default", "expensive", "better"]
+    "tags": ["default", "expensive", "better"],
+    "context_window": "256k"
   },
   {
     "provider": "qwen",
