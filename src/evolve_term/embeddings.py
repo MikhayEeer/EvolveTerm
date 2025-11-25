@@ -13,7 +13,7 @@ from typing import Dict, List
 import numpy as np
 from openai import OpenAI
 
-from .config import load_json_config
+from .config import load_json_config, auto_load_json_config
 from .exceptions import EmbeddingUnavailableError
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -45,7 +45,7 @@ class APIEmbeddingClient(EmbeddingClient):
     """Embedding client implemented via the official OpenAI SDK."""
 
     def __init__(self, config_name: str = "embed_config.json"):
-        config = load_json_config(config_name)
+        config = auto_load_json_config(config_name, "default")
         dimension = int(config.get("dimension", 0))
         if dimension <= 0:
             raise EmbeddingUnavailableError("Embedding dimension must be positive")
@@ -99,7 +99,7 @@ class MockEmbeddingClient(EmbeddingClient):
 
 
 def build_embedding_client(config_name: str = "embed_config.json") -> EmbeddingClient:
-    config = load_json_config(config_name)
+    config = auto_load_json_config(config_name, "default")
     provider = config.get("provider", "mock").lower()
     if provider == "mock":
         dimension = int(config.get("dimension", 64))
