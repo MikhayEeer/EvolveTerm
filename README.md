@@ -148,6 +148,8 @@ better / long-context / reasoning
 // task
 code / content
 math / symbolic / verification / formal / translation
+// special
+outdated
 ```
 
 ## 🚀 运行 Demo
