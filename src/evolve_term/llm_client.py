@@ -27,8 +27,8 @@ class LLMClient(ABC):
 class APILLMClient(LLMClient):
     """LLM client implemented via the OpenAI SDK chat completions API."""
 
-    def __init__(self, config_name: str = "llm_config.json"):
-        config = auto_load_json_config(config_name, "default")
+    def __init__(self, config_name: str = "llm_config.json", config_tag: str = "default"):
+        config = auto_load_json_config(config_name, config_tag)
         self.base_url = config.get("base_url") or config.get("baseurl")
         self.api_key = config.get("api_key")
         self.model = config.get("model")
@@ -92,12 +92,12 @@ class MockLLMClient(LLMClient):
         return json.dumps({"text": "Unsupported mock prompt"})
 
 
-def build_llm_client(config_name: str = "llm_config.json") -> LLMClient:
-    config = auto_load_json_config(config_name, "default")
+def build_llm_client(config_name: str = "llm_config.json", config_tag: str = "default") -> LLMClient:
+    config = auto_load_json_config(config_name, config_tag)
     provider = config.get("provider", "mock").lower()
     if provider == "mock":
         return MockLLMClient()
-    return APILLMClient(config_name=config_name)
+    return APILLMClient(config_name=config_name, config_tag=config_tag)
 
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
