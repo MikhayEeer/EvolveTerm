@@ -16,6 +16,24 @@ try:
         def __init__(self):
             self.loops = []
             self.generator = c_generator.CGenerator()
+            self.current_func_node = None
+            self.current_func_name = None
+
+        def visit_FuncDef(self, node):
+            self.current_func_node = node
+            self.current_func_name = node.decl.name
+            self.generic_visit(node)
+            self.current_func_node = None
+            self.current_func_name = None
+
+        def visit_FuncCall(self, node):
+            if self.current_func_name and isinstance(node.name, c_ast.ID) and node.name.name == self.current_func_name:
+                # Found recursion, treat function body as a loop
+                # Avoid adding the same function multiple times
+                func_code = self.generator.visit(self.current_func_node)
+                if func_code not in self.loops:
+                    self.loops.append(func_code)
+            self.generic_visit(node)
 
         def visit_For(self, node):
             self.loops.append(self.generator.visit(node))
@@ -90,7 +108,8 @@ class CppToCConverter:
             except Exception:
                 # If pcpp fails, we just return the regex-processed code
                 pass
-                
+        
+        print(f"[Debug] Preprocessed C code for pycparser:\n{code}\n[Debug]CppToCConverter End\n")
         return code
 
 
@@ -108,14 +127,14 @@ class LoopExtractor:
     def extract(self, code: str, max_loops: int = 5) -> List[str]:
         # 1. Try pycparser extraction first (Structural Analysis)
         if HAS_PYCPARSER:
-            try:
-                loops = self.extract_with_pycparser(code)
-                if loops:
-                    self.last_method = "pycparser"
-                    return loops[:max_loops]
-            except Exception:
-                # Fallback to LLM if parsing fails
-                pass
+            # No try-except block here, let it raise if parsing fails
+            loops = self.extract_with_pycparser(code)
+            if loops:
+                self.last_method = "pycparser"
+                return loops[:max_loops]
+        
+        # If pycparser is missing or found no loops, proceed to LLM
+        # Note: If pycparser is present but fails (raises Exception), the program will crash here as requested.
 
         # 2. Try LLM extraction
         prompt = self.prompt_repo.render("loop_extraction", code=code)
