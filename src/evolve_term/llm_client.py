@@ -26,8 +26,9 @@ class LLMClient(ABC):
 class APILLMClient(LLMClient):
     """LLM client implemented via the OpenAI SDK chat completions API."""
 
-    def __init__(self, config_name: str = "llm_config.json", config_tag: str = "default"):
-        config = auto_load_json_config(config_name, config_tag)
+    def __init__(self, config_name: str = "llm_config.json", config_tag: str = "default", config: dict | None = None):
+        if config is None:
+            config = auto_load_json_config(config_name, config_tag)
         self.base_url = config.get("base_url") or config.get("baseurl")
         self.api_key = config.get("api_key")
         self.model = config.get("model")
@@ -63,43 +64,40 @@ class APILLMClient(LLMClient):
         return content or ""
 
 
-class MockLLMClient(LLMClient):
-    """Simple deterministic templates for offline demo."""
+# class MockLLMClient(LLMClient):
+#     """Simple deterministic templates for offline demo."""
 
-    def complete(self, prompt: str) -> str:
-        # Extract fenced ```code``` blocks to simulate loop summaries
-        code_blocks = re.findall(r"```(?:c|cpp)?\n(.*?)```", prompt, re.DOTALL)
-        if code_blocks:
-            body = code_blocks[-1]
-        else:
-            body = prompt
-        loops = []
-        for line in body.splitlines():
-            line = line.strip()
-            if line.startswith(("for", "while")):
-                loops.append(line)
-        if not loops:
-            loops = ["/* no-loop-detected */"]
-        normalized_prompt = prompt.lower()
-        if "single key \"loops\"" in normalized_prompt:
-            return json.dumps({"loops": loops}, ensure_ascii=False)
-        if 'keys: "label"' in normalized_prompt or 'return a json payload' in normalized_prompt:
-            label = "terminating" if any(token in body for token in ("--", "-=")) else "non-terminating" if "while(1" in body or "for(;;" in body else "unknown"
-            result = {
-                "label": label,
-                "reasoning": "Mock reasoning: heuristic result for offline demo.",
-                "report": "Predicted using mock LLM client with references.",
-            }
-            return json.dumps(result, ensure_ascii=False)
-        return json.dumps({"text": "Unsupported mock prompt"})
+#     def complete(self, prompt: str) -> str:
+#         # Extract fenced ```code``` blocks to simulate loop summaries
+#         code_blocks = re.findall(r"```(?:c|cpp)?\n(.*?)```", prompt, re.DOTALL)
+#         if code_blocks:
+#             body = code_blocks[-1]
+#         else:
+#             body = prompt
+#         loops = []
+#         for line in body.splitlines():
+#             line = line.strip()
+#             if line.startswith(("for", "while")):
+#                 loops.append(line)
+#         if not loops:
+#             loops = ["/* no-loop-detected */"]
+#         normalized_prompt = prompt.lower()
+#         if "single key \"loops\"" in normalized_prompt:
+#             return json.dumps({"loops": loops}, ensure_ascii=False)
+#         if 'keys: "label"' in normalized_prompt or 'return a json payload' in normalized_prompt:
+#             label = "terminating" if any(token in body for token in ("--", "-=")) else "non-terminating" if "while(1" in body or "for(;;" in body else "unknown"
+#             result = {
+#                 "label": label,
+#                 "reasoning": "Mock reasoning: heuristic result for offline demo.",
+#                 "report": "Predicted using mock LLM client with references.",
+#             }
+#             return json.dumps(result, ensure_ascii=False)
+#         return json.dumps({"text": "Unsupported mock prompt"})
 
 
 def build_llm_client(config_name: str = "llm_config.json", config_tag: str = "default") -> LLMClient:
     config = auto_load_json_config(config_name, config_tag)
-    provider = config.get("provider", "mock").lower()
-    if provider == "mock":
-        return MockLLMClient()
-    return APILLMClient(config_name=config_name, config_tag=config_tag)
+    return APILLMClient(config=config)
 
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
