@@ -96,7 +96,12 @@ class TerminationPipeline:
             ref.metadata["similarity"] = round(similarity_map.get(ref.case_id, 0.0), 3)
 
         # Stage 4: LLM prediction
-        prediction, raw_prediction = self._predict_with_llm(code, loops, references)
+        # Filter references for prompt (only include high similarity cases)
+        prompt_references = [
+            ref for ref in references 
+            if ref.metadata.get("similarity", 0.0) > 0.7
+        ]
+        prediction, raw_prediction = self._predict_with_llm(code, loops, prompt_references)
 
         # Build comprehensive report payload
         report_payload = {
