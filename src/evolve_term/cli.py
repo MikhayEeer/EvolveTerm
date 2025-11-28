@@ -21,7 +21,8 @@ VALID_LABELS = {"terminating", "non-terminating", "unknown"}
 def analyze(
     code_file: Path = typer.Option(..., exists=True, readable=True, help="Path to a source file"),
     top_k: int = 5,
-    enable_translation: bool = typer.Option(False, "--enable-translation", "-t", help="Enable LLM-based translation to C++ for non-C/C++ files")
+    enable_translation: bool = typer.Option(False, "--enable-translation", "-t", help="Enable LLM-based translation to C++ for non-C/C++ files"),
+    knowledge_base: Optional[Path] = typer.Option(None, "--kb", help="Path to a custom knowledge base JSON file")
 ) -> None:
     """Analyze a source snippet for termination likelihood."""
 
@@ -34,7 +35,9 @@ def analyze(
         console.print("Please use [bold]--enable-translation[/bold] to enable automatic translation.")
         raise typer.Exit(code=1)
 
-    pipeline = TerminationPipeline(enable_translation=enable_translation)
+    pipeline = TerminationPipeline(enable_translation=enable_translation, 
+                                   knowledge_base_path=str(knowledge_base) if knowledge_base else None
+                                   )
     code = code_file.read_text(encoding="utf-8")
     result = pipeline.analyze(code, top_k=top_k)
 

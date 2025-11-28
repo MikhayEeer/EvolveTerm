@@ -69,7 +69,15 @@ class HNSWIndexManager:
     def search(self, vector: np.ndarray, top_k: int = 5) -> List[Tuple[str, float]]:
         if self.index is None:
             raise IndexNotReadyError("HNSW index is not ready. Build it first.")
-        labels, distances = self.index.knn_query(vector, k=top_k)
+        
+        # Ensure top_k does not exceed the number of elements in the index
+        current_count = self.index.get_current_count()
+        k = min(top_k, current_count)
+        
+        if k == 0:
+            return []
+
+        labels, distances = self.index.knn_query(vector, k=k)
         results = []
         for label, distance in zip(labels[0], distances[0]):
             case_id = self.case_ids[label]

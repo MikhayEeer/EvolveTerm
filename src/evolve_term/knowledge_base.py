@@ -16,8 +16,14 @@ KB_PATH = DATA_DIR / "knowledge_base.json"
 class KnowledgeBase:
     """Persistent JSON knowledge base with helper queries."""
 
-    def __init__(self, path: Path | None = None, rebuild_threshold: int = 10):
-        self.path = path or KB_PATH
+    def __init__(self, path: Path | str | None = None, rebuild_threshold: int = 10, storage_path: str | None = None):
+        # Support both 'path' (legacy) and 'storage_path' (new) arguments
+        # If storage_path is provided as string, convert to Path
+        target_path = storage_path or path
+        if isinstance(target_path, str):
+            target_path = Path(target_path)
+            
+        self.path = target_path or KB_PATH
         self.rebuild_threshold = rebuild_threshold
         self._cases: Dict[str, KnowledgeCase] = {}
         self._pending_since_rebuild = 0
