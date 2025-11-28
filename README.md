@@ -19,10 +19,10 @@
 - [x] 多个LLM的config，让路由模块可以选择 1125
 	- [x] 完成了初版，预留了tag入口，后续的话，应该固定tag的种类数量；然后路由模块从多个已知tag选取需要的tag，再根据这个tag去选用LLM 1125
 	- [ ] tag的选用，可以让路由模块多维度进行决策(成本,时间，效果)等，组成稀疏向量，然后稀疏向量和LLM config得到这个LLM在这次路由决策的评分，从而决定本轮选用的LLM
-- [ ] 一个可以开启的泛化语言模块
+- [x] 一个可以开启的泛化语言模块
 	- [x] 先整理不同LLM的上下文窗口长度，并且按照目前标签策略，来完善标签 1125
 	- [x] 然后按照这些标签，设计语言翻译模块(long-content) 1125
-		- [ ] 需要环境运行`evolveterm analyze --code-file data/python/3nested_l
+		- [x] 需要环境运行`evolveterm analyze --code-file data/python/3nested_l
 oops.py -t --top-k 3`以检查翻译语言模块
 - [x] 如何实现一个git检查脚本，使得提交前确认config json里面的api key不是完整的，可以不检查ignore的json
 
