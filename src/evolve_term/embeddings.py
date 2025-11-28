@@ -44,8 +44,9 @@ class EmbeddingClient(ABC):
 class APIEmbeddingClient(EmbeddingClient):
     """Embedding client implemented via the official OpenAI SDK."""
 
-    def __init__(self, config_name: str = "embed_config.json"):
-        config = auto_load_json_config(config_name, "default")
+    def __init__(self, config_name: str = "embed_config.json", config: dict | None = None):
+        if config is None:
+            config = auto_load_json_config(config_name, "default")
         dimension = int(config.get("dimension", 0))
         if dimension <= 0:
             raise EmbeddingUnavailableError("Embedding dimension must be positive")
@@ -83,29 +84,24 @@ class APIEmbeddingClient(EmbeddingClient):
         return arr
 
 
-class MockEmbeddingClient(EmbeddingClient):
-    """Deterministic embedding generator for offline demos and tests."""
+# class MockEmbeddingClient(EmbeddingClient):
+#     """Deterministic embedding generator for offline demos and tests."""
 
-    def __init__(self, dimension: int = 64, model_name: str = "mock-sha1"):
-        super().__init__(dimension, provider="mock", model_name=model_name)
+#     def __init__(self, dimension: int = 64, model_name: str = "mock-sha1"):
+#         super().__init__(dimension, provider="mock", model_name=model_name)
 
-    def embed(self, text: str) -> np.ndarray:
-        digest = hashlib.sha1(text.encode("utf-8")).digest()
-        repeats = (self.dimension + len(digest) - 1) // len(digest)
-        raw = (digest * repeats)[: self.dimension]
-        vector = np.frombuffer(raw, dtype=np.uint8).astype(np.float32)
-        vector = vector / np.linalg.norm(vector)
-        return vector
+#     def embed(self, text: str) -> np.ndarray:
+#         digest = hashlib.sha1(text.encode("utf-8")).digest()
+#         repeats = (self.dimension + len(digest) - 1) // len(digest)
+#         raw = (digest * repeats)[: self.dimension]
+#         vector = np.frombuffer(raw, dtype=np.uint8).astype(np.float32)
+#         vector = vector / np.linalg.norm(vector)
+#         return vector
 
 
 def build_embedding_client(config_name: str = "embed_config.json") -> EmbeddingClient:
     config = auto_load_json_config(config_name, "default")
-    provider = config.get("provider", "mock").lower()
-    if provider == "mock":
-        dimension = int(config.get("dimension", 64))
-        model_name = config.get("model", "mock-sha1")
-        return MockEmbeddingClient(dimension=dimension, model_name=model_name)
-    return APIEmbeddingClient(config_name=config_name)
+    return APIEmbeddingClient(config=config)
 
 
 def _demo_embedding(prompt: str = "int main() { return 0; }", config_name: str = "embed_config.json") -> None:
