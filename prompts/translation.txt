@@ -5,4 +5,4 @@ Do not include any explanations or comments outside the code.
 Only output the translated C++ code.
 
 Source Code:
-{{source_code}}
+${source_code}
