@@ -11,14 +11,22 @@
 - [ ] prompts与TermDatabase 进行组合优化
 - [x] 完成测试一轮流程，然后写软著
 - [ ] 用UniTerm再去写一个软著
-- [ ] 现有的RAG存储完整代码，让Prompt上下文太长
+- [x] 现有的RAG存储完整代码，让Prompt上下文太长
   - [ ] AST的方案？存储代码树？简化代码再向量化
   - [ ] 采纳CodeBERT？CodeBert对于同结构不同变量命名或者相似控制流的代码的向量化有没有优势
-- [ ] 现有的提炼模块是基于规则的，可以看看还有什么方法
+- [x] 现有的提炼模块是基于规则的，可以看看还有什么方法
+	pycparser->CFG提炼 + LLM与子串验证提炼
+	符号神经人工智能；
+	CFG静态保证，LLM神经推理
 - [ ] 考虑引入路由模块了
+	- [ ] LLM调度模块
+	- [ ] 模块调度模块
+	- [ ] WorkFlow调度模块（和上面有交集）
 - [x] 多个LLM的config，让路由模块可以选择 1125
 	- [x] 完成了初版，预留了tag入口，后续的话，应该固定tag的种类数量；然后路由模块从多个已知tag选取需要的tag，再根据这个tag去选用LLM 1125
-	- [ ] tag的选用，可以让路由模块多维度进行决策(成本,时间，效果)等，组成稀疏向量，然后稀疏向量和LLM config得到这个LLM在这次路由决策的评分，从而决定本轮选用的LLM
+	- [x] tag的选用，可以让路由模块多维度进行决策(成本,时间，效果)等，组成稀疏向量，然后稀疏向量和LLM config得到这个LLM在这次路由决策的评分，从而决定本轮选用的LLM
+		意图识别 Intent
+		目前准备好了Tag策略，等待实现
 - [x] 一个可以开启的泛化语言模块
 	- [x] 先整理不同LLM的上下文窗口长度，并且按照目前标签策略，来完善标签 1125
 	- [x] 然后按照这些标签，设计语言翻译模块(long-content) 1125
@@ -43,22 +51,6 @@ pip install -e .
 ## unit test
 ```bash
 python -m evolve_term.embeddings --help
-```
-
-## Test Demo Output
-```bash
-evolveterm analyze --code-file data/SVC25_c_aug/Fibonacci04_aug3.c --kb data/prebuild_SVC25_c_embeddings.json
-───────────────────────────────────────────────────────── Prediction ──────────────────────────────────────────────────────────
-Label: terminating 
-Reasoning: The function `fib` is recursive but only called with inputs `val <= 46` due to the guard in `main`. Since `fib`     
-decreases its argument on each recursive call and has base cases for `num < 1` and `num == 1`, all recursive calls eventually  
-terminate.
-Report saved at: /mnt/d/Users/mikhayeeer/Documents/Repos/EvolveTerm/data/reports/report_58d1cf2115704203b3fc1ab20a75d5f4.json  
-        Referenced cases        
-┏━━━━━━━━━┳━━━━━━━┳━━━━━━━━━━━━┓
-┃ Case ID ┃ Label ┃ Similarity ┃
-┡━━━━━━━━━╇━━━━━━━╇━━━━━━━━━━━━┩
-└─────────┴───────┴────────────┘
 ```
 
 # EvolveTerm
