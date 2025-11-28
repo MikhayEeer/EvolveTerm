@@ -47,7 +47,7 @@ python -m evolve_term.embeddings --help
 
 ## Test Demo Output
 ```bash
-evolveterm analyze --code-file data/SVC25_c_aug/Fibonacci04_aug3.c --top-k 3
+evolveterm analyze --code-file data/SVC25_c_aug/Fibonacci04_aug3.c --kb data/prebuild_SVC25_c_embeddings.json
 ───────────────────────────────────────────────────────── Prediction ──────────────────────────────────────────────────────────
 Label: terminating 
 Reasoning: The function `fib` is recursive but only called with inputs `val <= 46` due to the guard in `main`. Since `fib`     
