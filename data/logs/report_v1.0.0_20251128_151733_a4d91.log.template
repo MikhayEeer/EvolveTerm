@@ -1,0 +1,232 @@
+EvolveTerm Analysis Report
+==========================
+Date: 2025-11-28 15:17:33
+Run ID: a4d91ff7053440a7ab17cb5084e08f41
+
+Translation Info
+----------------
+Translated: True
+Code was translated to C++.
+
+Prediction
+----------
+Label: terminating
+Reasoning: All loop variables (a, b, c, d, e, f) are integers that are either strictly decremented or bounded and eventually reduced under all control-flow paths. The outermost loop on 'a' decreases a by at least 1 every iteration (via a = a - 1 or a = a / 2 when a > 0), guaranteeing eventual termination; inner loops similarly reduce their controlling variables (b, c, d, e) in every iteration due to conditional updates that ensure progress toward the loop exit conditions.
+
+Referenced Cases
+----------------
+Case ID                                  | Label           | Similarity
+----------------------------------------------------------------------
+Ex02                                     | non-terminating | 0.624
+linear-inequality-inv-c                  | terminating     | 0.6
+linear-inequality-inv-d                  | terminating     | 0.579
+Fibonacci01-2                            | terminating     | 0.51
+
+
+Detailed Analysis Data
+======================
+--- Original Code ---
+def complex_termination_analysis():
+    a = 100
+    b = 100
+    c = 100
+    d = 1
+    e = 100
+    f = 100
+    
+    while a > 0:
+        b = a // 2
+        c = a * 2
+        
+        while b > 0 and c > 10:
+            d = b + c
+            e = c - b
+            
+            while d > 0 and e > 0:
+                if (a + b + c) % 3 == 0 and (d * e) % 5 == 0:
+                    d = d // 2
+                    e = e // 3
+                elif (a * b) % 4 == 0:
+                    d = d - (a % 10)
+                    e = e - (b % 10)
+                else:
+                    d -= 1
+                    e -= 1
+                
+                if f > 0:
+                    f -= 1
+                    c = c // 2
+                else:
+                    c = a * 2
+            
+            
+            if c > 10:
+                c -= 1
+            else:
+                b -= 1
+    
+        a = a // 2 if a % 3 == 0 else a - 1
+    
+    print("Termination confirmed!")
+    return True
+
+if __name__ == "__main__":
+    complex_termination_analysis()
+--- Translated Code ---
+#include <iostream>
+
+bool complex_termination_analysis() {
+    int a = 100;
+    int b = 100;
+    int c = 100;
+    int d = 1;
+    int e = 100;
+    int f = 100;
+    
+    while (a > 0) {
+        b = a / 2;
+        c = a * 2;
+        
+        while (b > 0 && c > 10) {
+            d = b + c;
+            e = c - b;
+            
+            while (d > 0 && e > 0) {
+                if ((a + b + c) % 3 == 0 && (d * e) % 5 == 0) {
+                    d = d / 2;
+                    e = e / 3;
+                } else if ((a * b) % 4 == 0) {
+                    d = d - (a % 10);
+                    e = e - (b % 10);
+                } else {
+                    d -= 1;
+                    e -= 1;
+                }
+                
+                if (f > 0) {
+                    f -= 1;
+                    c = c / 2;
+                } else {
+                    c = a * 2;
+                }
+            }
+            
+            if (c > 10) {
+                c -= 1;
+            } else {
+                b -= 1;
+            }
+        }
+        
+        if (a % 3 == 0) {
+            a = a / 2;
+        } else {
+            a = a - 1;
+        }
+    }
+    
+    std::cout << "Termination confirmed!" << std::endl;
+    return true;
+}
+
+int main() {
+    complex_termination_analysis();
+    return 0;
+}
+--- Code for Analysis ---
+#include <iostream>
+
+bool complex_termination_analysis() {
+    int a = 100;
+    int b = 100;
+    int c = 100;
+    int d = 1;
+    int e = 100;
+    int f = 100;
+    
+    while (a > 0) {
+        b = a / 2;
+        c = a * 2;
+        
+        while (b > 0 && c > 10) {
+            d = b + c;
+            e = c - b;
+            
+            while (d > 0 && e > 0) {
+                if ((a + b + c) % 3 == 0 && (d * e) % 5 == 0) {
+                    d = d / 2;
+                    e = e / 3;
+                } else if ((a * b) % 4 == 0) {
+                    d = d - (a % 10);
+                    e = e - (b % 10);
+                } else {
+                    d -= 1;
+                    e -= 1;
+                }
+                
+                if (f > 0) {
+                    f -= 1;
+                    c = c / 2;
+                } else {
+                    c = a * 2;
+                }
+            }
+            
+            if (c > 10) {
+                c -= 1;
+            } else {
+                b -= 1;
+            }
+        }
+        
+        if (a % 3 == 0) {
+            a = a / 2;
+        } else {
+            a = a - 1;
+        }
+    }
+    
+    std::cout << "Termination confirmed!" << std::endl;
+    return true;
+}
+
+int main() {
+    complex_termination_analysis();
+    return 0;
+}
+--- Loop Extraction ---
+method: llm
+loops:
+while (a > 0)
+while (b > 0 && c > 10)
+while (d > 0 && e > 0)
+--- Raw LLM loop response ---
+```json
+{
+  "loops": [
+    "while (a > 0)",
+    "while (b > 0 && c > 10)",
+    "while (d > 0 && e > 0)"
+  ]
+}
+```
+--- Embedding info ---
+provider: qwen, model: text-embedding-v4, dimension: 64
+vector_length: 64
+--- Neighbors ---
+Ex02: 0.6238080263137817
+linear-inequality-inv-c: 0.6001982688903809
+linear-inequality-inv-d: 0.5789684057235718
+Fibonacci01-2: 0.5102537870407104
+--- Prediction (parsed) ---
+{
+  "label": "terminating",
+  "reasoning": "All loop variables (a, b, c, d, e, f) are integers that are either strictly decremented or bounded and eventually reduced under all control-flow paths. The outermost loop on 'a' decreases a by at least 1 every iteration (via a = a - 1 or a = a / 2 when a > 0), guaranteeing eventual termination; inner loops similarly reduce their controlling variables (b, c, d, e) in every iteration due to conditional updates that ensure progress toward the loop exit conditions.",
+  "report": "All loops have well-founded decreasing measures ensuring eventual termination."
+}
+--- Prediction (raw) ---
+{
+  "label": "terminating",
+  "reasoning": "All loop variables (a, b, c, d, e, f) are integers that are either strictly decremented or bounded and eventually reduced under all control-flow paths. The outermost loop on 'a' decreases a by at least 1 every iteration (via a = a - 1 or a = a / 2 when a > 0), guaranteeing eventual termination; inner loops similarly reduce their controlling variables (b, c, d, e) in every iteration due to conditional updates that ensure progress toward the loop exit conditions.",
+  "report": "All loops have well-founded decreasing measures ensuring eventual termination."
+}

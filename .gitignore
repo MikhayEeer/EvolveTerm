@@ -10,6 +10,7 @@ evolveterm/
 
 # test reports
 report_*.json
+!template_*.json
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
