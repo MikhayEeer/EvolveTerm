@@ -10,7 +10,7 @@
     {
       "case_id": "Ex02",
       "code": "// This file is part of the SV-Benchmarks collection of verification tasks:\n// https://github.com/sosy-lab/sv-benchmarks\n//\n// SPDX-FileCopyrightText: 2025 RWTH Aachen\n//\n// SPDX-License-Identifier: LicenseRef-RWTH-Aachen\n\ntypedef enum {false,true} bool;\n\nextern int __VERIFIER_nondet_int(void);\n\nint main() {\n    int i;\n    i = __VERIFIER_nondet_int();\n    \n    while (i > 0) {\n        if (i != 5) {\n            i = i-1;\n        }\n    }\n    \n    return 0;\n}\n",
-      "label": "NonTerminating",
+      "label": "non-terminating",
       "explanation": "Bulk embedded via evolve_term.embeddings",
       "loops": [],
       "embedding": [
@@ -90,7 +90,7 @@
     {
       "case_id": "Fibonacci01-2",
       "code": "extern void abort(void);\nextern void __assert_fail(const char *, const char *, unsigned int, const char *) __attribute__ ((__nothrow__ , __leaf__)) __attribute__ ((__noreturn__));\nvoid reach_error() { __assert_fail(\"0\", \"Fibonacci01-2.c\", 3, \"reach_error\"); }\n\n/*\n * Recursive computation of fibonacci numbers.\n * \n * Author: Matthias Heizmann\n * Date: 2013-07-13\n * \n */\n\nextern int __VERIFIER_nondet_int(void);\n\n\nint fibonacci(int n) {\n    if (n < 1) {\n        return 0;\n    } else if (n == 1) {\n        return 1;\n    } else {\n        return fibonacci(n-1) + fibonacci(n-2);\n    }\n}\n\n\nint main() {\n    int x = __VERIFIER_nondet_int();\n    if (x > 46) {\n        return 0;\n    }\n\tif(x < 1)\n\t\treturn 0;\n    int result = fibonacci(x);\n    if (result >= 1) {\n        return 0;\n    } else {\n        ERROR: {reach_error();abort();}\n    }\n}\n    \n\n",
-      "label": "Terminating",
+      "label": "terminating",
       "explanation": "Bulk embedded via evolve_term.embeddings",
       "loops": [],
       "embedding": [
@@ -170,7 +170,7 @@
     {
       "case_id": "linear-inequality-inv-c",
       "code": "// This file is part of the SV-Benchmarks collection of verification tasks:\n// https://github.com/sosy-lab/sv-benchmarks\n//\n// SPDX-FileCopyrightText: 2022 Dirk Beyer, Matthias Dangl, Daniel Dietsch, Matthias Heizmann, Thomas Lemberger, and Michael Tautschnig\n//\n// SPDX-License-Identifier: Apache-2.0\n\nextern void __assert_fail(const char *, const char *, unsigned int, const char *) __attribute__ ((__nothrow__ , __leaf__)) __attribute__ ((__noreturn__));\nvoid reach_error() { __assert_fail(\"0\", \"linear-inequality-inv-a.c\", 2, \"reach_error\"); }\nextern unsigned short __VERIFIER_nondet_ushort(void);\nint main() {\n  unsigned short n = __VERIFIER_nondet_ushort();\n  if (n == 0) {\n    return 0;\n  }\n  unsigned short v = 0;\n  unsigned int  s = 0;\n  unsigned int  i = 0;\n  while (i < n) {\n    v = __VERIFIER_nondet_ushort();\n    s += v;\n    ++i;\n  }\n  if (s < v) {\n    reach_error();\n    return 1;\n  }\n  if (s > 4294836225) { // (2**16 - 1)**2\n    reach_error();\n    return 1;\n  }\n  return 0;\n}\n",
-      "label": "Terminating",
+      "label": "terminating",
       "explanation": "Bulk embedded via evolve_term.embeddings",
       "loops": [],
       "embedding": [
@@ -250,7 +250,7 @@
     {
       "case_id": "linear-inequality-inv-d",
       "code": "// This file is part of the SV-Benchmarks collection of verification tasks:\n// https://github.com/sosy-lab/sv-benchmarks\n//\n// SPDX-FileCopyrightText: 2022 Dirk Beyer, Matthias Dangl, Daniel Dietsch, Matthias Heizmann, Thomas Lemberger, and Michael Tautschnig\n//\n// SPDX-License-Identifier: Apache-2.0\n\nextern void __assert_fail(const char *, const char *, unsigned int, const char *) __attribute__ ((__nothrow__ , __leaf__)) __attribute__ ((__noreturn__));\nvoid reach_error() { __assert_fail(\"0\", \"linear-inequality-inv-a.c\", 2, \"reach_error\"); }\nextern unsigned int __VERIFIER_nondet_uint(void);\nint main() {\n  unsigned int n = __VERIFIER_nondet_uint();\n  if (n == 0) {\n    return 0;\n  }\n  unsigned int   v = 0;\n  unsigned long  s = 0;\n  unsigned long  i = 0;\n  while (i < n) {\n    v = __VERIFIER_nondet_uint();\n    s += v;\n    ++i;\n  }\n  if (s < v) {\n    reach_error();\n    return 1;\n  }\n  if (s > 18446744065119617025ULL) { // (2**32 - 1)**2\n    reach_error();\n    return 1;\n  }\n  return 0;\n}\n",
-      "label": "Terminating",
+      "label": "terminating",
       "explanation": "Bulk embedded via evolve_term.embeddings",
       "loops": [],
       "embedding": [
