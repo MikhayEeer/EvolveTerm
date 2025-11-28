@@ -22,7 +22,8 @@
 - [ ] 一个可以开启的泛化语言模块
 	- [x] 先整理不同LLM的上下文窗口长度，并且按照目前标签策略，来完善标签 1125
 	- [x] 然后按照这些标签，设计语言翻译模块(long-content) 1125
-		- [ ] 需要环境运行`python -m evolve_term.cli analyze data/python/3nested_loops.py --enable-translation`以检查翻译语言模块
+		- [ ] 需要环境运行`evolveterm analyze --code-file data/python/3nested_l
+oops.py -t --top-k 3`以检查翻译语言模块
 - [x] 如何实现一个git检查脚本，使得提交前确认config json里面的api key不是完整的，可以不检查ignore的json
 
 ## virtual env

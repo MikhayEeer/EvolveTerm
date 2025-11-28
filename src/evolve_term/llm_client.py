@@ -15,7 +15,6 @@ from .config import load_json_config, auto_load_json_config
 from .exceptions import LLMUnavailableError
 from .prompts_loader import PromptRepository
 
-
 class LLMClient(ABC):
     """Base interface for text generation."""
 
@@ -47,6 +46,9 @@ class APILLMClient(LLMClient):
             )
         except Exception as exc:  # pragma: no cover - network path
             raise LLMUnavailableError(f"LLM provider error: {exc}") from exc
+
+        print(f"\n[Debug] LLM prompt: {prompt}")
+        print(f"[Debug] LLM response: {response}\n")
 
         if not response.choices:
             raise LLMUnavailableError("LLM provider returned no choices")

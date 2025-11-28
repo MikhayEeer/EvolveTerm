@@ -38,6 +38,7 @@ def auto_load_json_config(file_name: str,
         # Try to find the config with the specified tag
         for config in config_data:
             if tag in config.get("tags", []):
+                print(f"[Debug] Loaded config with tag: {tag}, \n[Debug]--llm config:-- \n{config}\n[Debug]--print end--\n\n" )
                 return config
         
         # Fallback to the first item if tag not found

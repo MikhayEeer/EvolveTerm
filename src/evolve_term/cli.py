@@ -38,6 +38,15 @@ def analyze(
     code = code_file.read_text(encoding="utf-8")
     result = pipeline.analyze(code, top_k=top_k)
 
+    # Show translation info if applicable
+    if enable_translation and result.report_path:
+        import json
+        with open(result.report_path, 'r', encoding='utf-8') as f:
+            report = json.load(f)
+        translation = report.get("translation", {})
+        if translation.get("translated"):
+            console.print("[bold cyan]✓ Code was translated to C++[/bold cyan]")
+
     console.rule("Prediction")
     console.print(f"Label: [bold]{result.label}[/bold]")
     console.print(f"Reasoning: {result.reasoning}")
