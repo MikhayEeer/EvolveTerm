@@ -60,7 +60,12 @@ def analyze(
     table.add_column("Label")
     table.add_column("Similarity")
     for ref in result.references:
-        table.add_row(ref.case_id, ref.label, ref.metadata.get("similarity", "n/a"))
+        similarity = ref.metadata.get("similarity", "n/a")
+        if isinstance(similarity, float):
+            similarity_str = f"{similarity:.3f}"
+        else:
+            similarity_str = str(similarity)
+        table.add_row(ref.case_id, ref.label, similarity_str)
     console.print(table)
 
 
