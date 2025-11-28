@@ -91,6 +91,8 @@ pyproject.toml         # 依赖与入口脚本（Typer CLI）
 - Windows PowerShell 示例命令：
 
 ```powershell
+pip install pycparser pcpp
+
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 pip install -e .[test]

@@ -33,9 +33,11 @@ class TerminationPipeline:
     def __init__(self, rebuild_threshold: int = 10, embed_config: str = "embed_config.json", llm_config: str = "llm_config.json", enable_translation: bool = False, knowledge_base_path: str | None = None):
         self.prompt_repo = PromptRepository()
         self.llm_client = build_llm_client(llm_config)
-        self.loop_extractor = LoopExtractor(self.llm_client, self.prompt_repo)
+        self.loop_extractor = LoopExtractor(self.llm_client,# loop extractor also use same model with prediction 
+                                            self.prompt_repo)
         self.embedding_client = build_embedding_client(embed_config)
-        self.knowledge_base = KnowledgeBase(rebuild_threshold=rebuild_threshold, storage_path=knowledge_base_path)
+        self.knowledge_base = KnowledgeBase(rebuild_threshold=rebuild_threshold, 
+                                            storage_path=knowledge_base_path)
         self.index_manager = HNSWIndexManager(dimension=self.embedding_client.dimension)
         self.enable_translation = enable_translation
         self.translator = CodeTranslator(config_name=llm_config) if enable_translation else None
