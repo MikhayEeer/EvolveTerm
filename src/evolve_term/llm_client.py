@@ -48,7 +48,7 @@ class APILLMClient(LLMClient):
         except Exception as exc:  # pragma: no cover - network path
             raise LLMUnavailableError(f"LLM provider error: {exc}") from exc
 
-        print(f"\n[Debug] LLM prompt: {prompt}")
+        print(f"\n[Debug] LLM prompt: {prompt[:200]}")
         print(f"[Debug] LLM response: {response}\n")
 
         if not response.choices:
