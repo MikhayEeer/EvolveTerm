@@ -14,17 +14,12 @@ class CodeTranslator:
         # Prefer using a client with 'long-context' tag for translation tasks
         self.llm_client = llm_client or build_llm_client(config_name, config_tag="long-context")
         self.prompt_repo = PromptRepository()
-        # Ensure translation prompt exists, if not loaded from file, use default
-        if "translation" not in self.prompt_repo.prompts:
-             # Fallback if file not found (though we just created it)
-             self.prompt_repo.prompts["translation"] = (
-                "Translate the following code to C++. Output ONLY the code.\n\n{{source_code}}"
-             )
+        # Translation prompt will be loaded from prompts/translation.txt when needed
+        # (PromptRepository handles file loading via load() and render() methods)
 
     def translate(self, source_code: str) -> str:
         """Translate source code to C++."""
-        prompt_template = self.prompt_repo.get("translation")
-        prompt = prompt_template.replace("{{source_code}}", source_code)
+        prompt = self.prompt_repo.render("translation", source_code=source_code)
         
         translated_code = self.llm_client.complete(prompt)
         

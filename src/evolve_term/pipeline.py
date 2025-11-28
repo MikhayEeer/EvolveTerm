@@ -98,7 +98,14 @@ class TerminationPipeline:
         # Build comprehensive report payload
         report_payload = {
             "run_id": run_id,
-            "code": code,
+            "original_code": original_code,  # Original input code (before translation)
+            "code": code,  # Code after translation (if enabled) or same as original
+            "translation": {
+                "enabled": self.enable_translation,
+                "translated": original_code != code,
+                "source_code": original_code,
+                "translated_code": code if self.enable_translation and original_code != code else None,
+            },
             "loop_extraction": loop_details,
             "embedding": embedding_info,
             "neighbors": [
@@ -146,7 +153,21 @@ class TerminationPipeline:
         log_path = LOGS_DIR / f"{report_stem}.log"
         lines = []
         lines.append(f"Run ID: {report.get('run_id')}")
-        lines.append("--- Input Code ---")
+        
+        # Show original code
+        lines.append("--- Original Code ---")
+        lines.append(report.get("original_code", ""))
+        
+        # Show translation info if enabled
+        translation = report.get("translation", {})
+        if translation.get("enabled"):
+            lines.append("--- Translation ---")
+            lines.append(f"Translated: {translation.get('translated')}")
+            if translation.get("translated"):
+                lines.append("Translated Code:")
+                lines.append(translation.get("translated_code", ""))
+        
+        lines.append("--- Code for Analysis ---")
         lines.append(report.get("code", ""))
         lines.append("--- Loop Extraction ---")
         le = report.get("loop_extraction", {})
