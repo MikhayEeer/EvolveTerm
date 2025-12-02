@@ -1,38 +1,7 @@
 # Developer's Todo Lists
-- [x] 目前是text embedding，找到codeBERT的API服务-1114
-    **codebert/starcoder 只能本地部署**
-    可以使用**text_embedding**先行替代
-- [x] 在linux部署环境，尝试跑通demo
-	- [x] 运行embeddings.py和llm_client.py的自测demo-1117
-	- [x] 选取少量代码，测试embedding-1117
-	- [x] 测试RAG的索引构建
-	- [x] 选取sample，测试RAG的命中
-- [x] 判断RAG的可用性
-- [ ] prompts与TermDatabase 进行组合优化
-- [x] 完成测试一轮流程，然后写软著
-- [ ] 用UniTerm再去写一个软著
-- [x] 现有的RAG存储完整代码，让Prompt上下文太长
-  - [ ] AST的方案？存储代码树？简化代码再向量化
-  - [ ] 采纳CodeBERT？CodeBert对于同结构不同变量命名或者相似控制流的代码的向量化有没有优势
-- [x] 现有的提炼模块是基于规则的，可以看看还有什么方法
-	pycparser->CFG提炼 + LLM与子串验证提炼
-	符号神经人工智能；
-	CFG静态保证，LLM神经推理
-- [ ] 考虑引入路由模块了
-	- [ ] LLM调度模块
-	- [ ] 模块调度模块
-	- [ ] WorkFlow调度模块（和上面有交集）
-- [x] 多个LLM的config，让路由模块可以选择 1125
-	- [x] 完成了初版，预留了tag入口，后续的话，应该固定tag的种类数量；然后路由模块从多个已知tag选取需要的tag，再根据这个tag去选用LLM 1125
-	- [x] tag的选用，可以让路由模块多维度进行决策(成本,时间，效果)等，组成稀疏向量，然后稀疏向量和LLM config得到这个LLM在这次路由决策的评分，从而决定本轮选用的LLM
-		意图识别 Intent
-		目前准备好了Tag策略，等待实现
-- [x] 一个可以开启的泛化语言模块
-	- [x] 先整理不同LLM的上下文窗口长度，并且按照目前标签策略，来完善标签 1125
-	- [x] 然后按照这些标签，设计语言翻译模块(long-content) 1125
-		- [x] 需要环境运行`evolveterm analyze --code-file data/python/3nested_l
-oops.py -t --top-k 3`以检查翻译语言模块
-- [x] 如何实现一个git检查脚本，使得提交前确认config json里面的api key不是完整的，可以不检查ignore的json
+- removed to Obsidian notes
+
+# Base Operators
 
 ## virtual env
 - create virtual env
@@ -41,7 +10,20 @@ python -m venv <venv_name>
 ```
 - switch to virtual environment
 ```bash
-source evolveterm/bin/activate
+source .venv_evolveterm/bin/activate
+```
+## dependency & install
+
+- Python ≥ 3.10（建议 3.11）  
+- 依赖：`typer`, `rich`, `requests`, `pydantic`, `numpy`, `hnswlib`, `pytest`（dev）  
+- Windows PowerShell 示例命令：
+
+```bash
+pip install typer rich requests pydantic numpy hnswlib pytest
+pip install pycparser pcpp z3-solver
+```
+```bash
+pip install -e .[test]
 ```
 - install project
 ```bash
@@ -60,12 +42,12 @@ EvolveTerm 是一个面向 C 代码的终止性分析演示系统，通过 **LLM
 ## 核心能力一览
 
 - **循环提炼**：LLM 根据 `prompts/loop_extraction.txt` 提取 C 代码中的 `for/while` 结构，并输出 JSON 列表；若 LLM 不可用，则退回正则启发式。  
-- **相似案例检索**：使用 CodeBERT / StarCoder 等嵌入模型（通过 `config/embed_config.json` 配置）生成向量，基于 HNSW 索引 (`data/hnsw_index.bin`) 检索相似案例。  
+- **相似案例检索**：使用 CodeBERT / StarCoder / text-embeddings-v4 等嵌入模型（通过 `config/embed_config.json` 配置）生成向量，基于 HNSW 索引 (`data/hnsw_index.bin`) 检索相似案例。  
 - **LLM 预测**：结合候选案例与 `prompts/prediction.txt`，由 LLM 输出终止性标签、置信度与理由，失败时立即抛出异常。  
 - **RAG 增量更新**：人工复审的典型案例通过 `review` 命令写回 `data/knowledge_base.json`，累积 **10** 个新增案例即触发一次 HNSW 全量重建。  
 - **可追踪报告**：每次预测都会生成结构化报告 (`data/reports/report_*.json`)，便于审计与归档。
 
-## 🧱 目录结构
+## 目录结构
 
 ```
 config/                # LLM 与嵌入模型配置（可指向真实 API 或 mock）
@@ -76,19 +58,23 @@ tests/                 # 轻量单元测试（pytest）
 pyproject.toml         # 依赖与入口脚本（Typer CLI）
 ```
 
-## ⚙️ 环境与依赖
+- 数据流向
+```mermaid
+flowchart TD
+    A[CLI analyze/review<br>src/evolve_term/cli.py] -->|传入源码/标签| B[TerminationPipeline<br>pipeline.py]
+    B -->|可选翻译| C[CodeTranslator<br>translator.py<br>LLM(long-context)]
+    B --> D[LoopExtractor<br>loop_extractor.py<br>LLM + 正则兜底]
+    D --> E[EmbeddingClient<br>embeddings.py]
+    E --> F[HNSWIndexManager<br>rag_index.py]
+    F -->|case_id列表| G[KnowledgeBase<br>knowledge_base.py]
+    G -->|引用案例+相似度| H[PromptRepository<br>prompts_loader.py]
+    H --> I[LLMClient.complete<br>llm_client.py]
+    I -->|JSON 预测| J[报告与日志写入<br>pipeline.py → data/reports & data/logs]
+    B -->|review新增| G
+    G <--> F
 
-- Python ≥ 3.10（建议 3.11）  
-- 依赖：`typer`, `rich`, `requests`, `pydantic`, `numpy`, `hnswlib`, `pytest`（dev）  
-- Windows PowerShell 示例命令：
-
-```powershell
-pip install pycparser pcpp
-
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-pip install -e .[test]
 ```
+
 
 ## Config配置说明
 
@@ -119,9 +105,6 @@ pip install -e .[test]
 	"payload_template": {}
 }
 ```
-
-- 当 provider = `mock` 时，系统会使用内置的确定性 mock，方便离线演示。  
-- 当 provider ≠ `mock` 时，需保证 baseurl 可访问、API Key 可用；任一环节失败会以 `LLMUnavailableError` / `EmbeddingUnavailableError` 抛出。  
 - 根据真实 API 返回结构，确保响应体中含 `embedding`（数组）或 `choices[].text` / `output` 字段。
 
 ## Tag策略 模型路由Model Routing
@@ -133,7 +116,7 @@ OpenAI/LangChain/LangGraph 都有类似的 "Model Routing"
 本系统的Model Routing的依据是 "tag"
 
 
-## Tag策略 的具体tag选型
+### Tag策略 的具体tag选型
 
 ```json
 default
@@ -219,4 +202,4 @@ pytest
 
 - 接入真实 CodeBERT/StarCoder API，并引入批量嵌入流水线。  
 - 针对不同循环形态调整提示词，或引入 AST 解析增强。  
-- 增加 Web UI / VS Code 扩展，实现代码片段的即写即查。
+- [ ] 增加 Web UI / VS Code 扩展，实现代码片段的即写即查。

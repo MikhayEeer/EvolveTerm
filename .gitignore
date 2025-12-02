@@ -4,6 +4,7 @@
 # python virtual environment
 eveloveterm/
 evolveterm/
+.venv_*/
 # some LLM service api key
 *.key
 *_config.json
