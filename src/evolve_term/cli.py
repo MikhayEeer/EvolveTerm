@@ -80,6 +80,81 @@ def analyze(
 
 
 @app.command()
+def batch_analyze(
+    input_dir: Path = typer.Option(..., exists=True, file_okay=False, dir_okay=True, help="Directory containing source files"),
+    top_k: int = 5,
+    enable_translation: bool = typer.Option(False, "--enable-translation", "-t", help="Enable LLM-based translation"),
+    knowledge_base: Optional[Path] = typer.Option(None, "--kb", help="Path to a custom knowledge base JSON file"),
+    recursive: bool = typer.Option(False, "--recursive", "-r", help="Recursively search for files")
+) -> None:
+    """Batch analyze all C/C++ files in a directory."""
+    
+    from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TaskProgressColumn
+    
+    # Find all C/C++ files
+    extensions = {".c", ".cpp", ".h", ".hpp", ".cc", ".cxx"}
+    pattern = "**/*" if recursive else "*"
+    files = [
+        f for f in input_dir.glob(pattern) 
+        if f.is_file() and f.suffix.lower() in extensions
+    ]
+    
+    if not files:
+        console.print(f"[yellow]No C/C++ files found in {input_dir}[/yellow]")
+        return
+        
+    console.print(f"[bold]Found {len(files)} files to analyze.[/bold]")
+    
+    pipeline = TerminationPipeline(
+        enable_translation=enable_translation,
+        knowledge_base_path=str(knowledge_base) if knowledge_base else None
+    )
+    
+    results = []
+    
+    with Progress(
+        SpinnerColumn(),
+        TextColumn("[progress.description]{task.description}"),
+        BarColumn(),
+        TaskProgressColumn(),
+        console=console
+    ) as progress:
+        task = progress.add_task("Analyzing...", total=len(files))
+        
+        for file_path in files:
+            progress.update(task, description=f"Analyzing {file_path.name}...")
+            try:
+                code = file_path.read_text(encoding="utf-8")
+                result = pipeline.analyze(code, top_k=top_k)
+                results.append((file_path.name, result))
+            except Exception as e:
+                console.print(f"[red]Error analyzing {file_path.name}: {e}[/red]")
+            finally:
+                progress.advance(task)
+                
+    # Summary table
+    table = Table(title="Batch Analysis Summary")
+    table.add_column("File")
+    table.add_column("Label")
+    table.add_column("Verification")
+    table.add_column("Ranking Function")
+    
+    for filename, res in results:
+        rf = res.ranking_function if res.ranking_function else "-"
+        ver = res.verification_result if res.verification_result else "-"
+        
+        # Color code verification
+        if ver == "Verified":
+            ver = "[green]Verified[/green]"
+        elif ver == "Failed":
+            ver = "[red]Failed[/red]"
+            
+        table.add_row(filename, res.label, ver, rf)
+        
+    console.print(table)
+
+
+@app.command()
 def review(
     code_file: Path = typer.Option(..., exists=True, readable=True),
     label: str = typer.Option(..., help="terminating|non-terminating|unknown"),
