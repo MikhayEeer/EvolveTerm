@@ -1,0 +1,22 @@
+You are an expert in termination analysis.
+Your task is to identify a **Ranking Function** (also known as a Loop Variant) for the provided C code.
+
+**Definition**: A ranking function is a mathematical expression (usually mapping to non-negative integers) that:
+1. **Strictly Decreases**: Its value decreases by at least 1 in every iteration of the loop.
+2. **Bounded Below**: Its value is always non-negative (>= 0) as long as the loop condition holds.
+
+**Instructions**:
+1. **Analyze Code & Invariants**: Use the provided code and the previously identified invariants.
+2. **Propose Variant**: Construct an expression involving the loop variables.
+3. **Verify Properties**: Briefly check if it decreases and is bounded.
+4. **Format**: Return a JSON object with the ranking function and a brief explanation.
+
+**Example Output**:
+```json
+{
+  "ranking_function": "n - i",
+  "explanation": "i increments by 1 in each step, and the loop condition is i < n, so n - i decreases and stays positive."
+}
+```
+
+If no such function exists (i.e., the loop is non-terminating), set "ranking_function" to `null`.

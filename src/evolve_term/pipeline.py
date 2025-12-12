@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-import json
-import uuid
+import subprocess
+import tempfile
 from datetime import datetime
 from pathlib import Path
 from typing import List
@@ -95,13 +95,41 @@ class TerminationPipeline:
         for ref in references:
             ref.metadata["similarity"] = round(similarity_map.get(ref.case_id, 0.0), 3)
 
-        # Stage 4: LLM prediction
         # Filter references for prompt (only include high similarity cases)
         prompt_references = [
             ref for ref in references 
             if ref.metadata.get("similarity", 0.0) > 0.7
         ]
-        prediction, raw_prediction = self._predict_with_llm(code, loops, prompt_references)
+
+        # Stage 4: Neuro-symbolic Reasoning Pipeline
+        
+        # 4.1 Invariant Inference
+        invariants = self._infer_invariants(code, prompt_references)
+        
+        # 4.2 Ranking Function Inference
+        ranking_function, ranking_explanation = self._infer_ranking(code, invariants, prompt_references)
+        
+        # 4.3 Z3 Verification
+        verification_result = "Skipped"
+        if ranking_function:
+            verification_result = self._verify_with_z3(code, invariants, ranking_function)
+
+        # 4.4 Final Prediction (Synthesis)
+        # We synthesize the final label based on verification result or fallback to LLM prediction
+        if verification_result == "Verified":
+            prediction = {
+                "label": "terminating",
+                "reasoning": f"Verified ranking function: {ranking_function}. Explanation: {ranking_explanation}"
+            }
+            raw_prediction = "Verified by Z3"
+        else:
+            # Fallback to standard LLM prediction if verification failed or no ranking function found
+            # We include the intermediate results in the prompt context implicitly via 'loops' or we could add them
+            # For now, let's stick to the original prediction prompt but maybe we should update it to include invariants?
+            # To keep it simple and robust, we use the original prediction flow as fallback/synthesis
+            prediction, raw_prediction = self._predict_with_llm(code, loops, prompt_references)
+            if verification_result == "Failed":
+                prediction["reasoning"] += f" (Note: Proposed ranking function '{ranking_function}' failed Z3 verification)"
 
         # Build comprehensive report payload
         report_payload = {
@@ -120,6 +148,12 @@ class TerminationPipeline:
                 {"case_id": cid, "score": score} for cid, score in neighbors
             ],
             "references": [ref.__dict__ for ref in references],
+            "neuro_symbolic": {
+                "invariants": invariants,
+                "ranking_function": ranking_function,
+                "ranking_explanation": ranking_explanation,
+                "verification_result": verification_result
+            },
             "prediction_raw": raw_prediction,
             "prediction": prediction,
         }
@@ -134,7 +168,91 @@ class TerminationPipeline:
             loops=loops,
             references=references,
             report_path=report_path,
+            invariants=invariants,
+            ranking_function=ranking_function,
+            verification_result=verification_result
         )
+
+    def _infer_invariants(self, code: str, references: List[KnowledgeCase]) -> List[str]:
+        prompt = self.prompt_repo.render(
+            "invariant_inference",
+            code=code,
+            references=json.dumps([ref.__dict__ for ref in references], ensure_ascii=False, indent=2)
+        )
+        response = self.llm_client.complete(prompt)
+        try:
+            # Try to parse JSON list
+            # Clean up markdown code blocks if present
+            cleaned = response.strip()
+            if cleaned.startswith("```"):
+                cleaned = cleaned.split("\n", 1)[1]
+                if cleaned.endswith("```"):
+                    cleaned = cleaned.rsplit("\n", 1)[0]
+            return json.loads(cleaned)
+        except Exception:
+            return []
+
+    def _infer_ranking(self, code: str, invariants: List[str], references: List[KnowledgeCase]) -> tuple[str | None, str]:
+        prompt = self.prompt_repo.render(
+            "ranking_inference",
+            code=code,
+            invariants=json.dumps(invariants, ensure_ascii=False, indent=2),
+            references=json.dumps([ref.__dict__ for ref in references], ensure_ascii=False, indent=2)
+        )
+        response = self.llm_client.complete(prompt)
+        try:
+            cleaned = response.strip()
+            if cleaned.startswith("```"):
+                cleaned = cleaned.split("\n", 1)[1]
+                if cleaned.endswith("```"):
+                    cleaned = cleaned.rsplit("\n", 1)[0]
+            data = json.loads(cleaned)
+            return data.get("ranking_function"), data.get("explanation", "")
+        except Exception:
+            return None, ""
+
+    def _verify_with_z3(self, code: str, invariants: List[str], ranking_function: str) -> str:
+        prompt = self.prompt_repo.render(
+            "z3_verification",
+            code=code,
+            invariants="\n".join(invariants),
+            ranking_function=ranking_function
+        )
+        script_response = self.llm_client.complete(prompt)
+        
+        # Extract python code
+        script = script_response
+        if "```python" in script:
+            script = script.split("```python")[1].split("```")[0].strip()
+        elif "```" in script:
+            script = script.split("```")[1].split("```")[0].strip()
+            
+        # Run in temp file
+        try:
+            with tempfile.NamedTemporaryFile(mode='w', suffix='.py', delete=False, encoding='utf-8') as tmp:
+                tmp.write(script)
+                tmp_path = tmp.name
+            
+            result = subprocess.run(
+                ["python", tmp_path], 
+                capture_output=True, 
+                text=True, 
+                timeout=10  # 10 seconds timeout for verification
+            )
+            output = result.stdout.strip()
+            
+            # Cleanup
+            Path(tmp_path).unlink(missing_ok=True)
+            
+            if "Verified" in output:
+                return "Verified"
+            elif "Failed" in output:
+                return "Failed"
+            else:
+                return f"Error: {output[:100]}..." # Return partial output for debug
+                
+        except Exception as e:
+            return f"Execution Error: {str(e)}"
 
     def _predict_with_llm(self, code: str, loops: List[str], references: List[KnowledgeCase]) -> tuple[dict, str]:
         prompt = self.prompt_repo.render(

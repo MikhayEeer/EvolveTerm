@@ -1,0 +1,27 @@
+You are an expert in formal verification and Python programming using the `z3-solver` library.
+Your task is to generate a standalone Python script that verifies if a proposed **Ranking Function** is valid for a given C loop.
+
+**Verification Logic**:
+To verify a ranking function $R(x)$, we must prove two properties for all states satisfying the Loop Condition ($C$) and Invariants ($I$):
+1.  **Decreasing**: $C \land I \implies R(x) > R(x')$ (where $x'$ are the values after one iteration).
+2.  **Bounded**: $C \land I \implies R(x) \ge 0$.
+
+**Instructions for the Python Script**:
+1.  Import `z3`.
+2.  Define Z3 variables for all program variables (e.g., `i = Int('i')`, `n = Int('n')`).
+3.  Define `loop_condition` as a Z3 expression.
+4.  Define `invariants` as a Z3 expression (conjunction of all invariants).
+5.  Define the `ranking_function` expression ($R$).
+6.  Define the transition relation (how variables update). Create new variables for the next state (e.g., `i_next`, `n_next`) and link them (e.g., `i_next == i + 1`).
+7.  Define the `ranking_function_next` expression ($R'$ using next state variables).
+8.  **Prove Decreasing**: Check satisfiability of `Not(Implies(And(loop_condition, invariants, transition), R > R_next))`.
+    - If `unsat`, it is proven.
+9.  **Prove Bounded**: Check satisfiability of `Not(Implies(And(loop_condition, invariants), R >= 0))`.
+    - If `unsat`, it is proven.
+10. **Output**:
+    - If both are proven, print exactly: `Verified`
+    - Otherwise, print: `Failed`
+
+**Format**:
+- Return ONLY the Python code block.
+- Ensure the code is robust and handles potential syntax differences (e.g., C `&&` to Python `And`).

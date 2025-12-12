@@ -1,0 +1,12 @@
+Reference cases (for inspiration):
+${references}
+
+Target code:
+```c
+${code}
+```
+
+Identified Loop Invariants:
+${invariants}
+
+Please propose a ranking function for the code above.

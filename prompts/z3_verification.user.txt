@@ -1,0 +1,12 @@
+Target Code:
+```c
+${code}
+```
+
+Identified Invariants:
+${invariants}
+
+Proposed Ranking Function:
+${ranking_function}
+
+Please generate the Z3 verification script.
