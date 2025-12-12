@@ -57,10 +57,25 @@ class APILLMClient(LLMClient):
             raise LLMUnavailableError(f"LLM provider error: {exc}") from exc
 
         # Debug print - handle dict prompt
-        debug_prompt = prompt if isinstance(prompt, str) else f"System: {prompt.get('system', '')[:100]}...\nUser: {prompt.get('user', '')[:100]}..."
-        print(f"\n[Debug] LLM prompt: {debug_prompt}")
-        print(f"[Debug] LLM response: {response}\n")
+        def truncate(text: str, limit: int = 200) -> str:
+            if len(text) <= limit:
+                return text
+            head = limit // 2
+            tail = limit // 2
+            return f"{text[:head]}\n...[skipped {len(text)-limit} chars]...\n{text[-tail:]}"
 
+        print("\n" + "="*60)
+        print("[Debug] LLM Request")
+        if isinstance(prompt, str):
+            print(f"Prompt:\n{truncate(prompt)}")
+        else:
+            if prompt.get("system"):
+                print(f"System:\n{truncate(prompt['system'])}")
+            if prompt.get("user"):
+                print(f"User:\n{truncate(prompt['user'])}")
+        
+        print("-" * 30)
+        
         if not response.choices:
             raise LLMUnavailableError("LLM provider returned no choices")
         message = response.choices[0].message
@@ -71,6 +86,10 @@ class APILLMClient(LLMClient):
             content = message.get("content")
         if isinstance(content, list):
             content = "".join(part.get("text", "") for part in content if isinstance(part, dict))
+            
+        print(f"[Debug] LLM Response:\n{truncate(content or '')}")
+        print("="*60 + "\n")
+        
         return content or ""
 
 
