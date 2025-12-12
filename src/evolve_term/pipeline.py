@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import List
 import uuid
 import json
+import re
 import numpy as np
 
 from .embeddings import build_embedding_client
@@ -211,16 +212,40 @@ class TerminationPipeline:
             references=json.dumps([ref.__dict__ for ref in references], ensure_ascii=False, indent=2)
         )
         response = self.llm_client.complete(prompt)
-        try:
-            cleaned = response.strip()
-            if cleaned.startswith("```"):
-                cleaned = cleaned.split("\n", 1)[1]
-                if cleaned.endswith("```"):
-                    cleaned = cleaned.rsplit("\n", 1)[0]
-            data = json.loads(cleaned)
-            return data.get("ranking_function"), data.get("explanation", "")
-        except Exception:
-            return None, ""
+        # Be robust to code fences or extra prose: try several extraction strategies.
+        candidates: list[str] = []
+        # 1) Extract fenced code blocks marked as ```json ... ```
+        for match in re.finditer(r"```(?:json)?\n(.*?)```", response, flags=re.DOTALL):
+            block = match.group(1).strip()
+            if block:
+                candidates.append(block)
+        # 2) Full response stripped
+        candidates.append(response.strip())
+        # 3) First braced segment
+        start = response.find("{")
+        end = response.rfind("}")
+        if start != -1 and end != -1 and end > start:
+            candidates.append(response[start:end + 1])
+
+        seen: set[str] = set()
+        for cand in candidates:
+            if cand in seen:
+                continue
+            seen.add(cand)
+            try:
+                data = json.loads(cand)
+                if isinstance(data, dict):
+                    ranking = data.get("ranking_function")
+                    explanation = data.get("explanation", "")
+                    # Enforce expected types
+                    if ranking is not None and not isinstance(ranking, str):
+                        ranking = None
+                    if not isinstance(explanation, str):
+                        explanation = ""
+                    return ranking, explanation
+            except Exception:
+                continue
+        return None, ""
 
     def _verify_with_z3(self, code: str, invariants: List[str], ranking_function: str) -> str:
         prompt = self.prompt_repo.render(

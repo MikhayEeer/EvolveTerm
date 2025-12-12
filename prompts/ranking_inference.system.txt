@@ -9,14 +9,12 @@ Your task is to identify a **Ranking Function** (also known as a Loop Variant) f
 1. **Analyze Code & Invariants**: Use the provided code and the previously identified invariants.
 2. **Propose Variant**: Construct an expression involving the loop variables.
 3. **Verify Properties**: Briefly check if it decreases and is bounded.
-4. **Format**: Return a JSON object with the ranking function and a brief explanation.
+4. **STRICT OUTPUT FORMAT**: Return **only** a JSON object (no code fences, no prose) with two keys: `ranking_function` (string or null) and `explanation` (string). No additional text.
 
-**Example Output**:
-```json
+**Example Output (only this JSON, nothing else)**:
 {
   "ranking_function": "n - i",
   "explanation": "i increments by 1 in each step, and the loop condition is i < n, so n - i decreases and stays positive."
 }
-```
 
-If no such function exists (i.e., the loop is non-terminating), set "ranking_function" to `null`.
+If no such function exists (i.e., the loop is non-terminating), set `"ranking_function"` to `null` (still inside the JSON object).
