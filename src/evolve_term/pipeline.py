@@ -51,6 +51,8 @@ class TerminationPipeline:
         embedding info, RAG neighbors, references (with similarity), raw LLM prediction and
         the parsed prediction. A plain-text log will also be written for human inspection.
         """
+        start_time = datetime.now()
+        start_llm_calls = getattr(self.llm_client, "call_count", 0)
         run_id = uuid.uuid4().hex
 
         # Stage 0: Translation (if enabled)
@@ -163,6 +165,11 @@ class TerminationPipeline:
         # Also write a human-readable log
         self._persist_log(report_payload, report_path.stem)
 
+        end_time = datetime.now()
+        duration = (end_time - start_time).total_seconds()
+        end_llm_calls = getattr(self.llm_client, "call_count", 0)
+        llm_calls = end_llm_calls - start_llm_calls
+
         return PredictionResult(
             label=prediction["label"],
             reasoning=prediction.get("reasoning", ""),
@@ -171,7 +178,10 @@ class TerminationPipeline:
             report_path=report_path,
             invariants=invariants,
             ranking_function=ranking_function,
-            verification_result=verification_result
+            verification_result=verification_result,
+            run_id=run_id,
+            llm_calls=llm_calls,
+            duration_seconds=duration
         )
 
     def _infer_invariants(self, code: str, references: List[KnowledgeCase]) -> List[str]:
