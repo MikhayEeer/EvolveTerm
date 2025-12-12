@@ -33,11 +33,13 @@ class APILLMClient(LLMClient):
         self.api_key = config.get("api_key")
         self.model = config.get("model")
         self.payload_template = config.get("payload_template", {})
+        self.call_count = 0
         if not self.base_url or not self.api_key:
             raise LLMUnavailableError("LLM base_url or API key missing")
         self.client = OpenAI(api_key=self.api_key, base_url=self.base_url)
 
     def complete(self, prompt: str | dict[str, str]) -> str:
+        self.call_count += 1
         if isinstance(prompt, str):
             messages = [{"role": "user", "content": prompt}]
         else:

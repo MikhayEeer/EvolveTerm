@@ -89,6 +89,8 @@ def batch_analyze(
 ) -> None:
     """Batch analyze all C/C++ files in a directory."""
     
+    import csv
+    from datetime import datetime
     from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TaskProgressColumn
     
     # Find all C/C++ files
@@ -110,27 +112,64 @@ def batch_analyze(
         knowledge_base_path=str(knowledge_base) if knowledge_base else None
     )
     
+    # Prepare CSV
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    csv_path = input_dir / f"batch_report_{timestamp}.csv"
+    csv_headers = [
+        "Filename", "Relative Path", "Run ID", "Date Time", "Duration (s)", 
+        "LLM Calls", "Label", "RAG Similarity", "Invariants", 
+        "Ranking Function", "Z3 Result"
+    ]
+    
+    console.print(f"Writing results to: [blue]{csv_path}[/blue]")
+    
     results = []
     
-    with Progress(
-        SpinnerColumn(),
-        TextColumn("[progress.description]{task.description}"),
-        BarColumn(),
-        TaskProgressColumn(),
-        console=console
-    ) as progress:
-        task = progress.add_task("Analyzing...", total=len(files))
-        
-        for file_path in files:
-            progress.update(task, description=f"Analyzing {file_path.name}...")
-            try:
-                code = file_path.read_text(encoding="utf-8")
-                result = pipeline.analyze(code, top_k=top_k)
-                results.append((file_path.name, result))
-            except Exception as e:
-                console.print(f"[red]Error analyzing {file_path.name}: {e}[/red]")
-            finally:
-                progress.advance(task)
+    with open(csv_path, "w", newline="", encoding="utf-8") as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerow(csv_headers)
+    
+        with Progress(
+            SpinnerColumn(),
+            TextColumn("[progress.description]{task.description}"),
+            BarColumn(),
+            TaskProgressColumn(),
+            console=console
+        ) as progress:
+            task = progress.add_task("Analyzing...", total=len(files))
+            
+            for file_path in files:
+                progress.update(task, description=f"Analyzing {file_path.name}...")
+                try:
+                    code = file_path.read_text(encoding="utf-8")
+                    result = pipeline.analyze(code, top_k=top_k)
+                    results.append((file_path.name, result))
+                    
+                    # Write to CSV
+                    rel_path = file_path.relative_to(input_dir)
+                    rag_sim = result.references[0].metadata.get("similarity", 0.0) if result.references else 0.0
+                    invariants_str = "; ".join(result.invariants) if result.invariants else ""
+                    
+                    row = [
+                        file_path.name,
+                        str(rel_path),
+                        result.run_id,
+                        datetime.now().isoformat(),
+                        f"{result.duration_seconds:.2f}",
+                        result.llm_calls,
+                        result.label,
+                        rag_sim,
+                        invariants_str,
+                        result.ranking_function or "",
+                        result.verification_result or ""
+                    ]
+                    writer.writerow(row)
+                    csvfile.flush()
+                    
+                except Exception as e:
+                    console.print(f"[red]Error analyzing {file_path.name}: {e}[/red]")
+                finally:
+                    progress.advance(task)
                 
     # Summary table
     table = Table(title="Batch Analysis Summary")
@@ -152,6 +191,7 @@ def batch_analyze(
         table.add_row(filename, res.label, ver, rf)
         
     console.print(table)
+    console.print(f"\n[bold green]Batch analysis complete. Results saved to {csv_path}[/bold green]")
 
 
 @app.command()

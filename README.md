@@ -34,6 +34,10 @@ pip install -e .
 ```bash
 python -m evolve_term.embeddings --help
 ```
+- Batch analyze
+```bash
+python -m src.evolve_term.cli batch-analyze data/SVC25_cpython -m src.evolve_term.cli batch-analyze data/SVC25_c
+```
 
 # EvolveTerm
 

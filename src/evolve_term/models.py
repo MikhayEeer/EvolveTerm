@@ -35,6 +35,10 @@ class PredictionResult:
     invariants: List[str] = field(default_factory=list)
     ranking_function: str | None = None
     verification_result: str | None = None
+    # Metadata
+    run_id: str | None = None
+    llm_calls: int = 0
+    duration_seconds: float = 0.0
 
 
 @dataclass
