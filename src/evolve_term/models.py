@@ -31,6 +31,10 @@ class PredictionResult:
     loops: List[str]
     references: List[KnowledgeCase]
     report_path: Path | None = None
+    # Neuro-symbolic artifacts
+    invariants: List[str] = field(default_factory=list)
+    ranking_function: str | None = None
+    verification_result: str | None = None
 
 
 @dataclass
