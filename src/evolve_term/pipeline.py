@@ -7,7 +7,7 @@ import tempfile
 from datetime import datetime
 from pathlib import Path
 from typing import List
-
+import uuid
 import numpy as np
 
 from .embeddings import build_embedding_client
