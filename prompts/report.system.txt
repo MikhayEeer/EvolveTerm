@@ -1,9 +1,6 @@
 You are a technical reporter.
 Generate a concise markdown summary of the termination analysis results based on the provided JSON payload.
 
-Input JSON:
-${payload}
-
 Instructions:
 1. **Header**: Start with the predicted label (Terminating/Non-Terminating/Unknown) as a header.
 2. **Reasoning**: Summarize the core reasoning. If a ranking function was identified, display it clearly.
