@@ -19,7 +19,7 @@ class LLMClient(ABC):
     """Base interface for text generation."""
 
     @abstractmethod
-    def complete(self, prompt: str) -> str:
+    def complete(self, prompt: str | dict[str, str]) -> str:
         raise NotImplementedError
 
 
@@ -37,8 +37,16 @@ class APILLMClient(LLMClient):
             raise LLMUnavailableError("LLM base_url or API key missing")
         self.client = OpenAI(api_key=self.api_key, base_url=self.base_url)
 
-    def complete(self, prompt: str) -> str:
-        messages = [{"role": "user", "content": prompt}]
+    def complete(self, prompt: str | dict[str, str]) -> str:
+        if isinstance(prompt, str):
+            messages = [{"role": "user", "content": prompt}]
+        else:
+            messages = []
+            if prompt.get("system"):
+                messages.append({"role": "system", "content": prompt["system"]})
+            if prompt.get("user"):
+                messages.append({"role": "user", "content": prompt["user"]})
+                
         try:
             response = self.client.chat.completions.create(
                 model=self.model,
@@ -48,7 +56,9 @@ class APILLMClient(LLMClient):
         except Exception as exc:  # pragma: no cover - network path
             raise LLMUnavailableError(f"LLM provider error: {exc}") from exc
 
-        print(f"\n[Debug] LLM prompt: {prompt[:200]}")
+        # Debug print - handle dict prompt
+        debug_prompt = prompt if isinstance(prompt, str) else f"System: {prompt.get('system', '')[:100]}...\nUser: {prompt.get('user', '')[:100]}..."
+        print(f"\n[Debug] LLM prompt: {debug_prompt}")
         print(f"[Debug] LLM response: {response}\n")
 
         if not response.choices:
