@@ -307,6 +307,21 @@ class TerminationPipeline:
         lines.append(f"Reasoning: {pred.get('reasoning', '')}")
         lines.append("")
 
+        # Neuro-symbolic Info
+        ns = report.get("neuro_symbolic", {})
+        if ns:
+            lines.append("Neuro-symbolic Analysis")
+            lines.append("-----------------------")
+            lines.append(f"Verification Result: {ns.get('verification_result', 'N/A')}")
+            if ns.get("ranking_function"):
+                lines.append(f"Ranking Function: {ns.get('ranking_function')}")
+                lines.append(f"Explanation: {ns.get('ranking_explanation', '')}")
+            if ns.get("invariants"):
+                lines.append("Invariants:")
+                for inv in ns.get("invariants"):
+                    lines.append(f"  - {inv}")
+            lines.append("")
+
         # References
         lines.append("Referenced Cases")
         lines.append("----------------")

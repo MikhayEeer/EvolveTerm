@@ -53,6 +53,16 @@ def analyze(
     console.rule("Prediction")
     console.print(f"Label: [bold]{result.label}[/bold]")
     console.print(f"Reasoning: {result.reasoning}")
+    
+    if result.verification_result:
+        console.print(f"Verification: [bold]{result.verification_result}[/bold]")
+    if result.ranking_function:
+        console.print(f"Ranking Function: [italic]{result.ranking_function}[/italic]")
+    if result.invariants:
+        console.print("Invariants:")
+        for inv in result.invariants:
+            console.print(f"  - {inv}")
+
     console.print(f"Report saved at: {result.report_path}")
 
     table = Table(title="Referenced cases")
