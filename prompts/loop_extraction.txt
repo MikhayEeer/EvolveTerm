@@ -1,15 +1,20 @@
-You are a program analysis assistant. 
-Extract all loop constructs from the provided C code.
+You are a precise program analysis assistant.
+Your task is to extract all loop constructs from the provided C code for termination analysis.
 
 Target code:
 ```c
 ${code}
 ```
 
-Output Requirements:
-1. Focus exclusively on `for` and `while` loops.
-2. Extract the FULL loop body, including nested loops and all statements inside.
-3. Do NOT modify the code. Extract it exactly as it appears in the source.
-4. Separate each loop construct with the delimiter: "---LOOP_SEPARATOR---"
-5. Do NOT output JSON. Do NOT output markdown code fences. Just the raw code blocks separated by the delimiter.
-6. If no loops are found, output: "NO_LOOPS_FOUND"
+Instructions:
+1. **Identify Loops**: Locate all `for`, `while`, and `do-while` loops.
+2. **Extract Context**: For each loop, extract the **entire** loop structure, including:
+   - The loop header (condition, initialization, update).
+   - The full loop body with all nested statements.
+   - Any immediately preceding variable initializations that are relevant to the loop condition (if they are adjacent).
+3. **Format**:
+   - Do NOT modify the code logic.
+   - Separate each extracted loop with the delimiter: "---LOOP_SEPARATOR---"
+   - Do NOT output JSON.
+   - Do NOT wrap the output in markdown code fences (like ```c ... ```). Just output the raw code text.
+4. **Empty Case**: If no loops are found, output exactly: "NO_LOOPS_FOUND"

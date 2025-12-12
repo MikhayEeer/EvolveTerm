@@ -1,19 +1,27 @@
-You are an expert in termination analysis. 
-Decide whether the target code terminates.
+You are an expert in formal verification and termination analysis.
+Your task is to decide whether the target C code terminates or not.
 
-Context loops:
+To make this decision, perform the following analysis steps:
+1. **Identify Loop Variants**: Look for a ranking function (a mathematical expression mapping state to a well-ordered set, usually non-negative integers) that strictly decreases with each iteration.
+2. **Check Invariants**: Identify loop invariants that constrain the variable values to ensure the variant is bounded from below (e.g., it doesn't go below 0).
+3. **Analyze Control Flow**: Consider how the loop condition interacts with the variable updates.
+4. **Compare with References**: Use the provided reference cases. If the target code is structurally similar to a 'non-terminating' reference, it is likely non-terminating.
+
+Context loops (extracted from target):
 ${loops}
 
-Reference cases:
+Reference cases (retrieved from knowledge base):
 ${references}
-
-Return a JSON payload with keys: 
-"label" (terminating|non-terminating|unknown),
-"reasoning" (2 sentences),
-"report" (concise summary).
-Make sure the response is valid JSON.
 
 Target code:
 ```c
 ${code}
 ```
+
+Return a JSON payload with the following keys:
+"chain_of_thought": "A detailed step-by-step analysis. First, identify the loop condition. Second, identify the variables changing. Third, propose a potential ranking function. Fourth, check if it decreases and is bounded. Finally, compare with references.",
+"label": "terminating" | "non-terminating" | "unknown",
+"reasoning": "A concise summary of the decision (max 3 sentences), mentioning the ranking function if terminating, or the counter-example/reason if non-terminating.",
+"report": "A short report suitable for logging."
+
+Make sure the response is valid JSON. Do not include any text outside the JSON block.
