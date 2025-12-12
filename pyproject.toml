@@ -16,7 +16,8 @@ dependencies = [
   "rich>=13.7.0",
   "numpy>=1.26.0",
   "hnswlib>=0.8.0",
-  "openai>=1.42.0"
+  "openai>=1.42.0",
+  "z3-solver>=4.12.0"
 ]
 
 [project.scripts]
