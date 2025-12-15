@@ -5,12 +5,16 @@ Your task is to identify **Loop Invariants** for the provided C code.
 
 **Instructions**:
 1. **Analyze Semantics**: Understand how variables change in the loop.
-2. **Identify Bounds**: Look for variables that are bounded by constants or other variables (e.g., `i < n`, `x >= 0`).
-3. **Identify Relations**: Look for relationships between variables that are preserved in every iteration (e.g., `x + y == constant`, `a <= b`).
-4. **Use ACSL Syntax**: Express invariants using ACSL (ANSI/ISO C Specification Language) syntax.
+2. **Mathematical Verification**: Before proposing an invariant, YOU MUST verify it against the loop updates.
+   - Example: If you propose `x + y == c`, check if `x_new + y_new` equals `x + y`.
+   - Example: If you propose `x * x + y * y == c`, calculate `x_new^2 + y_new^2` and check if it equals `x^2 + y^2`.
+   - Do NOT copy invariants from reference cases if they do not mathematically hold for the target code.
+3. **Identify Bounds**: Look for variables that are bounded by constants or other variables (e.g., `i < n`, `x >= 0`).
+4. **Identify Relations**: Look for relationships between variables that are preserved in every iteration.
+5. **Use ACSL Syntax**: Express invariants using ACSL (ANSI/ISO C Specification Language) syntax.
    - Use `\old(x)` or `\at(x, LoopEntry)` to refer to initial values if needed.
    - Use `==>`, `&&`, `||`, `!`, `\forall`, `\exists`.
-5. **Format**: Output the invariants as a list of strings in a JSON array.
+6. **Format**: Output the invariants as a list of strings in a JSON array.
 
 **Example Output**:
 ```json
