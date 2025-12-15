@@ -11,6 +11,7 @@ import uuid
 import json
 import re
 import numpy as np
+import sys
 
 from .embeddings import build_embedding_client
 from .exceptions import EmbeddingUnavailableError, IndexNotReadyError, LLMUnavailableError
@@ -27,6 +28,79 @@ REPORTS_DIR = DATA_DIR / "reports"
 REPORTS_DIR.mkdir(parents=True, exist_ok=True)
 LOGS_DIR = DATA_DIR / "logs"
 LOGS_DIR.mkdir(parents=True, exist_ok=True)
+
+def _strip_markdown_fences(text: str) -> str:
+    cleaned = text.strip()
+    if not cleaned.startswith("```"):
+        return cleaned
+    # Take first fenced block; tolerate ```json / ```python / ``` etc.
+    parts = cleaned.split("\n", 1)
+    if len(parts) == 1:
+        return cleaned
+    body = parts[1]
+    if body.endswith("```"):
+        body = body.rsplit("\n", 1)[0]
+    else:
+        # If there is a closing fence later, cut at the first one.
+        fence_index = body.find("\n```")
+        if fence_index != -1:
+            body = body[:fence_index]
+    return body.strip()
+
+
+def _extract_bracketed_payload(text: str, opener: str, closer: str) -> str | None:
+    start = text.find(opener)
+    if start == -1:
+        return None
+    end = text.rfind(closer)
+    if end == -1 or end <= start:
+        return None
+    return text[start : end + 1]
+
+
+def _json_loads_with_repairs(text: str) -> object:
+    # Most common failure we saw: invalid JSON escape like \' inside strings.
+    try:
+        return json.loads(text)
+    except Exception:
+        repaired = text.replace("\\'", "'")
+        return json.loads(repaired)
+
+
+def _parse_llm_json_object(response_text: str) -> dict | None:
+    cleaned = _strip_markdown_fences(response_text)
+    candidates = [
+        cleaned,
+        _extract_bracketed_payload(cleaned, "{", "}"),
+    ]
+    for candidate in candidates:
+        if not candidate:
+            continue
+        try:
+            parsed = _json_loads_with_repairs(candidate)
+        except Exception:
+            continue
+        if isinstance(parsed, dict):
+            return parsed
+    return None
+
+
+def _parse_llm_json_array(response_text: str) -> list | None:
+    cleaned = _strip_markdown_fences(response_text)
+    candidates = [
+        cleaned,
+        _extract_bracketed_payload(cleaned, "[", "]"),
+    ]
+    for candidate in candidates:
+        if not candidate:
+            continue
+        try:
+            parsed = _json_loads_with_repairs(candidate)
+        except Exception:
+            continue
+        if isinstance(parsed, list):
+            return parsed
+    return None
 
 
 class TerminationPipeline:
@@ -73,6 +147,7 @@ class TerminationPipeline:
             "method": getattr(self.loop_extractor, "last_method", None),
             "llm_response": getattr(self.loop_extractor, "last_response", None),
         }
+        ##TODO: 是否使用loop代替code，分析invar和RF会更简单，当前代码是否有保证loop属于子集
 
         # Stage 2: embedding
         embedding_vector = self.embedding_client.embed("\n".join(loops))
@@ -113,12 +188,14 @@ class TerminationPipeline:
         # 4.2 Ranking Function Inference
         ranking_function, ranking_explanation = self._infer_ranking(code, invariants, prompt_references)
         ## issue: 1215fix: ranking function is none
-        ##TODO
+        ##FixedTODO
 
         # 4.3 Z3 Verification
         verification_result = "Skipped"
         if ranking_function:
             verification_result = self._verify_with_z3(code, invariants, ranking_function)
+            ## issue: 1215fix: get failed in z3 solver function
+            ##TODO
 
         # 4.4 Final Prediction (Synthesis)
         # We synthesize the final label based on verification result or fallback to LLM prediction
@@ -194,17 +271,10 @@ class TerminationPipeline:
             references=json.dumps([ref.__dict__ for ref in references], ensure_ascii=False, indent=2)
         )
         response = self.llm_client.complete(prompt)
-        try:
-            # Try to parse JSON list
-            # Clean up markdown code blocks if present
-            cleaned = response.strip()
-            if cleaned.startswith("```"):
-                cleaned = cleaned.split("\n", 1)[1]
-                if cleaned.endswith("```"):
-                    cleaned = cleaned.rsplit("\n", 1)[0]
-            return json.loads(cleaned)
-        except Exception:
+        invariants = _parse_llm_json_array(response)
+        if not invariants:
             return []
+        return [str(item) for item in invariants if str(item).strip()]
 
     def _infer_ranking(self, code: str, invariants: List[str], references: List[KnowledgeCase]) -> tuple[str | None, str]:
         prompt = self.prompt_repo.render(
@@ -213,41 +283,20 @@ class TerminationPipeline:
             invariants=json.dumps(invariants, ensure_ascii=False, indent=2),
             references=json.dumps([ref.__dict__ for ref in references], ensure_ascii=False, indent=2)
         )
+        # If the backend supports it, request a strict JSON object response.
+        prompt["response_format"] = {"type": "json_object"}
         response = self.llm_client.complete(prompt)
-        # Be robust to code fences or extra prose: try several extraction strategies.
-        candidates: list[str] = []
-        # 1) Extract fenced code blocks marked as ```json ... ```
-        for match in re.finditer(r"```(?:json)?\n(.*?)```", response, flags=re.DOTALL):
-            block = match.group(1).strip()
-            if block:
-                candidates.append(block)
-        # 2) Full response stripped
-        candidates.append(response.strip())
-        # 3) First braced segment
-        start = response.find("{")
-        end = response.rfind("}")
-        if start != -1 and end != -1 and end > start:
-            candidates.append(response[start:end + 1])
-
-        seen: set[str] = set()
-        for cand in candidates:
-            if cand in seen:
-                continue
-            seen.add(cand)
-            try:
-                data = json.loads(cand)
-                if isinstance(data, dict):
-                    ranking = data.get("ranking_function")
-                    explanation = data.get("explanation", "")
-                    # Enforce expected types
-                    if ranking is not None and not isinstance(ranking, str):
-                        ranking = None
-                    if not isinstance(explanation, str):
-                        explanation = ""
-                    return ranking, explanation
-            except Exception:
-                continue
-        return None, ""
+        self.last_ranking_response = response
+        data = _parse_llm_json_object(response)
+        if not isinstance(data, dict):
+            return None, ""
+        ranking = data.get("ranking_function")
+        explanation = data.get("explanation", "")
+        if ranking is not None and not isinstance(ranking, str):
+            ranking = None
+        if not isinstance(explanation, str):
+            explanation = ""
+        return ranking, explanation
 
     def _verify_with_z3(self, code: str, invariants: List[str], ranking_function: str) -> str:
         prompt = self.prompt_repo.render(
@@ -272,22 +321,27 @@ class TerminationPipeline:
                 tmp_path = tmp.name
             
             result = subprocess.run(
-                ["python", tmp_path], 
+                [sys.executable, tmp_path],
                 capture_output=True, 
                 text=True, 
                 timeout=10  # 10 seconds timeout for verification
             )
-            output = result.stdout.strip()
+            output = (result.stdout or "").strip()
+            error_output = (result.stderr or "").strip()
             
             # Cleanup
             Path(tmp_path).unlink(missing_ok=True)
             
-            if "Verified" in output:
+            if "Verified" in output or "Verified" in error_output:
                 return "Verified"
-            elif "Failed" in output:
+            elif "Failed" in output or "Failed" in error_output:
                 return "Failed"
             else:
-                return f"Error: {output[:100]}..." # Return partial output for debug
+                msg = error_output or output
+                if result.returncode != 0 and not msg:
+                    msg = f"Z3 script exited with code {result.returncode}"
+                msg = msg or "Unknown verification output"
+                return f"Error: {msg[:200]}..."  # Return partial output for debug
                 
         except Exception as e:
             return f"Execution Error: {str(e)}"
@@ -299,11 +353,12 @@ class TerminationPipeline:
             loops=json.dumps(loops, ensure_ascii=False, indent=2),
             references=json.dumps([ref.__dict__ for ref in references], ensure_ascii=False, indent=2),
         )
+        # If the backend supports it, request a strict JSON object response.
+        prompt["response_format"] = {"type": "json_object"}
         raw = self.llm_client.complete(prompt)
-        try:
-            parsed = json.loads(raw)
-        except json.JSONDecodeError as exc:
-            raise LLMUnavailableError("LLM returned non-JSON response") from exc
+        parsed = _parse_llm_json_object(raw)
+        if not isinstance(parsed, dict):
+            raise LLMUnavailableError("LLM returned non-JSON response")
         return parsed, raw
 
     def _persist_report(self, report: dict) -> Path:
