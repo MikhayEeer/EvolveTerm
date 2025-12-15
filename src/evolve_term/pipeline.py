@@ -197,6 +197,7 @@ class TerminationPipeline:
         ##FixedTODO
 
         # 4.3 Z3 Verification
+        print(f"[Debug] Ready to Z3 verify\nInvar:{invariants}\nRF:{ranking_function}")
         verification_result = "Skipped"
         if ranking_function:
             verification_result = self._verify_with_z3(reasoning_context, invariants, ranking_function)

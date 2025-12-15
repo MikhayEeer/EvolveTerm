@@ -42,6 +42,24 @@ evolveterm analyze --code-file data/aeval/c_bench_term/4NestedWith2Variables_fal
 python -m src.evolve_term.cli batch-analyze data/SVC25_cpython -m src.evolve_term.cli batch-analyze data/SVC25_c --no-rag-reasoning
 ```
 
+- loopy dataset `benchmark23_conjunctive.c`
+	Bench Invar `0 <= i <= 100, j==2*i`
+```bash
+evolveterm analyze --code-file ../TerminationDatabase/Datasets/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-zilu/benchmark23_conjunctive.c --no-rag-reasoning
+```
+get result
+```bash
+Label: terminating
+Reasoning: Verified ranking function: 100 - i. Explanation: i increases by 1 each iteration and is bounded 
+above by 100, so 100 - i is non-negative and strictly decreases.
+Verification: Verified
+Ranking Function: 100 - i
+Invariants:
+  - j - 2*i == \old(j) - 2*\old(i)
+  - i >= \old(i)
+  - j >= \old(j)
+```
+
 # EvolveTerm
 
 EvolveTerm 是一个面向 C 代码的终止性分析演示系统，通过 **LLM + RAG** 组合流程来判断目标程序是否会在有限步骤内结束。系统聚焦循环结构，不考虑数组、指针与并发等复杂语义，便于快速验证终止性思路与工作流。

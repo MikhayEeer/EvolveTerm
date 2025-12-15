@@ -72,6 +72,7 @@ class APILLMClient(LLMClient):
             tail = limit // 2
             return f"{text[:head]}\n...[skipped {len(text)-limit} chars]...\n{text[-tail:]}"
 
+        '''
         print("\n" + "="*60)
         print("[Debug] LLM Request")
         if isinstance(prompt, str):
@@ -83,7 +84,7 @@ class APILLMClient(LLMClient):
                 print(f"User:\n{truncate(prompt['user'])}")
         
         print("[Debug] Info End"+"-" * 30)
-        
+        '''
         if not response.choices:
             raise LLMUnavailableError("LLM provider returned no choices")
         message = response.choices[0].message
@@ -95,8 +96,8 @@ class APILLMClient(LLMClient):
         if isinstance(content, list):
             content = "".join(part.get("text", "") for part in content if isinstance(part, dict))
             
-        print(f"[Debug] LLM Response:\n{truncate(content or '')}")
-        print("="*60 + "\n")
+        #print(f"[Debug] LLM Response:\n{truncate(content or '')}")
+        #print("="*60 + "\n")
         
         return content or ""
 
