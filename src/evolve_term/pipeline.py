@@ -119,7 +119,7 @@ class TerminationPipeline:
         self.translator = CodeTranslator(config_name=llm_config) if enable_translation else None
 
     # Core flow ------------------------------------------------------------
-    def analyze(self, code: str, top_k: int = 5, auto_build_index: bool = True) -> PredictionResult:
+    def analyze(self, code: str, top_k: int = 5, auto_build_index: bool = True, use_rag_in_reasoning: bool = True) -> PredictionResult:
         """Run full analysis and produce a report+log capturing each stage.
 
         The report JSON will include: input code, loop extraction (loops + method + llm_response),
@@ -178,6 +178,9 @@ class TerminationPipeline:
             ref for ref in references 
             if ref.metadata.get("similarity", 0.0) > 0.7
         ]
+        
+        # Apply user preference for RAG in reasoning
+        reasoning_references = prompt_references if use_rag_in_reasoning else []
 
         # Stage 4: Neuro-symbolic Reasoning Pipeline
         
@@ -186,10 +189,10 @@ class TerminationPipeline:
         reasoning_context = "\n".join(loops) if loops else code
         
         # 4.1 Invariant Inference
-        invariants = self._infer_invariants(reasoning_context, prompt_references)
+        invariants = self._infer_invariants(reasoning_context, reasoning_references)
         
         # 4.2 Ranking Function Inference
-        ranking_function, ranking_explanation = self._infer_ranking(reasoning_context, invariants, prompt_references)
+        ranking_function, ranking_explanation = self._infer_ranking(reasoning_context, invariants, reasoning_references)
         ## issue: 1215fix: ranking function is none
         ##FixedTODO
 
@@ -213,8 +216,10 @@ class TerminationPipeline:
             # We include the intermediate results in the prompt context implicitly via 'loops' or we could add them
             # For now, let's stick to the original prediction prompt but maybe we should update it to include invariants?
             # To keep it simple and robust, we use the original prediction flow as fallback/synthesis
-            prediction, raw_prediction = self._predict_with_llm(code, loops, prompt_references)
-            if verification_result == "Failed":
+            prediction, raw_prediction = self._predict_with_llm(code, loops, prompt_references, invariants, ranking_function)
+            if verification_result.startswith("Failed"):
+                prediction["reasoning"] += f" (Note: Proposed ranking function '{ranking_function}' failed Z3 verification: {verification_result})"
+            elif verification_result == "Failed":
                 prediction["reasoning"] += f" (Note: Proposed ranking function '{ranking_function}' failed Z3 verification)"
 
         # Build comprehensive report payload
@@ -356,12 +361,14 @@ class TerminationPipeline:
         except Exception as e:
             return f"Execution Error: {str(e)}"
 
-    def _predict_with_llm(self, code: str, loops: List[str], references: List[KnowledgeCase]) -> tuple[dict, str]:
+    def _predict_with_llm(self, code: str, loops: List[str], references: List[KnowledgeCase], invariants: List[str] = None, ranking_function: str = None) -> tuple[dict, str]:
         prompt = self.prompt_repo.render(
             "prediction",
             code=code,
             loops=json.dumps(loops, ensure_ascii=False, indent=2),
             references=json.dumps([ref.__dict__ for ref in references], ensure_ascii=False, indent=2),
+            invariants=json.dumps(invariants, ensure_ascii=False, indent=2) if invariants else "[]",
+            ranking_function=ranking_function or "None"
         )
         # If the backend supports it, request a strict JSON object response.
         prompt["response_format"] = {"type": "json_object"}

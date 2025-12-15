@@ -22,7 +22,9 @@ def analyze(
     code_file: Path = typer.Option(..., exists=True, readable=True, help="Path to a source file"),
     top_k: int = 5,
     enable_translation: bool = typer.Option(False, "--enable-translation", "-t", help="Enable LLM-based translation to C++ for non-C/C++ files"),
-    knowledge_base: Optional[Path] = typer.Option(None, "--kb", help="Path to a custom knowledge base JSON file")
+    knowledge_base: Optional[Path] = typer.Option(None, "--kb", help="Path to a custom knowledge base JSON file"),
+    use_rag_reasoning: bool = typer.Option(True, "--use-rag-reasoning/--no-rag-reasoning", 
+                                           help="Use RAG references for invariant and ranking function inference; Default is enabled")
 ) -> None:
     """Analyze a source snippet for termination likelihood."""
 
@@ -39,7 +41,7 @@ def analyze(
                                    knowledge_base_path=str(knowledge_base) if knowledge_base else None
                                    )
     code = code_file.read_text(encoding="utf-8")
-    result = pipeline.analyze(code, top_k=top_k)
+    result = pipeline.analyze(code, top_k=top_k, use_rag_in_reasoning=use_rag_reasoning)
 
     # Show translation info if applicable
     if enable_translation and result.report_path:
@@ -85,7 +87,8 @@ def batch_analyze(
     top_k: int = 5,
     enable_translation: bool = typer.Option(False, "--enable-translation", "-t", help="Enable LLM-based translation"),
     knowledge_base: Optional[Path] = typer.Option(None, "--kb", help="Path to a custom knowledge base JSON file"),
-    recursive: bool = typer.Option(False, "--recursive", "-r", help="Recursively search for files")
+    recursive: bool = typer.Option(False, "--recursive", "-r", help="Recursively search for files"),
+    use_rag_reasoning: bool = typer.Option(True, "--use-rag-reasoning/--no-rag-reasoning", help="Use RAG references for invariant and ranking function inference")
 ) -> None:
     """Batch analyze all C/C++ files in a directory."""
     
@@ -142,7 +145,7 @@ def batch_analyze(
                 progress.update(task, description=f"Analyzing {file_path.name}...")
                 try:
                     code = file_path.read_text(encoding="utf-8")
-                    result = pipeline.analyze(code, top_k=top_k)
+                    result = pipeline.analyze(code, top_k=top_k, use_rag_in_reasoning=use_rag_reasoning)
                     results.append((file_path.name, result))
                     
                     # Write to CSV
