@@ -40,10 +40,16 @@ class APILLMClient(LLMClient):
 
     def complete(self, prompt: str | dict[str, str]) -> str:
         self.call_count += 1
+        request_overrides: dict = {}
         if isinstance(prompt, str):
             messages = [{"role": "user", "content": prompt}]
         else:
             messages = []
+            # Allow callers to pass OpenAI-compatible request options alongside system/user.
+            # Example: {"system": "...", "user": "...", "response_format": {"type": "json_object"}}
+            response_format = prompt.get("response_format")
+            if response_format is not None:
+                request_overrides["response_format"] = response_format
             if prompt.get("system"):
                 messages.append({"role": "system", "content": prompt["system"]})
             if prompt.get("user"):
@@ -53,7 +59,7 @@ class APILLMClient(LLMClient):
             response = self.client.chat.completions.create(
                 model=self.model,
                 messages=messages,
-                **self.payload_template,
+                **{**self.payload_template, **request_overrides},
             )
         except Exception as exc:  # pragma: no cover - network path
             raise LLMUnavailableError(f"LLM provider error: {exc}") from exc
