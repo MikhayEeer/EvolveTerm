@@ -275,6 +275,7 @@ class TerminationPipeline:
         )
         response = self.llm_client.complete(prompt)
         invariants = _parse_llm_json_array(response)
+        print("[Debug] Module Predict Invariant End...\n")
         if not invariants:
             return []
         return [str(item) for item in invariants if str(item).strip()]
@@ -289,6 +290,7 @@ class TerminationPipeline:
         # If the backend supports it, request a strict JSON object response.
         prompt["response_format"] = {"type": "json_object"}
         response = self.llm_client.complete(prompt)
+        print("[Debug] Module Predict RankingFuntion Got LLM Response...\n")
         self.last_ranking_response = response
         data = _parse_llm_json_object(response)
         if not isinstance(data, dict):
