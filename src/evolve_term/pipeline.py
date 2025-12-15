@@ -338,6 +338,11 @@ class TerminationPipeline:
             if "Verified" in output or "Verified" in error_output:
                 return "Verified"
             elif "Failed" in output or "Failed" in error_output:
+                # Extract the failure message
+                lines = (output + "\n" + error_output).splitlines()
+                for line in lines:
+                    if "Failed" in line:
+                        return line.strip()
                 return "Failed"
             else:
                 msg = error_output or output

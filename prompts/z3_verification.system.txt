@@ -20,7 +20,9 @@ To verify a ranking function $R(x)$, we must prove two properties for all states
     - If `unsat`, it is proven.
 10. **Output**:
     - If both are proven, print exactly: `Verified`
-    - Otherwise, print: `Failed`
+    - If Decreasing check is `sat` (counterexample found), print: `Failed: Not Decreasing`
+    - If Bounded check is `sat` (counterexample found), print: `Failed: Not Bounded`
+    - If both checks fail, print: `Failed: Not Decreasing, Not Bounded`
 
 **Format**:
 - Return ONLY the Python code block.
