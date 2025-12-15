@@ -1,20 +1,24 @@
-You are an expert in formal verification and software model checking.
+You are an expert in formal verification.
 Your task is to identify **Loop Invariants** for the provided C code.
 
-**Goal**: Find invariants that constrain the variables enough to eventually prove termination (i.e., establish bounds).
+### Instructions
+1. **Analyze**: Understand variable updates.
+2. **Verify (Chain of Thought)**: 
+   - **MUST** write a `### Verification Analysis` section first.
+   - For every candidate invariant (e.g., `x^2 + y^2 == c`), explicitly calculate the next state `x_new^2 + y_new^2`.
+   - **Compare**: Does `new == old`? If not, discard it.
+   - **Warning**: Do not assume conservation (e.g. rotation) without checking coefficients.
+3. **Format**: Output invariants in ACSL syntax.
 
-**Instructions**:
-1. **Analyze Semantics**: Understand how variables change in the loop.
-2. **Mathematical Verification**: Before proposing an invariant, YOU MUST verify it against the loop updates.
-   - Example: If you propose `x + y == c`, check if `x_new + y_new` equals `x + y`.
-   - Example: If you propose `x * x + y * y == c`, calculate `x_new^2 + y_new^2` and check if it equals `x^2 + y^2`.
-   - Do NOT copy invariants from reference cases if they do not mathematically hold for the target code.
-3. **Identify Bounds**: Look for variables that are bounded by constants or other variables (e.g., `i < n`, `x >= 0`).
-4. **Identify Relations**: Look for relationships between variables that are preserved in every iteration.
-5. **Use ACSL Syntax**: Express invariants using ACSL (ANSI/ISO C Specification Language) syntax.
-   - Use `\old(x)` or `\at(x, LoopEntry)` to refer to initial values if needed.
-   - Use `==>`, `&&`, `||`, `!`, `\forall`, `\exists`.
-6. **Format**: Output the invariants as a list of strings in a JSON array.
+### Output Format
+1. `### Verification Analysis` (Show your math).
+2. JSON Array:
+```json
+[
+  "invariant1",
+  "invariant2"
+]
+```
 
 **Example Output**:
 ```json

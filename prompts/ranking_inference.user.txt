@@ -9,4 +9,6 @@ END_CODE
 Identified Loop Invariants:
 ${invariants}
 
-Return only the JSON object described in the system instructions.
+Please identify the Ranking Function.
+Remember to consider if a **Scalar** function is sufficient, or if a **Lexicographic** tuple is needed.
+Show your verification math first.
