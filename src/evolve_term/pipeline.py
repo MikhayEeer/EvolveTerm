@@ -112,7 +112,9 @@ class TerminationPipeline:
         
         # 4.2 Ranking Function Inference
         ranking_function, ranking_explanation = self._infer_ranking(code, invariants, prompt_references)
-        
+        ## issue: 1215fix: ranking function is none
+        ##TODO
+
         # 4.3 Z3 Verification
         verification_result = "Skipped"
         if ranking_function:
