@@ -185,8 +185,8 @@ def batch_analyze(
         # Color code verification
         if ver == "Verified":
             ver = "[green]Verified[/green]"
-        elif ver == "Failed":
-            ver = "[red]Failed[/red]"
+        elif ver.startswith("Failed"):
+            ver = f"[red]{ver}[/red]"
             
         table.add_row(filename, res.label, ver, rf)
         
