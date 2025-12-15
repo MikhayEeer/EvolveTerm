@@ -121,7 +121,7 @@ def batch_analyze(
     csv_headers = [
         "Filename", "Relative Path", "Run ID", "Date Time", "Duration (s)", 
         "LLM Calls", "Label", "RAG Similarity", "Invariants", 
-        "Ranking Function", "Z3 Result"
+        "Ranking Function", "Z3 Result", "Report Path", "Error"
     ]
     
     console.print(f"Writing results to: [blue]{csv_path}[/blue]")
@@ -143,19 +143,20 @@ def batch_analyze(
             
             for file_path in files:
                 progress.update(task, description=f"Analyzing {file_path.name}...")
+                rel_path = ""
                 try:
+                    rel_path = str(file_path.relative_to(input_dir))
                     code = file_path.read_text(encoding="utf-8")
                     result = pipeline.analyze(code, top_k=top_k, use_rag_in_reasoning=use_rag_reasoning)
                     results.append((file_path.name, result))
                     
                     # Write to CSV
-                    rel_path = file_path.relative_to(input_dir)
                     rag_sim = result.references[0].metadata.get("similarity", 0.0) if result.references else 0.0
                     invariants_str = "; ".join(result.invariants) if result.invariants else ""
                     
                     row = [
                         file_path.name,
-                        str(rel_path),
+                        rel_path,
                         result.run_id,
                         datetime.now().isoformat(),
                         f"{result.duration_seconds:.2f}",
@@ -164,13 +165,33 @@ def batch_analyze(
                         rag_sim,
                         invariants_str,
                         result.ranking_function or "",
-                        result.verification_result or ""
+                        result.verification_result or "",
+                        str(result.report_path) if result.report_path else "",
+                        ""
                     ]
                     writer.writerow(row)
                     csvfile.flush()
                     
                 except Exception as e:
                     console.print(f"[red]Error analyzing {file_path.name}: {e}[/red]")
+                    # Still record the failure in CSV so batch runs are auditable.
+                    row = [
+                        file_path.name,
+                        rel_path,
+                        "",
+                        datetime.now().isoformat(),
+                        "",
+                        "",
+                        "error",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        str(e),
+                    ]
+                    writer.writerow(row)
+                    csvfile.flush()
                 finally:
                     progress.advance(task)
                 
