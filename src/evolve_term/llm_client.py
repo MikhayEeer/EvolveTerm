@@ -65,7 +65,7 @@ class APILLMClient(LLMClient):
             raise LLMUnavailableError(f"LLM provider error: {exc}") from exc
 
         # Debug print - handle dict prompt
-        def truncate(text: str, limit: int = 200) -> str:
+        def truncate(text: str, limit: int = 50) -> str:
             if len(text) <= limit:
                 return text
             head = limit // 2
@@ -82,7 +82,7 @@ class APILLMClient(LLMClient):
             if prompt.get("user"):
                 print(f"User:\n{truncate(prompt['user'])}")
         
-        print("-" * 30)
+        print("[Debug] Info End"+"-" * 30)
         
         if not response.choices:
             raise LLMUnavailableError("LLM provider returned no choices")

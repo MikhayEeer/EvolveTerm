@@ -147,7 +147,6 @@ class TerminationPipeline:
             "method": getattr(self.loop_extractor, "last_method", None),
             "llm_response": getattr(self.loop_extractor, "last_response", None),
         }
-        ##TODO: 是否使用loop代替code，分析invar和RF会更简单，当前代码是否有保证loop属于子集
 
         # Stage 2: embedding
         embedding_vector = self.embedding_client.embed("\n".join(loops))
@@ -182,18 +181,22 @@ class TerminationPipeline:
 
         # Stage 4: Neuro-symbolic Reasoning Pipeline
         
+        # Optimization: Use extracted loops for reasoning to reduce token count and noise.
+        # Fallback to full code if no loops extracted.
+        reasoning_context = "\n".join(loops) if loops else code
+        
         # 4.1 Invariant Inference
-        invariants = self._infer_invariants(code, prompt_references)
+        invariants = self._infer_invariants(reasoning_context, prompt_references)
         
         # 4.2 Ranking Function Inference
-        ranking_function, ranking_explanation = self._infer_ranking(code, invariants, prompt_references)
+        ranking_function, ranking_explanation = self._infer_ranking(reasoning_context, invariants, prompt_references)
         ## issue: 1215fix: ranking function is none
         ##FixedTODO
 
         # 4.3 Z3 Verification
         verification_result = "Skipped"
         if ranking_function:
-            verification_result = self._verify_with_z3(code, invariants, ranking_function)
+            verification_result = self._verify_with_z3(reasoning_context, invariants, ranking_function)
             ## issue: 1215fix: get failed in z3 solver function
             ##TODO
 
