@@ -31,8 +31,11 @@ pip install -e .
 ```
 
 ## unit test
+- aeval: `4NestedWith2Variables_false-no-overflow.c`, a nice test c sample
 ```bash
 python -m evolve_term.embeddings --help
+
+evolveterm analyze --code-file data/aeval/c_bench_term/4NestedWith2Variables_false-no-overflow.c --no-rag-reasoning
 ```
 - Batch analyze
 ```bash
