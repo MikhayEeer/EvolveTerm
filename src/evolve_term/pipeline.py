@@ -24,9 +24,10 @@ from .rag_index import HNSWIndexManager
 from .translator import CodeTranslator
 
 DATA_DIR = Path(__file__).resolve().parents[2] / "data"
-REPORTS_DIR = DATA_DIR / "reports"
+RESULT_DIR = Path(__file__).resolve().parents[2] / "results"
+REPORTS_DIR = RESULT_DIR / "reports"
 REPORTS_DIR.mkdir(parents=True, exist_ok=True)
-LOGS_DIR = DATA_DIR / "logs"
+LOGS_DIR = RESULT_DIR / "logs"
 LOGS_DIR.mkdir(parents=True, exist_ok=True)
 
 def _strip_markdown_fences(text: str) -> str:
