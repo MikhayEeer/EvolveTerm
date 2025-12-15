@@ -40,6 +40,7 @@ class LoopExtractor:
         
         if verified_loops:
             self.last_method = "llm"
+            print("[Debug][Extractor] Using LLM extraction method, and Successfully get verified loops.")
             return verified_loops[:max_loops]
             
         # 3. Fallback to heuristic if LLM failed or all extractions were hallucinations
