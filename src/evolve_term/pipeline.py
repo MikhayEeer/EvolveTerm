@@ -190,8 +190,10 @@ class TerminationPipeline:
         reasoning_context = "\n".join(loops) if loops else code
         
         # 4.1 Invariant Inference
-        invariants = self._infer_invariants(reasoning_context, reasoning_references)
-        
+        #invariants = self._infer_invariants(reasoning_context, reasoning_references)
+        #TODO: 消融实验，不增加不变式
+        invariants = []
+
         # 4.2 Ranking Function Inference
         ranking_function, ranking_explanation = self._infer_ranking(reasoning_context, invariants, reasoning_references)
         ## issue: 1215fix: ranking function is none
