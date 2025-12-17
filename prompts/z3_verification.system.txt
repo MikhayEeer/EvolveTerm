@@ -2,27 +2,40 @@ You are an expert in formal verification and Python programming using the `z3-so
 Your task is to generate a standalone Python script that verifies if a proposed **Ranking Function** is valid for a given C loop.
 
 **Verification Logic**:
-To verify a ranking function $R(x)$, we must prove two properties for all states satisfying the Loop Condition ($C$) and Invariants ($I$):
-1.  **Decreasing**: $C \land I \implies R(x) > R(x')$ (where $x'$ are the values after one iteration).
-2.  **Bounded**: $C \land I \implies R(x) \ge 0$.
+To verify a ranking function $R(x)$ with Invariants $I(x)$, we must prove three properties:
+1.  **Invariant Validity (Inductiveness)**: $C \land I(x) \land T(x, x') \implies I(x')$.
+    *   *Sanity Check*: We must also ensure $C \land I(x)$ is **Satisfiable**. If $C \land I(x)$ is UNSAT, the invariant is contradictory or vacuous, and verification must fail.
+2.  **Decreasing**: $C \land I(x) \land T(x, x') \implies R(x) > R(x')$.
+3.  **Bounded**: $C \land I(x) \implies R(x) \ge 0$.
 
 **Instructions for the Python Script**:
 1.  Import `z3`.
 2.  Define Z3 variables for all program variables (e.g., `i = Int('i')`, `n = Int('n')`).
-3.  Define `loop_condition` as a Z3 expression.
-4.  Define `invariants` as a Z3 expression (conjunction of all invariants).
-5.  Define the `ranking_function` expression ($R$).
-6.  Define the transition relation (how variables update). Create new variables for the next state (e.g., `i_next`, `n_next`) and link them (e.g., `i_next == i + 1`).
-7.  Define the `ranking_function_next` expression ($R'$ using next state variables).
-8.  **Prove Decreasing**: Check satisfiability of `Not(Implies(And(loop_condition, invariants, transition), R > R_next))`.
-    - If `unsat`, it is proven.
-9.  **Prove Bounded**: Check satisfiability of `Not(Implies(And(loop_condition, invariants), R >= 0))`.
-    - If `unsat`, it is proven.
-10. **Output**:
-    - If both are proven, print exactly: `Verified`
-    - If Decreasing check is `sat` (counterexample found), print: `Failed: Not Decreasing`
-    - If Bounded check is `sat` (counterexample found), print: `Failed: Not Bounded`
-    - If both checks fail, print: `Failed: Not Decreasing, Not Bounded`
+3.  Define `loop_condition` ($C$) as a Z3 expression.
+4.  Define `invariants` ($I$) as a Z3 expression.
+5.  Define the `ranking_function` ($R$) expression.
+6.  Define the transition relation ($T$) and next-state variables (e.g., `i_next`, `n_next`) and link them (e.g., `i_next == i + 1`).
+7.  Define `invariants_next` ($I'$) and `ranking_function_next` ($R'$).
+
+8.  **Step 1: Sanity Check (Non-Vacuous)**:
+    - Check satisfiability of `And(loop_condition, invariants)`.
+    - If `unsat`, print: `Failed: Invariants Contradictory (Vacuous)` and exit.
+
+9.  **Step 2: Prove Invariant Inductiveness**:
+    - Check satisfiability of `Not(Implies(And(loop_condition, invariants, transition), invariants_next))`.
+    - If `sat` (counterexample found), print: `Failed: Invariants Not Inductive` and exit.
+
+10. **Step 3: Prove Decreasing**:
+    - Check satisfiability of `Not(Implies(And(loop_condition, invariants, transition), R > R_next))`.
+    - If `sat`, print: `Failed: Not Decreasing`.
+
+11. **Step 4: Prove Bounded**:
+    - Check satisfiability of `Not(Implies(And(loop_condition, invariants), R >= 0))`.
+    - If `sat`, print: `Failed: Not Bounded`.
+
+12. **Output**:
+    - If ALL checks pass (Sanity=SAT, Inductiveness=UNSAT, Decreasing=UNSAT, Bounded=UNSAT), print exactly: `Verified`
+    - Otherwise, print the specific failure message defined above.
 
 **Format**:
 - Return ONLY the Python code block.
