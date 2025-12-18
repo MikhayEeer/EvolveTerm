@@ -142,7 +142,9 @@ class TerminationPipeline:
             code = self.translator.translate(code)
 
         # Stage 1: loop extraction
-        loops = self.loop_extractor.extract(code)
+        #loops = self.loop_extractor.extract(code)
+        loops = code
+        #TODO: 关闭提取模块的消融实验
         loop_details = {
             "loops": loops,
             "method": getattr(self.loop_extractor, "last_method", None),
