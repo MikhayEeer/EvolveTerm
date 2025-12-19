@@ -24,12 +24,15 @@ class Predictor:
             return []
         return [str(item) for item in invariants if str(item).strip()]
 
-    def infer_ranking(self, code: str, invariants: List[str], references: List[KnowledgeCase]) -> tuple[str | None, str]:
+    def infer_ranking(self, code: str, invariants: List[str], references: List[KnowledgeCase], 
+                      mode: str = "direct", known_terminating: bool = False) -> tuple[str | None, str, dict]:
         prompt = self.prompt_repo.render(
             "ranking_inference",
             code=code,
             invariants=json.dumps(invariants, ensure_ascii=False, indent=2),
-            references=json.dumps([ref.__dict__ for ref in references], ensure_ascii=False, indent=2)
+            references=json.dumps([ref.__dict__ for ref in references], ensure_ascii=False, indent=2),
+            mode=mode,
+            known_terminating=known_terminating
         )
         # If the backend supports it, request a strict JSON object response.
         prompt["response_format"] = {"type": "json_object"}
@@ -38,14 +41,17 @@ class Predictor:
         self.last_ranking_response = response
         data = parse_llm_json_object(response)
         if not isinstance(data, dict):
-            return None, ""
+            return None, "", {}
+        
         ranking = data.get("ranking_function")
         explanation = data.get("explanation", "")
+        
         if ranking is not None and not isinstance(ranking, str):
             ranking = None
         if not isinstance(explanation, str):
             explanation = ""
-        return ranking, explanation
+            
+        return ranking, explanation, data
 
     def predict(self, code: str, loops: List[str], references: List[KnowledgeCase], invariants: List[str] = None, ranking_function: str = None) -> tuple[dict, str]:
         prompt = self.prompt_repo.render(
