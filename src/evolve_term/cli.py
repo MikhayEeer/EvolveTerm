@@ -3,14 +3,22 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Optional
+from typing import Optional, List, Dict, Any
+import json
+import sys
 
 import typer
 from rich.console import Console
 from rich.table import Table
 
-from .models import PendingReviewCase
+from .models import PendingReviewCase, KnowledgeCase
 from .pipeline import TerminationPipeline
+from .translator import CodeTranslator
+from .loop_extractor import LoopExtractor
+from .predict import Predictor
+from .verifier import Z3Verifier
+from .prompts_loader import PromptRepository
+from .llm_client import build_llm_client
 
 app = typer.Typer(help="EvolveTerm CLI - analyze and curate C termination cases")
 console = Console()
@@ -251,3 +259,419 @@ def rebuild_index() -> None:
     pipeline.index_manager.rebuild(pipeline.knowledge_base.cases)
     pipeline.knowledge_base.mark_rebuilt()
     console.print("Index rebuilt and persisted.")
+
+@app.command()
+def translate(
+    input: Path = typer.Option(..., exists=True, help="Input file or directory"),
+    output: Optional[Path] = typer.Option(None, help="Output file or directory"),
+    llm_config: str = typer.Option("llm_config.json", help="Path to LLM config"),
+    recursive: bool = typer.Option(False, "--recursive", "-r", help="Recursively search for files if input is directory"),
+) -> None:
+    """
+    Translate code to C++.
+    
+    Input:
+        - Single file: Source code file (e.g., .java, .py).
+        - Directory: Directory containing source files.
+        
+    Output:
+        - Single file: Translated C++ code.
+        - Directory: Translated files with same structure or flat.
+    """
+    translator = CodeTranslator(config_name=llm_config)
+    
+    if input.is_file():
+        console.print(f"Translating {input}...")
+        code = input.read_text(encoding="utf-8")
+        translated = translator.translate(code)
+        
+        if output:
+            if output.is_dir():
+                out_path = output / (input.stem + ".cpp")
+            else:
+                out_path = output
+            out_path.write_text(translated, encoding="utf-8")
+            console.print(f"Saved to {out_path}")
+        else:
+            console.print(translated)
+            
+    elif input.is_dir():
+        files = list(input.rglob("*") if recursive else input.glob("*"))
+        files = [f for f in files if f.is_file()]
+        console.print(f"Found {len(files)} files to translate.")
+        
+        if output and not output.exists():
+            output.mkdir(parents=True)
+            
+        for f in files:
+            try:
+                console.print(f"Translating {f.name}...")
+                code = f.read_text(encoding="utf-8")
+                translated = translator.translate(code)
+                
+                if output:
+                    # Maintain relative path structure if possible, else flat
+                    try:
+                        rel_path = f.relative_to(input)
+                        out_path = output / rel_path.with_suffix(".cpp")
+                    except ValueError:
+                        out_path = output / (f.stem + ".cpp")
+                    
+                    out_path.parent.mkdir(parents=True, exist_ok=True)
+                    out_path.write_text(translated, encoding="utf-8")
+                else:
+                    console.print(f"--- {f.name} ---")
+                    console.print(translated)
+            except Exception as e:
+                console.print(f"[red]Error translating {f.name}: {e}[/red]")
+
+
+@app.command()
+def extract(
+    input: Path = typer.Option(..., exists=True, help="Input file or directory"),
+    output: Optional[Path] = typer.Option(None, help="Output file or directory"),
+    llm_config: str = typer.Option("llm_config.json", help="Path to LLM config"),
+    recursive: bool = typer.Option(False, "--recursive", "-r", help="Recursively search for files if input is directory"),
+) -> None:
+    """
+    Extract loops from code.
+    
+    Output Format (JSON):
+    [
+        "loop_code_1",
+        "loop_code_2"
+    ]
+    """
+    llm_client = build_llm_client(llm_config)
+    prompt_repo = PromptRepository()
+    extractor = LoopExtractor(llm_client, prompt_repo)
+    
+    def process_file(f: Path) -> List[str]:
+        code = f.read_text(encoding="utf-8")
+        return extractor.extract(code)
+
+    if input.is_file():
+        console.print(f"Extracting loops from {input}...")
+        loops = process_file(input)
+        
+        if output:
+            if output.is_dir():
+                out_path = output / (input.stem + ".json")
+            else:
+                out_path = output
+            out_path.write_text(json.dumps(loops, indent=2), encoding="utf-8")
+            console.print(f"Saved to {out_path}")
+        else:
+            console.print(json.dumps(loops, indent=2))
+            
+    elif input.is_dir():
+        files = list(input.rglob("*") if recursive else input.glob("*"))
+        files = [f for f in files if f.is_file()]
+        console.print(f"Found {len(files)} files.")
+        
+        if output and not output.exists():
+            output.mkdir(parents=True)
+            
+        for f in files:
+            try:
+                console.print(f"Extracting {f.name}...")
+                loops = process_file(f)
+                
+                if output:
+                    try:
+                        rel_path = f.relative_to(input)
+                        out_path = output / rel_path.with_suffix(".json")
+                    except ValueError:
+                        out_path = output / (f.stem + ".json")
+                    
+                    out_path.parent.mkdir(parents=True, exist_ok=True)
+                    out_path.write_text(json.dumps(loops, indent=2), encoding="utf-8")
+                else:
+                    console.print(f"--- {f.name} ---")
+                    console.print(json.dumps(loops, indent=2))
+            except Exception as e:
+                console.print(f"[red]Error extracting {f.name}: {e}[/red]")
+
+
+@app.command()
+def invariant(
+    input: Path = typer.Option(..., exists=True, help="Input code file or directory"),
+    references_file: Optional[Path] = typer.Option(None, help="JSON file containing reference cases (List[KnowledgeCase dict])"),
+    output: Optional[Path] = typer.Option(None, help="Output file or directory"),
+    llm_config: str = typer.Option("llm_config.json", help="Path to LLM config"),
+    recursive: bool = typer.Option(False, "--recursive", "-r", help="Recursively search for files if input is directory"),
+) -> None:
+    """
+    Infer invariants for the given code.
+    
+    References JSON Format:
+    [
+        {
+            "case_id": "...",
+            "code": "...",
+            "label": "...",
+            "explanation": "...",
+            "loops": ["..."],
+            "metadata": {...}
+        },
+        ...
+    ]
+    """
+    llm_client = build_llm_client(llm_config)
+    prompt_repo = PromptRepository()
+    predictor = Predictor(llm_client, prompt_repo)
+    
+    references = []
+    if references_file:
+        data = json.loads(references_file.read_text(encoding="utf-8"))
+        references = [KnowledgeCase(**item) for item in data]
+
+    def process_file(f: Path) -> List[str]:
+        code = f.read_text(encoding="utf-8")
+        # Note: In standalone mode, we might not have specific references per file unless provided.
+        # Here we use the global references provided via CLI.
+        return predictor.infer_invariants(code, references)
+
+    if input.is_file():
+        console.print(f"Inferring invariants for {input}...")
+        invariants = process_file(input)
+        
+        if output:
+            if output.is_dir():
+                out_path = output / (input.stem + ".json")
+            else:
+                out_path = output
+            out_path.write_text(json.dumps(invariants, indent=2), encoding="utf-8")
+            console.print(f"Saved to {out_path}")
+        else:
+            console.print(json.dumps(invariants, indent=2))
+            
+    elif input.is_dir():
+        files = list(input.rglob("*") if recursive else input.glob("*"))
+        files = [f for f in files if f.is_file()]
+        
+        if output and not output.exists():
+            output.mkdir(parents=True)
+            
+        for f in files:
+            try:
+                console.print(f"Processing {f.name}...")
+                invariants = process_file(f)
+                
+                if output:
+                    try:
+                        rel_path = f.relative_to(input)
+                        out_path = output / rel_path.with_suffix(".json")
+                    except ValueError:
+                        out_path = output / (f.stem + ".json")
+                    
+                    out_path.parent.mkdir(parents=True, exist_ok=True)
+                    out_path.write_text(json.dumps(invariants, indent=2), encoding="utf-8")
+                else:
+                    console.print(f"--- {f.name} ---")
+                    console.print(json.dumps(invariants, indent=2))
+            except Exception as e:
+                console.print(f"[red]Error processing {f.name}: {e}[/red]")
+
+
+@app.command()
+def ranking(
+    input: Path = typer.Option(..., exists=True, help="Input code file or directory"),
+    invariants_file: Optional[Path] = typer.Option(None, help="JSON file containing invariants list (for single file input)"),
+    references_file: Optional[Path] = typer.Option(None, help="JSON file containing reference cases"),
+    output: Optional[Path] = typer.Option(None, help="Output file or directory"),
+    llm_config: str = typer.Option("llm_config.json", help="Path to LLM config"),
+    recursive: bool = typer.Option(False, "--recursive", "-r", help="Recursively search for files if input is directory"),
+) -> None:
+    """
+    Infer ranking function for the given code.
+    
+    Invariants JSON Format:
+    ["inv1", "inv2", ...]
+    """
+    llm_client = build_llm_client(llm_config)
+    prompt_repo = PromptRepository()
+    predictor = Predictor(llm_client, prompt_repo)
+    
+    references = []
+    if references_file:
+        data = json.loads(references_file.read_text(encoding="utf-8"))
+        references = [KnowledgeCase(**item) for item in data]
+
+    def process_file(f: Path, invs: List[str]) -> Dict[str, str]:
+        code = f.read_text(encoding="utf-8")
+        rf, explanation = predictor.infer_ranking(code, invs, references)
+        return {"ranking_function": rf, "explanation": explanation}
+
+    if input.is_file():
+        console.print(f"Inferring ranking function for {input}...")
+        invariants = []
+        if invariants_file:
+            invariants = json.loads(invariants_file.read_text(encoding="utf-8"))
+            
+        result = process_file(input, invariants)
+        
+        if output:
+            if output.is_dir():
+                out_path = output / (input.stem + ".json")
+            else:
+                out_path = output
+            out_path.write_text(json.dumps(result, indent=2), encoding="utf-8")
+            console.print(f"Saved to {out_path}")
+        else:
+            console.print(json.dumps(result, indent=2))
+            
+    elif input.is_dir():
+        # In batch mode, we assume no invariants are provided externally for each file, 
+        # or we could support a mapping file, but for now let's assume empty invariants 
+        # or that the user just wants to test RF generation without invariants.
+        if invariants_file:
+            console.print("[yellow]Warning: --invariants-file ignored in batch mode (cannot map single invariant list to multiple files).[/yellow]")
+        
+        files = list(input.rglob("*") if recursive else input.glob("*"))
+        files = [f for f in files if f.is_file()]
+        
+        if output and not output.exists():
+            output.mkdir(parents=True)
+            
+        for f in files:
+            try:
+                console.print(f"Processing {f.name}...")
+                result = process_file(f, [])
+                
+                if output:
+                    try:
+                        rel_path = f.relative_to(input)
+                        out_path = output / rel_path.with_suffix(".json")
+                    except ValueError:
+                        out_path = output / (f.stem + ".json")
+                    
+                    out_path.parent.mkdir(parents=True, exist_ok=True)
+                    out_path.write_text(json.dumps(result, indent=2), encoding="utf-8")
+                else:
+                    console.print(f"--- {f.name} ---")
+                    console.print(json.dumps(result, indent=2))
+            except Exception as e:
+                console.print(f"[red]Error processing {f.name}: {e}[/red]")
+
+
+@app.command()
+def verify(
+    input: Path = typer.Option(..., exists=True, help="Input code file or directory"),
+    ranking_func: Optional[str] = typer.Option(None, help="Ranking function string (for single file)"),
+    ranking_file: Optional[Path] = typer.Option(None, help="File containing ranking function (JSON {ranking_function: ...} or raw text)"),
+    invariants_file: Optional[Path] = typer.Option(None, help="JSON file containing invariants list"),
+    output: Optional[Path] = typer.Option(None, help="Output file or directory"),
+    llm_config: str = typer.Option("llm_config.json", help="Path to LLM config"),
+    recursive: bool = typer.Option(False, "--recursive", "-r", help="Recursively search for files if input is directory"),
+) -> None:
+    """
+    Verify ranking function and invariants using Z3.
+    """
+    llm_client = build_llm_client(llm_config)
+    prompt_repo = PromptRepository()
+    verifier = Z3Verifier(llm_client, prompt_repo)
+    
+    def get_rf(f_path: Path) -> str | None:
+        # If explicit string provided, use it (only valid for single file really)
+        if ranking_func:
+            return ranking_func
+        
+        # If ranking file provided
+        if ranking_file:
+            # If ranking_file is a directory, try to find corresponding file
+            if ranking_file.is_dir():
+                # Try to find file with same stem
+                # This is a simple heuristic for batch mode
+                candidate = ranking_file / (f_path.stem + ".json")
+                if not candidate.exists():
+                    candidate = ranking_file / (f_path.stem + ".txt")
+                
+                if candidate.exists():
+                    content = candidate.read_text(encoding="utf-8")
+                    try:
+                        data = json.loads(content)
+                        if isinstance(data, dict):
+                            return data.get("ranking_function")
+                        return str(data)
+                    except:
+                        return content.strip()
+                return None
+            else:
+                # Single ranking file provided
+                content = ranking_file.read_text(encoding="utf-8")
+                try:
+                    data = json.loads(content)
+                    if isinstance(data, dict):
+                        return data.get("ranking_function")
+                    return str(data)
+                except:
+                    return content.strip()
+        return None
+
+    def get_invs(f_path: Path) -> List[str]:
+        if invariants_file:
+            if invariants_file.is_dir():
+                candidate = invariants_file / (f_path.stem + ".json")
+                if candidate.exists():
+                    try:
+                        return json.loads(candidate.read_text(encoding="utf-8"))
+                    except:
+                        return []
+            else:
+                try:
+                    return json.loads(invariants_file.read_text(encoding="utf-8"))
+                except:
+                    return []
+        return []
+
+    def process_file(f: Path) -> str:
+        code = f.read_text(encoding="utf-8")
+        rf = get_rf(f)
+        invs = get_invs(f)
+        
+        if not rf:
+            return "Skipped (No Ranking Function)"
+            
+        return verifier.verify(code, invs, rf)
+
+    if input.is_file():
+        console.print(f"Verifying {input}...")
+        result = process_file(input)
+        
+        if output:
+            if output.is_dir():
+                out_path = output / (input.stem + ".txt")
+            else:
+                out_path = output
+            out_path.write_text(result, encoding="utf-8")
+            console.print(f"Saved to {out_path}")
+        else:
+            console.print(f"Result: {result}")
+            
+    elif input.is_dir():
+        files = list(input.rglob("*") if recursive else input.glob("*"))
+        files = [f for f in files if f.is_file()]
+        
+        if output and not output.exists():
+            output.mkdir(parents=True)
+            
+        for f in files:
+            try:
+                console.print(f"Verifying {f.name}...")
+                result = process_file(f)
+                
+                if output:
+                    try:
+                        rel_path = f.relative_to(input)
+                        out_path = output / rel_path.with_suffix(".txt")
+                    except ValueError:
+                        out_path = output / (f.stem + ".txt")
+                    
+                    out_path.parent.mkdir(parents=True, exist_ok=True)
+                    out_path.write_text(result, encoding="utf-8")
+                else:
+                    console.print(f"--- {f.name} ---")
+                    console.print(f"Result: {result}")
+            except Exception as e:
+                console.print(f"[red]Error verifying {f.name}: {e}[/red]")
