@@ -32,7 +32,9 @@ def analyze(
     enable_translation: bool = typer.Option(False, "--enable-translation", "-t", help="Enable LLM-based translation to C++ for non-C/C++ files"),
     knowledge_base: Optional[Path] = typer.Option(None, "--kb", help="Path to a custom knowledge base JSON file"),
     use_rag_reasoning: bool = typer.Option(True, "--use-rag-reasoning/--no-rag-reasoning", 
-                                           help="Use RAG references for invariant and ranking function inference; Default is enabled")
+                                           help="Use RAG references for invariant and ranking function inference; Default is enabled"),
+    svm_ranker_path: Optional[Path] = typer.Option(None, "--svm-ranker", help="Path to SVMRanker root directory"),
+    known_terminating: bool = typer.Option(False, "--known-terminating", help="Hint that the program is known to terminate")
 ) -> None:
     """Analyze a source snippet for termination likelihood."""
 
@@ -45,11 +47,19 @@ def analyze(
         console.print("Please use [bold]--enable-translation[/bold] to enable automatic translation.")
         raise typer.Exit(code=1)
 
-    pipeline = TerminationPipeline(enable_translation=enable_translation, 
-                                   knowledge_base_path=str(knowledge_base) if knowledge_base else None
-                                   )
+    pipeline = TerminationPipeline(
+        enable_translation=enable_translation, 
+        knowledge_base_path=str(knowledge_base) if knowledge_base else None,
+        svm_ranker_path=str(svm_ranker_path) if svm_ranker_path else None
+    )
     code = code_file.read_text(encoding="utf-8")
-    result = pipeline.analyze(code, top_k=top_k, use_rag_in_reasoning=use_rag_reasoning)
+    result = pipeline.analyze(
+        code, 
+        top_k=top_k, 
+        use_rag_in_reasoning=use_rag_reasoning,
+        use_svm_ranker=bool(svm_ranker_path),
+        known_terminating=known_terminating
+    )
 
     # Show translation info if applicable
     if enable_translation and result.report_path:
@@ -96,7 +106,9 @@ def batch_analyze(
     enable_translation: bool = typer.Option(False, "--enable-translation", "-t", help="Enable LLM-based translation"),
     knowledge_base: Optional[Path] = typer.Option(None, "--kb", help="Path to a custom knowledge base JSON file"),
     recursive: bool = typer.Option(False, "--recursive", "-r", help="Recursively search for files"),
-    use_rag_reasoning: bool = typer.Option(True, "--use-rag-reasoning/--no-rag-reasoning", help="Use RAG references for invariant and ranking function inference")
+    use_rag_reasoning: bool = typer.Option(True, "--use-rag-reasoning/--no-rag-reasoning", help="Use RAG references for invariant and ranking function inference"),
+    svm_ranker_path: Optional[Path] = typer.Option(None, "--svm-ranker", help="Path to SVMRanker root directory"),
+    known_terminating: bool = typer.Option(False, "--known-terminating", help="Hint that the program is known to terminate")
 ) -> None:
     """Batch analyze all C/C++ files in a directory."""
     
@@ -120,7 +132,8 @@ def batch_analyze(
     
     pipeline = TerminationPipeline(
         enable_translation=enable_translation,
-        knowledge_base_path=str(knowledge_base) if knowledge_base else None
+        knowledge_base_path=str(knowledge_base) if knowledge_base else None,
+        svm_ranker_path=str(svm_ranker_path) if svm_ranker_path else None
     )
     
     # Prepare CSV
@@ -155,7 +168,13 @@ def batch_analyze(
                 try:
                     rel_path = str(file_path.relative_to(input_dir))
                     code = file_path.read_text(encoding="utf-8")
-                    result = pipeline.analyze(code, top_k=top_k, use_rag_in_reasoning=use_rag_reasoning)
+                    result = pipeline.analyze(
+                        code, 
+                        top_k=top_k, 
+                        use_rag_in_reasoning=use_rag_reasoning,
+                        use_svm_ranker=bool(svm_ranker_path),
+                        known_terminating=known_terminating
+                    )
                     results.append((file_path.name, result))
                     
                     # Write to CSV
