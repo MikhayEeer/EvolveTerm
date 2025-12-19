@@ -2,16 +2,12 @@
 
 from __future__ import annotations
 
-import subprocess
-import tempfile
 from datetime import datetime
 from pathlib import Path
 from typing import List
 import uuid
 import json
-import re
 import numpy as np
-import sys
 
 from .embeddings import build_embedding_client
 from .exceptions import EmbeddingUnavailableError, IndexNotReadyError, LLMUnavailableError
@@ -22,87 +18,12 @@ from .models import KnowledgeCase, Label, PendingReviewCase, PredictionResult
 from .prompts_loader import PromptRepository
 from .rag_index import HNSWIndexManager
 from .translator import CodeTranslator
-
-DATA_DIR = Path(__file__).resolve().parents[2] / "data"
-RESULT_DIR = Path(__file__).resolve().parents[2] / "results"
-REPORTS_DIR = RESULT_DIR / "reports"
-REPORTS_DIR.mkdir(parents=True, exist_ok=True)
-LOGS_DIR = RESULT_DIR / "logs"
-LOGS_DIR.mkdir(parents=True, exist_ok=True)
-
-def _strip_markdown_fences(text: str) -> str:
-    cleaned = text.strip()
-    if not cleaned.startswith("```"):
-        return cleaned
-    # Take first fenced block; tolerate ```json / ```python / ``` etc.
-    parts = cleaned.split("\n", 1)
-    if len(parts) == 1:
-        return cleaned
-    body = parts[1]
-    if body.endswith("```"):
-        body = body.rsplit("\n", 1)[0]
-    else:
-        # If there is a closing fence later, cut at the first one.
-        fence_index = body.find("\n```")
-        if fence_index != -1:
-            body = body[:fence_index]
-    return body.strip()
-
-
-def _extract_bracketed_payload(text: str, opener: str, closer: str) -> str | None:
-    start = text.find(opener)
-    if start == -1:
-        return None
-    end = text.rfind(closer)
-    if end == -1 or end <= start:
-        return None
-    return text[start : end + 1]
-
-
-def _json_loads_with_repairs(text: str) -> object:
-    # Most common failure we saw: invalid JSON escape like \' inside strings.
-    try:
-        return json.loads(text)
-    except Exception:
-        repaired = text.replace("\\'", "'")
-        return json.loads(repaired)
-
-
-def _parse_llm_json_object(response_text: str) -> dict | None:
-    cleaned = _strip_markdown_fences(response_text)
-    candidates = [
-        cleaned,
-        _extract_bracketed_payload(cleaned, "{", "}"),
-    ]
-    for candidate in candidates:
-        if not candidate:
-            continue
-        try:
-            parsed = _json_loads_with_repairs(candidate)
-        except Exception:
-            continue
-        if isinstance(parsed, dict):
-            return parsed
-    return None
-
-
-def _parse_llm_json_array(response_text: str) -> list | None:
-    cleaned = _strip_markdown_fences(response_text)
-    candidates = [
-        cleaned,
-        _extract_bracketed_payload(cleaned, "[", "]"),
-    ]
-    for candidate in candidates:
-        if not candidate:
-            continue
-        try:
-            parsed = _json_loads_with_repairs(candidate)
-        except Exception:
-            continue
-        if isinstance(parsed, list):
-            return parsed
-    return None
-
+from .utils import (
+    parse_llm_json_array,
+    parse_llm_json_object,
+)
+from .verifier import Z3Verifier
+from .report_manager import ReportManager
 
 class TerminationPipeline:
     """Main façade that ties together embedding, retrieval, and LLM reasoning."""
@@ -118,6 +39,8 @@ class TerminationPipeline:
         self.index_manager = HNSWIndexManager(dimension=self.embedding_client.dimension)
         self.enable_translation = enable_translation
         self.translator = CodeTranslator(config_name=llm_config) if enable_translation else None
+        self.verifier = Z3Verifier(self.llm_client, self.prompt_repo)
+        self.report_manager = ReportManager()
 
     # Core flow ------------------------------------------------------------
     def analyze(self, code: str, top_k: int = 5, auto_build_index: bool = True, use_rag_in_reasoning: bool = True) -> PredictionResult:
@@ -205,7 +128,7 @@ class TerminationPipeline:
         print(f"[Debug] Ready to Z3 verify\nInvar:{invariants}\nRF:{ranking_function}")
         verification_result = "Skipped"
         if ranking_function:
-            verification_result = self._verify_with_z3(reasoning_context, invariants, ranking_function)
+            verification_result = self.verifier.verify(reasoning_context, invariants, ranking_function)
             ## issue: 1215fix: get failed in z3 solver function
             ##TODO
 
@@ -255,9 +178,9 @@ class TerminationPipeline:
             "prediction": prediction,
         }
 
-        report_path = self._persist_report(report_payload)
+        report_path = self.report_manager.persist_report(report_payload)
         # Also write a human-readable log
-        self._persist_log(report_payload, report_path.stem)
+        self.report_manager.persist_log(report_payload, report_path.stem)
 
         end_time = datetime.now()
         duration = (end_time - start_time).total_seconds()
@@ -285,7 +208,7 @@ class TerminationPipeline:
             references=json.dumps([ref.__dict__ for ref in references], ensure_ascii=False, indent=2)
         )
         response = self.llm_client.complete(prompt)
-        invariants = _parse_llm_json_array(response)
+        invariants = parse_llm_json_array(response)
         print("[Debug] Module Predict Invariant End...\n")
         if not invariants:
             return []
@@ -303,7 +226,7 @@ class TerminationPipeline:
         response = self.llm_client.complete(prompt)
         print("[Debug] Module Predict RankingFuntion Got LLM Response...\n")
         self.last_ranking_response = response
-        data = _parse_llm_json_object(response)
+        data = parse_llm_json_object(response)
         if not isinstance(data, dict):
             return None, ""
         ranking = data.get("ranking_function")
@@ -314,58 +237,6 @@ class TerminationPipeline:
             explanation = ""
         return ranking, explanation
 
-    def _verify_with_z3(self, code: str, invariants: List[str], ranking_function: str) -> str:
-        prompt = self.prompt_repo.render(
-            "z3_verification",
-            code=code,
-            invariants="\n".join(invariants),
-            ranking_function=ranking_function
-        )
-        script_response = self.llm_client.complete(prompt)
-        
-        # Extract python code
-        script = script_response
-        if "```python" in script:
-            script = script.split("```python")[1].split("```")[0].strip()
-        elif "```" in script:
-            script = script.split("```")[1].split("```")[0].strip()
-            
-        # Run in temp file
-        try:
-            with tempfile.NamedTemporaryFile(mode='w', suffix='.py', delete=False, encoding='utf-8') as tmp:
-                tmp.write(script)
-                tmp_path = tmp.name
-            
-            result = subprocess.run(
-                [sys.executable, tmp_path],
-                capture_output=True, 
-                text=True, 
-                timeout=10  # 10 seconds timeout for verification
-            )
-            output = (result.stdout or "").strip()
-            error_output = (result.stderr or "").strip()
-            
-            # Cleanup
-            Path(tmp_path).unlink(missing_ok=True)
-            
-            if "Verified" in output or "Verified" in error_output:
-                return "Verified"
-            elif "Failed" in output or "Failed" in error_output:
-                # Extract the failure message
-                lines = (output + "\n" + error_output).splitlines()
-                for line in lines:
-                    if "Failed" in line:
-                        return line.strip()
-                return "Failed"
-            else:
-                msg = error_output or output
-                if result.returncode != 0 and not msg:
-                    msg = f"Z3 script exited with code {result.returncode}"
-                msg = msg or "Unknown verification output"
-                return f"Error: {msg[:200]}..."  # Return partial output for debug
-                
-        except Exception as e:
-            return f"Execution Error: {str(e)}"
 
     def _predict_with_llm(self, code: str, loops: List[str], references: List[KnowledgeCase], invariants: List[str] = None, ranking_function: str = None) -> tuple[dict, str]:
         prompt = self.prompt_repo.render(
@@ -379,120 +250,11 @@ class TerminationPipeline:
         # If the backend supports it, request a strict JSON object response.
         prompt["response_format"] = {"type": "json_object"}
         raw = self.llm_client.complete(prompt)
-        parsed = _parse_llm_json_object(raw)
+        parsed = parse_llm_json_object(raw)
         if not isinstance(parsed, dict):
             raise LLMUnavailableError("LLM returned non-JSON response")
         return parsed, raw
 
-    def _persist_report(self, report: dict) -> Path:
-        report_id = report.get("run_id", uuid.uuid4().hex)
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        filename = f"report_{timestamp}_{report_id}.json"
-        path = REPORTS_DIR / filename
-        path.write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
-        return path
-
-    def _persist_log(self, report: dict, report_stem: str) -> Path:
-        """Write a human-readable log summarizing the report (one log == one run)."""
-        log_path = LOGS_DIR / f"{report_stem}.log"
-        lines = []
-        
-        # --- Summary Section (Matches CLI Output) ---
-        lines.append(f"EvolveTerm Analysis Report")
-        lines.append(f"==========================")
-        lines.append(f"Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-        lines.append(f"Run ID: {report.get('run_id')}")
-        lines.append("")
-        
-        # Translation
-        translation = report.get("translation", {})
-        if translation.get("enabled"):
-            lines.append("Translation Info")
-            lines.append("----------------")
-            lines.append(f"Translated: {translation.get('translated')}")
-            if translation.get("translated"):
-                lines.append("Code was translated to C++.")
-            lines.append("")
-
-        # Prediction
-        pred = report.get("prediction", {})
-        lines.append("Prediction")
-        lines.append("----------")
-        lines.append(f"Label: {pred.get('label', 'unknown')}")
-        lines.append(f"Reasoning: {pred.get('reasoning', '')}")
-        lines.append("")
-
-        # Neuro-symbolic Info
-        ns = report.get("neuro_symbolic", {})
-        if ns:
-            lines.append("Neuro-symbolic Analysis")
-            lines.append("-----------------------")
-            lines.append(f"Verification Result: {ns.get('verification_result', 'N/A')}")
-            if ns.get("ranking_function"):
-                lines.append(f"Ranking Function: {ns.get('ranking_function')}")
-                lines.append(f"Explanation: {ns.get('ranking_explanation', '')}")
-            if ns.get("invariants"):
-                lines.append("Invariants:")
-                for inv in ns.get("invariants"):
-                    lines.append(f"  - {inv}")
-            lines.append("")
-
-        # References
-        lines.append("Referenced Cases")
-        lines.append("----------------")
-        references = report.get("references", [])
-        if references:
-            # Header
-            lines.append(f"{'Case ID':<40} | {'Label':<15} | {'Similarity'}")
-            lines.append("-" * 70)
-            for ref in references:
-                cid = ref.get("case_id", "")
-                lbl = ref.get("label", "")
-                meta = ref.get("metadata", {})
-                sim = meta.get("similarity", "n/a")
-                lines.append(f"{cid:<40} | {lbl:<15} | {sim}")
-        else:
-            lines.append("No references found.")
-        lines.append("")
-        lines.append("")
-
-        # --- Detailed Debug Info ---
-        lines.append("Detailed Analysis Data")
-        lines.append("======================")
-        
-        # Show original code
-        lines.append("--- Original Code ---")
-        lines.append(report.get("original_code", ""))
-        
-        if translation.get("enabled") and translation.get("translated"):
-            lines.append("--- Translated Code ---")
-            lines.append(translation.get("translated_code", ""))
-        
-        lines.append("--- Code for Analysis ---")
-        lines.append(report.get("code", ""))
-        lines.append("--- Loop Extraction ---")
-        le = report.get("loop_extraction", {})
-        lines.append(f"method: {le.get('method')}")
-        lines.append("loops:")
-        for lp in le.get("loops", []):
-            lines.append(lp)
-        if le.get("llm_response"):
-            lines.append("--- Raw LLM loop response ---")
-            lines.append(str(le.get("llm_response")))
-        lines.append("--- Embedding info ---")
-        emb = report.get("embedding", {})
-        lines.append(f"provider: {emb.get('provider')}, model: {emb.get('model')}, dimension: {emb.get('dimension')}")
-        lines.append(f"vector_length: {len(emb.get('vector', []))}")
-        lines.append("--- Neighbors ---")
-        for n in report.get("neighbors", []):
-            lines.append(f"{n.get('case_id')}: {n.get('score')}")
-        lines.append("--- Prediction (parsed) ---")
-        lines.append(json.dumps(report.get("prediction", {}), ensure_ascii=False, indent=2))
-        lines.append("--- Prediction (raw) ---")
-        lines.append(str(report.get("prediction_raw")))
-        
-        log_path.write_text("\n".join(lines), encoding="utf-8")
-        return log_path
 
     # RAG maintenance ------------------------------------------------------
     def ingest_reviewed_case(self, reviewed: PendingReviewCase) -> KnowledgeCase:
