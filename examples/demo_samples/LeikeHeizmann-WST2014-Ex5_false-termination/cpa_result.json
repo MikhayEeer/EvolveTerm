@@ -1,0 +1,13 @@
+{
+  "cp1": {
+    "config": "lasso",
+    "verification_result": "UNKNOWN",
+    "rf": null,
+    "invar": null,
+    "total_time": "1.042s",
+    "analysis_time": "0.305s",
+    "cpu_time": "3.510s",
+    "used_heap": "263MB",
+    "termination_config": "lassoRankerAnalysis.properties"
+  }
+}
