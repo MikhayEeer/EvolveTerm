@@ -8,6 +8,11 @@
     "analysis_time": "0.305s",
     "cpu_time": "3.510s",
     "used_heap": "263MB",
-    "termination_config": "lassoRankerAnalysis.properties"
+    "termination_config": "lassoRankerAnalysis.properties",
+    "comment": "
+Analysis incomplete: no errors found, but not everything could be checked. (CPAchecker.analyzeResult, WARNING)
+Verification result: UNKNOWN, incomplete analysis.
+Cannot export correctness witness in YAML format for languages other than C. (ARGCPA:ARGStatistics.exportARG0, WARNING)
+"
   }
 }
