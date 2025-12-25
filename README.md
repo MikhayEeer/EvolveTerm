@@ -217,6 +217,15 @@ pytest
 - 当前提供 `tests/test_knowledge_base.py`，验证增量重建计数逻辑。  
 - 可按需补充 e2e 测试（Mock LLM & Embedding）。
 
+### Single CPAChecker Command
+```bash
+./bin/cpachecker --preprocess --timelimit 300\
+    --config config/lassoRankerAnalysis.properties\
+    --spec config/specification/TerminatingStatements.spc\
+    --heap 32G --output-path Testoutputs/\
+    ../TerminationDatabase/Datasets/Loopy_dataset_InvarBenchmark/loop_invariants/code2inv/23.c
+```
+
 ## 📄 报告与排错
 
 - 预测报告位于 `data/reports/`，每个 JSON 文件包含 label、reasoning、引用案例等字段。  
