@@ -21,18 +21,25 @@ class Predictor:
         invariants = parse_llm_json_array(response)
         print("[Debug] Module Predict Invariant End...\n")
         if not invariants:
+            print(f"[Debug] Invariant Parsing Failed or Empty. Raw Response:\n{response}\n")
             return []
         return [str(item) for item in invariants if str(item).strip()]
 
     def infer_ranking(self, code: str, invariants: List[str], references: List[KnowledgeCase], 
                       mode: str = "direct", known_terminating: bool = False) -> tuple[str | None, str, dict]:
+        
+        prompt_name = "ranking_inference_direct"
+        if mode == "template":
+            if known_terminating:
+                prompt_name = "ranking_inference_template_known"
+            else:
+                prompt_name = "ranking_inference_template"
+
         prompt = self.prompt_repo.render(
-            "ranking_inference",
+            prompt_name,
             code=code,
             invariants=json.dumps(invariants, ensure_ascii=False, indent=2),
-            references=json.dumps([ref.__dict__ for ref in references], ensure_ascii=False, indent=2),
-            mode=mode,
-            known_terminating=known_terminating
+            references=json.dumps([ref.__dict__ for ref in references], ensure_ascii=False, indent=2)
         )
         # If the backend supports it, request a strict JSON object response.
         prompt["response_format"] = {"type": "json_object"}
@@ -41,11 +48,15 @@ class Predictor:
         self.last_ranking_response = response
         data = parse_llm_json_object(response)
         if not isinstance(data, dict):
+            print(f"[Debug] Ranking Parsing Failed (Not a dict). Raw Response:\n{response}\n")
             return None, "", {}
         
         ranking = data.get("ranking_function")
         explanation = data.get("explanation", "")
         
+        if ranking is None:
+             print(f"[Debug] Ranking Function is None in JSON. Raw Response:\n{response}\n")
+
         if ranking is not None and not isinstance(ranking, str):
             ranking = None
         if not isinstance(explanation, str):

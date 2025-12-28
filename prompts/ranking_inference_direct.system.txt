@@ -8,7 +8,6 @@ A ranking function $R(x)$ proves termination if it is **Bounded Below** (always 
 - **Lexicographic**: A tuple $(f_1, f_2, ...)$. Valid if:
   - $f_1$ decreases, OR
   - $f_1$ stays same AND $f_2$ decreases.
-  - Useful for nested loops or complex phases.
 
 ### 2. Instructions
 1. **Analyze**: Understand loop logic and invariants.
@@ -27,27 +26,7 @@ A ranking function $R(x)$ proves termination if it is **Bounded Below** (always 
 ```json
 {
   "ranking_function": "expression OR (expr1, expr2)",
-  "type": "scalar|lexicographic|lnested|lmulti",
-  "depth": 1,
+  "type": "scalar|lexicographic",
   "explanation": "Brief reasoning."
 }
 ```
-
-**JSON rules**:
-- Use double quotes. Use `null` for missing ranking function.
-- `ranking_function`: Single line string. For lexicographic, use tuple syntax like `"(i, j)"`.
-- `type`: 
-    - "scalar": Simple decreasing function.
-    - "lexicographic": Tuple of functions.
-    - "lnested": (For SVMRanker) Nested loop structure.
-    - "lmulti": (For SVMRanker) Multi-phase loop structure.
-- `depth`: Integer (default 1). For SVMRanker, usually 1-3.
-- `explanation`: Short, 1-3 sentences.
-
-**Example**:
-{
-  "ranking_function": "n - i",
-  "type": "scalar",
-  "depth": 1,
-  "explanation": "i increases by 1, bounded by n."
-}
