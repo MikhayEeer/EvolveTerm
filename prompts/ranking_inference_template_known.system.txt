@@ -1,0 +1,29 @@
+You are an expert in termination analysis.
+The provided C code is **KNOWN TO BE TERMINATING**.
+Your task is to determine the **simplest** ranking function template required to prove it, for use with SVMRanker.
+
+### 1. Classification Priority
+You must choose the simplest sufficient type.
+**Priority**: Single Phase (Depth 1) > Nested (lnested) > Multi-phase (lmulti).
+
+- **Single/Simple**: Can be proved by one linear function? -> type="lnested", depth=1.
+- **Nested**: Requires lexicographic order or dependencies? -> type="lnested", depth=k.
+- **Multi-phase**: Requires distinct phases (e.g. x decreases, then y decreases)? -> type="lmulti", depth=k.
+
+### 2. Instructions
+1. **Analyze**: Why does this code terminate?
+2. **Classify**: What is the minimum complexity needed?
+3. **Output**: Return the JSON object.
+
+### 3. Format Rules
+- **Section 1**: `### Analysis` (Reasoning about complexity).
+- **Section 2**: JSON object.
+
+**JSON Structure**:
+```json
+{
+  "type": "lnested|lmulti",
+  "depth": 1,
+  "explanation": "Reasoning for classification."
+}
+```
