@@ -4,10 +4,12 @@ from __future__ import annotations
 
 import json
 import re
+import yaml
 from typing import List
 
 from .llm_client import LLMClient
 from .prompts_loader import PromptRepository
+from .utils import strip_markdown_fences
 
 
 class LoopExtractor:
@@ -21,7 +23,8 @@ class LoopExtractor:
         self.last_method: str | None = None
 
     def extract(self, code: str, max_loops: int = 5) -> List[str]:
-        prompt = self.prompt_repo.render("loop_extraction", code=code)
+        # Use the new YAML-based prompt
+        prompt = self.prompt_repo.render("loop_extraction/yaml_v1", code=code)
         response = self.llm_client.complete(prompt)
         self.last_response = response
         
@@ -56,25 +59,24 @@ class LoopExtractor:
         return normalize(loop_snippet) in normalize(original_code)
 
     def _parse_response(self, response: str) -> List[str]:
-        """Parse the custom delimiter-separated response."""
-        if "NO_LOOPS_FOUND" in response:
-            return []
+        """Parse the YAML response."""
+        cleaned = strip_markdown_fences(response)
+        try:
+            data = yaml.safe_load(cleaned)
+            if not data or "loops" not in data:
+                return []
             
-        # Split by the custom delimiter
-        parts = response.split("---LOOP_SEPARATOR---")
-        
-        # Clean up each part
-        loops = []
-        for part in parts:
-            cleaned = part.strip()
-            # Remove potential markdown fences if LLM ignored instructions
-            if cleaned.startswith("```"):
-                cleaned = cleaned.replace("```c", "").replace("```", "")
-            cleaned = cleaned.strip()
-            if cleaned:
-                loops.append(cleaned)
-                
-        return loops
+            loops = []
+            for item in data["loops"]:
+                if "code" in item:
+                    loops.append(item["code"].strip())
+            return loops
+        except yaml.YAMLError as e:
+            print(f"[Warning] YAML parsing failed: {e}")
+            return []
+        except Exception as e:
+            print(f"[Warning] Loop extraction parsing failed: {e}")
+            return []
 
     def _heuristic_loops(self, code: str) -> List[str]:
         loops = re.findall(r"for\s*\(.*?\{.*?\}|while\s*\(.*?\{.*?\}", code, flags=re.DOTALL)
