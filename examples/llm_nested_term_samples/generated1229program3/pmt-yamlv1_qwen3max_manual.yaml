@@ -1,0 +1,116 @@
+basic:
+  name: qwen3max
+  type: qwen
+  prompt: prompts/loop_extraction/yaml_v1
+  config:
+    model_name: qwen-3-max
+    temperature: 0.4
+    top_p: 0.5
+  call_type: web_console
+  time: 2025-12-29T17:50
+loops:
+  - id: 1
+    code: |
+      for (i = 0; i < 128; i++) {
+          arr[i] = i;
+      }
+  - id: 2
+    code: |
+      do {
+          idx = (x * 13) % 128;
+          arr[idx] = x ^ y;
+          sink += arr[idx];
+          x = x / 2;
+          y = y / 2;
+          val = (x + y) & 0xFF;
+          ptr = &arr[val % 128];
+          *ptr = *ptr ^ sink;
+          for (z = 1; z < 50 && x > 0; z = z * 3, x = x / 2) {
+              idx = (z * 7) % 128;
+              arr[idx] = (z << 2) - x;
+              sink = sink | arr[idx];
+              while (y > 0 && w < 100) {
+                  j = (y + w) % 128;
+                  sink = sink + arr[j];
+                  arr[j] = y;
+                  y = y / 2;
+                  k = (y * 5) ^ sink;
+                  arr[k % 128] = k;
+                  do {
+                      int temp = x + y + z + w + sink;
+                      sink = temp;
+                      idx = (unsigned int)sink % 128;
+                      arr[idx] = arr[idx] + 1;
+                      ptr = &arr[(idx + 1) % 128];
+                      *ptr = *ptr ^ temp;
+                      printf("Example 3: Looping %d\n", sink);
+                  } while (z < 10 && w > 0);
+                  w = w * 2;
+                  val = (w * 2) % 128;
+                  arr[val] = w;
+                  sink = sink + arr[val];
+              }
+          }
+      } while (x > 0 && y > 0);
+  - id: 3
+    code: |
+      for (z = 1; z < 50 && x > 0; z = z * 3, x = x / 2) {
+          idx = (z * 7) % 128;
+          arr[idx] = (z << 2) - x;
+          sink = sink | arr[idx];
+          while (y > 0 && w < 100) {
+              j = (y + w) % 128;
+              sink = sink + arr[j];
+              arr[j] = y;
+              y = y / 2;
+              k = (y * 5) ^ sink;
+              arr[k % 128] = k;
+              do {
+                  int temp = x + y + z + w + sink;
+                  sink = temp;
+                  idx = (unsigned int)sink % 128;
+                  arr[idx] = arr[idx] + 1;
+                  ptr = &arr[(idx + 1) % 128];
+                  *ptr = *ptr ^ temp;
+                  printf("Example 3: Looping %d\n", sink);
+              } while (z < 10 && w > 0);
+              w = w * 2;
+              val = (w * 2) % 128;
+              arr[val] = w;
+              sink = sink + arr[val];
+          }
+      }
+  - id: 4
+    code: |
+      while (y > 0 && w < 100) {
+          j = (y + w) % 128;
+          sink = sink + arr[j];
+          arr[j] = y;
+          y = y / 2;
+          k = (y * 5) ^ sink;
+          arr[k % 128] = k;
+          do {
+              int temp = x + y + z + w + sink;
+              sink = temp;
+              idx = (unsigned int)sink % 128;
+              arr[idx] = arr[idx] + 1;
+              ptr = &arr[(idx + 1) % 128];
+              *ptr = *ptr ^ temp;
+              printf("Example 3: Looping %d\n", sink);
+          } while (z < 10 && w > 0);
+          w = w * 2;
+          val = (w * 2) % 128;
+          arr[val] = w;
+          sink = sink + arr[val];
+      }
+  - id: 5
+    code: |
+      do {
+          int temp = x + y + z + w + sink;
+          sink = temp;
+          idx = (unsigned int)sink % 128;
+          arr[idx] = arr[idx] + 1;
+          ptr = &arr[(idx + 1) % 128];
+          *ptr = *ptr ^ temp;
+          printf("Example 3: Looping %d\n", sink);
+      } while (z < 10 && w > 0);
