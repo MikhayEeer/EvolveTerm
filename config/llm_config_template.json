@@ -6,7 +6,8 @@
     "model": "qwen3-max",
     "payload_template": {
       "max_tokens": 2048,
-      "temperature": 0.0
+      "temperature": 0.0,
+      "top_p": 0.3
     },
     "pricing_per_millon_tokens_RMB": 16,
     "tags": ["default", "better"],
