@@ -1,0 +1,17 @@
+basic:
+  name: qwen3-max
+  type: llm
+  prompt: prompts/loop_extraction/yaml_v2
+  config: {}
+  call_type: cli_extract
+  time: 2026-01-02T16:47
+loops:
+- id: 1
+  code: |-
+    for (l = 50; l > 0 && m > 0; l = l / 2) {
+        int noise = (i * 100) + j - k;
+        printf("Example 1: Looping (noise:%d)\n", noise);
+        sink += noise;
+    }
+- id: 2
+  code: for(temp = 0; temp < 100; temp++) memo[temp] = 0;
