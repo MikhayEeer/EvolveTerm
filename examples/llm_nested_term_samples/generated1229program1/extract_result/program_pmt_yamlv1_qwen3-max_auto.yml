@@ -4,36 +4,86 @@ basic:
   prompt: prompts/loop_extraction/yaml_v1
   config: {}
   call_type: cli_extract
-  time: 2026-01-02T16:45
+  time: 2026-01-02T17:01
 loops:
 - id: 1
   code: for(temp = 0; temp < 100; temp++) memo[temp] = 0;
 - id: 2
-  code: "for (i = 1; i < 100 && j > 10; i = i * 3 + 1, j = j / 2) {\n\tidx = (i +\
-    \ j) % 100;\n\tmemo[idx] = (i << 2) ^ (j >> 1);\n\tsink += memo[idx];\n\twhile\
-    \ (k < 100 && l > 0) {\n\t\tp = &memo[l % 100];\n\t\tif (*p > 100) {\n\t\t\tsink\
-    \ -= 1;\n\t\t} else {\n\t\t\tsink += 1;\n\t\t}\n\t\tdo {\n\t\t\tval = (k * k)\
-    \ % 50;\n\t\t\tmemo[val] = l + m;\n\t\t\ttemp = (m > 5) ? 10 : 20;\n\t\t\tsink\
-    \ = sink ^ temp;\n\t\t\tfor (l = 50; l > 0 && m > 0; l = l / 2) {\n\t\t\t\tint\
-    \ noise = (i * 100) + j - k;\n\t\t\t\tprintf(\"Example 1: Looping (noise:%d)\\\
-    n\", noise);\n\t\t\t\tsink += noise;\n\t\t\t}\n\t\t\tsink = sink + k - l;\n\t\t\
-    \tk = k * 2;\n\t\t} while (k < 100 && m > 0);\n\t\tidx = (j * 2) % 100;\n\t\t\
-    memo[idx] = j;\n\t\tj = j - 1;\n\t}\n}"
+  code: |-
+    for (i = 1; i < 100 && j > 10; i = i * 3 + 1, j = j / 2) {
+        idx = (i + j) % 100;
+        memo[idx] = (i << 2) ^ (j >> 1);
+        sink += memo[idx];
+        while (k < 100 && l > 0) {
+            p = &memo[l % 100];
+            if (*p > 100) {
+                sink -= 1;
+            } else {
+                sink += 1;
+            }
+            do {
+                val = (k * k) % 50;
+                memo[val] = l + m;
+                temp = (m > 5) ? 10 : 20;
+                sink = sink ^ temp;
+                for (l = 50; l > 0 && m > 0; l = l / 2) {
+                    int noise = (i * 100) + j - k;
+                    printf("Example 1: Looping (noise:%d)\n", noise);
+                    sink += noise;
+                }
+                sink = sink + k - l;
+                k = k * 2;
+            } while (k < 100 && m > 0);
+            idx = (j * 2) % 100;
+            memo[idx] = j;
+            j = j - 1;
+        }
+    }
 - id: 3
-  code: "while (k < 100 && l > 0) {\n\tp = &memo[l % 100];\n\tif (*p > 100) {\n\t\t\
-    sink -= 1;\n\t} else {\n\t\tsink += 1;\n\t}\n\tdo {\n\t\tval = (k * k) % 50;\n\
-    \t\tmemo[val] = l + m;\n\t\ttemp = (m > 5) ? 10 : 20;\n\t\tsink = sink ^ temp;\n\
-    \t\tfor (l = 50; l > 0 && m > 0; l = l / 2) {\n\t\t\tint noise = (i * 100) + j\
-    \ - k;\n\t\t\tprintf(\"Example 1: Looping (noise:%d)\\n\", noise);\n\t\t\tsink\
-    \ += noise;\n\t\t}\n\t\tsink = sink + k - l;\n\t\tk = k * 2;\n\t} while (k < 100\
-    \ && m > 0);\n\tidx = (j * 2) % 100;\n\tmemo[idx] = j;\n\tj = j - 1;\n}"
+  code: |-
+    while (k < 100 && l > 0) {
+        p = &memo[l % 100];
+        if (*p > 100) {
+            sink -= 1;
+        } else {
+            sink += 1;
+        }
+        do {
+            val = (k * k) % 50;
+            memo[val] = l + m;
+            temp = (m > 5) ? 10 : 20;
+            sink = sink ^ temp;
+            for (l = 50; l > 0 && m > 0; l = l / 2) {
+                int noise = (i * 100) + j - k;
+                printf("Example 1: Looping (noise:%d)\n", noise);
+                sink += noise;
+            }
+            sink = sink + k - l;
+            k = k * 2;
+        } while (k < 100 && m > 0);
+        idx = (j * 2) % 100;
+        memo[idx] = j;
+        j = j - 1;
+    }
 - id: 4
-  code: "do {\n\tval = (k * k) % 50;\n\tmemo[val] = l + m;\n\ttemp = (m > 5) ? 10\
-    \ : 20;\n\tsink = sink ^ temp;\n\tfor (l = 50; l > 0 && m > 0; l = l / 2) {\n\t\
-    \tint noise = (i * 100) + j - k;\n\t\tprintf(\"Example 1: Looping (noise:%d)\\\
-    n\", noise);\n\t\tsink += noise;\n\t}\n\tsink = sink + k - l;\n\tk = k * 2;\n\
-    } while (k < 100 && m > 0);"
+  code: |-
+    do {
+        val = (k * k) % 50;
+        memo[val] = l + m;
+        temp = (m > 5) ? 10 : 20;
+        sink = sink ^ temp;
+        for (l = 50; l > 0 && m > 0; l = l / 2) {
+            int noise = (i * 100) + j - k;
+            printf("Example 1: Looping (noise:%d)\n", noise);
+            sink += noise;
+        }
+        sink = sink + k - l;
+        k = k * 2;
+    } while (k < 100 && m > 0);
 - id: 5
-  code: "for (l = 50; l > 0 && m > 0; l = l / 2) {\n\tint noise = (i * 100) + j -\
-    \ k;\n\tprintf(\"Example 1: Looping (noise:%d)\\n\", noise);\n\tsink += noise;\n\
-    }"
+  code: |-
+    for (l = 50; l > 0 && m > 0; l = l / 2) {
+        int noise = (i * 100) + j - k;
+        printf("Example 1: Looping (noise:%d)\n", noise);
+        sink += noise;
+    }

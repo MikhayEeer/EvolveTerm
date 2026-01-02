@@ -4,7 +4,7 @@ basic:
   prompt: prompts/loop_extraction/yaml_v2
   config: {}
   call_type: cli_extract
-  time: 2026-01-02T16:47
+  time: 2026-01-02T17:07
 loops:
 - id: 1
   code: |-
