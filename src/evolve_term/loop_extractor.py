@@ -22,9 +22,9 @@ class LoopExtractor:
         self.last_response: str | None = None
         self.last_method: str | None = None
 
-    def extract(self, code: str, max_loops: int = 5) -> List[str]:
+    def extract(self, code: str, max_loops: int = 5, prompt_name: str = "loop_extraction/yaml_v1") -> List[str]:
         # Use the new YAML-based prompt
-        prompt = self.prompt_repo.render("loop_extraction/yaml_v1", code=code)
+        prompt = self.prompt_repo.render(prompt_name, code=code)
         response = self.llm_client.complete(prompt)
         self.last_response = response
         
