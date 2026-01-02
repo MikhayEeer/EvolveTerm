@@ -6,6 +6,9 @@ from pathlib import Path
 from typing import Optional, List, Dict, Any
 import json
 import sys
+import re
+import yaml
+from datetime import datetime
 
 import typer
 from rich.console import Console
@@ -348,66 +351,102 @@ def translate(
 @app.command()
 def extract(
     input: Path = typer.Option(..., exists=True, help="Input file or directory"),
-    output: Optional[Path] = typer.Option(None, help="Output file or directory"),
+    output: Optional[Path] = typer.Option(None, help="Output file or directory (Deprecated for YAML output)"),
     llm_config: str = typer.Option("llm_config.json", help="Path to LLM config"),
     recursive: bool = typer.Option(False, "--recursive", "-r", help="Recursively search for files if input is directory"),
+    prompt_version: str = typer.Option("v1", "--prompt-version", "-p", help="Prompt version (v1 or v2)"),
 ) -> None:
     """
-    Extract loops from code.
+    Extract loops from code and save to YAML.
     
-    Output Format (JSON):
-    [
-        "loop_code_1",
-        "loop_code_2"
-    ]
+    Output:
+        Saves a YAML file for each input file in a 'extract_result' subdirectory 
+        next to the input file.
+        Filename format: {filename}_pmt_yaml{version}_{model}_auto.yml
     """
+    # Load config to get model details
+    config_path = Path(llm_config)
+    model_name = "unknown"
+    model_config = {}
+    if config_path.exists():
+        try:
+            model_config = json.loads(config_path.read_text(encoding="utf-8"))
+            model_name = model_config.get("model_name", model_config.get("model", "unknown"))
+        except:
+            pass
+
     llm_client = build_llm_client(llm_config)
+    # Try to get more accurate model name from client if available
+    if hasattr(llm_client, "model"):
+        model_name = llm_client.model
+    elif hasattr(llm_client, "model_name"):
+        model_name = llm_client.model_name
+
     prompt_repo = PromptRepository()
     extractor = LoopExtractor(llm_client, prompt_repo)
     
-    def process_file(f: Path) -> List[str]:
+    # Determine prompt name based on version
+    prompt_name = f"loop_extraction/yaml_{prompt_version}"
+    prompt_type = f"yaml{prompt_version}"
+
+    # Custom Dumper for block style strings
+    class LiteralDumper(yaml.SafeDumper):
+        def represent_scalar(self, tag, value, style=None):
+            if "\n" in value and tag == 'tag:yaml.org,2002:str':
+                style = '|'
+            return super().represent_scalar(tag, value, style)
+
+    def process_file(f: Path):
         code = f.read_text(encoding="utf-8")
-        return extractor.extract(code)
+        loops = extractor.extract(code, prompt_name=prompt_name)
+        
+        timestamp = datetime.now().strftime("%Y-%m-%dT%H:%M")
+        safe_model_name = re.sub(r'[^\w\-]', '', str(model_name))
+        
+        yaml_data = {
+            "basic": {
+                "name": safe_model_name,
+                "type": model_config.get("type", "llm"),
+                "prompt": f"prompts/{prompt_name}",
+                "config": model_config,
+                "call_type": "cli_extract",
+                "time": timestamp
+            },
+            "loops": [
+                {
+                    "id": i + 1,
+                    "code": loop
+                }
+                for i, loop in enumerate(loops)
+            ]
+        }
+        
+        # Output directory: sibling 'extract_result'
+        result_dir = f.parent / "extract_result"
+        result_dir.mkdir(exist_ok=True)
+        
+        filename = f"{f.stem}_pmt_{prompt_type}_{safe_model_name}_auto.yml"
+        out_path = result_dir / filename
+        
+        with open(out_path, 'w', encoding='utf-8') as yf:
+            yaml.dump(yaml_data, yf, Dumper=LiteralDumper, sort_keys=False, allow_unicode=True)
+            
+        console.print(f"Saved extraction to {out_path}")
 
     if input.is_file():
         console.print(f"Extracting loops from {input}...")
-        loops = process_file(input)
-        
-        if output:
-            if output.is_dir():
-                out_path = output / (input.stem + ".json")
-            else:
-                out_path = output
-            out_path.write_text(json.dumps(loops, indent=2), encoding="utf-8")
-            console.print(f"Saved to {out_path}")
-        else:
-            console.print(json.dumps(loops, indent=2))
+        process_file(input)
             
     elif input.is_dir():
         files = list(input.rglob("*") if recursive else input.glob("*"))
-        files = [f for f in files if f.is_file()]
+        # Filter for C/C++ files
+        extensions = {".c", ".cpp", ".h", ".hpp", ".cc", ".cxx"}
+        files = [f for f in files if f.is_file() and f.suffix.lower() in extensions]
         console.print(f"Found {len(files)} files.")
         
-        if output and not output.exists():
-            output.mkdir(parents=True)
-            
         for f in files:
             try:
-                console.print(f"Extracting {f.name}...")
-                loops = process_file(f)
-                
-                if output:
-                    try:
-                        rel_path = f.relative_to(input)
-                        out_path = output / rel_path.with_suffix(".json")
-                    except ValueError:
-                        out_path = output / (f.stem + ".json")
-                    
-                    out_path.parent.mkdir(parents=True, exist_ok=True)
-                    out_path.write_text(json.dumps(loops, indent=2), encoding="utf-8")
-                else:
-                    console.print(f"--- {f.name} ---")
-                    console.print(json.dumps(loops, indent=2))
+                process_file(f)
             except Exception as e:
                 console.print(f"[red]Error extracting {f.name}: {e}[/red]")
 
