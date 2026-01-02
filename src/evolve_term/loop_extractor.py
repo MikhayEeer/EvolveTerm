@@ -33,12 +33,20 @@ class LoopExtractor:
         
         # 2. Verify extracted loops against original code
         verified_loops = []
+        # Check if we are using the abstraction prompt (v2)
+        is_abstract_mode = "yaml_v2" in prompt_name
+
         if loops:
             for loop in loops:
-                if self._verify_loop_in_code(loop, code):
+                # In abstract mode, loops containing 'LOOP' placeholders won't match original code textually
+                # So we skip strict verification for them
+                if is_abstract_mode and "LOOP" in loop:
+                    verified_loops.append(loop)
+                elif self._verify_loop_in_code(loop, code):
                     verified_loops.append(loop)
                 else:
                     # Optional: Log that a hallucination was dropped
+                    print(f"[Debug] Dropped unverified loop: {loop[:50]}...")
                     pass
         
         if verified_loops:
