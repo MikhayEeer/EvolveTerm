@@ -415,7 +415,7 @@ def extract(
             "loops": [
                 {
                     "id": i + 1,
-                    "code": loop
+                    "code": loop.replace('\t', '    ')
                 }
                 for i, loop in enumerate(loops)
             ]
