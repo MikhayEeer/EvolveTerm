@@ -37,7 +37,11 @@ def analyze(
     use_rag_reasoning: bool = typer.Option(True, "--use-rag-reasoning/--no-rag-reasoning", 
                                            help="Use RAG references for invariant and ranking function inference; Default is enabled"),
     svm_ranker_path: Optional[Path] = typer.Option(None, "--svm-ranker", help="Path to SVMRanker root directory"),
-    known_terminating: bool = typer.Option(False, "--known-terminating", help="Hint that the program is known to terminate")
+    known_terminating: bool = typer.Option(False, "--known-terminating", help="Hint that the program is known to terminate"),
+    # Ablation parameters
+    extraction_prompt_version: str = typer.Option("v2", "--prompt-version", "-p", help="Prompt version for loop extraction (v1 or v2)"),
+    use_loops_for_embedding: bool = typer.Option(True, "--embed-loops/--embed-code", help="Use extracted loops for embedding vs full code"),
+    use_loops_for_reasoning: bool = typer.Option(True, "--reason-loops/--reason-code", help="Use extracted loops for reasoning vs full code")
 ) -> None:
     """Analyze a source snippet for termination likelihood."""
 
@@ -61,7 +65,10 @@ def analyze(
         top_k=top_k, 
         use_rag_in_reasoning=use_rag_reasoning,
         use_svm_ranker=bool(svm_ranker_path),
-        known_terminating=known_terminating
+        known_terminating=known_terminating,
+        extraction_prompt_version=extraction_prompt_version,
+        use_loops_for_embedding=use_loops_for_embedding,
+        use_loops_for_reasoning=use_loops_for_reasoning
     )
 
     # Show translation info if applicable
@@ -111,7 +118,11 @@ def batch_analyze(
     recursive: bool = typer.Option(False, "--recursive", "-r", help="Recursively search for files"),
     use_rag_reasoning: bool = typer.Option(True, "--use-rag-reasoning/--no-rag-reasoning", help="Use RAG references for invariant and ranking function inference"),
     svm_ranker_path: Optional[Path] = typer.Option(None, "--svm-ranker", help="Path to SVMRanker root directory"),
-    known_terminating: bool = typer.Option(False, "--known-terminating", help="Hint that the program is known to terminate")
+    known_terminating: bool = typer.Option(False, "--known-terminating", help="Hint that the program is known to terminate"),
+    # Ablation parameters
+    extraction_prompt_version: str = typer.Option("v2", "--prompt-version", "-p", help="Prompt version for loop extraction (v1 or v2)"),
+    use_loops_for_embedding: bool = typer.Option(True, "--embed-loops/--embed-code", help="Use extracted loops for embedding vs full code"),
+    use_loops_for_reasoning: bool = typer.Option(True, "--reason-loops/--reason-code", help="Use extracted loops for reasoning vs full code")
 ) -> None:
     """Batch analyze all C/C++ files in a directory."""
     
@@ -176,7 +187,10 @@ def batch_analyze(
                         top_k=top_k, 
                         use_rag_in_reasoning=use_rag_reasoning,
                         use_svm_ranker=bool(svm_ranker_path),
-                        known_terminating=known_terminating
+                        known_terminating=known_terminating,
+                        extraction_prompt_version=extraction_prompt_version,
+                        use_loops_for_embedding=use_loops_for_embedding,
+                        use_loops_for_reasoning=use_loops_for_reasoning
                     )
                     results.append((file_path.name, result))
                     

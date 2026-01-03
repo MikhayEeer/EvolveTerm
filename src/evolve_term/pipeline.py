@@ -44,7 +44,18 @@ class TerminationPipeline:
         self.svm_ranker = SVMRankerClient(svm_ranker_path) if svm_ranker_path else None
 
     # Core flow ------------------------------------------------------------
-    def analyze(self, code: str, top_k: int = 5, auto_build_index: bool = True, use_rag_in_reasoning: bool = True, use_svm_ranker: bool = False, known_terminating: bool = False) -> PredictionResult:
+    def analyze(self, 
+                code: str, 
+                top_k: int = 5, 
+                auto_build_index: bool = True, 
+                use_rag_in_reasoning: bool = True, 
+                use_svm_ranker: bool = False, 
+                known_terminating: bool = False,
+                # Ablation parameters
+                extraction_prompt_version: str = "v2", 
+                use_loops_for_embedding: bool = True,
+                use_loops_for_reasoning: bool = True
+                ) -> PredictionResult:
         """Run full analysis and produce a report+log capturing each stage.
 
         The report JSON will include: input code, loop extraction (loops + method + llm_response),
@@ -66,17 +77,22 @@ class TerminationPipeline:
             code = self.translator.translate(code)
 
         # Stage 1: loop extraction
-        #loops = self.loop_extractor.extract(code)
-        loops = code
-        #TODO: 关闭提取模块的消融实验
+        # Use configured prompt version
+        prompt_name = f"loop_extraction/yaml_{extraction_prompt_version}"
+        loops = self.loop_extractor.extract(code, prompt_name=prompt_name)
+        
         loop_details = {
             "loops": loops,
             "method": getattr(self.loop_extractor, "last_method", None),
             "llm_response": getattr(self.loop_extractor, "last_response", None),
+            "prompt_version": extraction_prompt_version
         }
 
         # Stage 2: embedding
-        embedding_vector = self.embedding_client.embed("\n".join(loops))
+        # Decide what to embed based on ablation settings
+        text_to_embed = "\n".join(loops) if (loops and use_loops_for_embedding) else code
+        embedding_vector = self.embedding_client.embed(text_to_embed)
+        
         try:
             embedding_list = embedding_vector.astype(float).tolist()
         except Exception:
@@ -87,6 +103,7 @@ class TerminationPipeline:
             "model": getattr(self.embedding_client, "model_name", None),
             "dimension": getattr(self.embedding_client, "dimension", None),
             "vector": embedding_list,
+            "source": "loops" if (loops and use_loops_for_embedding) else "code"
         }
 
         # Ensure index ready
@@ -109,108 +126,171 @@ class TerminationPipeline:
         # Apply user preference for RAG in reasoning
         reasoning_references = prompt_references if use_rag_in_reasoning else []
 
-        # Stage 4: Neuro-symbolic Reasoning Pipeline
+        # Stage 4: Neuro-symbolic Reasoning Pipeline (Iterative)
         
-        # Optimization: Use extracted loops for reasoning to reduce token count and noise.
-        # Fallback to full code if no loops extracted.
-        reasoning_context = "\n".join(loops) if loops else code
+        # Decide analysis targets based on ablation settings
+        if use_loops_for_reasoning and loops:
+            analysis_targets = loops
+        else:
+            analysis_targets = [code]
         
-        # 4.1 Invariant Inference
-        #invariants = self.predictor.infer_invariants(reasoning_context, reasoning_references)
-        #TODO: 消融实验，不增加不变式
-        invariants = []
+        loop_analyses = []
+        final_verification_result = "Verified" # Optimistic default
+        final_ranking_functions = []
+        final_invariants = []
+        
+        for i, loop_code in enumerate(analysis_targets):
+            loop_id = i + 1
+            
+            # Context preparation: Replace LOOP{id} with summaries of previous loops
+            current_context = loop_code
+            for prev_res in loop_analyses:
+                prev_id = prev_res['id']
+                placeholder = f"LOOP{prev_id}"
+                if placeholder in current_context:
+                    # Replace placeholder with a comment summarizing the inner loop
+                    # This makes the code valid for C parsers (like SVMRanker) and informative for LLMs
+                    summary = f"/* Nested Loop {prev_id}: {prev_res['verification_result']} (RF: {prev_res['ranking_function']}) */"
+                    current_context = current_context.replace(placeholder, summary)
+            
+            print(f"[Info] Analyzing Loop {loop_id}...")
+            
+            # 4.1 Invariant Inference
+            # invariants = self.predictor.infer_invariants(current_context, reasoning_references)
+            invariants = [] # Ablation: disabled
 
-        # 4.2 Ranking Function Inference
-        ranking_function = None
-        ranking_explanation = ""
-        verification_result = "Skipped"
-        
-        # Try SVMRanker if enabled and available
-        if use_svm_ranker and self.svm_ranker:
-            # 1. Ask LLM for template/params
-            _, explanation, metadata = self.predictor.infer_ranking(
-                reasoning_context, invariants, reasoning_references, 
-                mode="template", known_terminating=known_terminating
-            )
+            # 4.2 Ranking Function Inference
+            ranking_function = None
+            ranking_explanation = ""
+            verification_result = "Skipped"
             
-            # Extract params from metadata
-            # Expected metadata: {"type": "nested", "depth": 2, ...}
-            rf_type = metadata.get("type", "lnested")
-            depth = metadata.get("depth", 1)
-            
-            # Map LLM output to SVMRanker args if needed
-            # For now assume LLM outputs compatible mode strings or we map them
-            svm_mode = "lnested"
-            if "multi" in str(rf_type).lower():
-                svm_mode = "lmulti"
-            
-            # Run SVMRanker
-            try:
-                with tempfile.NamedTemporaryFile(mode='w', suffix='.c', delete=False, encoding='utf-8') as tmp:
-                    tmp.write(code) # Use full code
-                    tmp_path = tmp.name
+            # Try SVMRanker if enabled and available
+            if use_svm_ranker and self.svm_ranker:
+                # 1. Ask LLM for template/params
+                _, explanation, metadata = self.predictor.infer_ranking(
+                    current_context, invariants, reasoning_references, 
+                    mode="template", known_terminating=known_terminating
+                )
                 
-                # Call SVMRanker
-                svm_result_status, svm_rf, _ = self.svm_ranker.run(Path(tmp_path), mode=svm_mode, depth=depth)
+                rf_type = metadata.get("type", "lnested")
+                depth = metadata.get("depth", 1)
+                svm_mode = "lnested"
+                if "multi" in str(rf_type).lower():
+                    svm_mode = "lmulti"
                 
-                if svm_result_status == "TERMINATE" and svm_rf:
-                    ranking_function = svm_rf
-                    ranking_explanation = f"Generated and Verified by SVMRanker (mode={svm_mode}, depth={depth}). LLM Explanation: {explanation}"
-                    verification_result = "Verified"
-                elif svm_result_status == "NONTERM":
-                     ranking_explanation = f"SVMRanker returned NONTERM (mode={svm_mode})."
-                
-                os.unlink(tmp_path)
-            except Exception as e:
-                print(f"[Warning] SVMRanker execution failed: {e}")
-                if os.path.exists(tmp_path):
+                # Run SVMRanker
+                try:
+                    with tempfile.NamedTemporaryFile(mode='w', suffix='.c', delete=False, encoding='utf-8') as tmp:
+                        # For SVMRanker, we need a complete C file. 
+                        # 'current_context' might be just a loop snippet.
+                        # If it's a snippet, we wrap it in main() for SVMRanker?
+                        # SVMRanker usually expects a full program.
+                        # If 'current_context' is just "while(...) { ... }", we need to wrap it.
+                        # However, 'code' is the full program.
+                        # If we use 'code', SVMRanker analyzes the whole thing, not just this loop.
+                        # But for abstract loops, we want to analyze the abstract version.
+                        # So we write 'current_context' wrapped in main.
+                        
+                        content_to_write = current_context
+                        if "main" not in current_context:
+                            content_to_write = f"void main() {{\n{current_context}\n}}"
+                            # Add variable declarations? This is tricky. 
+                            # SVMRanker needs valid C. Snippets might miss declarations.
+                            # Fallback: If snippet, maybe skip SVMRanker or try best effort?
+                            # For now, let's try writing it. If it fails compilation, SVMRanker will fail.
+                        
+                        tmp.write(content_to_write)
+                        tmp_path = tmp.name
+                    
+                    # Call SVMRanker
+                    svm_result_status, svm_rf, _ = self.svm_ranker.run(Path(tmp_path), mode=svm_mode, depth=depth)
+                    
+                    if svm_result_status == "TERMINATE" and svm_rf:
+                        ranking_function = svm_rf
+                        ranking_explanation = f"Generated and Verified by SVMRanker (mode={svm_mode}, depth={depth}). LLM Explanation: {explanation}"
+                        verification_result = "Verified"
+                    elif svm_result_status == "NONTERM":
+                         ranking_explanation = f"SVMRanker returned NONTERM (mode={svm_mode})."
+                    
                     os.unlink(tmp_path)
+                except Exception as e:
+                    print(f"[Warning] SVMRanker execution failed for Loop {loop_id}: {e}")
+                    if os.path.exists(tmp_path):
+                        os.unlink(tmp_path)
 
-        # Fallback to direct LLM generation if SVMRanker failed or not used
-        if not ranking_function:
-            ranking_function, ranking_explanation, _ = self.predictor.infer_ranking(
-                reasoning_context, invariants, reasoning_references, 
-                mode="direct", known_terminating=known_terminating
-            )
+            # Fallback to direct LLM generation
+            if not ranking_function:
+                ranking_function, ranking_explanation, _ = self.predictor.infer_ranking(
+                    current_context, invariants, reasoning_references, 
+                    mode="direct", known_terminating=known_terminating
+                )
+
+            # 4.3 Z3 Verification
+            if verification_result != "Verified":
+                if ranking_function:
+                    # Z3 Verifier also needs valid code or robust parsing.
+                    # Our Z3Verifier uses LLM to translate to Python/Z3, so it handles snippets well.
+                    verification_result = self.verifier.verify(current_context, invariants, ranking_function)
+                else:
+                    verification_result = "Skipped"
             
-        ## issue: 1215fix: ranking function is none
-        ##FixedTODO
-
-        # 4.3 Z3 Verification
-        # Only verify if not already verified by SVMRanker
-        if verification_result != "Verified":
-            print(f"[Debug] Ready to Z3 verify\nInvar:{invariants}\nRF:{ranking_function}")
-            if ranking_function:
-                verification_result = self.verifier.verify(reasoning_context, invariants, ranking_function)
-            else:
-                verification_result = "Skipped"
-            ## issue: 1215fix: get failed in z3 solver function
-            ##TODO
+            # Store results
+            loop_analyses.append({
+                "id": loop_id,
+                "code": loop_code,
+                "context_used": current_context,
+                "invariants": invariants,
+                "ranking_function": ranking_function,
+                "verification_result": verification_result,
+                "explanation": ranking_explanation
+            })
+            
+            final_ranking_functions.append(f"Loop {loop_id}: {ranking_function}")
+            final_invariants.extend(invariants)
+            
+            if verification_result != "Verified":
+                final_verification_result = "Failed" # One failure fails all (conservative)
 
         # 4.4 Final Prediction (Synthesis)
-        # We synthesize the final label based on verification result or fallback to LLM prediction
-        if verification_result == "Verified":
+        # Synthesize based on aggregated results
+        ranking_function_summary = "; ".join(final_ranking_functions)
+        
+        if final_verification_result == "Verified":
             prediction = {
                 "label": "terminating",
-                "reasoning": f"Verified ranking function: {ranking_function}. Explanation: {ranking_explanation}"
+                "reasoning": f"All loops verified. Ranking Functions: {ranking_function_summary}"
             }
             raw_prediction = "Verified by Z3/SVMRanker"
         else:
-            # Fallback to standard LLM prediction if verification failed or no ranking function found
-            # We include the intermediate results in the prompt context implicitly via 'loops' or we could add them
-            # For now, let's stick to the original prediction prompt but maybe we should update it to include invariants?
-            # To keep it simple and robust, we use the original prediction flow as fallback/synthesis
-            prediction, raw_prediction = self.predictor.predict(code, loops, prompt_references, invariants, ranking_function)
+            # Fallback: If any loop failed verification, ask LLM for final verdict on the WHOLE code
+            # but provide the loop analysis details.
             
-            # Append failure notice if verification failed
-            if verification_result != "Verified":
-                 prediction["reasoning"] += f" [FAILED RUN: Verification failed or skipped. Result: {verification_result}]"
+            # Construct a detailed prompt context
+            analysis_summary = "\n".join([
+                f"Loop {res['id']} Analysis:\n- Code: {res['code'][:50]}...\n- RF: {res['ranking_function']}\n- Result: {res['verification_result']}"
+                for res in loop_analyses
+            ])
+            
+            # We pass the original code and the analysis summary to the predictor
+            # Note: predictor.predict signature is fixed, so we might need to hack the 'loops' arg
+            # to pass the summary.
+            
+            prediction, raw_prediction = self.predictor.predict(
+                code, 
+                [analysis_summary], # Pass summary as "loops" context
+                prompt_references, 
+                final_invariants, 
+                ranking_function_summary
+            )
+            
+            if final_verification_result != "Verified":
+                 prediction["reasoning"] += f" [Verification Failed. Analysis: {analysis_summary}]"
 
         # Build comprehensive report payload
         report_payload = {
             "run_id": run_id,
-            "original_code": original_code,  # Original input code (before translation)
-            "code": code,  # Code after translation (if enabled) or same as original
+            "original_code": original_code,
+            "code": code,
             "translation": {
                 "enabled": self.enable_translation,
                 "translated": original_code != code,
@@ -224,10 +304,10 @@ class TerminationPipeline:
             ],
             "references": [ref.__dict__ for ref in references],
             "neuro_symbolic": {
-                "invariants": invariants,
-                "ranking_function": ranking_function,
-                "ranking_explanation": ranking_explanation,
-                "verification_result": verification_result
+                "invariants": final_invariants,
+                "ranking_function": ranking_function_summary,
+                "verification_result": final_verification_result,
+                "loop_analyses": loop_analyses # Detailed per-loop results
             },
             "prediction_raw": raw_prediction,
             "prediction": prediction,
