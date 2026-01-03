@@ -1,0 +1,33 @@
+basic:
+  name: qwen3-max
+  type: llm
+  prompt: prompts/loop_extraction/yaml_v2
+  config: {}
+  call_type: cli_extract
+  time: 2026-01-03T14:47
+loops:
+- id: 1
+  code: |-
+    for(i=0; i<N; i++)
+    {
+        sum[0] = sum[0] + i + 1;
+    }
+- id: 2
+  code: |-
+    for(i=0; i<N; i++)
+    {
+        a[i] = N*(N+1)/2;
+    }
+- id: 3
+  code: |-
+    for(i=0; i<N; i++)
+    {
+        if(i != 2 && N % (i-2) == 1)
+        {
+            c[i] = sum[0];
+        } else {
+            c[i] = a[i];
+        }
+    }
+- id: 4
+  code: "for(i=0; i<N; i++)\n{\n    {;\n//@ assert(c[i] == N*(N+1)/2);\n}\n \n}"

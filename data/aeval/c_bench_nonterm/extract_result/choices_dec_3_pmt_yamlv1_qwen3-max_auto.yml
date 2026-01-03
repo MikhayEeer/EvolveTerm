@@ -1,0 +1,17 @@
+basic:
+  name: qwen3-max
+  type: llm
+  prompt: prompts/loop_extraction/yaml_v1
+  config: {}
+  call_type: cli_extract
+  time: 2026-01-02T17:23
+loops:
+- id: 1
+  code: |-
+    while (x > 0 && y > 0 && z > 0)
+    {
+      int a = __VERIFIER_nondet_int();
+      if (a == 0) {x--; y++; z++;}
+      else if (a == 1) {y--; x++; z++;}
+      else {y++; x++; z--;}
+    }

@@ -1,0 +1,22 @@
+basic:
+  name: qwen3-max
+  type: llm
+  prompt: prompts/loop_extraction/yaml_v2
+  config: {}
+  call_type: cli_extract
+  time: 2026-01-03T14:40
+loops:
+- id: 1
+  code: |-
+    while( i < SIZE ) {
+        a[i] = a[i-1] + 1;
+        i = i + 1;
+    }
+- id: 2
+  code: |-
+    for ( x = 1 ; x < SIZE ; x++ ) {
+        {;
+    //@ assert(  a[x] >= a[x-1]  );
+    }
+
+    }

@@ -1,0 +1,16 @@
+basic:
+  name: qwen3-max
+  type: llm
+  prompt: prompts/loop_extraction/yaml_v2
+  config: {}
+  call_type: cli_extract
+  time: 2026-01-03T14:13
+loops:
+- id: 1
+  code: "while (x < 99) {\n    \n    if (y % 2 == 0) x += 2;\n    else x++;\n\n  \
+    \  if (y % 2 == 0) x += 2;\n    else x -= 2;\n\n    if (y % 2 == 0) x += 2;\n\
+    \    else x += 2;\n\n    if (y % 2 == 0) x += 2;\n    else x -= 2;\n\n    if (y\
+    \ % 2 == 0) x += 2;\n    else x += 2;\n\n    if (y % 2 == 0) x += 2;\n    else\
+    \ x -= 4;\n\n    if (y % 2 == 0) x += 2;\n    else x += 4;\n\n    if (y % 2 ==\
+    \ 0) x += 2;\n    else x += 2;\n\n    if (y % 2 == 0) x += 2;\n    else x -= 4;\n\
+    \n    if (y % 2 == 0) x += 2;\n    else x -= 4;\n}"

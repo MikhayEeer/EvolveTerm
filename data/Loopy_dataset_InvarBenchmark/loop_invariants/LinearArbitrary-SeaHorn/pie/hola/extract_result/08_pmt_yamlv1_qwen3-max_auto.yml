@@ -1,0 +1,13 @@
+basic:
+  name: qwen3-max
+  type: llm
+  prompt: prompts/loop_extraction/yaml_v1
+  config: {}
+  call_type: cli_extract
+  time: 2026-01-03T14:03
+loops:
+- id: 1
+  code: "int x = 0, y = 0;\nwhile(unknown1()){\n  if(unknown2()){ \n     x++; \n \
+    \    y+=100; \n  }\n  else if (unknown3()){ \n     if (x >= 4) { \n         x++;\
+    \ \n         y++; \n     } \n     if (x < 0){\n         y = -y;\n     }\n  }\n\
+    \ \n}"

@@ -1,0 +1,18 @@
+basic:
+  name: qwen3-max
+  type: llm
+  prompt: prompts/loop_extraction/yaml_v2
+  config: {}
+  call_type: cli_extract
+  time: 2026-01-02T17:33
+loops:
+- id: 1
+  code: "while (i + i1 - j - j1 >= 1) {\n    nondetNat = __VERIFIER_nondet_int();\n\
+    \    if (nondetNat < 0) {\n        nondetNat = -nondetNat;\n    }\n    i = i -\
+    \ nondetNat;\n    nondetPos = __VERIFIER_nondet_int();\n    if (nondetPos < 0)\
+    \ {\n        nondetPos = -nondetPos;\n    }\n    nondetPos = nondetPos + 1;\n\
+    \    j = j + nondetPos;\n  \n    nondetNat1 = __VERIFIER_nondet_int();\n    if\
+    \ (nondetNat1 < 0) {\n        nondetNat1 = -nondetNat1;\n    }\n    i1 = i1 -\
+    \ nondetNat1;\n    nondetPos1 = __VERIFIER_nondet_int();\n    if (nondetPos1 <\
+    \ 0) {\n        nondetPos1 = -nondetPos1;\n    }\n    nondetPos1 = nondetPos1\
+    \ + 1;\n    j1 = j1 + nondetPos1;\n}"

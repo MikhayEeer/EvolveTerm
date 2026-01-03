@@ -1,0 +1,17 @@
+basic:
+  name: qwen3-max
+  type: llm
+  prompt: prompts/loop_extraction/yaml_v2
+  config: {}
+  call_type: cli_extract
+  time: 2026-01-03T14:33
+loops:
+- id: 1
+  code: |-
+    while( newbufsize < pathlen + len + 1 )
+    {
+        if( newbufsize >= 0x80000000 )
+            newbufsize = 0xffffffff;
+        else
+            newbufsize *= 2;
+    }

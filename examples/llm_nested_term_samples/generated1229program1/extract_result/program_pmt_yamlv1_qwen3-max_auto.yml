@@ -4,7 +4,7 @@ basic:
   prompt: prompts/loop_extraction/yaml_v1
   config: {}
   call_type: cli_extract
-  time: 2026-01-02T17:01
+  time: 2026-01-02T17:14
 loops:
 - id: 1
   code: for(temp = 0; temp < 100; temp++) memo[temp] = 0;

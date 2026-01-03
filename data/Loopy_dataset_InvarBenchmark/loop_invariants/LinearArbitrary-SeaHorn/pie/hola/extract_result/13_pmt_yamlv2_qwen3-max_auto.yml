@@ -1,0 +1,11 @@
+basic:
+  name: qwen3-max
+  type: llm
+  prompt: prompts/loop_extraction/yaml_v2
+  config: {}
+  call_type: cli_extract
+  time: 2026-01-03T14:02
+loops:
+- id: 1
+  code: "while(unknown1()){ \n  if (flag)\n    j = j + 4;\n  else {\n    j = j + 2;\n\
+    \    k = k + 1;\n  }\n}"

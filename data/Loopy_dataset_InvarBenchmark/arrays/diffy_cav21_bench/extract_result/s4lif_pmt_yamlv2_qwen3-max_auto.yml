@@ -1,0 +1,30 @@
+basic:
+  name: qwen3-max
+  type: llm
+  prompt: prompts/loop_extraction/yaml_v2
+  config: {}
+  call_type: cli_extract
+  time: 2026-01-03T14:35
+loops:
+- id: 1
+  code: |-
+    for(i=0; i<N; i++)
+    {
+        a[i] = 1;
+    }
+- id: 2
+  code: |-
+    for(i=0; i<N; i++)
+    {
+        if(a[i] == 1) {
+            a[i] = a[i] + 4;
+        } else {
+            a[i] = a[i] - 1;
+        }
+    }
+- id: 3
+  code: |-
+    for(i=0; i<N; i++)
+    {
+        sum[0] = sum[0] + a[i];
+    }

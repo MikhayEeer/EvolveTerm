@@ -1,0 +1,19 @@
+basic:
+  name: qwen3-max
+  type: llm
+  prompt: prompts/loop_extraction/yaml_v1
+  config: {}
+  call_type: cli_extract
+  time: 2026-01-03T14:01
+loops:
+- id: 1
+  code: |-
+    int k = unknown_int();
+    int j = unknown_int();
+    int n = unknown_int();
+
+    if (!(n>=1 && k>=n && j==0)) return 0;
+    while (j<=n-1) {
+      j++;
+      k--;
+    }

@@ -1,0 +1,12 @@
+basic:
+  name: qwen3-max
+  type: llm
+  prompt: prompts/loop_extraction/yaml_v1
+  config: {}
+  call_type: cli_extract
+  time: 2026-01-03T14:03
+loops:
+- id: 1
+  code: "int i = 1;\nint j = 0;\nint z = i - j;\nint x = 0;\nint y = 0;\nint w = 0;\n\
+    \nwhile(unknown2()) \n{\n    z += x + y + w;\n    y++;\n    if(z % 2 == 1) \n\
+    \      x++;\n    w += 2; \n}"

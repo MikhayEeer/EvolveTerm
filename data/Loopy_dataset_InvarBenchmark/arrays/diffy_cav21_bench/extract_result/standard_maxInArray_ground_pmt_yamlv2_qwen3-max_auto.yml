@@ -1,0 +1,29 @@
+basic:
+  name: qwen3-max
+  type: llm
+  prompt: prompts/loop_extraction/yaml_v2
+  config: {}
+  call_type: cli_extract
+  time: 2026-01-03T14:45
+loops:
+- id: 1
+  code: |-
+    for (int j = 0; j < N ; j++ ) {
+        a[j] = unknown_int();
+    }
+- id: 2
+  code: |-
+    while ( i < N ) {
+        if ( a[i] > max[0] ) {
+            max[0] = a[i];
+        }
+        i = i + 1;
+    }
+- id: 3
+  code: |-
+    for ( x = 0 ; x < N ; x++ ) {
+        {;
+    //@ assert(  a[x] <= max[0] );
+    }
+
+    }

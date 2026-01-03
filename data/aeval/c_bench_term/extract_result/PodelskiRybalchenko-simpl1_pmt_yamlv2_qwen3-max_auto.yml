@@ -1,0 +1,15 @@
+basic:
+  name: qwen3-max
+  type: llm
+  prompt: prompts/loop_extraction/yaml_v2
+  config: {}
+  call_type: cli_extract
+  time: 2026-01-02T17:33
+loops:
+- id: 1
+  code: "while (x > 0 && y > 0) {\n    if (__VERIFIER_nondet_int() != 0) {\n     \
+    \   \n        newx = __VERIFIER_nondet_int();\n        if (newx >= x) break;\n\
+    \        x = newx;\n        \n        newy = __VERIFIER_nondet_int();\n      \
+    \  if (newy <= y) break;\n        y = newy;\n        \n    } else {\n        \n\
+    \        newy = __VERIFIER_nondet_int();\n        if (newy >= y) break;\n    \
+    \    y = newy;\n        \n    }\n}"

@@ -1,0 +1,35 @@
+basic:
+  name: qwen3-max
+  type: llm
+  prompt: prompts/loop_extraction/yaml_v2
+  config: {}
+  call_type: cli_extract
+  time: 2026-01-03T14:41
+loops:
+- id: 1
+  code: |-
+    for (j = 0; j < i+1; j++)
+    {
+        a[j] = a[j] + (i + 1);
+    }
+- id: 2
+  code: |-
+    for (i = 0; i < N; i++)
+    {
+        LOOP1
+    }
+- id: 3
+  code: |-
+    for (i = 0; i < N; i++)
+    {
+        a[i] = 0;
+    }
+- id: 4
+  code: |-
+    for (i = 0; i < N; i++)
+    {
+        {;
+    //@ assert(a[i] == (N*(N+1) - i*(i+1))/2 );
+    }
+
+    }

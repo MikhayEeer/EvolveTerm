@@ -1,0 +1,43 @@
+basic:
+  name: qwen3-max
+  type: llm
+  prompt: prompts/loop_extraction/yaml_v1
+  config: {}
+  call_type: cli_extract
+  time: 2026-01-03T14:53
+loops:
+- id: 1
+  code: |-
+    int i = 0;
+    /* Loop_A */  while ( i < N ) {
+        a[i] = 42;
+        i = i + 1;
+    }
+- id: 2
+  code: |-
+    i = 0;
+    /* Loop_B */  while ( i < N ) {
+        a[i] = 43;
+        i = i + 1;
+    }
+- id: 3
+  code: |-
+    i = 0;
+    /* Loop_C */  while ( i < N ) {
+        a[i] = 44;
+        i = i + 1;
+    }
+- id: 4
+  code: |-
+    i = 0;
+    /* Loop_D */  while ( i < N ) {
+        a[i] = 45;
+        i = i + 1;
+    }
+- id: 5
+  code: |-
+    i = 0;
+    /* Loop_E */  while ( i < N ) {
+        a[i] = 46;
+        i = i + 1;
+    }

@@ -1,0 +1,26 @@
+basic:
+  name: qwen3-max
+  type: llm
+  prompt: prompts/loop_extraction/yaml_v2
+  config: {}
+  call_type: cli_extract
+  time: 2026-01-03T14:48
+loops:
+- id: 1
+  code: |-
+    for ( a = 0 ; a < N ; a++ ) {
+        a1[a] = unknown_int();
+    }
+- id: 2
+  code: |-
+    for ( i = 0 ; i < N ; i++ ) {
+        a2[i] = a1[i];
+    }
+- id: 3
+  code: |-
+    for ( x = 0 ; x < N ; x++ ) {
+        {;
+    //@ assert(  a1[x] == a2[x]  );
+    }
+
+    }

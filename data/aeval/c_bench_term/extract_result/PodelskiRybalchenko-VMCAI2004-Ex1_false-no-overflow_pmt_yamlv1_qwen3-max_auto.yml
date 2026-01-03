@@ -1,0 +1,23 @@
+basic:
+  name: qwen3-max
+  type: llm
+  prompt: prompts/loop_extraction/yaml_v1
+  config: {}
+  call_type: cli_extract
+  time: 2026-01-02T17:34
+loops:
+- id: 1
+  code: |-
+    while (i - j >= 1) {
+        nondetNat = __VERIFIER_nondet_int();
+        if (nondetNat < 0) {
+            nondetNat = -nondetNat;
+        }
+        i = i - nondetNat;
+        nondetPos = __VERIFIER_nondet_int();
+        if (nondetPos < 0) {
+            nondetPos = -nondetPos;
+        }
+        nondetPos = nondetPos + 1;
+        j = j + nondetPos;
+    }

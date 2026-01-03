@@ -1,0 +1,12 @@
+basic:
+  name: qwen3-max
+  type: llm
+  prompt: prompts/loop_extraction/yaml_v2
+  config: {}
+  call_type: cli_extract
+  time: 2026-01-03T13:59
+loops:
+- id: 1
+  code: "for (glob2_p_off = glob2_pathbuf_off;\n    glob2_p_off <= glob2_pathlim_off;\n\
+    \    glob2_p_off++) {\n  \n  {;\n//@ assert(0 <= glob2_p_off );\n}\n\n  {;\n//@\
+    \ assert(glob2_p_off < MAXPATHLEN + 1);\n}\n\n}"

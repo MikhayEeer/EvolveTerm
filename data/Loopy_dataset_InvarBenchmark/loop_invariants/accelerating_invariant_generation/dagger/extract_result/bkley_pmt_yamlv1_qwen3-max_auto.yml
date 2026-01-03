@@ -1,0 +1,19 @@
+basic:
+  name: qwen3-max
+  type: llm
+  prompt: prompts/loop_extraction/yaml_v1
+  config: {}
+  call_type: cli_extract
+  time: 2026-01-03T14:11
+loops:
+- id: 1
+  code: "while (unknown_int())\n{\n    if (unknown_int())\n    {\n        if (! (invalid\
+    \ >= 1)) \nreturn 0;\n\n        nonexclusive=nonexclusive+exclusive;\n       \
+    \ exclusive=0;\n        invalid=invalid-1;\n        unowned=unowned+1;\n    }\n\
+    \    else\n    {\n        if (unknown_int())\n        {\n            if (! (nonexclusive\
+    \ + unowned >=1)) \nreturn 0;\n\n            invalid=invalid + unowned + nonexclusive-1;\n\
+    \            exclusive=exclusive+1;\n            unowned=0;\n            nonexclusive=0;\n\
+    \        }\n        else\n        {\n            if (! (invalid >= 1)) \nreturn\
+    \ 0;\n\n            unowned=0;\n            nonexclusive=0;\n            exclusive=1;\n\
+    \            invalid=invalid+unowned+exclusive+nonexclusive-1;\n        }\n  \
+    \  }\n}"

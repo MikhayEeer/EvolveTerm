@@ -1,0 +1,21 @@
+basic:
+  name: qwen3-max
+  type: llm
+  prompt: prompts/loop_extraction/yaml_v2
+  config: {}
+  call_type: cli_extract
+  time: 2026-01-02T17:36
+loops:
+- id: 1
+  code: |-
+    while (j > 0 && d > 0)
+    {
+      if (0 == __VERIFIER_nondet_int())
+      {
+        j--;
+      }
+      else
+      {
+        d--;
+      }
+    }

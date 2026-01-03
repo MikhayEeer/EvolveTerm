@@ -1,0 +1,12 @@
+basic:
+  name: qwen3-max
+  type: llm
+  prompt: prompts/loop_extraction/yaml_v2
+  config: {}
+  call_type: cli_extract
+  time: 2026-01-03T14:24
+loops:
+- id: 1
+  code: "while (life < death) {\n    temp = death;\n    death = life + 1;\n    life\
+    \ = temp;\n    \n    if (choose < life || choose < death) {\n        life = choose;\n\
+    \    }\n}"

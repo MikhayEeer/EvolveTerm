@@ -1,0 +1,26 @@
+basic:
+  name: qwen3-max
+  type: llm
+  prompt: prompts/loop_extraction/yaml_v1
+  config: {}
+  call_type: cli_extract
+  time: 2026-01-03T14:40
+loops:
+- id: 1
+  code: |-
+    /* Loop_A */  for(i=0; i<N; i++)
+    {
+        sum1[0] = sum1[0] + 2;
+    }
+- id: 2
+  code: |-
+    /* Loop_B */  for(i=0; i<N; i++)
+    {
+        sum2[0] = sum2[0] + 1;
+    }
+- id: 3
+  code: "/* Loop_C */  for(i=0; i<N; i++)\n{\n    if(i != 0 && N % i == 0)\n    {\n\
+    \        c[i] = sum2[0];\n    } else {\n        c[i] = sum1[0]; \n    }\n}"
+- id: 4
+  code: "/* Loop_D */  for(i=0; i<N; i++)\n{\n    {;\n//@ assert(c[i] == 2*N);\n}\n\
+    \ \n}"

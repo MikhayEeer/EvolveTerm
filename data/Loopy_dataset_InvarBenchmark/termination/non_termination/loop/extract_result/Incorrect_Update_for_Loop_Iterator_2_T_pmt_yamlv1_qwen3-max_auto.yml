@@ -1,0 +1,11 @@
+basic:
+  name: qwen3-max
+  type: llm
+  prompt: prompts/loop_extraction/yaml_v1
+  config: {}
+  call_type: cli_extract
+  time: 2026-01-03T14:36
+loops:
+- id: 1
+  code: "unsigned char l = unknown_uchar();\n\nwhile( l-- )\n{\n    if( l && l-- )\n\
+    \    {\n        \n    }\n}"

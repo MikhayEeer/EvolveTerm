@@ -1,0 +1,11 @@
+basic:
+  name: qwen3-max
+  type: llm
+  prompt: prompts/loop_extraction/yaml_v2
+  config: {}
+  call_type: cli_extract
+  time: 2026-01-03T13:58
+loops:
+- id: 1
+  code: "while( l < n ) {\n    if(!(l%3))\n      i = i + 1;\n    else if(!(l%2)) \n\
+    \        j = j+1;\n    else \n      k = k+1;\n    l = l+1;\n}"

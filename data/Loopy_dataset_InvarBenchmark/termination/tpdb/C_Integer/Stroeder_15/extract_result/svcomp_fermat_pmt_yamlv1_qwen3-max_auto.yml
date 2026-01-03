@@ -1,0 +1,21 @@
+basic:
+  name: qwen3-max
+  type: llm
+  prompt: prompts/loop_extraction/yaml_v1
+  config: {}
+  call_type: cli_extract
+  time: 2026-01-03T14:24
+loops:
+- id: 1
+  code: |-
+    while (((a*a*a) != ((b*b*b)+(c*c*c))) && c <= MAX) {
+        a = a + 1;
+        if (a>MAX) {
+            a = 1;
+            b = b + 1;
+        }
+        if (b>MAX) {
+            b = 1;
+            c = c + 1;
+        }
+    }

@@ -1,0 +1,24 @@
+basic:
+  name: qwen3-max
+  type: llm
+  prompt: prompts/loop_extraction/yaml_v1
+  config: {}
+  call_type: cli_extract
+  time: 2026-01-03T13:56
+loops:
+- id: 1
+  code: |-
+    unsigned int i = 0;
+    unsigned int j = 0;
+    unsigned int k = 0;
+
+    while (k < 0x0fffffff) {
+      i = i + 1;
+      j = j + 2;
+      k = k + 3;
+
+      {;
+    //@ assert(k == (i + j));
+    }
+
+    }

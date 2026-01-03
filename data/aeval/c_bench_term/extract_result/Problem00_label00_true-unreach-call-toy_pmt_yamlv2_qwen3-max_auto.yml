@@ -1,0 +1,19 @@
+basic:
+  name: qwen3-max
+  type: llm
+  prompt: prompts/loop_extraction/yaml_v2
+  config: {}
+  call_type: cli_extract
+  time: 2026-01-02T17:35
+loops:
+- id: 1
+  code: |-
+    while(output != 0)
+    {
+        // read input
+        int input = __VERIFIER_nondet_int();
+        if ((input != 1) && (input != 2) && (input != 3) && (input != 4) && (input != 5) && (input != 6)) return -2;
+
+        // operate eca engine
+        output = calculate_output(input);
+    }

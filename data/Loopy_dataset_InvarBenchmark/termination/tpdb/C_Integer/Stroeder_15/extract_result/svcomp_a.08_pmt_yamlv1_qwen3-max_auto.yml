@@ -1,0 +1,16 @@
+basic:
+  name: qwen3-max
+  type: llm
+  prompt: prompts/loop_extraction/yaml_v1
+  config: {}
+  call_type: cli_extract
+  time: 2026-01-03T14:28
+loops:
+- id: 1
+  code: |-
+    c = 0;
+    while (x > y) {
+        x = x + 1;
+        y = y + 2;
+        c = c + 1;
+    }

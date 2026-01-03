@@ -1,0 +1,23 @@
+basic:
+  name: qwen3-max
+  type: llm
+  prompt: prompts/loop_extraction/yaml_v2
+  config: {}
+  call_type: cli_extract
+  time: 2026-01-03T13:58
+loops:
+- id: 1
+  code: |-
+    while(x<1000000){
+        if(x<500000)
+            x++;
+        else{
+            if(x<750000){
+                x++;
+            }
+            else{
+                x=x+2;
+            }
+            y++;
+        }
+    }
