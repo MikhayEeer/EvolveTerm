@@ -9,81 +9,35 @@ loops:
 - id: 1
   code: for(temp = 0; temp < 100; temp++) memo[temp] = 0;
 - id: 2
-  code: |-
-    for (i = 1; i < 100 && j > 10; i = i * 3 + 1, j = j / 2) {
-        idx = (i + j) % 100;
-        memo[idx] = (i << 2) ^ (j >> 1);
-        sink += memo[idx];
-        while (k < 100 && l > 0) {
-            p = &memo[l % 100];
-            if (*p > 100) {
-                sink -= 1;
-            } else {
-                sink += 1;
-            }
-            do {
-                val = (k * k) % 50;
-                memo[val] = l + m;
-                temp = (m > 5) ? 10 : 20;
-                sink = sink ^ temp;
-                for (l = 50; l > 0 && m > 0; l = l / 2) {
-                    int noise = (i * 100) + j - k;
-                    printf("Example 1: Looping (noise:%d)\n", noise);
-                    sink += noise;
-                }
-                sink = sink + k - l;
-                k = k * 2;
-            } while (k < 100 && m > 0);
-            idx = (j * 2) % 100;
-            memo[idx] = j;
-            j = j - 1;
-        }
-    }
+  code: "for (i = 1; i < 100 && j > 10; i = i * 3 + 1, j = j / 2) {\n    idx = (i\
+    \ + j) % 100;\n    memo[idx] = (i << 2) ^ (j >> 1);\n    sink += memo[idx];\n\
+    \    while (k < 100 && l > 0) {\n        p = &memo[l % 100];\n        if (*p >\
+    \ 100) {\n            sink -= 1;\n        } else {\n            sink += 1;\n \
+    \       }\n        do {\n            val = (k * k) % 50;\n            memo[val]\
+    \ = l + m;\n            temp = (m > 5) ? 10 : 20;\n            sink = sink ^ temp;\n\
+    \            for (l = 50; l > 0 && m > 0; l = l / 2) {\n                int noise\
+    \ = (i * 100) + j - k;\n                printf(\"Example 1: Looping (noise:%d)\\\
+    n\", noise);\n                sink += noise;\n            }\n            sink\
+    \ = sink + k - l;\n            k = k * 2;\n        } while (k < 100 && m > 0);\n\
+    \        idx = (j * 2) % 100;\n        memo[idx] = j;\n        j = j - 1;\n  \
+    \  }\n}"
 - id: 3
-  code: |-
-    while (k < 100 && l > 0) {
-        p = &memo[l % 100];
-        if (*p > 100) {
-            sink -= 1;
-        } else {
-            sink += 1;
-        }
-        do {
-            val = (k * k) % 50;
-            memo[val] = l + m;
-            temp = (m > 5) ? 10 : 20;
-            sink = sink ^ temp;
-            for (l = 50; l > 0 && m > 0; l = l / 2) {
-                int noise = (i * 100) + j - k;
-                printf("Example 1: Looping (noise:%d)\n", noise);
-                sink += noise;
-            }
-            sink = sink + k - l;
-            k = k * 2;
-        } while (k < 100 && m > 0);
-        idx = (j * 2) % 100;
-        memo[idx] = j;
-        j = j - 1;
-    }
+  code: "while (k < 100 && l > 0) {\n    p = &memo[l % 100];\n    if (*p > 100) {\n\
+    \        sink -= 1;\n    } else {\n        sink += 1;\n    }\n    do {\n     \
+    \   val = (k * k) % 50;\n        memo[val] = l + m;\n        temp = (m > 5) ?\
+    \ 10 : 20;\n        sink = sink ^ temp;\n        for (l = 50; l > 0 && m > 0;\
+    \ l = l / 2) {\n            int noise = (i * 100) + j - k;\n            printf(\"\
+    Example 1: Looping (noise:%d)\\n\", noise);\n            sink += noise;\n    \
+    \    }\n        sink = sink + k - l;\n        k = k * 2;\n    } while (k < 100\
+    \ && m > 0);\n    idx = (j * 2) % 100;\n    memo[idx] = j;\n    j = j - 1;\n}"
 - id: 4
-  code: |-
-    do {
-        val = (k * k) % 50;
-        memo[val] = l + m;
-        temp = (m > 5) ? 10 : 20;
-        sink = sink ^ temp;
-        for (l = 50; l > 0 && m > 0; l = l / 2) {
-            int noise = (i * 100) + j - k;
-            printf("Example 1: Looping (noise:%d)\n", noise);
-            sink += noise;
-        }
-        sink = sink + k - l;
-        k = k * 2;
-    } while (k < 100 && m > 0);
+  code: "do {\n    val = (k * k) % 50;\n    memo[val] = l + m;\n    temp = (m > 5)\
+    \ ? 10 : 20;\n    sink = sink ^ temp;\n    for (l = 50; l > 0 && m > 0; l = l\
+    \ / 2) {\n        int noise = (i * 100) + j - k;\n        printf(\"Example 1:\
+    \ Looping (noise:%d)\\n\", noise);\n        sink += noise;\n    }\n    sink =\
+    \ sink + k - l;\n    k = k * 2;\n} while (k < 100 && m > 0);"
 - id: 5
-  code: |-
-    for (l = 50; l > 0 && m > 0; l = l / 2) {
-        int noise = (i * 100) + j - k;
-        printf("Example 1: Looping (noise:%d)\n", noise);
-        sink += noise;
-    }
+  code: "for (l = 50; l > 0 && m > 0; l = l / 2) {\n    int noise = (i * 100) + j\
+    \ - k;\n    printf(\"Example 1: Looping (noise:%d)\\n\", noise);\n    sink +=\
+    \ noise;\n}"
+source_path: examples/llm_nested_term_samples/generated1229program1/program.c

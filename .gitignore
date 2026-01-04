@@ -216,6 +216,10 @@ cython_debug/
 .cursorignore
 .cursorindexingignore
 
+# SVMRanker debug outputs
+svmranker_last_input.c
+svmranker_last_input.bpl
+
 # Marimo
 marimo/_static/
 marimo/_lsp/
