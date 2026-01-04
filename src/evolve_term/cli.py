@@ -475,6 +475,7 @@ def invariant(
     recursive: bool = typer.Option(False, "--recursive", "-r", help="Recursively search for files if input is directory"),
     mode: str = typer.Option("auto", "--mode", "-m", help="Filter mode for batch processing: 'auto' (all), 'yaml' (only extract results), 'code' (only C/C++ files)"),
     extract_prompt_version: str = typer.Option("all", "--extract-pmt-v", "--extv", help="Filter YAML files by extract prompt version in filename: all, v1, v2"),
+    prompt_version: str = typer.Option("yaml_cot", "--prompt-version", "-pv", help="Prompt version for invariant inference: 'yaml_cot' (default) or 'yaml_direct'"),
 ) -> None:
     """
     Infer invariants for the given code or extracted YAML.
@@ -556,7 +557,7 @@ def invariant(
 
         all_invariants = []
         for i, loop_code in enumerate(loops_to_analyze):
-            invariants = predictor.infer_invariants(loop_code, references)
+            invariants = predictor.infer_invariants(loop_code, references, prompt_version=prompt_version)
             all_invariants.append({
                 "loop_id": i + 1,
                 "code": loop_code,
@@ -575,13 +576,14 @@ def invariant(
                 "name": safe_model_name,
                 "type": model_config.get("type", "llm"),
                 "task": "invariant_inference",
+                "prompt_version": prompt_version,
                 "config": model_config,
                 "time": timestamp
             },
             "invariants_result": all_invariants
         }
         
-        filename = f"{f.stem}_inv_{safe_model_name}_auto.yml"
+        filename = f"{f.stem}_inv_{safe_model_name}_{prompt_version}.yml"
         if output_root:
             rel_parent = Path(".") if base_dir is None else f.parent.relative_to(base_dir)
             result_dir = output_root / rel_parent / "invariant_result"
