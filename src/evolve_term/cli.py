@@ -411,7 +411,7 @@ def extract(
                 style = '|'
             return super().represent_scalar(tag, value, style)
 
-    def process_file(f: Path):
+    def process_file(f: Path, base_dir: Optional[Path]):
         code = f.read_text(encoding="utf-8")
         loops = extractor.extract(code, prompt_name=prompt_name)
         
@@ -419,6 +419,8 @@ def extract(
         safe_model_name = re.sub(r'[^\w\-]', '', str(model_name))
         
         yaml_data = {
+            "source_file": f.name,
+            "source_path": str(f.relative_to(base_dir)) if base_dir else str(f),
             "basic": {
                 "name": safe_model_name,
                 "type": model_config.get("type", "llm"),
@@ -450,7 +452,7 @@ def extract(
 
     if input.is_file():
         console.print(f"Extracting loops from {input}...")
-        process_file(input)
+        process_file(input, None)
             
     elif input.is_dir():
         extensions = {".c", ".cpp", ".h", ".hpp", ".cc", ".cxx"}
@@ -459,7 +461,7 @@ def extract(
         
         for f in files:
             try:
-                process_file(f)
+                process_file(f, input)
             except Exception as e:
                 console.print(f"[red]Error extracting {f.name}: {e}[/red]")
 
@@ -524,15 +526,18 @@ def invariant(
                 style = '|'
             return super().represent_scalar(tag, value, style)
 
-    def process_file(f: Path):
+    def process_file(f: Path, base_dir: Optional[Path]):
         loops_to_analyze = []
         source_type = "code"
+        source_path = str(f.relative_to(base_dir)) if base_dir else str(f)
         
         # Determine input type
         if f.suffix.lower() in {'.yml', '.yaml'}:
             source_type = "yaml"
             try:
                 data = yaml.safe_load(f.read_text(encoding="utf-8"))
+                if isinstance(data, dict) and "source_path" in data:
+                    source_path = data["source_path"]
                 if "loops" in data:
                     loops_to_analyze = [item["code"] for item in data["loops"]]
                 else:
@@ -563,11 +568,12 @@ def invariant(
         safe_model_name = re.sub(r'[^\w\-]', '', str(model_name))
         
         yaml_data = {
+            "source_file": f.name,
+            "source_path": source_path,
             "basic": {
                 "name": safe_model_name,
                 "type": model_config.get("type", "llm"),
                 "task": "invariant_inference",
-                "source_file": f.name,
                 "config": model_config,
                 "time": timestamp
             },
@@ -587,7 +593,7 @@ def invariant(
         console.print(f"Saved invariants to {out_path}")
 
     if input.is_file():
-        process_file(input)
+        process_file(input, None)
     elif input.is_dir():
         # Find both code and yaml files
         code_extensions = {".c", ".cpp", ".h", ".hpp", ".cc", ".cxx"}
@@ -614,7 +620,7 @@ def invariant(
         console.print(f"Found {len(filtered_files)} files to analyze (mode={mode}).")
         for f in filtered_files:
             try:
-                process_file(f)
+                process_file(f, input)
             except Exception as e:
                 console.print(f"[red]Error processing {f.name}: {e}[/red]")
 
@@ -719,14 +725,15 @@ def ranking(
             }
         return {"ranking_function": rf, "explanation": explanation}
 
-    def process_yaml_input(f: Path) -> List[Dict[str, Any]]:
+    def process_yaml_input(f: Path) -> tuple[List[Dict[str, Any]], str]:
         try:
             content = yaml.safe_load(f.read_text(encoding="utf-8"))
         except Exception as e:
             console.print(f"[red]Error parsing YAML {f}: {e}[/red]")
-            return []
+            return [], str(f)
 
         results = []
+        source_path = content.get("source_path") if isinstance(content, dict) else None
         # Case 1: Invariant Result YAML
         if "invariants_result" in content:
             console.print(f"[blue]Detected Invariant Result YAML: {f.name}[/blue]")
@@ -787,11 +794,11 @@ def ranking(
         else:
             console.print(f"[yellow]Unknown YAML format in {f.name}. Expected 'loops' or 'invariants_result'.[/yellow]")
             
-        return results
+        return results, source_path or str(f)
 
     if input.is_file():
         if input.suffix.lower() in {'.yml', '.yaml'}:
-            results = process_yaml_input(input)
+            results, source_path = process_yaml_input(input)
             if output:
                 if output.is_dir():
                     out_path = output / (input.stem + "_ranking.yml")
@@ -801,6 +808,7 @@ def ranking(
                 # Wrap in a structure
                 out_data = {
                     "source_file": input.name,
+                    "source_path": source_path,
                     "task": "ranking_inference",
                     "ranking_results": results
                 }
@@ -861,7 +869,7 @@ def ranking(
                 console.print(f"Processing {f.name}...")
                 
                 if f.suffix.lower() in yaml_extensions:
-                    results = process_yaml_input(f)
+                    results, source_path = process_yaml_input(f)
                     if output:
                         try:
                             rel_path = f.relative_to(input)
@@ -874,6 +882,7 @@ def ranking(
                         out_path.parent.mkdir(parents=True, exist_ok=True)
                         out_data = {
                             "source_file": f.name,
+                            "source_path": source_path,
                             "task": "ranking_inference",
                             "ranking_results": results
                         }
@@ -1188,11 +1197,6 @@ def svmranker(
             return content
         return []
 
-    def wrap_code(code: str) -> str:
-        if "main" not in code:
-            return f"void main() {{\n{code}\n}}"
-        return code
-
     def run_on_entry(entry: Dict[str, Any]) -> Dict[str, Any]:
         code = entry.get("code", "")
         template_type = entry.get("template_type") or entry.get("type") or "lnested"
@@ -1204,7 +1208,7 @@ def svmranker(
             depth_val = 1
 
         with tempfile.NamedTemporaryFile(mode="w", suffix=".c", delete=False, encoding="utf-8") as tmp:
-            tmp.write(wrap_code(code))
+            tmp.write(code)
             tmp_path = tmp.name
 
         try:
