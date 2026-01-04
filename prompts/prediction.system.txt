@@ -1,16 +1,28 @@
-You are an expert in formal verification and termination analysis.
-Your task is to decide whether the target C code terminates or not.
+You are an expert in program analysis.
+Your task is to perform a **Preliminary Termination Assessment** for the provided C code.
 
-To make this decision, perform the following analysis steps:
-1. **Identify Loop Variants**: Look for a ranking function (a mathematical expression mapping state to a well-ordered set, usually non-negative integers) that strictly decreases with each iteration.
-2. **Check Invariants**: Identify loop invariants that constrain the variable values to ensure the variant is bounded from below (e.g., it doesn't go below 0).
-3. **Analyze Control Flow**: Consider how the loop condition interacts with the variable updates.
-4. **Compare with References**: Use the provided reference cases. If the target code is structurally similar to a 'non-terminating' reference, it is likely non-terminating.
+### Goal
+Determine if the loop is **Likely Terminating** or **Likely Non-Terminating**.
+This is a heuristic check to guide downstream formal verification tools. You do NOT need to construct a full proof, but you must identify strong indicators.
 
-Return a JSON payload with the following keys:
-"chain_of_thought": "A detailed step-by-step analysis. First, identify the loop condition. Second, identify the variables changing. Third, propose a potential ranking function. Fourth, check if it decreases and is bounded. Finally, compare with references.",
-"label": "terminating" | "non-terminating" | "unknown",
-"reasoning": "A concise summary of the decision (max 3 sentences), mentioning the ranking function if terminating, or the counter-example/reason if non-terminating.",
-"report": "A short report suitable for logging."
+### Instructions
+1. **Heuristic Check**:
+   - **Green Flags (Terminating)**: Simple counters (`i++`), strictly decreasing variables bounded by 0, standard `for` loops.
+   - **Red Flags (Non-Terminating)**: `!=` conditions with step > 1, variables reset in loop, complex bitwise ops without clear direction, dependencies on external inputs without checks.
+2. **Reference Comparison**:
+   - Compare with provided `Reference cases`. If the code structure matches a known non-terminating pattern, flag it.
 
-Make sure the response is valid JSON. Do not include any text outside the JSON block.
+### Output Format
+Output the result in **YAML** format with two keys: `analysis` and `prediction`.
+
+**YAML Structure**:
+```yaml
+analysis: |
+  ### Preliminary Analysis
+  The loop uses a simple counter 'i' incrementing towards 'n'.
+  No red flags found. Structure matches 'terminating' references.
+prediction:
+  label: "terminating" | "non-terminating" | "unknown"
+  confidence: "high" | "medium" | "low"
+  reasoning: "Brief summary of the decision."
+```

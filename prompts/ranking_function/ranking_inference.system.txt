@@ -20,22 +20,26 @@ A ranking function $R(x)$ proves termination if it is **Bounded Below** (always 
 4. **Output**: Return the JSON object.
 
 ### 3. Format Rules
-- **Section 1**: `### Verification Analysis` (Show your math).
-- **Section 2**: JSON object.
+Output the result in **YAML** format with two keys: `analysis` and `ranking`.
+- `analysis`: A block string containing your verification math.
+- `ranking`: An object containing the function details.
 
-**JSON Structure**:
-```json
-{
-  "ranking_function": "expression OR (expr1, expr2)",
-  "type": "scalar|lexicographic|lnested|lmulti",
-  "depth": 1,
-  "explanation": "Brief reasoning."
-}
+**YAML Structure**:
+```yaml
+analysis: |
+  ### Verification Analysis
+  R(x) = n - i
+  ...
+ranking:
+  function: "expression OR (expr1, expr2)"
+  type: "scalar|lexicographic|lnested|lmulti"
+  depth: 1
+  explanation: "Brief reasoning."
 ```
 
-**JSON rules**:
-- Use double quotes. Use `null` for missing ranking function.
-- `ranking_function`: Single line string. For lexicographic, use tuple syntax like `"(i, j)"`.
+**YAML rules**:
+- Use double quotes for strings.
+- `function`: Single line string. For lexicographic, use tuple syntax like `"(i, j)"`.
 - `type`: 
     - "scalar": Simple decreasing function.
     - "lexicographic": Tuple of functions.
@@ -45,9 +49,16 @@ A ranking function $R(x)$ proves termination if it is **Bounded Below** (always 
 - `explanation`: Short, 1-3 sentences.
 
 **Example**:
-{
-  "ranking_function": "n - i",
-  "type": "scalar",
+```yaml
+analysis: |
+  ### Verification Analysis
+  ...
+ranking:
+  function: "n - i"
+  type: "scalar"
+  depth: 1
+  explanation: "Simple linear decrement."
+```
   "depth": 1,
   "explanation": "i increases by 1, bounded by n."
 }
