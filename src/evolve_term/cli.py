@@ -15,13 +15,14 @@ import typer
 from rich.console import Console
 from rich.table import Table
 
-from .models import PendingReviewCase, KnowledgeCase
+from .models import PendingReviewCase
 from .pipeline import TerminationPipeline
 from .translator import CodeTranslator
 from .loop_extractor import LoopExtractor
 from .predict import Predictor
 from .verifier import Z3Verifier
 from .svm_ranker import SVMRankerClient
+from .cli_utils import ensure_output_dir, collect_files, load_references
 from .prompts_loader import PromptRepository
 from .llm_client import build_llm_client
 
@@ -334,12 +335,10 @@ def translate(
             console.print(translated)
             
     elif input.is_dir():
-        files = list(input.rglob("*") if recursive else input.glob("*"))
-        files = [f for f in files if f.is_file()]
+        files = collect_files(input, recursive)
         console.print(f"Found {len(files)} files to translate.")
         
-        if output and not output.exists():
-            output.mkdir(parents=True)
+        ensure_output_dir(output)
             
         for f in files:
             try:
@@ -454,10 +453,8 @@ def extract(
         process_file(input)
             
     elif input.is_dir():
-        files = list(input.rglob("*") if recursive else input.glob("*"))
-        # Filter for C/C++ files
         extensions = {".c", ".cpp", ".h", ".hpp", ".cc", ".cxx"}
-        files = [f for f in files if f.is_file() and f.suffix.lower() in extensions]
+        files = collect_files(input, recursive, extensions=extensions)
         console.print(f"Found {len(files)} files.")
         
         for f in files:
@@ -518,10 +515,7 @@ def invariant(
     prompt_repo = PromptRepository()
     predictor = Predictor(llm_client, prompt_repo)
     
-    references = []
-    if references_file:
-        data = json.loads(references_file.read_text(encoding="utf-8"))
-        references = [KnowledgeCase(**item) for item in data]
+    references = load_references(references_file)
 
     # Custom Dumper for block style strings
     class LiteralDumper(yaml.SafeDumper):
@@ -599,8 +593,7 @@ def invariant(
         code_extensions = {".c", ".cpp", ".h", ".hpp", ".cc", ".cxx"}
         yaml_extensions = {".yml", ".yaml"}
         
-        files = list(input.rglob("*") if recursive else input.glob("*"))
-        files = [f for f in files if f.is_file()]
+        files = collect_files(input, recursive)
         
         filtered_files = []
         for f in files:
@@ -646,11 +639,9 @@ def invariant(
             console.print(json.dumps(invariants, indent=2))
             
     elif input.is_dir():
-        files = list(input.rglob("*") if recursive else input.glob("*"))
-        files = [f for f in files if f.is_file()]
+        files = collect_files(input, recursive)
         
-        if output and not output.exists():
-            output.mkdir(parents=True)
+        ensure_output_dir(output)
             
         for f in files:
             try:
@@ -713,10 +704,7 @@ def ranking(
     else:
         raise typer.BadParameter("ranking_mode must be one of: direct, template, template-known")
     
-    references = []
-    if references_file:
-        data = json.loads(references_file.read_text(encoding="utf-8"))
-        references = [KnowledgeCase(**item) for item in data]
+    references = load_references(references_file)
 
     def process_file(f: Path, invs: List[str]) -> Dict[str, Any]:
         code = f.read_text(encoding="utf-8")
@@ -849,8 +837,7 @@ def ranking(
         code_extensions = {".c", ".cpp", ".h", ".hpp", ".cc", ".cxx"}
         yaml_extensions = {".yml", ".yaml"}
         
-        files = list(input.rglob("*") if recursive else input.glob("*"))
-        files = [f for f in files if f.is_file()]
+        files = collect_files(input, recursive)
         
         filtered_files = []
         for f in files:
@@ -867,8 +854,7 @@ def ranking(
         
         console.print(f"Found {len(filtered_files)} files to analyze (mode={mode}).")
         
-        if output and not output.exists():
-            output.mkdir(parents=True)
+        ensure_output_dir(output)
             
         for f in filtered_files:
             try:
@@ -933,10 +919,7 @@ def predict(
     predictor = Predictor(llm_client, prompt_repo)
     loop_extractor = LoopExtractor(llm_client, prompt_repo)
     
-    references = []
-    if references_file:
-        data = json.loads(references_file.read_text(encoding="utf-8"))
-        references = [KnowledgeCase(**item) for item in data]
+    references = load_references(references_file)
 
     def process_yaml_input(f: Path) -> List[Dict[str, Any]]:
         try:
@@ -1045,11 +1028,9 @@ def predict(
                 console.print(json.dumps(result, indent=2))
 
     elif input.is_dir():
-        files = list(input.rglob("*") if recursive else input.glob("*"))
-        files = [f for f in files if f.is_file()]
+        files = collect_files(input, recursive)
         
-        if output and not output.exists():
-            output.mkdir(parents=True)
+        ensure_output_dir(output)
             
         for f in files:
             try:
@@ -1163,11 +1144,9 @@ def z3verify(
             console.print(f"Result: {result}")
             
     elif input.is_dir():
-        files = list(input.rglob("*") if recursive else input.glob("*"))
-        files = [f for f in files if f.is_file()]
+        files = collect_files(input, recursive)
         
-        if output and not output.exists():
-            output.mkdir(parents=True)
+        ensure_output_dir(output)
             
         for f in files:
             try:
@@ -1266,11 +1245,9 @@ def svmranker(
         else:
             console.print(yaml.dump(result, sort_keys=False, allow_unicode=True))
     elif input.is_dir():
-        files = list(input.rglob("*") if recursive else input.glob("*"))
-        files = [f for f in files if f.is_file() and f.suffix.lower() in {".yml", ".yaml"}]
+        files = collect_files(input, recursive, extensions={".yml", ".yaml"})
 
-        if output and not output.exists():
-            output.mkdir(parents=True)
+        ensure_output_dir(output)
 
         for f in files:
             try:
