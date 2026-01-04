@@ -1,0 +1,11 @@
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  source_file: determ_term_7_pmt_yamlv1_qwen3-max_auto.yml
+  config: {}
+  time: 2026-01-04T05:03
+invariants_result:
+- loop_id: 1
+  code: while (a == 0) { a = a + b; b = b + c; c = c + d; d = d + e; e = e + 1; }
+  invariants: []

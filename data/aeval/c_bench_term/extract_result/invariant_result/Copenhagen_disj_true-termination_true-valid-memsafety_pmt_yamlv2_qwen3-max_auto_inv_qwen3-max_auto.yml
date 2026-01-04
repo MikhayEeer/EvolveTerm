@@ -1,0 +1,16 @@
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  source_file: Copenhagen_disj_true-termination_true-valid-memsafety_pmt_yamlv2_qwen3-max_auto.yml
+  config: {}
+  time: 2026-01-04T02:53
+invariants_result:
+- loop_id: 1
+  code: |-
+    while (x >= 0 || y >= 0) {
+        oldx = x;
+        x = y - 1;
+        y = oldx - 1;
+    }
+  invariants: []

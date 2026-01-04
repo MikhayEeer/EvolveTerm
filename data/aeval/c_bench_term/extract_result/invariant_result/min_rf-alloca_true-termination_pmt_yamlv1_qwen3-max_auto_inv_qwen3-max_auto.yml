@@ -1,0 +1,17 @@
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  source_file: min_rf-alloca_true-termination_pmt_yamlv1_qwen3-max_auto.yml
+  config: {}
+  time: 2026-01-04T05:51
+invariants_result:
+- loop_id: 1
+  code: |-
+    while (y > 0 && x > 0) {
+        if (x > y) z = y;
+        else z = x;
+        if (0 == __VERIFIER_nondet_int()) {y = y + x; x = z - 1; z = y + z; }
+        else {x = y + x; y = z - 1; z = x + z; }
+    }
+  invariants: []

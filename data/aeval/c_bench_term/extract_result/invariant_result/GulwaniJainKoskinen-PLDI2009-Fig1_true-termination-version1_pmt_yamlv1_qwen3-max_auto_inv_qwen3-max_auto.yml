@@ -1,0 +1,19 @@
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  source_file: GulwaniJainKoskinen-PLDI2009-Fig1_true-termination-version1_pmt_yamlv1_qwen3-max_auto.yml
+  config: {}
+  time: 2026-01-04T05:17
+invariants_result:
+- loop_id: 1
+  code: |-
+    tmp = id+1;
+    while(tmp!=id) {
+        if (tmp <= maxId) {
+            tmp = tmp + 1;
+        } else {
+            tmp = -1;
+        }
+    }
+  invariants: []

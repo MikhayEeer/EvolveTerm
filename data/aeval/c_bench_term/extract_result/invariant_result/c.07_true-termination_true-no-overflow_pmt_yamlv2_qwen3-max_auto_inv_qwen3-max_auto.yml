@@ -1,0 +1,17 @@
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  source_file: c.07_true-termination_true-no-overflow_pmt_yamlv2_qwen3-max_auto.yml
+  config: {}
+  time: 2026-01-04T04:48
+invariants_result:
+- loop_id: 1
+  code: |-
+    while ((i <= 100) && (j <= k) && (k > -2147483648)) {
+        tmp = i;
+        i = j;
+        j = tmp + 1;
+        k = k - 1;
+    }
+  invariants: []

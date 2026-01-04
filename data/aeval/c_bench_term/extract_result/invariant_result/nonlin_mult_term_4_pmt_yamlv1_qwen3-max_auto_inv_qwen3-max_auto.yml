@@ -1,0 +1,11 @@
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  source_file: nonlin_mult_term_4_pmt_yamlv1_qwen3-max_auto.yml
+  config: {}
+  time: 2026-01-04T03:47
+invariants_result:
+- loop_id: 1
+  code: while (i >= j) { i = i*d; j = j*b; }
+  invariants: []

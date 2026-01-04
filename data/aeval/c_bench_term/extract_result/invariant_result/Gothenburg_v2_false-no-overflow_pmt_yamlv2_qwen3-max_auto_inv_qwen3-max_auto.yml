@@ -1,0 +1,15 @@
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  source_file: Gothenburg_v2_false-no-overflow_pmt_yamlv2_qwen3-max_auto.yml
+  config: {}
+  time: 2026-01-04T02:26
+invariants_result:
+- loop_id: 1
+  code: |-
+    while (x >= 0 || y >= 0) {
+      x = x + a - b - 1;
+      y = y + b - a - 1;
+    }
+  invariants: []

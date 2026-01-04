@@ -1,0 +1,22 @@
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  source_file: ChawdharyCookGulwaniSagivYang-ESOP2008-aaron6_true-termination_pmt_yamlv1_qwen3-max_auto.yml
+  config: {}
+  time: 2026-01-04T04:06
+invariants_result:
+- loop_id: 1
+  code: |-
+    while (x <= n && x >= 2 * tx + y && y >= ty + 1 && x >= tx + 1) {
+      if (__VERIFIER_nondet_int() != 0) {
+        tx = x;
+        ty = y;
+        x = __VERIFIER_nondet_int();
+        y = __VERIFIER_nondet_int();
+      } else {
+        tx = x;
+        x = __VERIFIER_nondet_int();
+      }
+    }
+  invariants: []

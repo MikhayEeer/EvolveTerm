@@ -1,0 +1,19 @@
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  source_file: Masse-VMCAI2014-Fig1a_true-termination_pmt_yamlv1_qwen3-max_auto.yml
+  config: {}
+  time: 2026-01-04T04:41
+invariants_result:
+- loop_id: 1
+  code: |-
+    while (a >= 0) {
+        a = a + b;
+        if (b >= 0) {
+            b = -b - 1;
+        } else {
+            b = -b;
+        }
+    }
+  invariants: []

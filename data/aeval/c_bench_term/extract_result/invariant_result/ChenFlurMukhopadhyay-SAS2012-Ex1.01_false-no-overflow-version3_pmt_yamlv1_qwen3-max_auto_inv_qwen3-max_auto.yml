@@ -1,0 +1,15 @@
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  source_file: ChenFlurMukhopadhyay-SAS2012-Ex1.01_false-no-overflow-version3_pmt_yamlv1_qwen3-max_auto.yml
+  config: {}
+  time: 2026-01-04T03:50
+invariants_result:
+- loop_id: 1
+  code: |-
+    while (x < 0 && y > 0) {
+      x = -3*x - 17;
+      y = -4*y + 8;
+    }
+  invariants: []

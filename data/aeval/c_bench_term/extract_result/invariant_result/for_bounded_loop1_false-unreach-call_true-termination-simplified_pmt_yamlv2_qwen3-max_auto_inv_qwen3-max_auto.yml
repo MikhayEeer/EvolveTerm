@@ -1,0 +1,19 @@
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  source_file: for_bounded_loop1_false-unreach-call_true-termination-simplified_pmt_yamlv2_qwen3-max_auto.yml
+  config: {}
+  time: 2026-01-04T04:47
+invariants_result:
+- loop_id: 1
+  code: |-
+    for(i=0; i<n; i++)
+    {
+      x = x-y;
+      y = __VERIFIER_nondet_int();
+      x = x+y;
+    }
+  invariants:
+  - 0 <= i && i <= n
+  - x - y == \old(x - y)

@@ -1,0 +1,22 @@
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  source_file: PodelskiRybalchenko-LICS2004-Fig2_true-termination-modif2_pmt_yamlv1_qwen3-max_auto.yml
+  config: {}
+  time: 2026-01-04T03:09
+invariants_result:
+- loop_id: 1
+  code: |-
+    while (x > 0 && y > 0) {
+      int old_x = x;
+      int old_y = y;
+      if (0 == __VERIFIER_nondet_int()) {
+        x = old_x - 1;
+        y = old_x;
+      } else {
+        x = old_y - 3;
+        y = old_x + 2;
+      }
+    }
+  invariants: []

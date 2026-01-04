@@ -1,0 +1,15 @@
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  source_file: ex1_false-no-overflow_true-termination_pmt_yamlv2_qwen3-max_auto.yml
+  config: {}
+  time: 2026-01-04T05:36
+invariants_result:
+- loop_id: 1
+  code: |-
+    while (y > 0) {
+        r = r*x;
+        y = y - 1;
+    }
+  invariants: []

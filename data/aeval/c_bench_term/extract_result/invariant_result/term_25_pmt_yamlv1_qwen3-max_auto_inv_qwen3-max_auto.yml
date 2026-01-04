@@ -1,0 +1,19 @@
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  source_file: term_25_pmt_yamlv1_qwen3-max_auto.yml
+  config: {}
+  time: 2026-01-04T00:56
+invariants_result:
+- loop_id: 1
+  code: |-
+    int c = 0;
+
+    while (w == x + y + z){
+      if (c < 100) y --;
+      c++;
+      x = x + y + c;
+      z = z - y;
+    }
+  invariants: []

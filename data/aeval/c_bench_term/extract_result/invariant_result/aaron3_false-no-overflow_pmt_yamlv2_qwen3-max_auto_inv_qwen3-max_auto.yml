@@ -1,0 +1,20 @@
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  source_file: aaron3_false-no-overflow_pmt_yamlv2_qwen3-max_auto.yml
+  config: {}
+  time: 2026-01-04T02:49
+invariants_result:
+- loop_id: 1
+  code: |-
+    while (x >= y && x <= tx + z) {
+        if (__VERIFIER_nondet_int() != 0) {
+            z = z - 1;
+            tx = x;
+            x = __VERIFIER_nondet_int();
+        } else {
+            y = y + 1;
+        }
+    }
+  invariants: []
