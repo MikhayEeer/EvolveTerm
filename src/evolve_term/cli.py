@@ -8,6 +8,7 @@ import json
 import sys
 import re
 import yaml
+import tempfile
 from datetime import datetime
 
 import typer
@@ -20,6 +21,7 @@ from .translator import CodeTranslator
 from .loop_extractor import LoopExtractor
 from .predict import Predictor
 from .verifier import Z3Verifier
+from .svm_ranker import SVMRankerClient
 from .prompts_loader import PromptRepository
 from .llm_client import build_llm_client
 
@@ -680,6 +682,11 @@ def ranking(
     llm_config: str = typer.Option("llm_config.json", help="Path to LLM config"),
     recursive: bool = typer.Option(False, "--recursive", "-r", help="Recursively search for files if input is directory"),
     mode: str = typer.Option("auto", "--mode", "-m", help="Filter mode for batch processing: 'auto' (all), 'yaml' (only extract/invariant results), 'code' (only C/C++ files)"),
+    ranking_mode: str = typer.Option(
+        "direct",
+        "--ranking-mode",
+        help="Ranking prompt mode: 'direct', 'template', or 'template-known'",
+    ),
 ) -> None:
     """
     Infer ranking function for the given code.
@@ -695,15 +702,33 @@ def ranking(
     llm_client = build_llm_client(llm_config)
     prompt_repo = PromptRepository()
     predictor = Predictor(llm_client, prompt_repo)
+
+    ranking_mode_value = ranking_mode.strip().lower()
+    if ranking_mode_value in {"template-known", "template_known"}:
+        rf_mode = "template"
+        rf_known_terminating = True
+    elif ranking_mode_value in {"direct", "template"}:
+        rf_mode = ranking_mode_value
+        rf_known_terminating = False
+    else:
+        raise typer.BadParameter("ranking_mode must be one of: direct, template, template-known")
     
     references = []
     if references_file:
         data = json.loads(references_file.read_text(encoding="utf-8"))
         references = [KnowledgeCase(**item) for item in data]
 
-    def process_file(f: Path, invs: List[str]) -> Dict[str, str]:
+    def process_file(f: Path, invs: List[str]) -> Dict[str, Any]:
         code = f.read_text(encoding="utf-8")
-        rf, explanation, _ = predictor.infer_ranking(code, invs, references)
+        rf, explanation, metadata = predictor.infer_ranking(
+            code, invs, references, mode=rf_mode, known_terminating=rf_known_terminating
+        )
+        if rf_mode == "template":
+            return {
+                "template_type": metadata.get("type"),
+                "template_depth": metadata.get("depth"),
+                "explanation": explanation,
+            }
         return {"ranking_function": rf, "explanation": explanation}
 
     def process_yaml_input(f: Path) -> List[Dict[str, Any]]:
@@ -723,15 +748,25 @@ def ranking(
                 invs = item.get("invariants", [])
                 
                 console.print(f"  Inferring ranking for Loop {loop_id}...")
-                rf, explanation, _ = predictor.infer_ranking(code, invs, references)
-                
-                results.append({
+                rf, explanation, metadata = predictor.infer_ranking(
+                    code, invs, references, mode=rf_mode, known_terminating=rf_known_terminating
+                )
+                result_entry = {
                     "loop_id": loop_id,
                     "code": code,
                     "invariants": invs,
-                    "ranking_function": rf,
-                    "explanation": explanation
-                })
+                    "explanation": explanation,
+                }
+                if rf_mode == "template":
+                    result_entry.update(
+                        {
+                            "template_type": metadata.get("type"),
+                            "template_depth": metadata.get("depth"),
+                        }
+                    )
+                else:
+                    result_entry["ranking_function"] = rf
+                results.append(result_entry)
                 
         # Case 2: Extract Result YAML
         elif "loops" in content:
@@ -742,15 +777,25 @@ def ranking(
                 # No invariants in extract result
                 
                 console.print(f"  Inferring ranking for Loop {loop_id}...")
-                rf, explanation, _ = predictor.infer_ranking(code, [], references)
-                
-                results.append({
+                rf, explanation, metadata = predictor.infer_ranking(
+                    code, [], references, mode=rf_mode, known_terminating=rf_known_terminating
+                )
+                result_entry = {
                     "loop_id": loop_id,
                     "code": code,
                     "invariants": [],
-                    "ranking_function": rf,
-                    "explanation": explanation
-                })
+                    "explanation": explanation,
+                }
+                if rf_mode == "template":
+                    result_entry.update(
+                        {
+                            "template_type": metadata.get("type"),
+                            "template_depth": metadata.get("depth"),
+                        }
+                    )
+                else:
+                    result_entry["ranking_function"] = rf
+                results.append(result_entry)
         else:
             console.print(f"[yellow]Unknown YAML format in {f.name}. Expected 'loops' or 'invariants_result'.[/yellow]")
             
@@ -1024,7 +1069,7 @@ def predict(
 
 
 @app.command()
-def verify(
+def z3verify(
     input: Path = typer.Option(..., exists=True, help="Input code file or directory"),
     ranking_func: Optional[str] = typer.Option(None, help="Ranking function string (for single file)"),
     ranking_file: Optional[Path] = typer.Option(None, help="File containing ranking function (JSON {ranking_function: ...} or raw text)"),
@@ -1143,3 +1188,105 @@ def verify(
                     console.print(f"Result: {result}")
             except Exception as e:
                 console.print(f"[red]Error verifying {f.name}: {e}[/red]")
+
+
+@app.command()
+def svmranker(
+    input: Path = typer.Option(..., exists=True, help="Input YAML file or directory from ranking template output"),
+    svm_ranker_path: Path = typer.Option(..., "--svm-ranker", help="Path to SVMRanker root directory"),
+    output: Optional[Path] = typer.Option(None, help="Output file or directory"),
+    recursive: bool = typer.Option(False, "--recursive", "-r", help="Recursively search for files if input is directory"),
+) -> None:
+    """
+    Run SVMRanker using template parameters from ranking-template YAML output.
+    """
+    client = SVMRankerClient(str(svm_ranker_path))
+
+    def parse_results(content: Any) -> List[Dict[str, Any]]:
+        if isinstance(content, dict) and "ranking_results" in content:
+            return content["ranking_results"] or []
+        if isinstance(content, list):
+            return content
+        return []
+
+    def wrap_code(code: str) -> str:
+        if "main" not in code:
+            return f"void main() {{\n{code}\n}}"
+        return code
+
+    def run_on_entry(entry: Dict[str, Any]) -> Dict[str, Any]:
+        code = entry.get("code", "")
+        template_type = entry.get("template_type") or entry.get("type") or "lnested"
+        template_depth = entry.get("template_depth") or entry.get("depth") or 1
+        mode = "lmulti" if "multi" in str(template_type).lower() else "lnested"
+        try:
+            depth_val = int(template_depth)
+        except Exception:
+            depth_val = 1
+
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".c", delete=False, encoding="utf-8") as tmp:
+            tmp.write(wrap_code(code))
+            tmp_path = tmp.name
+
+        try:
+            status, rf, rf_list = client.run(Path(tmp_path), mode=mode, depth=depth_val)
+        finally:
+            Path(tmp_path).unlink(missing_ok=True)
+
+        return {
+            "loop_id": entry.get("loop_id") or entry.get("id"),
+            "template_type": template_type,
+            "template_depth": depth_val,
+            "svm_mode": mode,
+            "status": status,
+            "ranking_function": rf,
+            "ranking_functions": rf_list,
+        }
+
+    def process_yaml(f: Path) -> Dict[str, Any]:
+        try:
+            content = yaml.safe_load(f.read_text(encoding="utf-8"))
+        except Exception as e:
+            return {"source_file": f.name, "error": f"YAML parse error: {e}"}
+
+        entries = parse_results(content)
+        results = [run_on_entry(entry) for entry in entries]
+        return {"source_file": f.name, "task": "svmranker", "results": results}
+
+    if input.is_file():
+        result = process_yaml(input)
+        if output:
+            if output.is_dir():
+                out_path = output / (input.stem + "_svmranker.yml")
+            else:
+                out_path = output
+            with open(out_path, "w", encoding="utf-8") as yf:
+                yaml.dump(result, yf, sort_keys=False, allow_unicode=True)
+            console.print(f"Saved to {out_path}")
+        else:
+            console.print(yaml.dump(result, sort_keys=False, allow_unicode=True))
+    elif input.is_dir():
+        files = list(input.rglob("*") if recursive else input.glob("*"))
+        files = [f for f in files if f.is_file() and f.suffix.lower() in {".yml", ".yaml"}]
+
+        if output and not output.exists():
+            output.mkdir(parents=True)
+
+        for f in files:
+            try:
+                result = process_yaml(f)
+                if output:
+                    try:
+                        rel_path = f.relative_to(input)
+                        out_path = output / rel_path.with_suffix(".yml")
+                        out_path = out_path.parent / (out_path.stem + "_svmranker.yml")
+                    except ValueError:
+                        out_path = output / (f.stem + "_svmranker.yml")
+                    out_path.parent.mkdir(parents=True, exist_ok=True)
+                    with open(out_path, "w", encoding="utf-8") as yf:
+                        yaml.dump(result, yf, sort_keys=False, allow_unicode=True)
+                else:
+                    console.print(f"--- {f.name} ---")
+                    console.print(yaml.dump(result, sort_keys=False, allow_unicode=True))
+            except Exception as e:
+                console.print(f"[red]Error processing {f.name}: {e}[/red]")
