@@ -52,6 +52,14 @@ class LoopExtractor:
         if verified_loops:
             self.last_method = "llm"
             print("[Debug][Extractor] Using LLM extraction method, and Successfully get verified loops.")
+            
+            # Post-process placeholders if abstract mode
+            if is_abstract_mode:
+                verified_loops = [
+                    re.sub(r'(LOOP\d+)', r'/* \1: Placeholder for nested loop */', l) 
+                    for l in verified_loops
+                ]
+
             return verified_loops[:max_loops]
             
         # 3. Fallback to heuristic if LLM failed or all extractions were hallucinations
