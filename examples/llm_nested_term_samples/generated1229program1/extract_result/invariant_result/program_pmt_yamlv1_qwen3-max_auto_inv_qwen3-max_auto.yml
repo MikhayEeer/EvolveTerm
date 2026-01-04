@@ -1,0 +1,101 @@
+source_file: program_pmt_yamlv1_qwen3-max_auto.yml
+source_path: examples/llm_nested_term_samples/generated1229program1/program.c
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  config: {}
+  time: 2026-01-04T16:31
+invariants_result:
+- loop_id: 1
+  code: for(temp = 0; temp < 100; temp++) memo[temp] = 0;
+  invariants:
+  - 0 <= temp && temp <= 100
+  - \forall integer i; 0 <= i < temp ==> memo[i] == 0
+- loop_id: 2
+  code: |-
+    for (i = 1; i < 100 && j > 10; i = i * 3 + 1, j = j / 2) {
+        idx = (i + j) % 100;
+        memo[idx] = (i << 2) ^ (j >> 1);
+        sink += memo[idx];
+        while (k < 100 && l > 0) {
+            p = &memo[l % 100];
+            if (*p > 100) {
+                sink -= 1;
+            } else {
+                sink += 1;
+            }
+            do {
+                val = (k * k) % 50;
+                memo[val] = l + m;
+                temp = (m > 5) ? 10 : 20;
+                sink = sink ^ temp;
+                for (l = 50; l > 0 && m > 0; l = l / 2) {
+                    int noise = (i * 100) + j - k;
+                    printf("Example 1: Looping (noise:%d)\n", noise);
+                    sink += noise;
+                }
+                sink = sink + k - l;
+                k = k * 2;
+            } while (k < 100 && m > 0);
+            idx = (j * 2) % 100;
+            memo[idx] = j;
+            j = j - 1;
+        }
+    }
+  invariants: []
+- loop_id: 3
+  code: |-
+    while (k < 100 && l > 0) {
+        p = &memo[l % 100];
+        if (*p > 100) {
+            sink -= 1;
+        } else {
+            sink += 1;
+        }
+        do {
+            val = (k * k) % 50;
+            memo[val] = l + m;
+            temp = (m > 5) ? 10 : 20;
+            sink = sink ^ temp;
+            for (l = 50; l > 0 && m > 0; l = l / 2) {
+                int noise = (i * 100) + j - k;
+                printf("Example 1: Looping (noise:%d)\n", noise);
+                sink += noise;
+            }
+            sink = sink + k - l;
+            k = k * 2;
+        } while (k < 100 && m > 0);
+        idx = (j * 2) % 100;
+        memo[idx] = j;
+        j = j - 1;
+    }
+  invariants: []
+- loop_id: 4
+  code: |-
+    do {
+        val = (k * k) % 50;
+        memo[val] = l + m;
+        temp = (m > 5) ? 10 : 20;
+        sink = sink ^ temp;
+        for (l = 50; l > 0 && m > 0; l = l / 2) {
+            int noise = (i * 100) + j - k;
+            printf("Example 1: Looping (noise:%d)\n", noise);
+            sink += noise;
+        }
+        sink = sink + k - l;
+        k = k * 2;
+    } while (k < 100 && m > 0);
+  invariants: []
+- loop_id: 5
+  code: |-
+    for (l = 50; l > 0 && m > 0; l = l / 2) {
+        int noise = (i * 100) + j - k;
+        printf("Example 1: Looping (noise:%d)\n", noise);
+        sink += noise;
+    }
+  invariants:
+  - m == \at(m, Pre)
+  - i == \at(i, Pre)
+  - j == \at(j, Pre)
+  - k == \at(k, Pre)

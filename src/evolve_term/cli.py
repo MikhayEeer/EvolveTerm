@@ -411,7 +411,7 @@ def extract(
                 style = '|'
             return super().represent_scalar(tag, value, style)
 
-    def process_file(f: Path, base_dir: Optional[Path]):
+    def process_file(f: Path, base_dir: Optional[Path], output_root: Optional[Path]):
         code = f.read_text(encoding="utf-8")
         loops = extractor.extract(code, prompt_name=prompt_name)
         
@@ -461,7 +461,7 @@ def extract(
         
         for f in files:
             try:
-                process_file(f, input)
+                process_file(f, input, None)
             except Exception as e:
                 console.print(f"[red]Error extracting {f.name}: {e}[/red]")
 
@@ -526,7 +526,7 @@ def invariant(
                 style = '|'
             return super().represent_scalar(tag, value, style)
 
-    def process_file(f: Path, base_dir: Optional[Path]):
+    def process_file(f: Path, base_dir: Optional[Path], output_root: Optional[Path]):
         loops_to_analyze = []
         source_type = "code"
         source_path = str(f.relative_to(base_dir)) if base_dir else str(f)
@@ -580,12 +580,17 @@ def invariant(
             "invariants_result": all_invariants
         }
         
-        # Output directory: sibling 'invariant_result'
-        result_dir = f.parent / "invariant_result"
-        result_dir.mkdir(exist_ok=True)
-        
         filename = f"{f.stem}_inv_{safe_model_name}_auto.yml"
-        out_path = result_dir / filename
+        if output_root:
+            rel_parent = Path(".") if base_dir is None else f.parent.relative_to(base_dir)
+            result_dir = output_root / rel_parent / "invariant_result"
+            result_dir.mkdir(parents=True, exist_ok=True)
+            out_path = result_dir / filename
+        else:
+            # Output directory: sibling 'invariant_result'
+            result_dir = f.parent / "invariant_result"
+            result_dir.mkdir(exist_ok=True)
+            out_path = result_dir / filename
         
         with open(out_path, 'w', encoding='utf-8') as yf:
             yaml.dump(yaml_data, yf, Dumper=LiteralDumper, sort_keys=False, allow_unicode=True)
@@ -593,7 +598,12 @@ def invariant(
         console.print(f"Saved invariants to {out_path}")
 
     if input.is_file():
-        process_file(input, None)
+        output_root = None
+        if output and output.suffix not in {".yml", ".yaml"}:
+            if not output.exists():
+                output.mkdir(parents=True)
+            output_root = output
+        process_file(input, None, output_root)
     elif input.is_dir():
         # Find both code and yaml files
         code_extensions = {".c", ".cpp", ".h", ".hpp", ".cc", ".cxx"}
@@ -618,11 +628,16 @@ def invariant(
                     filtered_files.append(f)
         
         console.print(f"Found {len(filtered_files)} files to analyze (mode={mode}).")
+        if output and not output.exists():
+            output.mkdir(parents=True)
         for f in filtered_files:
             try:
-                process_file(f, input)
+                process_file(f, input, output)
             except Exception as e:
                 console.print(f"[red]Error processing {f.name}: {e}[/red]")
+        return
+
+    return
 
     def process_file(f: Path) -> List[str]:
         code = f.read_text(encoding="utf-8")
@@ -1197,8 +1212,20 @@ def svmranker(
             return content
         return []
 
-    def run_on_entry(entry: Dict[str, Any]) -> Dict[str, Any]:
-        code = entry.get("code", "")
+    def resolve_source_code(entry: Dict[str, Any], base_dir: Path) -> str:
+        source_path = entry.get("source_path")
+        if source_path:
+            path = Path(source_path)
+            if not path.is_absolute():
+                candidate = base_dir / source_path
+                if candidate.exists():
+                    path = candidate
+            if path.exists():
+                return path.read_text(encoding="utf-8")
+        return entry.get("code", "")
+
+    def run_on_entry(entry: Dict[str, Any], base_dir: Path) -> Dict[str, Any]:
+        code = resolve_source_code(entry, base_dir)
         template_type = entry.get("template_type") or entry.get("type") or "lnested"
         template_depth = entry.get("template_depth") or entry.get("depth") or 1
         mode = "lmulti" if "multi" in str(template_type).lower() else "lnested"
@@ -1233,7 +1260,8 @@ def svmranker(
             return {"source_file": f.name, "error": f"YAML parse error: {e}"}
 
         entries = parse_results(content)
-        results = [run_on_entry(entry) for entry in entries]
+        base_dir = f.parent
+        results = [run_on_entry(entry, base_dir) for entry in entries]
         return {"source_file": f.name, "task": "svmranker", "results": results}
 
     if input.is_file():

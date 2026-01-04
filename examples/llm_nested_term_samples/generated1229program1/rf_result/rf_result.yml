@@ -1,0 +1,58 @@
+source_file: program_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: examples/llm_nested_term_samples/generated1229program1/program.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "for (l = 50; l > 0 && m > 0; l = l / 2) {\n    int noise = (i * 100) + j\
+    \ - k;\n    printf(\"Example 1: Looping (noise:%d)\\n\", noise);\n    sink +=\
+    \ noise;\n}"
+  invariants: []
+  explanation: Termination is driven solely by l decreasing via l = l / 2; m is unchanged.
+    A single-component nested ranking function suffices.
+  template_type: lnested
+  template_depth: 1
+- loop_id: 2
+  code: "do {\n    val = (k * k) % 50;\n    memo[val] = l + m;\n    temp = (m > 5)\
+    \ ? 10 : 20;\n    sink = sink ^ temp;\n    LOOP1\n    sink = sink + k - l;\n \
+    \   k = k * 2;\n} while (k < 100 && m > 0);"
+  invariants: []
+  explanation: A single linear ranking function f(k) = 100 - k suffices, as k increases
+    monotonically and is bounded above by 100, ensuring termination. The other guard
+    condition (m > 0) involves a constant variable, so it doesn't affect multi-phase
+    behavior.
+  template_type: lnested
+  template_depth: 1
+- loop_id: 3
+  code: "while (k < 100 && l > 0) {\n    p = &memo[l % 100];\n    if (*p > 100) {\n\
+    \        sink -= 1;\n    } else {\n        sink += 1;\n    }\n    LOOP2\n    idx\
+    \ = (j * 2) % 100;\n    memo[idx] = j;\n    j = j - 1;\n}"
+  invariants: []
+  explanation: Loop guard involves two variables (k, l), but only j is visibly decreasing.
+    Assuming LOOP2 connects j to l or k, a multi-phase ranking function with depth
+    2 can capture lexicographic descent (e.g., l then j).
+  template_type: lmulti
+  template_depth: 2
+- loop_id: 4
+  code: "for (i = 1; i < 100 && j > 10; i = i * 3 + 1, j = j / 2) {\n    idx = (i\
+    \ + j) % 100;\n    memo[idx] = (i << 2) ^ (j >> 1);\n    sink += memo[idx];\n\
+    \    LOOP3\n}"
+  invariants:
+  - i >= 1
+  - i < 100
+  - j > 10
+  - j >= 11
+  - 0 <= (i + j) % 100 && (i + j) % 100 < 100
+  explanation: 'Loop termination depends on two variables: j decreasing and i increasing
+    toward a bound. A lexicographic ranking function (e.g., [j, 100 - i]) ensures
+    well-foundedness, requiring depth 2 with lnested template.'
+  template_type: lnested
+  template_depth: 2
+- loop_id: 5
+  code: for(temp = 0; temp < 100; temp++) memo[temp] = 0;
+  invariants:
+  - 0 <= temp && temp <= 100
+  - \forall int i; 0 <= i < temp ==> memo[i] == 0
+  explanation: The loop is a simple count-up loop; a single linear ranking function
+    (e.g., 100 - temp) suffices for termination.
+  template_type: lnested
+  template_depth: 1

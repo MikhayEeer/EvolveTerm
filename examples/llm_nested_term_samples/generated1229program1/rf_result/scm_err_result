@@ -1,0 +1,14 @@
+volveterm svmranker --svm-ranker ../SVMRanker/ --input examples/llm_nested_term_samples/generated1229program1/rf_result/rf_result.yml 
+/tmp/tmpz3t_jbgi.bpl
+java.lang.NullPointerException: Cannot invoke "boogie.controlflow.CfgProcedure.getInParams()" because "this.cfg" is null
+[Error] SVMRanker execution exception: invalid syntax (OneLoop.py, line 3)
+/tmp/tmp8qg7_e8a.bpl
+java.lang.NullPointerException: Cannot invoke "boogie.controlflow.CfgProcedure.getInParams()" because "this.cfg" is null
+[Error] SVMRanker execution exception: invalid syntax (OneLoop.py, line 3)
+/tmp/tmpdtt605bp.bpl
+java.lang.NullPointerException: Cannot invoke "boogie.controlflow.CfgProcedure.getInParams()" because "this.cfg" is null
+[Error] SVMRanker execution exception: invalid syntax (OneLoop.py, line 3)
+/tmp/tmpqca79sel.bpl
+java.lang.NullPointerException: Cannot invoke "boogie.controlflow.CfgProcedure.getInParams()" because "this.cfg" is null
+[Error] SVMRanker execution exception: invalid syntax (OneLoop.py, line 3)
+/tmp/tmps6z0s5og.bpl
