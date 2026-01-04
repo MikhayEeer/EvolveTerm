@@ -19,14 +19,18 @@ A ranking function $R(x)$ proves termination if it is **Bounded Below** (always 
 4. **Output**: Return the JSON object.
 
 ### 3. Format Rules
-- **Section 1**: `### Verification Analysis` (Show your math).
-- **Section 2**: JSON object.
+Output the result in **YAML** format with two keys: `analysis` and `ranking`.
+- `analysis`: A block string containing your verification math.
+- `ranking`: An object containing the function details.
 
-**JSON Structure**:
-```json
-{
-  "ranking_function": "expression OR (expr1, expr2)",
-  "type": "scalar|lexicographic",
-  "explanation": "Brief reasoning."
-}
+**YAML Structure**:
+```yaml
+analysis: |
+  ### Verification Analysis
+  R(x) = n - i
+  R(x_new) = ...
+ranking:
+  function: "expression OR (expr1, expr2)"
+  type: "scalar|lexicographic"
+  explanation: "Brief reasoning."
 ```

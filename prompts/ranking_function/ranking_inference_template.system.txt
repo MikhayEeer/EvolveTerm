@@ -17,14 +17,17 @@ SVMRanker needs a **Template Type** and a **Depth** (Phase Number).
 3. **Output**: Return the JSON object with configuration.
 
 ### 3. Format Rules
-- **Section 1**: `### Analysis` (Brief thought process).
-- **Section 2**: JSON object.
+Output the result in **YAML** format with two keys: `analysis` and `configuration`.
+- `analysis`: A block string containing your reasoning.
+- `configuration`: An object containing the tool settings.
 
-**JSON Structure**:
-```json
-{
-  "type": "lnested|lmulti",
-  "depth": 1,
-  "explanation": "Brief reasoning."
-}
+**YAML Structure**:
+```yaml
+analysis: |
+  ### Analysis
+  The loop has nested structure...
+configuration:
+  type: "lnested|lmulti"
+  depth: 1
+  explanation: "Brief reasoning."
 ```

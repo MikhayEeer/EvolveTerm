@@ -16,14 +16,17 @@ You must choose the simplest sufficient type.
 3. **Output**: Return the JSON object.
 
 ### 3. Format Rules
-- **Section 1**: `### Analysis` (Reasoning about complexity).
-- **Section 2**: JSON object.
+Output the result in **YAML** format with two keys: `analysis` and `configuration`.
+- `analysis`: A block string containing your reasoning.
+- `configuration`: An object containing the tool settings.
 
-**JSON Structure**:
-```json
-{
-  "type": "lnested|lmulti",
-  "depth": 1,
-  "explanation": "Reasoning for classification."
-}
+**YAML Structure**:
+```yaml
+analysis: |
+  ### Analysis
+  The loop terminates because...
+configuration:
+  type: "lnested|lmulti"
+  depth: 1
+  explanation: "Reasoning for classification."
 ```

@@ -675,7 +675,7 @@ def ranking(
 
     def process_file(f: Path, invs: List[str]) -> Dict[str, str]:
         code = f.read_text(encoding="utf-8")
-        rf, explanation = predictor.infer_ranking(code, invs, references)
+        rf, explanation, _ = predictor.infer_ranking(code, invs, references)
         return {"ranking_function": rf, "explanation": explanation}
 
     if input.is_file():
