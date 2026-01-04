@@ -11,9 +11,10 @@ class Predictor:
         self.prompt_repo = prompt_repo
         self.last_ranking_response = None
 
-    def infer_invariants(self, code: str, references: List[KnowledgeCase]) -> List[str]:
+    def infer_invariants(self, code: str, references: List[KnowledgeCase], prompt_version: str = "yaml_cot") -> List[str]:
+        prompt_name = f"invariants/{prompt_version}"
         prompt = self.prompt_repo.render(
-            "invariant_inference",
+            prompt_name,
             code=code,
             references=json.dumps([ref.__dict__ for ref in references], ensure_ascii=False, indent=2)
         )
