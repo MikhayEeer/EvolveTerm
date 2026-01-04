@@ -1,4 +1,5 @@
 import json
+import yaml
 
 def strip_markdown_fences(text: str) -> str:
     cleaned = text.strip()
@@ -72,3 +73,12 @@ def parse_llm_json_array(response_text: str) -> list | None:
         if isinstance(parsed, list):
             return parsed
     return None
+
+
+def parse_llm_yaml(response_text: str) -> dict | None:
+    cleaned = strip_markdown_fences(response_text)
+    try:
+        return yaml.safe_load(cleaned)
+    except Exception:
+        return None
+

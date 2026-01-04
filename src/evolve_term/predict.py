@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import List
 import json
 from .models import KnowledgeCase
-from .utils import parse_llm_json_array, parse_llm_json_object
+from .utils import parse_llm_json_array, parse_llm_json_object, parse_llm_yaml
 from .exceptions import LLMUnavailableError
 
 class Predictor:
@@ -18,7 +18,13 @@ class Predictor:
             references=json.dumps([ref.__dict__ for ref in references], ensure_ascii=False, indent=2)
         )
         response = self.llm_client.complete(prompt)
-        invariants = parse_llm_json_array(response)
+        
+        # Use YAML parsing
+        data = parse_llm_yaml(response)
+        invariants = []
+        if isinstance(data, dict) and "invariants" in data:
+            invariants = data["invariants"]
+            
         print("[Debug] Module Predict Invariant End...\n")
         if not invariants:
             print(f"[Debug] Invariant Parsing Failed or Empty. Raw Response:\n{response}\n")

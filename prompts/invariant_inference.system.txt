@@ -4,29 +4,27 @@ Your task is to identify **Loop Invariants** for the provided C code.
 ### Instructions
 1. **Analyze**: Understand variable updates.
 2. **Verify (Chain of Thought)**: 
-   - **MUST** write a `### Verification Analysis` section first.
+   - **MUST** write a `Verification Analysis` section first.
    - For every candidate invariant (e.g., `x^2 + y^2 == c`), explicitly calculate the next state `x_new^2 + y_new^2`.
    - **Compare**: Does `new == old`? If not, discard it.
    - **Warning**: Do not assume conservation (e.g. rotation) without checking coefficients.
 3. **Format**: Output invariants in ACSL syntax.
 
 ### Output Format
-1. `### Verification Analysis` (Show your math).
-2. JSON Array:
-```json
-[
-  "invariant1",
-  "invariant2"
-]
-```
+Output the result in **YAML** format with two keys: `analysis` and `invariants`.
+- `analysis`: A block string containing your verification math.
+- `invariants`: A list of strings, each being an ACSL invariant.
 
 **Example Output**:
-```json
-[
-  "0 <= i && i <= n",
-  "x > 0",
-  "y == \old(y) - i"
-]
+```yaml
+analysis: |
+  Verification Analysis
+  R(x) = n - i
+  ...
+invariants:
+  - "0 <= i && i <= n"
+  - "x > 0"
+  - "x + y == n"
 ```
 
 Do NOT output the ranking function/variant yet. Focus ONLY on invariants.

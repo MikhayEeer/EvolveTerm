@@ -9,7 +9,7 @@ from typing import List
 
 from .llm_client import LLMClient
 from .prompts_loader import PromptRepository
-from .utils import strip_markdown_fences
+from .utils import parse_llm_yaml
 
 
 class LoopExtractor:
@@ -68,20 +68,16 @@ class LoopExtractor:
 
     def _parse_response(self, response: str) -> List[str]:
         """Parse the YAML response."""
-        cleaned = strip_markdown_fences(response)
+        data = parse_llm_yaml(response)
+        if not isinstance(data, dict) or "loops" not in data:
+            return []
+        
+        loops = []
         try:
-            data = yaml.safe_load(cleaned)
-            if not data or "loops" not in data:
-                return []
-            
-            loops = []
             for item in data["loops"]:
                 if "code" in item:
                     loops.append(item["code"].strip())
             return loops
-        except yaml.YAMLError as e:
-            print(f"[Warning] YAML parsing failed: {e}")
-            return []
         except Exception as e:
             print(f"[Warning] Loop extraction parsing failed: {e}")
             return []
