@@ -474,6 +474,7 @@ def invariant(
     llm_config: str = typer.Option("llm_config.json", help="Path to LLM config"),
     recursive: bool = typer.Option(False, "--recursive", "-r", help="Recursively search for files if input is directory"),
     mode: str = typer.Option("auto", "--mode", "-m", help="Filter mode for batch processing: 'auto' (all), 'yaml' (only extract results), 'code' (only C/C++ files)"),
+    extract_prompt_version: str = typer.Option("all", "--extract-pmt-v", "--extv", help="Filter YAML files by extract prompt version in filename: all, v1, v2"),
 ) -> None:
     """
     Infer invariants for the given code or extracted YAML.
@@ -605,6 +606,15 @@ def invariant(
             output_root = output
         process_file(input, None, output_root)
     elif input.is_dir():
+        def matches_yaml_prompt_version(path: Path) -> bool:
+            if not extract_prompt_version or extract_prompt_version.lower() in {"all", "auto"}:
+                return True
+            version = extract_prompt_version.lower().lstrip("v")
+            if version in {"1", "2"}:
+                token = f"pmt_yamlv{version}"
+                return token in path.name
+            return True
+
         # Find both code and yaml files
         code_extensions = {".c", ".cpp", ".h", ".hpp", ".cc", ".cxx"}
         yaml_extensions = {".yml", ".yaml"}
@@ -622,9 +632,12 @@ def invariant(
                     # Optional: Check if it's an extract result by filename pattern or content?
                     # Filename check is faster: usually contains "_pmt_" or similar
                     # But content check is safer. Let's rely on process_file to skip invalid YAMLs
-                    filtered_files.append(f)
+                    if matches_yaml_prompt_version(f):
+                        filtered_files.append(f)
             else: # auto
                 if ext in code_extensions or ext in yaml_extensions:
+                    if ext in yaml_extensions and not matches_yaml_prompt_version(f):
+                        continue
                     filtered_files.append(f)
         
         console.print(f"Found {len(filtered_files)} files to analyze (mode={mode}).")
