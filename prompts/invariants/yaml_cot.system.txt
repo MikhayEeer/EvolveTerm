@@ -9,7 +9,7 @@ Your task is to identify **Loop Invariants** for the provided C code.
    - **Compare**: Does `new == old`? If not, discard it.
    - **Warning**: Do not assume conservation (e.g. rotation) without checking coefficients.
 3. **Format**: Output invariants in ACSL syntax.
-
+4. Ignore LOOP\d:  A placeholder representing the inner loop, should ignored during analysis.
 ### Output Format
 Output the result in **YAML** format with two keys: `analysis` and `invariants`.
 - `analysis`: A block string containing your verification math.
