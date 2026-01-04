@@ -7,15 +7,6 @@ basic:
   time: 2026-01-02T17:24
 loops:
 - id: 1
-  code: |-
-    while (x > y)
-    {
-      if (0 == __VERIFIER_nondet_int())
-      {
-        x = x % y;
-      }
-      else
-      {
-        x++;
-      }
-    }
+  code: "while (x > y)\n{\n  if (0 == __VERIFIER_nondet_int())\n  {\n    x = x % y;\n\
+    \  }\n  else\n  {\n    x++;\n  }\n}"
+source_path: data/aeval/c_bench_nonterm/nonlin_choices_2.c

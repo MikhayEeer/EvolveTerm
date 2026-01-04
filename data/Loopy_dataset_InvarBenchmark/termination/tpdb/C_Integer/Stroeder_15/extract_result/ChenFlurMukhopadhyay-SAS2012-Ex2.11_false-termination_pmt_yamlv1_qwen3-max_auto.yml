@@ -7,9 +7,6 @@ basic:
   time: 2026-01-03T14:26
 loops:
 - id: 1
-  code: |-
-    while (4*x - 5*y > 0) {
-        oldx = x;
-        x = 2*oldx + 4*y;
-        y = 4*oldx;
-    }
+  code: "while (4*x - 5*y > 0) {\n    oldx = x;\n    x = 2*oldx + 4*y;\n    y = 4*oldx;\n\
+    }"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/tpdb/C_Integer/Stroeder_15/ChenFlurMukhopadhyay-SAS2012-Ex2.11_false-termination.c

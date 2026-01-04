@@ -7,10 +7,6 @@ basic:
   time: 2026-01-03T14:17
 loops:
 - id: 1
-  code: |-
-    while (x < n) {
-        if (unknown()) {
-            m = x;
-        }
-        x = x + 1;
-    }
+  code: "while (x < n) {\n    if (unknown()) {\n        m = x;\n    }\n    x = x +\
+    \ 1;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/code2inv/15.c

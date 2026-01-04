@@ -10,3 +10,4 @@ loops:
   code: 'for (;;) if (glob3_pathend_off + glob3_dc >= glob3_pathlim_off) break; else
     { glob3_dc++; if(glob3_dc <= -1 || glob3_dc >= MAXPATHLEN + 1) {goto ERROR; {
     ERROR: {; //@ assert(\false); }'
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/accelerating_invariant_generation/cav/39.c

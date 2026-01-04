@@ -7,13 +7,6 @@ basic:
   time: 2026-01-03T14:29
 loops:
 - id: 1
-  code: |-
-    int c;
-    int x, y;
-    x = unknown_int();
-    y = unknown_int();
-    c = 0;
-    while (x >= y + 1) {
-        y = y + 1;
-        c = c + 1;
-    }
+  code: "int c;\nint x, y;\nx = unknown_int();\ny = unknown_int();\nc = 0;\nwhile\
+    \ (x >= y + 1) {\n    y = y + 1;\n    c = c + 1;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/tpdb/C_Integer/Stroeder_15/svcomp_a.05.c

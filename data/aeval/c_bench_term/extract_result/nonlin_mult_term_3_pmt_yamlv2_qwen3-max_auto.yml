@@ -7,8 +7,5 @@ basic:
   time: 2026-01-02T17:29
 loops:
 - id: 1
-  code: |-
-    while (x < 1000000)
-    {
-      x = x * y * z;
-    }
+  code: "while (x < 1000000)\n{\n  x = x * y * z;\n}"
+source_path: data/aeval/c_bench_term/nonlin_mult_term_3.c

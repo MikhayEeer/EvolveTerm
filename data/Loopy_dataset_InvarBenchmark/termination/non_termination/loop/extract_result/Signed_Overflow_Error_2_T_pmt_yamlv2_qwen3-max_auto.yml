@@ -7,10 +7,6 @@ basic:
   time: 2026-01-03T14:33
 loops:
 - id: 1
-  code: |-
-    while( smallest <= needed )
-    {
-        if( smallest == 0 )
-            return 0;
-        smallest <<= 1;
-    }
+  code: "while( smallest <= needed )\n{\n    if( smallest == 0 )\n        return 0;\n\
+    \    smallest <<= 1;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/non_termination/loop/Signed_Overflow_Error_2_T.c

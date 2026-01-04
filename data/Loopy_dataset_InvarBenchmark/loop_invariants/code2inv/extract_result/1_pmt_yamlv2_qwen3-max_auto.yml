@@ -7,11 +7,6 @@ basic:
   time: 2026-01-03T14:16
 loops:
 - id: 1
-  code: |-
-    while ((y < 100000)) {
-        {
-        (x  = (x + y));
-        (y  = (y + 1));
-        }
-
-    }
+  code: "while ((y < 100000)) {\n    {\n    (x  = (x + y));\n    (y  = (y + 1));\n\
+    \    }\n\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/code2inv/1.c

@@ -7,9 +7,6 @@ basic:
   time: 2026-01-02T17:29
 loops:
 - id: 1
-  code: |-
-    while (x > 0)
-    {
-      if (y == 2) x = x - 3; else x = x + 1;
-      if (y == 2) y = 0; else y = y + 1;
-    }
+  code: "while (x > 0)\n{\n  if (y == 2) x = x - 3; else x = x + 1;\n  if (y == 2)\
+    \ y = 0; else y = y + 1;\n}"
+source_path: data/aeval/c_bench_term/term_07.c

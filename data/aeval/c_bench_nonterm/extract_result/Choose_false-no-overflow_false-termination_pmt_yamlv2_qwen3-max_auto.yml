@@ -7,15 +7,7 @@ basic:
   time: 2026-01-02T17:18
 loops:
 - id: 1
-  code: |-
-    while (i >= 3) {
-        if (i > 5) {
-            i = i+3;
-        } else {
-            if (i > 10) {
-                i = i-2;
-            } else {
-                i = i+1;
-            }
-        }
-    }
+  code: "while (i >= 3) {\n    if (i > 5) {\n        i = i+3;\n    } else {\n    \
+    \    if (i > 10) {\n            i = i-2;\n        } else {\n            i = i+1;\n\
+    \        }\n    }\n}"
+source_path: data/aeval/c_bench_nonterm/Choose_false-no-overflow_false-termination.c

@@ -7,17 +7,6 @@ basic:
   time: 2026-01-03T14:08
 loops:
 - id: 1
-  code: |-
-    i=0; a=0; b=0;
-
-    while (i < n){
-      if (TRACER_NONDET){
-        a=a+1;
-        b=b+2;
-      }
-      else{
-        a=a+2;
-        b=b+1;
-      }
-      i++;
-    }
+  code: "i=0; a=0; b=0;\n\nwhile (i < n){\n  if (TRACER_NONDET){\n    a=a+1;\n   \
+    \ b=b+2;\n  }\n  else{\n    a=a+2;\n    b=b+1;\n  }\n  i++;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/VeriMAP/TRACER-testabs15_VeriMAP_true.c

@@ -7,9 +7,5 @@ basic:
   time: 2026-01-03T14:06
 loops:
 - id: 1
-  code: |-
-    if(y>0){
-        while(x<100){
-            x=x+y;
-        }
-    }
+  code: "if(y>0){\n    while(x<100){\n        x=x+y;\n    }\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/loops/loops/terminator_03_true-unreach-call_true-termination.i.annot.c

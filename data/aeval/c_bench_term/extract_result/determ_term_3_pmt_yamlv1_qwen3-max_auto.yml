@@ -7,9 +7,6 @@ basic:
   time: 2026-01-02T17:29
 loops:
 - id: 1
-  code: |-
-    while (!(x == y && y == z)) {
-      x = x + 1;
-      y = y * 2;
-      z = z - 3;
-    }
+  code: "while (!(x == y && y == z)) {\n  x = x + 1;\n  y = y * 2;\n  z = z - 3;\n\
+    }"
+source_path: data/aeval/c_bench_term/determ_term_3.c

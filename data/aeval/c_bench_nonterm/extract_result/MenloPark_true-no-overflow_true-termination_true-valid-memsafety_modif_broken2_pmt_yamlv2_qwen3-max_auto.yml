@@ -7,9 +7,6 @@ basic:
   time: 2026-01-02T17:26
 loops:
 - id: 1
-  code: |-
-    while (x > 0) {
-        x = x - y;
-        y = y - z;
-        if (z == 2) z = 0; else z++;
-    }
+  code: "while (x > 0) {\n    x = x - y;\n    y = y - z;\n    if (z == 2) z = 0; else\
+    \ z++;\n}"
+source_path: data/aeval/c_bench_nonterm/MenloPark_true-no-overflow_true-termination_true-valid-memsafety_modif_broken2.c

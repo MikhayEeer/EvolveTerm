@@ -10,3 +10,4 @@ loops:
   code: "while (z > 0 && (y == 0 || y > 0 && x > 0))    {\n    \n    if (y == 0) {\n\
     \        res = res + 1;\n        y = z;\n    }\n    else {\n        x = x + 1;\n\
     \        y = y - 1;\n    }\n}"
+source_path: data/aeval/c_bench_nonterm/DivWithoutMinus_false-no-overflow_false-termination.c

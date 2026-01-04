@@ -10,3 +10,4 @@ loops:
   code: "while ((x > z) || (y > z)) {\n    if (x > z) {\n        x = x - 1;\n    }\
     \ else {\n        if (y > z) {\n            y = y - 1;\n        } else {\n   \
     \         \n        }\n    }\n    c = c + 1;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/tpdb/C_Integer/Stroeder_15/svcomp_b.13.c

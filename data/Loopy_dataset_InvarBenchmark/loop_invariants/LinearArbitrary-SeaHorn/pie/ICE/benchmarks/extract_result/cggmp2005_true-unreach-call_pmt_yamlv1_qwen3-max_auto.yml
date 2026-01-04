@@ -7,11 +7,6 @@ basic:
   time: 2026-01-03T14:04
 loops:
 - id: 1
-  code: |-
-    int i,j;
-    i = 1;
-    j = 10;
-    while (j >= i) {
-        i = i + 2;
-        j = -1 + j;
-    }
+  code: "int i,j;\ni = 1;\nj = 10;\nwhile (j >= i) {\n    i = i + 2;\n    j = -1 +\
+    \ j;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/pie/ICE/benchmarks/cggmp2005_true-unreach-call.c

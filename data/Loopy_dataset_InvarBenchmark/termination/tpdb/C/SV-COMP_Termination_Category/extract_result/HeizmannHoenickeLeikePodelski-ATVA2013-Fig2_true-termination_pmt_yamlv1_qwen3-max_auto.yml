@@ -7,10 +7,6 @@ basic:
   time: 2026-01-03T14:33
 loops:
 - id: 1
-  code: |-
-    int y = unknown_int();
-    int x = y + 42;
-    while (x >= 0) {
-        y = 2*y - x;
-        x = (y + x) / 2;
-    }
+  code: "int y = unknown_int();\nint x = y + 42;\nwhile (x >= 0) {\n    y = 2*y -\
+    \ x;\n    x = (y + x) / 2;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/tpdb/C/SV-COMP_Termination_Category/HeizmannHoenickeLeikePodelski-ATVA2013-Fig2_true-termination.c

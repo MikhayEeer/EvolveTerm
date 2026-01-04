@@ -7,11 +7,6 @@ basic:
   time: 2026-01-03T14:31
 loops:
 - id: 1
-  code: |-
-    int c, x;
-    x = unknown_int();
-    c = 0;
-    while ((x > 1) && (x < 100)) {
-        x = x*x;
-        c = c + 1;
-    }
+  code: "int c, x;\nx = unknown_int();\nc = 0;\nwhile ((x > 1) && (x < 100)) {\n \
+    \   x = x*x;\n    c = c + 1;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/tpdb/C_Integer/Stroeder_15/svcomp_ex3a.c

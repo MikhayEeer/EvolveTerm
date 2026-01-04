@@ -7,15 +7,8 @@ basic:
   time: 2026-01-03T14:22
 loops:
 - id: 1
-  code: |-
-    while (x <= n && x >= 2 * tx + y && y >= ty + 1 && x >= tx + 1) {
-        if (unknown_int() != 0) {
-            tx = x;
-            ty = y;
-            x = unknown_int();
-            y = unknown_int();
-        } else {
-            tx = x;
-            x = unknown_int();
-        }
-    }
+  code: "while (x <= n && x >= 2 * tx + y && y >= ty + 1 && x >= tx + 1) {\n    if\
+    \ (unknown_int() != 0) {\n        tx = x;\n        ty = y;\n        x = unknown_int();\n\
+    \        y = unknown_int();\n    } else {\n        tx = x;\n        x = unknown_int();\n\
+    \    }\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/tpdb/C_Integer/Stroeder_15/ChawdharyCookGulwaniSagivYang-ESOP2008-aaron6_true-termination.c

@@ -7,9 +7,5 @@ basic:
   time: 2026-01-02T17:26
 loops:
 - id: 1
-  code: |-
-    while (x <= 10) {
-        if (x > 6) {
-            x = x + 2;
-        }
-    }
+  code: "while (x <= 10) {\n    if (x > 6) {\n        x = x + 2;\n    }\n}"
+source_path: data/aeval/c_bench_nonterm/Urban-WST2013-Fig1_false-termination_true-no-overflow.c

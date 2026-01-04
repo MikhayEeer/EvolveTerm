@@ -7,8 +7,5 @@ basic:
   time: 2026-01-03T14:09
 loops:
 - id: 1
-  code: |-
-    while(i<n) {
-        i++;
-        j++;
-    }
+  code: "while(i<n) {\n    i++;\n    j++;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/accelerating_invariant_generation/cav/07.c

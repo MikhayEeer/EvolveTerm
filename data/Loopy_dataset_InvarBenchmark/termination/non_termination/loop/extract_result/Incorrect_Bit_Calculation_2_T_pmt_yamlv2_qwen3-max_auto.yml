@@ -7,9 +7,6 @@ basic:
   time: 2026-01-03T14:33
 loops:
 - id: 1
-  code: |-
-    while( ( a0 & 1 ) == 0)
-    {
-        a0 = ( a1 << 31 ) | ( a0 >> 1 );
-        a1 = a1 >> 1;
-    }
+  code: "while( ( a0 & 1 ) == 0)\n{\n    a0 = ( a1 << 31 ) | ( a0 >> 1 );\n    a1\
+    \ = a1 >> 1;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/non_termination/loop/Incorrect_Bit_Calculation_2_T.c

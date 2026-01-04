@@ -7,8 +7,5 @@ basic:
   time: 2026-01-03T14:10
 loops:
 - id: 1
-  code: |-
-    int x = 0;
-    while (x <= n - 1) {
-      x++;
-    }
+  code: "int x = 0;\nwhile (x <= n - 1) {\n  x++;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/accelerating_invariant_generation/cav/35.c

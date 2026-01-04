@@ -7,9 +7,6 @@ basic:
   time: 2026-01-02T17:16
 loops:
 - id: 1
-  code: |-
-    while (bob != samantha) {
-        int temp = bob;
-        bob = max+1;
-        max = temp+1;
-    }
+  code: "while (bob != samantha) {\n    int temp = bob;\n    bob = max+1;\n    max\
+    \ = temp+1;\n}"
+source_path: data/aeval/c_bench_nonterm/Swingers_false-termination_true-no-overflow-version-1.c

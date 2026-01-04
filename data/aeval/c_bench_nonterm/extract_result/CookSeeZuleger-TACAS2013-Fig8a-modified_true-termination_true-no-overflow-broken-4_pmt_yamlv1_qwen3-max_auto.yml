@@ -7,9 +7,5 @@ basic:
   time: 2026-01-02T17:20
 loops:
 - id: 1
-  code: |-
-    while (x != K) {
-        if (x > K) {
-            x = x - 1;
-        }
-    }
+  code: "while (x != K) {\n    if (x > K) {\n        x = x - 1;\n    }\n}"
+source_path: data/aeval/c_bench_nonterm/CookSeeZuleger-TACAS2013-Fig8a-modified_true-termination_true-no-overflow-broken-4.c

@@ -7,8 +7,5 @@ basic:
   time: 2026-01-02T17:32
 loops:
 - id: 1
-  code: |-
-    while (0 != x%y)
-    {
-      y--;
-    }
+  code: "while (0 != x%y)\n{\n  y--;\n}"
+source_path: data/aeval/c_bench_term/nonlin_mod_term_4.c

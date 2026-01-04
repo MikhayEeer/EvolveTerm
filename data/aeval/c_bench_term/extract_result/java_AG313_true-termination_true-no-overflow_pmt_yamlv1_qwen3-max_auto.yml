@@ -7,10 +7,6 @@ basic:
   time: 2026-01-02T17:34
 loops:
 - id: 1
-  code: |-
-    if (x!=0) {
-        while (x > 0 && y > 0) {
-            i = i + 1;
-            x = (x - 1)- (y - 1);
-        }
-    }
+  code: "if (x!=0) {\n    while (x > 0 && y > 0) {\n        i = i + 1;\n        x\
+    \ = (x - 1)- (y - 1);\n    }\n}"
+source_path: data/aeval/c_bench_term/java_AG313_true-termination_true-no-overflow.c

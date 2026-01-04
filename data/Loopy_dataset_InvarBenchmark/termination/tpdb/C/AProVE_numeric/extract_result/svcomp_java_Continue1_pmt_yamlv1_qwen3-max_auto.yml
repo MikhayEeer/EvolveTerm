@@ -7,11 +7,6 @@ basic:
   time: 2026-01-03T14:32
 loops:
 - id: 1
-  code: |-
-    int i = 0;
-    int c = 0;
-    while (i < 20) {
-        i++;
-        if (i <= 10) continue;
-        c++;
-    }
+  code: "int i = 0;\nint c = 0;\nwhile (i < 20) {\n    i++;\n    if (i <= 10) continue;\n\
+    \    c++;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/tpdb/C/AProVE_numeric/svcomp_java_Continue1.c

@@ -7,8 +7,5 @@ basic:
   time: 2026-01-02T17:21
 loops:
 - id: 1
-  code: |-
-    while (x >= 0)
-    {
-      x = x % y;
-    }
+  code: "while (x >= 0)\n{\n  x = x % y;\n}"
+source_path: data/aeval/c_bench_nonterm/nonlin_mod_nonterm_2.c

@@ -7,29 +7,11 @@ basic:
   time: 2026-01-03T14:45
 loops:
 - id: 1
-  code: |-
-    for (i = 0; i < N; i++)
-    {
-        a[i] = 1;
-    }
+  code: "for (i = 0; i < N; i++)\n{\n    a[i] = 1;\n}"
 - id: 2
-  code: |-
-    for (i = 0; i < N; i++)
-    {
-        b[i] = 0;
-    }
+  code: "for (i = 0; i < N; i++)\n{\n    b[i] = 0;\n}"
 - id: 3
-  code: |-
-    for (j = i; j < N; j++)
-    {
-        b[i] = b[i] + 1;
-    }
+  code: "for (j = i; j < N; j++)\n{\n    b[i] = b[i] + 1;\n}"
 - id: 4
-  code: |-
-    for (i = 0; i < N; i++)
-    {
-        {;
-    //@ assert(b[i] == 2*N - i);
-    }
-
-    }
+  code: "for (i = 0; i < N; i++)\n{\n    {;\n//@ assert(b[i] == 2*N - i);\n}\n\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/arrays/diffy_cav21_bench/nested-as3.c

@@ -7,18 +7,7 @@ basic:
   time: 2026-01-03T13:59
 loops:
 - id: 1
-  code: |-
-    while(unknown_int()){
-      if(x % 3 == 1){
-        x += 2; y = 0;}
-      else{
-        if(x % 3 == 2){
-          x += 1; y = 0;}
-        else{
-          if(unknown_int()){
-            x += 4; y = 1;}
-          else{
-            x += 5; y = 1;}
-        }
-      }
-    }
+  code: "while(unknown_int()){\n  if(x % 3 == 1){\n    x += 2; y = 0;}\n  else{\n\
+    \    if(x % 3 == 2){\n      x += 1; y = 0;}\n    else{\n      if(unknown_int()){\n\
+    \        x += 4; y = 1;}\n      else{\n        x += 5; y = 1;}\n    }\n  }\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-industry-pattern/mod3.c

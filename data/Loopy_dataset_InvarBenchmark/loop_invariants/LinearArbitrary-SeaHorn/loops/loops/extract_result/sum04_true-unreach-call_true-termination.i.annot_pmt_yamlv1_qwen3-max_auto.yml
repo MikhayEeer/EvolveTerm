@@ -7,7 +7,5 @@ basic:
   time: 2026-01-03T14:05
 loops:
 - id: 1
-  code: |-
-    for(i=1; i<=8; i++){
-      sn = sn +(2);
-    }
+  code: "for(i=1; i<=8; i++){\n  sn = sn +(2);\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/loops/loops/sum04_true-unreach-call_true-termination.i.annot.c

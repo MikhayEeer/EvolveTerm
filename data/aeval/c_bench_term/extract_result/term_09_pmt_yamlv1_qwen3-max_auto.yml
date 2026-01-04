@@ -7,16 +7,7 @@ basic:
   time: 2026-01-02T17:34
 loops:
 - id: 1
-  code: |-
-    while (y != K) {
-      if (x == y) {
-        if (x > K) {
-          x = x - 1;
-        } else {
-          x = x + 1;
-        }
-        y = x;
-      } else {
-        y = y - 1;
-      }
-    }
+  code: "while (y != K) {\n  if (x == y) {\n    if (x > K) {\n      x = x - 1;\n \
+    \   } else {\n      x = x + 1;\n    }\n    y = x;\n  } else {\n    y = y - 1;\n\
+    \  }\n}"
+source_path: data/aeval/c_bench_term/term_09.c

@@ -7,12 +7,6 @@ basic:
   time: 2026-01-02T17:35
 loops:
 - id: 1
-  code: |-
-    int x, y, r;
-    x = __VERIFIER_nondet_int();
-    y = __VERIFIER_nondet_int();
-    r = 1;
-    while (y > 0) {
-        r = r*x;
-        y = y - 1;
-    }
+  code: "int x, y, r;\nx = __VERIFIER_nondet_int();\ny = __VERIFIER_nondet_int();\n\
+    r = 1;\nwhile (y > 0) {\n    r = r*x;\n    y = y - 1;\n}"
+source_path: data/aeval/c_bench_term/ex1_false-no-overflow_true-termination.c

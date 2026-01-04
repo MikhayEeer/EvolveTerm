@@ -8,3 +8,4 @@ basic:
 loops:
 - id: 1
   code: while (i <= 10) { i = i + 1; c = c + 1; }
+source_path: data/Loopy_dataset_InvarBenchmark/termination/tpdb/C_Integer/Stroeder_15/svcomp_java_Break.c

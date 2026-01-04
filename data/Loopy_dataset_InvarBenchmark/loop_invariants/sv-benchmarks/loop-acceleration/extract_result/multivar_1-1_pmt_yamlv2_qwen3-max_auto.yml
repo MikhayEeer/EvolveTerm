@@ -7,8 +7,5 @@ basic:
   time: 2026-01-03T13:57
 loops:
 - id: 1
-  code: |-
-    while (x < 1024) {
-        x++;
-        y++;
-    }
+  code: "while (x < 1024) {\n    x++;\n    y++;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-acceleration/multivar_1-1.c

@@ -7,9 +7,5 @@ basic:
   time: 2026-01-02T17:19
 loops:
 - id: 1
-  code: |-
-    while (x * y > 0)
-    {
-      x = -x;
-      y = -y;
-    }
+  code: "while (x * y > 0)\n{\n  x = -x;\n  y = -y;\n}"
+source_path: data/aeval/c_bench_nonterm/nonlin_mult_nonterm_2.c

@@ -7,7 +7,8 @@ basic:
   time: 2026-01-03T14:08
 loops:
 - id: 1
-  code: |-
-    i=0; n=10;
+  code: 'i=0; n=10;
 
-    while (i < n){ i++; }
+
+    while (i < n){ i++; }'
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/VeriMAP/TRACER-testabs13_VeriMAP_true.c

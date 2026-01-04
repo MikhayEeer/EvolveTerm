@@ -8,3 +8,4 @@ basic:
 loops:
 - id: 1
   code: while(1){ sn = sn + 1; x++; {; //@ assert(sn==x*1 || sn == 0); }
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/pie/ICE/benchmarks/sum03_safe.v.c

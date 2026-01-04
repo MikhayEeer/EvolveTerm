@@ -7,12 +7,6 @@ basic:
   time: 2026-01-03T14:28
 loops:
 - id: 1
-  code: |-
-    while (x > 0) {
-        if (x > y) {
-            x = y;
-        } else {
-            x = x - 1;
-        }
-        c = c + 1;
-    }
+  code: "while (x > 0) {\n    if (x > y) {\n        x = y;\n    } else {\n       \
+    \ x = x - 1;\n    }\n    c = c + 1;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/tpdb/C_Integer/Stroeder_15/svcomp_b.09_assume.c

@@ -7,9 +7,6 @@ basic:
   time: 2026-01-03T14:00
 loops:
 - id: 1
-  code: |-
-    while (unknown_bool()) {
-        if (x>50) x++;
-        if (x == 0) { x ++;
-        } else x--;
-    }
+  code: "while (unknown_bool()) {\n    if (x>50) x++;\n    if (x == 0) { x ++;\n \
+    \   } else x--;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-zilu/benchmark51_polynomial.c

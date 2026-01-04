@@ -7,10 +7,6 @@ basic:
   time: 2026-01-03T14:23
 loops:
 - id: 1
-  code: |-
-    while (x >= 0) {
-        x = x + y;
-        if (y >= 0) {
-            y = y - 1;
-        }
-    }
+  code: "while (x >= 0) {\n    x = x + y;\n    if (y >= 0) {\n        y = y - 1;\n\
+    \    }\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/tpdb/C_Integer/Stroeder_15/Masse-VMCAI2014-Ex6_true-termination.c

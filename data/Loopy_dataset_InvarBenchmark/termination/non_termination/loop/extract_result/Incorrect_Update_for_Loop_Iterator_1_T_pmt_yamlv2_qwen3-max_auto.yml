@@ -7,14 +7,7 @@ basic:
   time: 2026-01-03T14:33
 loops:
 - id: 1
-  code: |-
-    while( buffer_bytes_left < size / 2)
-    {
-        size *= 2;
-        if( max_msg_size != -1 && size > max_msg_size )
-        {
-            size = max_msg_size;
-            break;
-        }
-        buffer_bytes_left = size - buffer_bytes_left;
-    }
+  code: "while( buffer_bytes_left < size / 2)\n{\n    size *= 2;\n    if( max_msg_size\
+    \ != -1 && size > max_msg_size )\n    {\n        size = max_msg_size;\n      \
+    \  break;\n    }\n    buffer_bytes_left = size - buffer_bytes_left;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/non_termination/loop/Incorrect_Update_for_Loop_Iterator_1_T.c

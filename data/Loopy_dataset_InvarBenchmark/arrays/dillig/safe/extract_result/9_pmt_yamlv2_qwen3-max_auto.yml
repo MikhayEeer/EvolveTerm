@@ -9,11 +9,6 @@ loops:
 - id: 1
   code: "for(i=0; i<num_to_copy; i++) \n{\n    a[i] = b[i];\n}"
 - id: 2
-  code: |-
-    for(i=0; i<num_to_copy; i++)
-    {
-        {;
-    //@ assert(a[i] == b[i]);
-    }
-
-    }
+  code: "for(i=0; i<num_to_copy; i++)\n{\n    {;\n//@ assert(a[i] == b[i]);\n}\n\n\
+    }"
+source_path: data/Loopy_dataset_InvarBenchmark/arrays/dillig/safe/9.c

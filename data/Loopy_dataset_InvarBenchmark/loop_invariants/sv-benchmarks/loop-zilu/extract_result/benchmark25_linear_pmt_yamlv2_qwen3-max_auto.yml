@@ -7,7 +7,5 @@ basic:
   time: 2026-01-03T14:00
 loops:
 - id: 1
-  code: |-
-    while (x<10) {
-      x=x+1;
-    }
+  code: "while (x<10) {\n  x=x+1;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-zilu/benchmark25_linear.c

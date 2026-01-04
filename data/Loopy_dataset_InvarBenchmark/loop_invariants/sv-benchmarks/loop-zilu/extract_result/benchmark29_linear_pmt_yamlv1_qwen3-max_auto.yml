@@ -7,7 +7,5 @@ basic:
   time: 2026-01-03T14:02
 loops:
 - id: 1
-  code: |-
-    while (x<y) {
-      x=x+100;
-    }
+  code: "while (x<y) {\n  x=x+100;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-zilu/benchmark29_linear.c

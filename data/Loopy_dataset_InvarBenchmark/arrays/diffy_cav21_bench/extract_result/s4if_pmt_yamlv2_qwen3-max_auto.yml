@@ -7,18 +7,8 @@ basic:
   time: 2026-01-03T14:37
 loops:
 - id: 1
-  code: |-
-    for(i=0; i<N; i++)
-    {
-        a[i] = 4;
-    }
+  code: "for(i=0; i<N; i++)\n{\n    a[i] = 4;\n}"
 - id: 2
-  code: |-
-    for(i=0; i<N; i++)
-    {
-        if(a[i] == 4) {
-            sum[0] = sum[0] + a[i];
-        } else {
-            sum[0] = sum[0] * a[i];
-        }
-    }
+  code: "for(i=0; i<N; i++)\n{\n    if(a[i] == 4) {\n        sum[0] = sum[0] + a[i];\n\
+    \    } else {\n        sum[0] = sum[0] * a[i];\n    }\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/arrays/diffy_cav21_bench/s4if.c

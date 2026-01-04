@@ -7,12 +7,6 @@ basic:
   time: 2026-01-03T14:32
 loops:
 - id: 1
-  code: |-
-    while (1) {
-        if (!b) {
-            break;
-        }
-        b = unknown_int();
-        x = x - 1;
-        b = (x >= 0);
-    }
+  code: "while (1) {\n    if (!b) {\n        break;\n    }\n    b = unknown_int();\n\
+    \    x = x - 1;\n    b = (x >= 0);\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/tpdb/C/Ultimate/Lobnya-Boolean-Reordered_true-termination.c

@@ -7,9 +7,6 @@ basic:
   time: 2026-01-02T17:23
 loops:
 - id: 1
-  code: |-
-    while ((x > 0 && y > 0) || (x < 0 && y < 0))
-    {
-      y = y * -7;
-      x = x * -9;
-    }
+  code: "while ((x > 0 && y > 0) || (x < 0 && y < 0))\n{\n  y = y * -7;\n  x = x *\
+    \ -9;\n}"
+source_path: data/aeval/c_bench_nonterm/nterm_ever_01.c

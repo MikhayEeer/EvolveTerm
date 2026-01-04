@@ -7,27 +7,12 @@ basic:
   time: 2026-01-03T14:34
 loops:
 - id: 1
-  code: |-
-    int i = unknown_int();
-    int j = unknown_int();
-    int k = unknown_int();
-    int an = unknown_int();
-    int bn = unknown_int();
-    int tk = unknown_int();
-    while (((an >= i && bn >= j) || (an >= i && bn <= j) || (an <= i && bn >= j)) && k >= tk + 1) {
-        if (an >= i && bn >= j) {
-            if (unknown_int()) {
-                j = j + k;
-                tk = k;
-                k = unknown_int();
-            } else {
-                i = i + 1;
-            }
-        } else if (an >= i && bn <= j) {
-            i = i + 1;
-        } else if (an <= i && bn >= j) {
-            j = j + k;
-            tk = k;
-            k = unknown_int();
-        }
-    }
+  code: "int i = unknown_int();\nint j = unknown_int();\nint k = unknown_int();\n\
+    int an = unknown_int();\nint bn = unknown_int();\nint tk = unknown_int();\nwhile\
+    \ (((an >= i && bn >= j) || (an >= i && bn <= j) || (an <= i && bn >= j)) && k\
+    \ >= tk + 1) {\n    if (an >= i && bn >= j) {\n        if (unknown_int()) {\n\
+    \            j = j + k;\n            tk = k;\n            k = unknown_int();\n\
+    \        } else {\n            i = i + 1;\n        }\n    } else if (an >= i &&\
+    \ bn <= j) {\n        i = i + 1;\n    } else if (an <= i && bn >= j) {\n     \
+    \   j = j + k;\n        tk = k;\n        k = unknown_int();\n    }\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/tpdb/C/SV-COMP_Termination_Category/ChawdharyCookGulwaniSagivYang-ESOP2008-aaron4_true-termination.c

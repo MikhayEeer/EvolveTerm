@@ -7,10 +7,6 @@ basic:
   time: 2026-01-02T17:29
 loops:
 - id: 1
-  code: |-
-    while ((i <= 100) && (j <= k) && (k > -2147483648)) {
-        tmp = i;
-        i = j;
-        j = tmp + 1;
-        k = k - 1;
-    }
+  code: "while ((i <= 100) && (j <= k) && (k > -2147483648)) {\n    tmp = i;\n   \
+    \ i = j;\n    j = tmp + 1;\n    k = k - 1;\n}"
+source_path: data/aeval/c_bench_term/c.07_true-termination_true-no-overflow.c

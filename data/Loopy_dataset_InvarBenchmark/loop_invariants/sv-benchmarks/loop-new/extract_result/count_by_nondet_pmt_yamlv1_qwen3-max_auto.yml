@@ -7,12 +7,6 @@ basic:
   time: 2026-01-03T14:02
 loops:
 - id: 1
-  code: |-
-    int i = 0;
-    int k = 0;
-    while(i < LARGE_INT) {
-        int j = unknown_int();
-        if (!(1 <= j && j < LARGE_INT)) return 0;
-        i = i + j;
-        k ++;
-    }
+  code: "int i = 0;\nint k = 0;\nwhile(i < LARGE_INT) {\n    int j = unknown_int();\n\
+    \    if (!(1 <= j && j < LARGE_INT)) return 0;\n    i = i + j;\n    k ++;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-new/count_by_nondet.c

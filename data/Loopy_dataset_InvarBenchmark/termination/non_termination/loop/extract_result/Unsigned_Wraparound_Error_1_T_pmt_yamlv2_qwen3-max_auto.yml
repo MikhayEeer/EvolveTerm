@@ -7,13 +7,6 @@ basic:
   time: 2026-01-03T14:33
 loops:
 - id: 1
-  code: |-
-    for( ;  ; )
-    {
-        if( st_max < cur )
-            break;
-        pre = cur;
-        cur += best;
-        if( cur <= pre )
-            break;
-    }
+  code: "for( ;  ; )\n{\n    if( st_max < cur )\n        break;\n    pre = cur;\n\
+    \    cur += best;\n    if( cur <= pre )\n        break;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/non_termination/loop/Unsigned_Wraparound_Error_1_T.c

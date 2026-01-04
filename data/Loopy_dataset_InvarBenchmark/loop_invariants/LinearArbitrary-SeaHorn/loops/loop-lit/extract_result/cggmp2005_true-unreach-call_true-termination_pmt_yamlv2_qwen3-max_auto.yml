@@ -7,8 +7,5 @@ basic:
   time: 2026-01-03T14:06
 loops:
 - id: 1
-  code: |-
-    while (j >= i) {
-        i = i + 2;
-        j = -1 + j;
-    }
+  code: "while (j >= i) {\n    i = i + 2;\n    j = -1 + j;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/loops/loop-lit/cggmp2005_true-unreach-call_true-termination.c

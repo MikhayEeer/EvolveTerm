@@ -7,17 +7,8 @@ basic:
   time: 2026-01-03T14:34
 loops:
 - id: 1
-  code: |-
-    int x = unknown_int();
-    int y = unknown_int();
-    int z = unknown_int();
-    while (x >= y) {
-        if (unknown_int()) {
-            x = x + 1;
-            y = y + x;
-        } else {
-            x = x - z;
-            y = y + (z * z);
-            z = z - 1;
-        }
-    }
+  code: "int x = unknown_int();\nint y = unknown_int();\nint z = unknown_int();\n\
+    while (x >= y) {\n    if (unknown_int()) {\n        x = x + 1;\n        y = y\
+    \ + x;\n    } else {\n        x = x - z;\n        y = y + (z * z);\n        z\
+    \ = z - 1;\n    }\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/tpdb/C/SV-COMP_Termination_Category/ChawdharyCookGulwaniSagivYang-ESOP2008-aaron12_true-termination.c

@@ -7,13 +7,6 @@ basic:
   time: 2026-01-03T14:31
 loops:
 - id: 1
-  code: |-
-    int x, y, z;
-    x = 12;
-    y = 0;
-    z = unknown_int();
-    while (z > 0) {
-        x = x + 1;
-        y = y - 1;
-        z = z - 1;
-    }
+  code: "int x, y, z;\nx = 12;\ny = 0;\nz = unknown_int();\nwhile (z > 0) {\n    x\
+    \ = x + 1;\n    y = y - 1;\n    z = z - 1;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/tpdb/C_Integer/Stroeder_15/easy2_true-termination.c

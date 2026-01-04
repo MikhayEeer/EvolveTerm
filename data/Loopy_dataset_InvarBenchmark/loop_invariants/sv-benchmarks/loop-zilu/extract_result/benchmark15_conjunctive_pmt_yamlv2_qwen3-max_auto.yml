@@ -7,9 +7,6 @@ basic:
   time: 2026-01-03T14:01
 loops:
 - id: 1
-  code: |-
-    while (mid > 0) {
-        low = low + 1;
-        high = high - 1;
-        mid = mid - 1;
-    }
+  code: "while (mid > 0) {\n    low = low + 1;\n    high = high - 1;\n    mid = mid\
+    \ - 1;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-zilu/benchmark15_conjunctive.c

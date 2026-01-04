@@ -7,11 +7,6 @@ basic:
   time: 2026-01-03T13:57
 loops:
 - id: 1
-  code: |-
-    int i;
-    unsigned long long sum;
-    i = 0, sum = 0;
-    while (i < SIZE) {
-        i = i + 1;
-        sum += i;
-    }
+  code: "int i;\nunsigned long long sum;\ni = 0, sum = 0;\nwhile (i < SIZE) {\n  \
+    \  i = i + 1;\n    sum += i;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loops-crafted-1/sum_natnum.c

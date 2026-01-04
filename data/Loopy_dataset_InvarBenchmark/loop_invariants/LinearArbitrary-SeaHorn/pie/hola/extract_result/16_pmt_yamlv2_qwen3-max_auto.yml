@@ -7,8 +7,5 @@ basic:
   time: 2026-01-03T14:03
 loops:
 - id: 1
-  code: |-
-    while(x!=0) {
-      x--;
-      y--;
-    }
+  code: "while(x!=0) {\n  x--;\n  y--;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/pie/hola/16.c

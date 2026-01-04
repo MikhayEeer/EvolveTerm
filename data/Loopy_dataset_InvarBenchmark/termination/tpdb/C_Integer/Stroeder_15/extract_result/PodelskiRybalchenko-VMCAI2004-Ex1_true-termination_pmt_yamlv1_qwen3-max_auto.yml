@@ -7,17 +7,8 @@ basic:
   time: 2026-01-03T14:27
 loops:
 - id: 1
-  code: |-
-    while (i - j >= 1) {
-        nondetNat = unknown_int();
-        if (nondetNat < 0) {
-            nondetNat = -nondetNat;
-        }
-        i = i - nondetNat;
-        nondetPos = unknown_int();
-        if (nondetPos < 0) {
-            nondetPos = -nondetPos;
-        }
-        nondetPos = nondetPos + 1;
-        j = j + nondetPos;
-    }
+  code: "while (i - j >= 1) {\n    nondetNat = unknown_int();\n    if (nondetNat <\
+    \ 0) {\n        nondetNat = -nondetNat;\n    }\n    i = i - nondetNat;\n    nondetPos\
+    \ = unknown_int();\n    if (nondetPos < 0) {\n        nondetPos = -nondetPos;\n\
+    \    }\n    nondetPos = nondetPos + 1;\n    j = j + nondetPos;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/tpdb/C_Integer/Stroeder_15/PodelskiRybalchenko-VMCAI2004-Ex1_true-termination.c

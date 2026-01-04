@@ -7,11 +7,6 @@ basic:
   time: 2026-01-03T14:23
 loops:
 - id: 1
-  code: |-
-    while (x >= y && tx >= 0) {
-        if (unknown_int() != 0) {
-            x = x - 1 - tx;
-        } else {
-            y = y + 1 + tx;
-        }
-    }
+  code: "while (x >= y && tx >= 0) {\n    if (unknown_int() != 0) {\n        x = x\
+    \ - 1 - tx;\n    } else {\n        y = y + 1 + tx;\n    }\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/tpdb/C_Integer/Stroeder_15/aaron2_true-termination.c

@@ -10,3 +10,4 @@ loops:
   code: "int i = 1;\nint j = 0;\nint z = i - j;\nint x = 0;\nint y = 0;\nint w = 0;\n\
     \nwhile(unknown2()) \n{\n    z += x + y + w;\n    y++;\n    if(z % 2 == 1) \n\
     \      x++;\n    w += 2; \n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/pie/hola/02.c

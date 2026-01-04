@@ -7,20 +7,7 @@ basic:
   time: 2026-01-03T14:13
 loops:
 - id: 1
-  code: |-
-    int x;
-    int y;
-    int xa = 0;
-    int ya = 0;
-
-    while (unknown_int()) {
-        x = xa + 2*ya;
-        y = -2*xa + ya;
-
-        x++;
-        if (unknown_int()) y    = y+x;
-        else y = y-x;
-
-        xa = x - 2*y;
-        ya = 2*x + y;
-    }
+  code: "int x;\nint y;\nint xa = 0;\nint ya = 0;\n\nwhile (unknown_int()) {\n   \
+    \ x = xa + 2*ya;\n    y = -2*xa + ya;\n\n    x++;\n    if (unknown_int()) y  \
+    \  = y+x;\n    else y = y-x;\n\n    xa = x - 2*y;\n    ya = 2*x + y;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/accelerating_invariant_generation/dagger/ex1.c

@@ -7,13 +7,6 @@ basic:
   time: 2026-01-02T17:21
 loops:
 - id: 1
-  code: |-
-    int x = -1;
-    int y = 2;
-    int z = 3;
-
-    while (x != 1) {
-      x = x + z;
-      z = y + z;
-      y = y + 2;
-    }
+  code: "int x = -1;\nint y = 2;\nint z = 3;\n\nwhile (x != 1) {\n  x = x + z;\n \
+    \ z = y + z;\n  y = y + 2;\n}"
+source_path: data/aeval/c_bench_nonterm/determ_nterm_3.c

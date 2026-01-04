@@ -7,7 +7,5 @@ basic:
   time: 2026-01-03T14:03
 loops:
 - id: 1
-  code: |-
-    for (i =0; i< x ; i++){
-      j = j + 2;
-    }
+  code: "for (i =0; i< x ; i++){\n  j = j + 2;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/pie/hola/11.c

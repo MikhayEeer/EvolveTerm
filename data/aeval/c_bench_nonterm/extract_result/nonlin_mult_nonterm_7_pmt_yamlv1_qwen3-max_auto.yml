@@ -7,9 +7,5 @@ basic:
   time: 2026-01-02T17:19
 loops:
 - id: 1
-  code: |-
-    while (i*j*k > 0) {
-        i = i + 1;
-        j = j + 1;
-        k = k + 1;
-    }
+  code: "while (i*j*k > 0) {\n    i = i + 1;\n    j = j + 1;\n    k = k + 1;\n}"
+source_path: data/aeval/c_bench_nonterm/nonlin_mult_nonterm_7.c

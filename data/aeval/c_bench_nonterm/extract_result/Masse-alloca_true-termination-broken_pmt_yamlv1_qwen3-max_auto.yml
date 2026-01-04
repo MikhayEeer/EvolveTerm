@@ -7,13 +7,7 @@ basic:
   time: 2026-01-02T17:21
 loops:
 - id: 1
-  code: |-
-    while (x <= 1000) {
-        if (0 == __VERIFIER_nondet_int()) {
-            x = - 2 * x + 2;
-        } else if (0 == __VERIFIER_nondet_int()) {
-            x = - 3 * x - 2;
-        } else {
-            x = - 4 * x ;
-        }
-    }
+  code: "while (x <= 1000) {\n    if (0 == __VERIFIER_nondet_int()) {\n        x =\
+    \ - 2 * x + 2;\n    } else if (0 == __VERIFIER_nondet_int()) {\n        x = -\
+    \ 3 * x - 2;\n    } else {\n        x = - 4 * x ;\n    }\n}"
+source_path: data/aeval/c_bench_nonterm/Masse-alloca_true-termination-broken.c

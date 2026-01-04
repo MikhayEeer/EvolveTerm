@@ -7,9 +7,5 @@ basic:
   time: 2026-01-03T14:22
 loops:
 - id: 1
-  code: |-
-    while (a + b < 5) {
-        a = a - b;
-        b = a + b;
-        a = b - a;
-    }
+  code: "while (a + b < 5) {\n    a = a - b;\n    b = a + b;\n    a = b - a;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/tpdb/C_Integer/Stroeder_15/NO_24.c

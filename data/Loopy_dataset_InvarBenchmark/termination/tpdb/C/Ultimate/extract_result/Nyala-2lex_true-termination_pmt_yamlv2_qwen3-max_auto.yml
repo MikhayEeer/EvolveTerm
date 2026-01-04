@@ -7,14 +7,6 @@ basic:
   time: 2026-01-03T14:29
 loops:
 - id: 1
-  code: |-
-    while (x >= 0) {
-        y = y - 1;
-        if (y < 0) {
-            x = x - 1;
-            y = unknown_int();
-        }
-        if (y < 0) {
-            break;
-        }
-    }
+  code: "while (x >= 0) {\n    y = y - 1;\n    if (y < 0) {\n        x = x - 1;\n\
+    \        y = unknown_int();\n    }\n    if (y < 0) {\n        break;\n    }\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/tpdb/C/Ultimate/Nyala-2lex_true-termination.c

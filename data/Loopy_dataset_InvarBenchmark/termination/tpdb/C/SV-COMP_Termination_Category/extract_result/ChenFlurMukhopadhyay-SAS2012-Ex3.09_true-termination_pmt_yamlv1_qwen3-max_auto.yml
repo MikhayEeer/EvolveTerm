@@ -7,15 +7,7 @@ basic:
   time: 2026-01-03T14:34
 loops:
 - id: 1
-  code: |-
-    int x = unknown_int();
-    int y = unknown_int();
-    int z = unknown_int();
-    while (x > 0 && x < y) {
-        int old_x = x;
-        x = unknown_int();
-        if (x <= 2*old_x) {
-            break;
-        }
-        y = z;
-    }
+  code: "int x = unknown_int();\nint y = unknown_int();\nint z = unknown_int();\n\
+    while (x > 0 && x < y) {\n    int old_x = x;\n    x = unknown_int();\n    if (x\
+    \ <= 2*old_x) {\n        break;\n    }\n    y = z;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/tpdb/C/SV-COMP_Termination_Category/ChenFlurMukhopadhyay-SAS2012-Ex3.09_true-termination.c

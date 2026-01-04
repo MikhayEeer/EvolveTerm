@@ -7,8 +7,7 @@ basic:
   time: 2026-01-02T17:35
 loops:
 - id: 1
-  code: |-
-    while (i + j + a + b == 0) {
-        if (__VERIFIER_nondet_int() == 0) i--; else j++;
-        if (__VERIFIER_nondet_int() == 0) a = a - 2; else b = b + 2;
-    }
+  code: "while (i + j + a + b == 0) {\n    if (__VERIFIER_nondet_int() == 0) i--;\
+    \ else j++;\n    if (__VERIFIER_nondet_int() == 0) a = a - 2; else b = b + 2;\n\
+    }"
+source_path: data/aeval/c_bench_term/term_14.c

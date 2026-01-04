@@ -7,8 +7,5 @@ basic:
   time: 2026-01-03T14:02
 loops:
 - id: 1
-  code: |-
-    for (b=0; b < 100 ; ++b){
-       if (flag)
-          j = j +1;
-    }
+  code: "for (b=0; b < 100 ; ++b){\n   if (flag)\n      j = j +1;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/pie/hola/18.c

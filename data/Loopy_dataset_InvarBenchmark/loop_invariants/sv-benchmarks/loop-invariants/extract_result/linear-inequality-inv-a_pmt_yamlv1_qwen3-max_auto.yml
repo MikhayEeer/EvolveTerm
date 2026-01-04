@@ -7,10 +7,6 @@ basic:
   time: 2026-01-03T13:59
 loops:
 - id: 1
-  code: |-
-    unsigned int  i = 0;
-    while (i < n) {
-      v = unknown_uchar();
-      s += v;
-      ++i;
-    }
+  code: "unsigned int  i = 0;\nwhile (i < n) {\n  v = unknown_uchar();\n  s += v;\n\
+    \  ++i;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-invariants/linear-inequality-inv-a.c

@@ -7,11 +7,6 @@ basic:
   time: 2026-01-02T17:20
 loops:
 - id: 1
-  code: |-
-    while (am != bm) {
-        if (am > bm) {
-            bm = bm+b;
-        } else {
-            am = am+a;
-        }
-    }
+  code: "while (am != bm) {\n    if (am > bm) {\n        bm = bm+b;\n    } else {\n\
+    \        am = am+a;\n    }\n}"
+source_path: data/aeval/c_bench_nonterm/Lcm_false-no-overflow_false-termination.c

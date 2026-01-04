@@ -7,18 +7,7 @@ basic:
   time: 2026-01-03T14:29
 loops:
 - id: 1
-  code: |-
-    int x;
-    int c;
-    x = unknown_int();
-    c = 1;
-
-    while (c > 0) {
-        if (x > 100) {
-            x = x-10;
-            c = c-1;
-        } else {
-            x = x+11;
-            c = c+1;
-        }
-    }
+  code: "int x;\nint c;\nx = unknown_int();\nc = 1;\n\nwhile (c > 0) {\n    if (x\
+    \ > 100) {\n        x = x-10;\n        c = c-1;\n    } else {\n        x = x+11;\n\
+    \        c = c+1;\n    }\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/tpdb/C_Integer/Stroeder_15/McCarthyIterative.c

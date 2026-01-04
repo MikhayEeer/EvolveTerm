@@ -7,11 +7,6 @@ basic:
   time: 2026-01-03T14:19
 loops:
 - id: 1
-  code: |-
-    while ((j >= i)) {
-        {
-        (i  = (i + 2));
-        (j  = (j - 1));
-        }
-
-    }
+  code: "while ((j >= i)) {\n    {\n    (i  = (i + 2));\n    (j  = (j - 1));\n   \
+    \ }\n\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/code2inv/24.c

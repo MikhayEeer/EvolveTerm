@@ -7,7 +7,5 @@ basic:
   time: 2026-01-03T13:56
 loops:
 - id: 1
-  code: |-
-    while(x<100) {
-        x=x+y;
-    }
+  code: "while(x<100) {\n    x=x+y;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loops/terminator_03-2.c

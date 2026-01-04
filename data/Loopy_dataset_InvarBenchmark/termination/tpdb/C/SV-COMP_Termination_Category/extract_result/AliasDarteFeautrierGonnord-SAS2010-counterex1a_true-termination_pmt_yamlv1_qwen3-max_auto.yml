@@ -7,21 +7,9 @@ basic:
   time: 2026-01-03T14:35
 loops:
 - id: 1
-  code: |-
-    int n = unknown_int();
-    int b = unknown_int();
-    int x = unknown_int();
-    int y = unknown_int();
-    while (x >= 0 && 0 <= y && y <= n) {
-        if (b == 0) {
-            y++;
-            if (unknown_int())
-                b = 1;
-        } else {
-            y--;
-            if (unknown_int()) {
-                x--;
-                b = 0;
-            }
-        }
-    }
+  code: "int n = unknown_int();\nint b = unknown_int();\nint x = unknown_int();\n\
+    int y = unknown_int();\nwhile (x >= 0 && 0 <= y && y <= n) {\n    if (b == 0)\
+    \ {\n        y++;\n        if (unknown_int())\n            b = 1;\n    } else\
+    \ {\n        y--;\n        if (unknown_int()) {\n            x--;\n          \
+    \  b = 0;\n        }\n    }\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/tpdb/C/SV-COMP_Termination_Category/AliasDarteFeautrierGonnord-SAS2010-counterex1a_true-termination.c

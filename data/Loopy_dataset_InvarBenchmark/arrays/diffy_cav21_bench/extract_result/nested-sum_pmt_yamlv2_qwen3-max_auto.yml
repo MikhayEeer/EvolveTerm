@@ -7,14 +7,7 @@ basic:
   time: 2026-01-03T14:44
 loops:
 - id: 1
-  code: |-
-    for (j = 0; j < i+1; j++)
-    {
-        sum[0] = sum[0] + 1;
-    }
+  code: "for (j = 0; j < i+1; j++)\n{\n    sum[0] = sum[0] + 1;\n}"
 - id: 2
-  code: |-
-    for (i = 0; i < N; i++)
-    {
-        LOOP1
-    }
+  code: "for (i = 0; i < N; i++)\n{\n    LOOP1\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/arrays/diffy_cav21_bench/nested-sum.c

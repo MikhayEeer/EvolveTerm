@@ -7,18 +7,6 @@ basic:
   time: 2026-01-03T14:03
 loops:
 - id: 1
-  code: |-
-    while(j<n) {
-      if(j==i)
-      {
-         x++;
-         y--;
-      }else
-      {
-         y++;
-         x--;
-      }
-        if(unknown1())
-            m = j;
-      j++;
-    }
+  code: "while(j<n) {\n  if(j==i)\n  {\n     x++;\n     y--;\n  }else\n  {\n     y++;\n\
+    \     x--;\n  }\n    if(unknown1())\n        m = j;\n  j++;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/pie/hola/20.c

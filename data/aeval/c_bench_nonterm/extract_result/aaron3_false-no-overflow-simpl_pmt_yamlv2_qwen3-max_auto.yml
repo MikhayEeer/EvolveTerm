@@ -7,9 +7,6 @@ basic:
   time: 2026-01-02T17:24
 loops:
 - id: 1
-  code: |-
-    while (x <= tx + z) {
-        z = z - 1;
-        tx = x;
-        x = __VERIFIER_nondet_int();
-    }
+  code: "while (x <= tx + z) {\n    z = z - 1;\n    tx = x;\n    x = __VERIFIER_nondet_int();\n\
+    }"
+source_path: data/aeval/c_bench_nonterm/aaron3_false-no-overflow-simpl.c

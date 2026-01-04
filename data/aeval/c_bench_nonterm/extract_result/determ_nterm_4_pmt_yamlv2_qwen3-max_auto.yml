@@ -7,10 +7,6 @@ basic:
   time: 2026-01-02T17:20
 loops:
 - id: 1
-  code: |-
-    while (a + b + c < 10) {
-      a = a - b;
-      b = a + b;
-      c = c + a;
-      a = b - a;
-    }
+  code: "while (a + b + c < 10) {\n  a = a - b;\n  b = a + b;\n  c = c + a;\n  a =\
+    \ b - a;\n}"
+source_path: data/aeval/c_bench_nonterm/determ_nterm_4.c

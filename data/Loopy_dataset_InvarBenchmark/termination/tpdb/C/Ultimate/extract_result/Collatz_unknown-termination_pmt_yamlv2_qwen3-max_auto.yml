@@ -7,11 +7,6 @@ basic:
   time: 2026-01-03T14:30
 loops:
 - id: 1
-  code: |-
-    while (y > 1) {
-        if (y % 2 == 0) {
-            y = y / 2;
-        } else {
-            y = 3*y + 1;
-        }
-    }
+  code: "while (y > 1) {\n    if (y % 2 == 0) {\n        y = y / 2;\n    } else {\n\
+    \        y = 3*y + 1;\n    }\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/tpdb/C/Ultimate/Collatz_unknown-termination.c

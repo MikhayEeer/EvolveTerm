@@ -7,11 +7,6 @@ basic:
   time: 2026-01-03T14:31
 loops:
 - id: 1
-  code: |-
-    while (x > y) {
-        x = x - y;
-        y = unknown_int();
-        if (y < 1 || y > 2) {
-            break;
-        }
-    }
+  code: "while (x > y) {\n    x = x - y;\n    y = unknown_int();\n    if (y < 1 ||\
+    \ y > 2) {\n        break;\n    }\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/tpdb/C/SV-COMP_Termination_Category/ChenFlurMukhopadhyay-SAS2012-Ex2.20_true-termination.c

@@ -7,11 +7,16 @@ basic:
   time: 2026-01-03T14:11
 loops:
 - id: 1
-  code: |-
-    i = from;
+  code: 'i = from;
+
     j = 0;
 
+
     while (i < k) {
+
     i++;
+
     j++;
-    }
+
+    }'
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/accelerating_invariant_generation/dagger/substring1.c

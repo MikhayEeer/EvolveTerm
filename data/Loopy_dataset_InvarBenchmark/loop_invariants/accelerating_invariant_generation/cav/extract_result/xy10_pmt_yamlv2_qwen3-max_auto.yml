@@ -7,8 +7,5 @@ basic:
   time: 2026-01-03T14:09
 loops:
 - id: 1
-  code: |-
-    while (unknown_int()){
-        x += 10;
-        y += 1;
-    }
+  code: "while (unknown_int()){\n    x += 10;\n    y += 1;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/accelerating_invariant_generation/cav/xy10.c

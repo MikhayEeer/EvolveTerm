@@ -9,3 +9,4 @@ loops:
 - id: 1
   code: "unsigned char ac;\nfor( ac = (unsigned char)c1 ; ac != (unsigned char)c2\
     \ ; ac++ )\n{\n    \n}"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/non_termination/loop/Type_Conversion_in_Comparison_2_T.c

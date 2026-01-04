@@ -7,8 +7,5 @@ basic:
   time: 2026-01-02T17:22
 loops:
 - id: 1
-  code: |-
-    while (x == 10000000)
-    {
-      x = x * y;
-    }
+  code: "while (x == 10000000)\n{\n  x = x * y;\n}"
+source_path: data/aeval/c_bench_nonterm/nonlin_mult_nonterm_5.c

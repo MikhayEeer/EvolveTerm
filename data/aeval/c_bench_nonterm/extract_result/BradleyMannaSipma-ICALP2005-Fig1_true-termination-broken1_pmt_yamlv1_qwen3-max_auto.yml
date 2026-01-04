@@ -7,12 +7,6 @@ basic:
   time: 2026-01-02T17:23
 loops:
 - id: 1
-  code: |-
-    while (x <= N) {
-      if (__VERIFIER_nondet_int() != 0) {
-        x = 2*x + y;
-        y = y + 1;
-      } else {
-        x = x + 1;
-      }
-    }
+  code: "while (x <= N) {\n  if (__VERIFIER_nondet_int() != 0) {\n    x = 2*x + y;\n\
+    \    y = y + 1;\n  } else {\n    x = x + 1;\n  }\n}"
+source_path: data/aeval/c_bench_nonterm/BradleyMannaSipma-ICALP2005-Fig1_true-termination-broken1.c

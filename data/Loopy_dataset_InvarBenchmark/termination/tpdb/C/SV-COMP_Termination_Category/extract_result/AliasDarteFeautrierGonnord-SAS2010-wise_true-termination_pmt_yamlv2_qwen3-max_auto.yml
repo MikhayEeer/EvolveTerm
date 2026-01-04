@@ -7,11 +7,6 @@ basic:
   time: 2026-01-03T14:30
 loops:
 - id: 1
-  code: |-
-    while (x - y > 2 || y - x > 2) {
-        if (x < y) {
-            x++;
-        } else {
-            y++;
-        }
-    }
+  code: "while (x - y > 2 || y - x > 2) {\n    if (x < y) {\n        x++;\n    } else\
+    \ {\n        y++;\n    }\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/tpdb/C/SV-COMP_Termination_Category/AliasDarteFeautrierGonnord-SAS2010-wise_true-termination.c

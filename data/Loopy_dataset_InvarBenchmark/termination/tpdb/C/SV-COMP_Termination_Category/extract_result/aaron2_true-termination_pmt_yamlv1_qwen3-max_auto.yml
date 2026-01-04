@@ -7,14 +7,7 @@ basic:
   time: 2026-01-03T14:33
 loops:
 - id: 1
-  code: |-
-    int tx = unknown_int();
-    int x = unknown_int();
-    int y = unknown_int();
-    while (x >= y && tx >= 0) {
-        if (unknown_int()) {
-            x = x - 1 - tx;
-        } else {
-            y = y + 1 + tx;
-        }
-    }
+  code: "int tx = unknown_int();\nint x = unknown_int();\nint y = unknown_int();\n\
+    while (x >= y && tx >= 0) {\n    if (unknown_int()) {\n        x = x - 1 - tx;\n\
+    \    } else {\n        y = y + 1 + tx;\n    }\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/tpdb/C/SV-COMP_Termination_Category/aaron2_true-termination.c

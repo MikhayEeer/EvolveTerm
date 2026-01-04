@@ -7,9 +7,5 @@ basic:
   time: 2026-01-02T17:17
 loops:
 - id: 1
-  code: |-
-    while (x < 5) {
-        oldx = x;
-        x = oldx - y;
-        y = oldx + y;
-    }
+  code: "while (x < 5) {\n    oldx = x;\n    x = oldx - y;\n    y = oldx + y;\n}"
+source_path: data/aeval/c_bench_nonterm/ChenFlurMukhopadhyay-SAS2012-Ex2.12_false-termination.c

@@ -12,3 +12,4 @@ loops:
     \      y = y - 1;\n    }\n  } else {\n    if (__VERIFIER_nondet_int() != 0) {\n\
     \      x = x + 1;\n    } else {\n      y = y - 1;\n      x = __VERIFIER_nondet_int();\n\
     \    }        \n  }\n}"
+source_path: data/aeval/c_bench_term/UrbanMine-ESOP2014-Fig3_true-termination_true-no-overflow.c

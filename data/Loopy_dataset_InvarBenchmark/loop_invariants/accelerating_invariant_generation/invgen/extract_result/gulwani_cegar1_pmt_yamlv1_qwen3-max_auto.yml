@@ -7,8 +7,5 @@ basic:
   time: 2026-01-03T14:15
 loops:
 - id: 1
-  code: |-
-    while( __BLAST_NONDET ) {
-      x+=2;
-      y+=2;
-    }
+  code: "while( __BLAST_NONDET ) {\n  x+=2;\n  y+=2;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/accelerating_invariant_generation/invgen/gulwani_cegar1.c

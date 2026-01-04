@@ -7,27 +7,11 @@ basic:
   time: 2026-01-03T14:40
 loops:
 - id: 1
-  code: |-
-    for (i = 0; i < N; i++)
-    {
-        a[i] = 0;
-    }
+  code: "for (i = 0; i < N; i++)\n{\n    a[i] = 0;\n}"
 - id: 2
-  code: |-
-    for (i = 0; i < N; i++)
-    {
-        if (N%2 == 0) {
-            a[i] = a[i] + 2;
-        } else {
-            a[i] = a[i] + 1;
-        }
-    }
+  code: "for (i = 0; i < N; i++)\n{\n    if (N%2 == 0) {\n        a[i] = a[i] + 2;\n\
+    \    } else {\n        a[i] = a[i] + 1;\n    }\n}"
 - id: 3
-  code: |-
-    for (i = 0; i < N; i++)
-    {
-        {;
-    //@ assert(a[i] % 2 == N % 2);
-    }
-
-    }
+  code: "for (i = 0; i < N; i++)\n{\n    {;\n//@ assert(a[i] % 2 == N % 2);\n}\n\n\
+    }"
+source_path: data/Loopy_dataset_InvarBenchmark/arrays/diffy_cav21_bench/condm.c

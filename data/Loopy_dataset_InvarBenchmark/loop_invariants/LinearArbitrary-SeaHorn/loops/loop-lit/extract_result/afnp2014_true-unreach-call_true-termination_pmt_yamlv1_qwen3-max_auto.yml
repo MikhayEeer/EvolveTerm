@@ -7,10 +7,6 @@ basic:
   time: 2026-01-03T14:06
 loops:
 - id: 1
-  code: |-
-    int x = 1;
-    int y = 0;
-    while (y < 1000 && unknown_int()) {
-        x = x + y;
-        y = y + 1;
-    }
+  code: "int x = 1;\nint y = 0;\nwhile (y < 1000 && unknown_int()) {\n    x = x +\
+    \ y;\n    y = y + 1;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/loops/loop-lit/afnp2014_true-unreach-call_true-termination.c

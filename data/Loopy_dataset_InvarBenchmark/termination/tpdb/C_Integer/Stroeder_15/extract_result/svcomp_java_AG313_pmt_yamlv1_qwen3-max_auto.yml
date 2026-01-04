@@ -7,8 +7,5 @@ basic:
   time: 2026-01-03T14:31
 loops:
 - id: 1
-  code: |-
-    while (x > 0 && y > 0) {
-        i = i + 1;
-        x = (x - 1)- (y - 1);
-    }
+  code: "while (x > 0 && y > 0) {\n    i = i + 1;\n    x = (x - 1)- (y - 1);\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/tpdb/C_Integer/Stroeder_15/svcomp_java_AG313.c

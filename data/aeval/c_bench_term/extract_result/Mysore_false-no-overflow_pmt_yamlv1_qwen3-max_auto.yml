@@ -7,10 +7,6 @@ basic:
   time: 2026-01-02T17:31
 loops:
 - id: 1
-  code: |-
-    if (c >= 2) {
-        while (x + c >= 0) {
-            x = x - c;
-            c = c + 1;
-        }
-    }
+  code: "if (c >= 2) {\n    while (x + c >= 0) {\n        x = x - c;\n        c =\
+    \ c + 1;\n    }\n}"
+source_path: data/aeval/c_bench_term/Mysore_false-no-overflow.c

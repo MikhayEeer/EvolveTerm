@@ -7,10 +7,6 @@ basic:
   time: 2026-01-03T13:59
 loops:
 - id: 1
-  code: |-
-    res = a;
-    cnt = b;
-    while (cnt > 0) {
-        cnt = cnt - 1;
-        res = res + 1;
-    }
+  code: "res = a;\ncnt = b;\nwhile (cnt > 0) {\n    cnt = cnt - 1;\n    res = res\
+    \ + 1;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-lit/hhk2008.c

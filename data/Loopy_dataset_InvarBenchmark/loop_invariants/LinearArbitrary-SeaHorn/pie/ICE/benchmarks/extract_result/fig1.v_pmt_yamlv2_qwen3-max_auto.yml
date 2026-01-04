@@ -7,12 +7,6 @@ basic:
   time: 2026-01-03T14:05
 loops:
 - id: 1
-  code: |-
-    while (x < 0) {
-        x = x + y;
-        y++;
-        v1 = unknown_int();
-        v2 = unknown_int();
-        v3 = unknown_int();
-
-    }
+  code: "while (x < 0) {\n    x = x + y;\n    y++;\n    v1 = unknown_int();\n    v2\
+    \ = unknown_int();\n    v3 = unknown_int();\n\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/pie/ICE/benchmarks/fig1.v.c

@@ -7,15 +7,6 @@ basic:
   time: 2026-01-03T14:05
 loops:
 - id: 1
-  code: |-
-    while(x != y) {
-
-        lock = 1;
-        x = y;
-        input = unknown_int();
-        if ( input ) {
-
-            lock = 0;
-            y = y + 1;
-        }
-    }
+  code: "while(x != y) {\n\n    lock = 1;\n    x = y;\n    input = unknown_int();\n\
+    \    if ( input ) {\n\n        lock = 0;\n        y = y + 1;\n    }\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/pie/ICE/benchmarks/fig3.c

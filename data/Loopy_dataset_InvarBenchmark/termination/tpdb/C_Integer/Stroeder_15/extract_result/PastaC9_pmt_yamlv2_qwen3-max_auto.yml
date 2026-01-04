@@ -7,14 +7,7 @@ basic:
   time: 2026-01-03T14:27
 loops:
 - id: 1
-  code: |-
-    while (x > 0 && y > 0) {
-        random = unknown_int();
-        if (random < 42) {
-            x = x-1;
-            random = unknown_int();
-            y = random;
-        } else {
-            y = y-1;
-        }
-    }
+  code: "while (x > 0 && y > 0) {\n    random = unknown_int();\n    if (random < 42)\
+    \ {\n        x = x-1;\n        random = unknown_int();\n        y = random;\n\
+    \    } else {\n        y = y-1;\n    }\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/tpdb/C_Integer/Stroeder_15/PastaC9.c

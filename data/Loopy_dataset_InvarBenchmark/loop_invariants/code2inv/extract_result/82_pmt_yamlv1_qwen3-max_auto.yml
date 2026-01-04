@@ -7,11 +7,5 @@ basic:
   time: 2026-01-03T14:21
 loops:
 - id: 1
-  code: |-
-    while (unknown()) {
-      if ( (i < y) )
-      {
-      (i  = (i + 1));
-      }
-
-    }
+  code: "while (unknown()) {\n  if ( (i < y) )\n  {\n  (i  = (i + 1));\n  }\n\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/code2inv/82.c

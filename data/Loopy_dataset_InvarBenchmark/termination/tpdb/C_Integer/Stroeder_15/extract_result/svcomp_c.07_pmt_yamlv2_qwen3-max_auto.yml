@@ -7,11 +7,6 @@ basic:
   time: 2026-01-03T14:21
 loops:
 - id: 1
-  code: |-
-    while ((i <= 100) && (j <= k)) {
-        tmp = i;
-        i = j;
-        j = tmp + 1;
-        k = k - 1;
-        c = c + 1;
-    }
+  code: "while ((i <= 100) && (j <= k)) {\n    tmp = i;\n    i = j;\n    j = tmp +\
+    \ 1;\n    k = k - 1;\n    c = c + 1;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/tpdb/C_Integer/Stroeder_15/svcomp_c.07.c

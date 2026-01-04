@@ -8,3 +8,4 @@ basic:
 loops:
 - id: 1
   code: for(; i < size_a+size_b; i++) { a[i] = b[i-size_a]; }
+source_path: data/Loopy_dataset_InvarBenchmark/arrays/dillig/safe/23.c

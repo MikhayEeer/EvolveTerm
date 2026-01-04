@@ -7,15 +7,7 @@ basic:
   time: 2026-01-03T14:22
 loops:
 - id: 1
-  code: |-
-    while (((a*a*a) != ((b*b*b)+(c*c*c))) && c <= MAX) {
-        a = a + 1;
-        if (a>MAX) {
-            a = 1;
-            b = b + 1;
-        }
-        if (b>MAX) {
-            b = 1;
-            c = c + 1;
-        }
-    }
+  code: "while (((a*a*a) != ((b*b*b)+(c*c*c))) && c <= MAX) {\n    a = a + 1;\n  \
+    \  if (a>MAX) {\n        a = 1;\n        b = b + 1;\n    }\n    if (b>MAX) {\n\
+    \        b = 1;\n        c = c + 1;\n    }\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/tpdb/C_Integer/Stroeder_15/svcomp_fermat.c

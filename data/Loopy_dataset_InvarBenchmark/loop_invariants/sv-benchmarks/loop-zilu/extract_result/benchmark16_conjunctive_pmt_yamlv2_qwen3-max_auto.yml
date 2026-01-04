@@ -7,8 +7,5 @@ basic:
   time: 2026-01-03T14:01
 loops:
 - id: 1
-  code: |-
-    while (unknown_bool()) {
-        i = i + 1;
-        k = k - 1;
-    }
+  code: "while (unknown_bool()) {\n    i = i + 1;\n    k = k - 1;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-zilu/benchmark16_conjunctive.c

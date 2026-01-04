@@ -7,8 +7,5 @@ basic:
   time: 2026-01-03T14:05
 loops:
 - id: 1
-  code: |-
-    int i, sn=0;
-    for(i=1; i<=SIZE; i++) {
-      sn = sn + a;
-    }
+  code: "int i, sn=0;\nfor(i=1; i<=SIZE; i++) {\n  sn = sn + a;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/pie/ICE/benchmarks/sum04_safe.c

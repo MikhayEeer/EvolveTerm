@@ -7,10 +7,6 @@ basic:
   time: 2026-01-02T17:23
 loops:
 - id: 1
-  code: |-
-    while (y > 0)
-    {
-      if (__VERIFIER_nondet_int() == 0)
-        y = y + 24*x + 7;
-      else x--;
-    }
+  code: "while (y > 0)\n{\n  if (__VERIFIER_nondet_int() == 0)\n    y = y + 24*x +\
+    \ 7;\n  else x--;\n}"
+source_path: data/aeval/c_bench_nonterm/nterm_03_cex.c

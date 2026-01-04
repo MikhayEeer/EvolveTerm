@@ -7,32 +7,13 @@ basic:
   time: 2026-01-03T14:37
 loops:
 - id: 1
-  code: |-
-    for (j = 0; j < N; j++)
-    {
-        sum[0] = sum[0] + a[i];
-    }
+  code: "for (j = 0; j < N; j++)\n{\n    sum[0] = sum[0] + a[i];\n}"
 - id: 2
-  code: |-
-    for (j = 0; j < i+1; j++)
-    {
-        b[j] = b[j] + sum[0];
-    }
+  code: "for (j = 0; j < i+1; j++)\n{\n    b[j] = b[j] + sum[0];\n}"
 - id: 3
-  code: |-
-    for (i = 0; i < N; i++)
-    {
-        LOOP1
-    }
+  code: "for (i = 0; i < N; i++)\n{\n    LOOP1\n}"
 - id: 4
-  code: |-
-    for (i = 0; i < N; i++)
-    {
-        LOOP2
-    }
+  code: "for (i = 0; i < N; i++)\n{\n    LOOP2\n}"
 - id: 5
-  code: |-
-    for (i = 0; i < N; i++)
-    {
-        b[i] = 0;
-    }
+  code: "for (i = 0; i < N; i++)\n{\n    b[i] = 0;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/arrays/diffy_cav21_bench/nested-nsna1.c

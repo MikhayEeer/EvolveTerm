@@ -7,22 +7,8 @@ basic:
   time: 2026-01-02T17:25
 loops:
 - id: 1
-  code: |-
-    int i;
-    int up;
-    i = __VERIFIER_nondet_int();
-    up = 0;
-
-    while (i > 0) {
-        if (i == 1) {
-            up = 1;
-        }
-        if (i == 10) {
-            up = 0;
-        }
-        if (up == 1) {
-            i = i+1;
-        } else {
-            i = i-1;
-        }
-    }
+  code: "int i;\nint up;\ni = __VERIFIER_nondet_int();\nup = 0;\n\nwhile (i > 0) {\n\
+    \    if (i == 1) {\n        up = 1;\n    }\n    if (i == 10) {\n        up = 0;\n\
+    \    }\n    if (up == 1) {\n        i = i+1;\n    } else {\n        i = i-1;\n\
+    \    }\n}"
+source_path: data/aeval/c_bench_nonterm/Ex08_false-termination_true-no-overflow.c

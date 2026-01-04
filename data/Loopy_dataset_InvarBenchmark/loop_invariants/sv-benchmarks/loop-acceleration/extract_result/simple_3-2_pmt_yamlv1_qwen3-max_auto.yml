@@ -7,10 +7,6 @@ basic:
   time: 2026-01-03T13:56
 loops:
 - id: 1
-  code: |-
-    unsigned int x = 0;
-    unsigned short N = unknown_ushort();
-
-    while (x < N) {
-      x += 2;
-    }
+  code: "unsigned int x = 0;\nunsigned short N = unknown_ushort();\n\nwhile (x < N)\
+    \ {\n  x += 2;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-acceleration/simple_3-2.c

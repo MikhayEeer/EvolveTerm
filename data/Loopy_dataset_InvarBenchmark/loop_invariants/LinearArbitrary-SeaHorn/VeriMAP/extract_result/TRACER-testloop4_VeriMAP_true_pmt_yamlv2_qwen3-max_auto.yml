@@ -7,7 +7,5 @@ basic:
   time: 2026-01-03T14:07
 loops:
 - id: 1
-  code: |-
-    do {
-        x=x+1;
-    } while (x != N);
+  code: "do {\n    x=x+1;\n} while (x != N);"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/VeriMAP/TRACER-testloop4_VeriMAP_true.c

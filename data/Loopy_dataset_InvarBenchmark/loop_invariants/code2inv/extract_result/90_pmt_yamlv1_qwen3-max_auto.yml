@@ -7,25 +7,8 @@ basic:
   time: 2026-01-03T14:17
 loops:
 - id: 1
-  code: |-
-    (y = (x + 1));
-    (lock = 0);
-
-    while ((x != y)) {
-      {
-        if ( unknown() ) {
-          {
-          (lock  = 1);
-          (x  = y);
-          }
-        } else {
-          {
-          (lock  = 0);
-          (x  = y);
-          (y  = (y + 1));
-          }
-        }
-
-      }
-
-    }
+  code: "(y = (x + 1));\n(lock = 0);\n\nwhile ((x != y)) {\n  {\n    if ( unknown()\
+    \ ) {\n      {\n      (lock  = 1);\n      (x  = y);\n      }\n    } else {\n \
+    \     {\n      (lock  = 0);\n      (x  = y);\n      (y  = (y + 1));\n      }\n\
+    \    }\n\n  }\n\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/code2inv/90.c

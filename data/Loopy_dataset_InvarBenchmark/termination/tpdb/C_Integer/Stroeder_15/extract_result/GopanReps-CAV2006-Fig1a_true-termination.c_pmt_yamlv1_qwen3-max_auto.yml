@@ -7,12 +7,6 @@ basic:
   time: 2026-01-03T14:30
 loops:
 - id: 1
-  code: |-
-    while (y >= 0) {
-        if (x <= 50) {
-            y = y + 1;
-        } else {
-            y = y - 1;
-        }
-        x = x + 1;
-    }
+  code: "while (y >= 0) {\n    if (x <= 50) {\n        y = y + 1;\n    } else {\n\
+    \        y = y - 1;\n    }\n    x = x + 1;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/tpdb/C_Integer/Stroeder_15/GopanReps-CAV2006-Fig1a_true-termination.c.c

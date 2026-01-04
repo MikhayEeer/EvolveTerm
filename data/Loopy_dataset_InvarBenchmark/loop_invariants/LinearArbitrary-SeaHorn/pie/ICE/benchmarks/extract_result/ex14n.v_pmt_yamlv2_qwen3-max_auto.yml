@@ -7,18 +7,7 @@ basic:
   time: 2026-01-03T14:04
 loops:
 - id: 1
-  code: |-
-    while (x <= N){
-          y=N-x;
-
-        if(y < 0 || y >= N)
-            {;
-    //@ assert(0 == 1);
-    }
-
-          x++;
-        v1 = v2;
-        v2 = v3;
-        v3 = v1;
-
-      }
+  code: "while (x <= N){\n      y=N-x;\n\n    if(y < 0 || y >= N)\n        {;\n//@\
+    \ assert(0 == 1);\n}\n\n      x++;\n    v1 = v2;\n    v2 = v3;\n    v3 = v1;\n\
+    \n  }"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/pie/ICE/benchmarks/ex14n.v.c

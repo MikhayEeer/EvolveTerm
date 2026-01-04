@@ -7,12 +7,6 @@ basic:
   time: 2026-01-02T17:29
 loops:
 - id: 1
-  code: |-
-    int c1 = 0;
-    int c2 = 0;
-
-    while (x == y){
-      x = x + c1 % 2;
-      y = y + c2 % 3;
-      c1++; c2++;
-    }
+  code: "int c1 = 0;\nint c2 = 0;\n\nwhile (x == y){\n  x = x + c1 % 2;\n  y = y +\
+    \ c2 % 3;\n  c1++; c2++;\n}"
+source_path: data/aeval/c_bench_term/term_26.c

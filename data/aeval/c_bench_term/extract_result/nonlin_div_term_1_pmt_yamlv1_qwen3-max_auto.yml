@@ -7,8 +7,5 @@ basic:
   time: 2026-01-02T17:30
 loops:
 - id: 1
-  code: |-
-    while (x != y)
-    {
-      x--;
-    }
+  code: "while (x != y)\n{\n  x--;\n}"
+source_path: data/aeval/c_bench_term/nonlin_div_term_1.c

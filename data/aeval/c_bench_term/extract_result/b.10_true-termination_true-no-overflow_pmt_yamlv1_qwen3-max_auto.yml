@@ -11,3 +11,4 @@ loops:
     \ && x + y > 0) {\n    if (x > 0) {\n        x = x - 1;\n    } else {\n      \
     \  if (y > 0) {\n            y = y - 1;\n        } else {\n            \n    \
     \    }\n    }\n}"
+source_path: data/aeval/c_bench_term/b.10_true-termination_true-no-overflow.c

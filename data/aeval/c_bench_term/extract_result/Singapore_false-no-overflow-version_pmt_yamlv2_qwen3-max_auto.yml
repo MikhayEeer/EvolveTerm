@@ -7,8 +7,5 @@ basic:
   time: 2026-01-02T17:36
 loops:
 - id: 1
-  code: |-
-    while (x > 0) {
-        x = x + y + 2;
-        y = y - 1;
-    }
+  code: "while (x > 0) {\n    x = x + y + 2;\n    y = y - 1;\n}"
+source_path: data/aeval/c_bench_term/Singapore_false-no-overflow-version.c

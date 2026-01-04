@@ -7,13 +7,6 @@ basic:
   time: 2026-01-03T14:01
 loops:
 - id: 1
-  code: |-
-    int k = unknown_int();
-    int j = unknown_int();
-    int n = unknown_int();
-
-    if (!(n>=1 && k>=n && j==0)) return 0;
-    while (j<=n-1) {
-      j++;
-      k--;
-    }
+  code: "int k = unknown_int();\nint j = unknown_int();\nint n = unknown_int();\n\n\
+    if (!(n>=1 && k>=n && j==0)) return 0;\nwhile (j<=n-1) {\n  j++;\n  k--;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-zilu/benchmark04_conjunctive.c

@@ -9,3 +9,4 @@ loops:
 - id: 1
   code: while (__BLAST_NONDET) { if (buf == buflim) break; {; //@ assert(0<=buf);
     }
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/accelerating_invariant_generation/invgen/sendmail-close-angle.c

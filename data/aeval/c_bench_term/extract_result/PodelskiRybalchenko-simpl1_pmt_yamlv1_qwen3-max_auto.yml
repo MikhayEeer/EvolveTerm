@@ -12,3 +12,4 @@ loops:
     \    x = newx;\n    \n    newy = __VERIFIER_nondet_int();\n    if (newy <= y)\
     \ break;\n    y = newy;\n    \n  } else {\n    \n    newy = __VERIFIER_nondet_int();\n\
     \    if (newy >= y) break;\n    y = newy;\n    \n  }\n}"
+source_path: data/aeval/c_bench_term/PodelskiRybalchenko-simpl1.c

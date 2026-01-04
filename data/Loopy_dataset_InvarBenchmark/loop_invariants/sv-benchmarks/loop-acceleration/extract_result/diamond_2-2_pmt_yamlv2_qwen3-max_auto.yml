@@ -7,35 +7,11 @@ basic:
   time: 2026-01-03T13:57
 loops:
 - id: 1
-  code: |-
-    while (x < 99) {
-        if (y % 2 == 0) x += 2;
-        else x++;
-
-        if (y % 2 == 0) x += 2;
-        else x -= 2;
-
-        if (y % 2 == 0) x += 2;
-        else x += 2;
-
-        if (y % 2 == 0) x += 2;
-        else x -= 2;
-
-        if (y % 2 == 0) x += 2;
-        else x += 2;
-
-        if (y % 2 == 0) x += 2;
-        else x -= 4;
-
-        if (y % 2 == 0) x += 2;
-        else x += 4;
-
-        if (y % 2 == 0) x += 2;
-        else x += 2;
-
-        if (y % 2 == 0) x += 2;
-        else x -= 4;
-
-        if (y % 2 == 0) x += 2;
-        else x -= 4;
-    }
+  code: "while (x < 99) {\n    if (y % 2 == 0) x += 2;\n    else x++;\n\n    if (y\
+    \ % 2 == 0) x += 2;\n    else x -= 2;\n\n    if (y % 2 == 0) x += 2;\n    else\
+    \ x += 2;\n\n    if (y % 2 == 0) x += 2;\n    else x -= 2;\n\n    if (y % 2 ==\
+    \ 0) x += 2;\n    else x += 2;\n\n    if (y % 2 == 0) x += 2;\n    else x -= 4;\n\
+    \n    if (y % 2 == 0) x += 2;\n    else x += 4;\n\n    if (y % 2 == 0) x += 2;\n\
+    \    else x += 2;\n\n    if (y % 2 == 0) x += 2;\n    else x -= 4;\n\n    if (y\
+    \ % 2 == 0) x += 2;\n    else x -= 4;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-acceleration/diamond_2-2.c

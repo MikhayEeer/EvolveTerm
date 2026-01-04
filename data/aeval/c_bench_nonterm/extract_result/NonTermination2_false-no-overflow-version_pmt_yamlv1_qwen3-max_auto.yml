@@ -7,10 +7,6 @@ basic:
   time: 2026-01-02T17:24
 loops:
 - id: 1
-  code: |-
-    int x, oldx;
-    x = __VERIFIER_nondet_int();
-    while (x > 1 && x <= 2*oldx) {
-        oldx = x;
-        x = __VERIFIER_nondet_int();
-    }
+  code: "int x, oldx;\nx = __VERIFIER_nondet_int();\nwhile (x > 1 && x <= 2*oldx)\
+    \ {\n    oldx = x;\n    x = __VERIFIER_nondet_int();\n}"
+source_path: data/aeval/c_bench_nonterm/NonTermination2_false-no-overflow-version.c

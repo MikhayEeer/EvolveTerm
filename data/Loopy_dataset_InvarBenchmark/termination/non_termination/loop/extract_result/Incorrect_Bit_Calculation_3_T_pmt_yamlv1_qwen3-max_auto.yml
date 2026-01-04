@@ -9,3 +9,4 @@ loops:
 - id: 1
   code: "int wc = unknown_int();\nint mask = ( 1 << 26 ) - 1;\ndo{\n    \n}while(\
     \ (wc = ( wc >> 6 ) & mask) );"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/non_termination/loop/Incorrect_Bit_Calculation_3_T.c

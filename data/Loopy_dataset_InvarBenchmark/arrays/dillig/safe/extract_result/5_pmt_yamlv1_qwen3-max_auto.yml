@@ -9,11 +9,6 @@ loops:
 - id: 1
   code: "int i;\n/* Loop_A */  for(i=0; i<size; i+=2) \n{\n    a[i] = 1;\n}"
 - id: 2
-  code: |-
-    /* Loop_B */  for(i=0; i<size; i+=2)
-    {
-        {;
-    //@ assert(a[i] == 1);
-    }
-
-    }
+  code: "/* Loop_B */  for(i=0; i<size; i+=2)\n{\n    {;\n//@ assert(a[i] == 1);\n\
+    }\n\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/arrays/dillig/safe/5.c

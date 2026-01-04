@@ -14,3 +14,4 @@ loops:
     \ += 2;\n  else x += 4;\n\n  if (y % 2 == 0) x += 2;\n  else x += 2;\n\n  if (y\
     \ % 2 == 0) x += 2;\n  else x -= 4;\n\n  if (y % 2 == 0) x += 2;\n  else x -=\
     \ 4;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/accelerating_invariant_generation/crafted/diamond_safe2.c

@@ -7,11 +7,5 @@ basic:
   time: 2026-01-03T14:17
 loops:
 - id: 1
-  code: |-
-    while ((i <= x)) {
-      {
-      (i  = (i + 1));
-      (j  = (j + y));
-      }
-
-    }
+  code: "while ((i <= x)) {\n  {\n  (i  = (i + 1));\n  (j  = (j + y));\n  }\n\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/code2inv/96.c

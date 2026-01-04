@@ -7,10 +7,6 @@ basic:
   time: 2026-01-03T14:35
 loops:
 - id: 1
-  code: |-
-    while( linesToRead && h > 0 )
-    {
-        if( linesToRead > h )
-            linesToRead = h;
-        h -= linesToRead;
-    }
+  code: "while( linesToRead && h > 0 )\n{\n    if( linesToRead > h )\n        linesToRead\
+    \ = h;\n    h -= linesToRead;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/non_termination/loop/Adding_Subtracting_Zero_1_T.c

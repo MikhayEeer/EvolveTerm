@@ -7,7 +7,5 @@ basic:
   time: 2026-01-02T17:27
 loops:
 - id: 1
-  code: |-
-    while (x != 0) {
-        x = x - 2;
-    }
+  code: "while (x != 0) {\n    x = x - 2;\n}"
+source_path: data/aeval/c_bench_nonterm/Cairo_step2_false-no-overflow.c

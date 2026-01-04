@@ -7,8 +7,5 @@ basic:
   time: 2026-01-03T14:33
 loops:
 - id: 1
-  code: |-
-    int n = unknown_int(), i = n - 1;
-    while (i > 1) {
-        i--;
-    }
+  code: "int n = unknown_int(), i = n - 1;\nwhile (i > 1) {\n    i--;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/tpdb/C/SV-COMP_Termination_Category/AliasDarteFeautrierGonnord-SAS2010-ndecr_true-termination.c

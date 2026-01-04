@@ -7,10 +7,6 @@ basic:
   time: 2026-01-03T14:29
 loops:
 - id: 1
-  code: |-
-    while (y > 0) {
-        z = x;
-        x = y-1;
-        y = z;
-        res = res+1;
-    }
+  code: "while (y > 0) {\n    z = x;\n    x = y-1;\n    y = z;\n    res = res+1;\n\
+    }"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/tpdb/C_Integer/Stroeder_15/PlusSwap.c

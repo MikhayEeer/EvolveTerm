@@ -7,9 +7,6 @@ basic:
   time: 2026-01-02T17:20
 loops:
 - id: 1
-  code: |-
-    while ((i <= 100) && (j <= k) && (k > -1073741824)) {
-      tmp = i;
-      i = j;
-      j = tmp - 1;
-    }
+  code: "while ((i <= 100) && (j <= k) && (k > -1073741824)) {\n  tmp = i;\n  i =\
+    \ j;\n  j = tmp - 1;\n}"
+source_path: data/aeval/c_bench_nonterm/c.07_true-termination_true-no-overflow-broken1.c

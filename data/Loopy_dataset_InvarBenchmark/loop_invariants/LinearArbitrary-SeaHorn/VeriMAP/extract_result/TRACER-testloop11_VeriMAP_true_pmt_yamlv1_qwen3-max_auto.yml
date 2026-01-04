@@ -8,3 +8,4 @@ basic:
 loops:
 - id: 1
   code: while (unknown()) { if (s == 2){ if (e ==0) e=1; s = 3; }
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/VeriMAP/TRACER-testloop11_VeriMAP_true.c

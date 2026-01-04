@@ -7,14 +7,6 @@ basic:
   time: 2026-01-03T14:06
 loops:
 - id: 1
-  code: |-
-    while (unknown_int()) {
-        a++;
-        b += (j - i);
-        i += 2;
-        if (i%2 == 0) {
-            j += 2;
-        } else {
-            j++;
-        }
-    }
+  code: "while (unknown_int()) {\n    a++;\n    b += (j - i);\n    i += 2;\n    if\
+    \ (i%2 == 0) {\n        j += 2;\n    } else {\n        j++;\n    }\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/loops/loop-lit/ddlm2013_true-unreach-call.c

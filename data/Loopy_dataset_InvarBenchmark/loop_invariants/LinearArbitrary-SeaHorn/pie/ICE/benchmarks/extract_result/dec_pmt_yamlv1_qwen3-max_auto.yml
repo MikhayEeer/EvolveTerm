@@ -7,11 +7,6 @@ basic:
   time: 2026-01-03T14:04
 loops:
 - id: 1
-  code: |-
-    int x, m;
-    x = 100;
-    while(x > 0)
-    {
-      m = unknown_int();
-      x = x - 1;
-    }
+  code: "int x, m;\nx = 100;\nwhile(x > 0)\n{\n  m = unknown_int();\n  x = x - 1;\n\
+    }"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/pie/ICE/benchmarks/dec.c

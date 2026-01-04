@@ -7,8 +7,5 @@ basic:
   time: 2026-01-02T17:28
 loops:
 - id: 1
-  code: |-
-    while (z >= 0) {
-      if (z % 5 == 0) z = z - 5;
-        else z++;
-    }
+  code: "while (z >= 0) {\n  if (z % 5 == 0) z = z - 5;\n    else z++;\n}"
+source_path: data/aeval/c_bench_term/term_21.c

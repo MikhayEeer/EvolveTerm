@@ -7,10 +7,6 @@ basic:
   time: 2026-01-03T14:29
 loops:
 - id: 1
-  code: |-
-    while (q > 0) {
-        q = q + a - 1;
-        olda = a;
-        a = 3*olda - 4*b;
-        b = 4*olda + 3*b;
-    }
+  code: "while (q > 0) {\n    q = q + a - 1;\n    olda = a;\n    a = 3*olda - 4*b;\n\
+    \    b = 4*olda + 3*b;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/tpdb/C_Integer/Stroeder_15/4NestedWith3Variables_true-termination.c

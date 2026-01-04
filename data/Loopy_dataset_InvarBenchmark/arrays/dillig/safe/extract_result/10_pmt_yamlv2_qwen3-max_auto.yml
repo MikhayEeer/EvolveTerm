@@ -9,11 +9,6 @@ loops:
 - id: 1
   code: "for(i=1, j=0; i<size; i+=2, j++) \n{\n    a[j] = b[i];\n}"
 - id: 2
-  code: |-
-    for(i=1, j=0; i<size; i+=2, j++)
-    {
-        {;
-    //@ assert(a[j] == b[2*j+1]);
-    }
-
-    }
+  code: "for(i=1, j=0; i<size; i+=2, j++)\n{\n    {;\n//@ assert(a[j] == b[2*j+1]);\n\
+    }\n\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/arrays/dillig/safe/10.c

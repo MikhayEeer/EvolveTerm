@@ -7,32 +7,13 @@ basic:
   time: 2026-01-03T14:46
 loops:
 - id: 1
-  code: |-
-    while ( i < N ) {
-        a[i] = 42;
-        i = i + 1;
-    }
+  code: "while ( i < N ) {\n    a[i] = 42;\n    i = i + 1;\n}"
 - id: 2
-  code: |-
-    while ( i < N ) {
-        a[i] = 43;
-        i = i + 1;
-    }
+  code: "while ( i < N ) {\n    a[i] = 43;\n    i = i + 1;\n}"
 - id: 3
-  code: |-
-    while ( i < N ) {
-        a[i] = 44;
-        i = i + 1;
-    }
+  code: "while ( i < N ) {\n    a[i] = 44;\n    i = i + 1;\n}"
 - id: 4
-  code: |-
-    while ( i < N ) {
-        a[i] = 45;
-        i = i + 1;
-    }
+  code: "while ( i < N ) {\n    a[i] = 45;\n    i = i + 1;\n}"
 - id: 5
-  code: |-
-    while ( i < N ) {
-        a[i] = 46;
-        i = i + 1;
-    }
+  code: "while ( i < N ) {\n    a[i] = 46;\n    i = i + 1;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/arrays/diffy_cav21_bench/standard_init6_ground-2.c

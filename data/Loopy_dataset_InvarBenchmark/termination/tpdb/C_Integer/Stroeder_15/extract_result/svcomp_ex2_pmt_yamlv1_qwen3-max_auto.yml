@@ -8,3 +8,4 @@ basic:
 loops:
 - id: 1
   code: while ((y < z) && (flag > 0)) { if ((y > 0) && (x > 1)) { y = x*y; }
+source_path: data/Loopy_dataset_InvarBenchmark/termination/tpdb/C_Integer/Stroeder_15/svcomp_ex2.c

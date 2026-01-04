@@ -8,3 +8,4 @@ basic:
 loops:
 - id: 1
   code: /* no loops detected */
+source_path: data/Loopy_dataset_InvarBenchmark/recursive_functions/sv-benchmarks/recursive/McCarthy91-2.c

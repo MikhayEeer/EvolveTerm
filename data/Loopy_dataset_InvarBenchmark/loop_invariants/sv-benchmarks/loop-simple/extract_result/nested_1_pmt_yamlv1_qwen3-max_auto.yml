@@ -7,7 +7,8 @@ basic:
   time: 2026-01-03T13:59
 loops:
 - id: 1
-  code: |-
-    for(a = 0; a < 6; ++a) {
+  code: 'for(a = 0; a < 6; ++a) {
 
-    }
+
+    }'
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-simple/nested_1.c

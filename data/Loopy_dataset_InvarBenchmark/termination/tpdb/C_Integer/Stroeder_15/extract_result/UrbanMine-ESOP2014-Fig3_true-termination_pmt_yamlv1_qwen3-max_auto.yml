@@ -12,3 +12,4 @@ loops:
     \ {\n            y = y - 1;\n        }\n    } else {\n        if (unknown_int()\
     \ != 0) {\n            x = x + 1;\n        } else {\n            y = y - 1;\n\
     \            x = unknown_int();\n        }        \n    }\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/tpdb/C_Integer/Stroeder_15/UrbanMine-ESOP2014-Fig3_true-termination.c

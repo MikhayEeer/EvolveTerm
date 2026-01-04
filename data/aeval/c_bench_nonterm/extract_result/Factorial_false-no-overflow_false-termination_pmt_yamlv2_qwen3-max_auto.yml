@@ -7,8 +7,5 @@ basic:
   time: 2026-01-02T17:21
 loops:
 - id: 1
-  code: |-
-    while (fac != j) {
-        fac = fac * i;
-        i = i+1;
-    }
+  code: "while (fac != j) {\n    fac = fac * i;\n    i = i+1;\n}"
+source_path: data/aeval/c_bench_nonterm/Factorial_false-no-overflow_false-termination.c

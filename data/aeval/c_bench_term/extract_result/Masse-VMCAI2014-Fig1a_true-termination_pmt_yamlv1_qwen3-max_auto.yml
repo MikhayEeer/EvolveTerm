@@ -7,12 +7,6 @@ basic:
   time: 2026-01-02T17:27
 loops:
 - id: 1
-  code: |-
-    while (a >= 0) {
-        a = a + b;
-        if (b >= 0) {
-            b = -b - 1;
-        } else {
-            b = -b;
-        }
-    }
+  code: "while (a >= 0) {\n    a = a + b;\n    if (b >= 0) {\n        b = -b - 1;\n\
+    \    } else {\n        b = -b;\n    }\n}"
+source_path: data/aeval/c_bench_term/Masse-VMCAI2014-Fig1a_true-termination.c

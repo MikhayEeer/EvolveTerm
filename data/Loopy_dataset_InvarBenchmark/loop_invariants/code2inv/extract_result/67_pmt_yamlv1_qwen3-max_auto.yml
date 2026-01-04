@@ -7,9 +7,5 @@ basic:
   time: 2026-01-03T14:21
 loops:
 - id: 1
-  code: |-
-    int x = 1;
-    while (x <= n) {
-        y = n - x;
-        x = x + 1;
-    }
+  code: "int x = 1;\nwhile (x <= n) {\n    y = n - x;\n    x = x + 1;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/code2inv/67.c

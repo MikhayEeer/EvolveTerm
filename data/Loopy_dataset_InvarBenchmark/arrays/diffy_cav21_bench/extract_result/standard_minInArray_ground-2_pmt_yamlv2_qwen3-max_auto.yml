@@ -7,24 +7,11 @@ basic:
   time: 2026-01-03T14:48
 loops:
 - id: 1
-  code: |-
-    for(i = 0; i < N; i++)
-    {
-        a[i] = unknown_int();
-    }
+  code: "for(i = 0; i < N; i++)\n{\n    a[i] = unknown_int();\n}"
 - id: 2
-  code: |-
-    while ( i < N ) {
-        if ( a[i] < min[0] ) {
-            min[0] = a[i];
-        }
-        i = i + 1;
-    }
+  code: "while ( i < N ) {\n    if ( a[i] < min[0] ) {\n        min[0] = a[i];\n \
+    \   }\n    i = i + 1;\n}"
 - id: 3
-  code: |-
-    for ( x = 0 ; x < N ; x++ ) {
-        {;
-    //@ assert(  a[x] >= min[0]  );
-    }
-
-    }
+  code: "for ( x = 0 ; x < N ; x++ ) {\n    {;\n//@ assert(  a[x] >= min[0]  );\n\
+    }\n\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/arrays/diffy_cav21_bench/standard_minInArray_ground-2.c

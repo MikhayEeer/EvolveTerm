@@ -7,9 +7,12 @@ basic:
   time: 2026-01-03T14:36
 loops:
 - id: 1
-  code: |-
-    int i;
+  code: 'int i;
+
     for( i = 0, s = seqnum ; i < len; i++, s++ )
+
     {
 
-    }
+
+    }'
+source_path: data/Loopy_dataset_InvarBenchmark/termination/non_termination/loop/Type_Conversion_in_Comparison_1_T.c

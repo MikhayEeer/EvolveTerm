@@ -7,10 +7,6 @@ basic:
   time: 2026-01-03T14:24
 loops:
 - id: 1
-  code: |-
-    while (min == y) {
-        y = y+1;
-        res = res+1;
-        if (x < y) { min = x; }
-        else { min = y; }
-    }
+  code: "while (min == y) {\n    y = y+1;\n    res = res+1;\n    if (x < y) { min\
+    \ = x; }\n    else { min = y; }\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/tpdb/C_Integer/Stroeder_15/MinusMin.c

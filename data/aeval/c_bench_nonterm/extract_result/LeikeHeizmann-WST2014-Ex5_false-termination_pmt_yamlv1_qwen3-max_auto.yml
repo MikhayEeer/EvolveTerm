@@ -7,9 +7,5 @@ basic:
   time: 2026-01-02T17:17
 loops:
 - id: 1
-  code: |-
-    while (a >= 7) {
-        olda = a;
-        a = b;
-        b = olda + 1;
-    }
+  code: "while (a >= 7) {\n    olda = a;\n    a = b;\n    b = olda + 1;\n}"
+source_path: data/aeval/c_bench_nonterm/LeikeHeizmann-WST2014-Ex5_false-termination.c

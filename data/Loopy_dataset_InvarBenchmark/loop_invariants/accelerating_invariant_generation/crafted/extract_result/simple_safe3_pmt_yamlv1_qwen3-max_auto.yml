@@ -7,10 +7,5 @@ basic:
   time: 2026-01-03T14:14
 loops:
 - id: 1
-  code: |-
-    unsigned int x = 0;
-    unsigned short N;
-
-    while (x < N) {
-      x += 2;
-    }
+  code: "unsigned int x = 0;\nunsigned short N;\n\nwhile (x < N) {\n  x += 2;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/accelerating_invariant_generation/crafted/simple_safe3.c

@@ -7,23 +7,8 @@ basic:
   time: 2026-01-02T17:25
 loops:
 - id: 1
-  code: |-
-    int i;
-    int w;
-    i = __VERIFIER_nondet_int();
-    w = 5;
-
-    while (i != 0) {
-        if (i < -w) {
-            i = i-1;
-            i = i*(-1);
-        } else {
-            if (i > w) {
-                i = i+1;
-                i = i*(-1);
-            } else {
-                i = 0;
-            }
-        }
-        w = w+1;
-    }
+  code: "int i;\nint w;\ni = __VERIFIER_nondet_int();\nw = 5;\n\nwhile (i != 0) {\n\
+    \    if (i < -w) {\n        i = i-1;\n        i = i*(-1);\n    } else {\n    \
+    \    if (i > w) {\n            i = i+1;\n            i = i*(-1);\n        } else\
+    \ {\n            i = 0;\n        }\n    }\n    w = w+1;\n}"
+source_path: data/aeval/c_bench_nonterm/AlternDivWidening_false-no-overflow_false-termination.c

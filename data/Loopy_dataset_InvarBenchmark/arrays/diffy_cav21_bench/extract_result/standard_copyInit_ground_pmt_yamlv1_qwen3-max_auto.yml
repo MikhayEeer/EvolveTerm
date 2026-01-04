@@ -7,7 +7,5 @@ basic:
   time: 2026-01-03T14:41
 loops:
 - id: 1
-  code: |-
-    for ( i = 0 ; i < N ; i++ ) {
-        b[i] = a[i];
-    }
+  code: "for ( i = 0 ; i < N ; i++ ) {\n    b[i] = a[i];\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/arrays/diffy_cav21_bench/standard_copyInit_ground.c

@@ -8,3 +8,4 @@ basic:
 loops:
 - id: 1
   code: while (a == 0) { a = a + b; b = b + c; c = c + d; d = d + e; e = e + 1; }
+source_path: data/aeval/c_bench_term/determ_term_7.c

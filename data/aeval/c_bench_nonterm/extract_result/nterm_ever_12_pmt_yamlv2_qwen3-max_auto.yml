@@ -7,9 +7,5 @@ basic:
   time: 2026-01-02T17:20
 loops:
 - id: 1
-  code: |-
-    while (x <= 98) {
-        x = y%50 + z%50;
-        y ++;
-        z ++;
-    }
+  code: "while (x <= 98) {\n    x = y%50 + z%50;\n    y ++;\n    z ++;\n}"
+source_path: data/aeval/c_bench_nonterm/nterm_ever_12.c

@@ -7,29 +7,15 @@ basic:
   time: 2026-01-03T14:46
 loops:
 - id: 1
-  code: |-
-    int a;
-    /* Loop_A */  for ( a = 0 ; a < N ; a++ ) {
-        a1[a] = unknown_int();
-    }
+  code: "int a;\n/* Loop_A */  for ( a = 0 ; a < N ; a++ ) {\n    a1[a] = unknown_int();\n\
+    }"
 - id: 2
-  code: |-
-    int i;
-    /* Loop_B */  for ( i = 0 ; i < N ; i++ ) {
-        a2[i] = a1[i];
-    }
+  code: "int i;\n/* Loop_B */  for ( i = 0 ; i < N ; i++ ) {\n    a2[i] = a1[i];\n\
+    }"
 - id: 3
-  code: |-
-    /* Loop_C */  for ( i = 0 ; i < N ; i++ ) {
-        a3[i] = a2[i];
-    }
+  code: "/* Loop_C */  for ( i = 0 ; i < N ; i++ ) {\n    a3[i] = a2[i];\n}"
 - id: 4
-  code: |-
-    /* Loop_D */  for ( i = 0 ; i < N ; i++ ) {
-        a4[i] = a3[i];
-    }
+  code: "/* Loop_D */  for ( i = 0 ; i < N ; i++ ) {\n    a4[i] = a3[i];\n}"
 - id: 5
-  code: |-
-    /* Loop_E */  for ( i = 0 ; i < N ; i++ ) {
-        a5[i] = a4[i];
-    }
+  code: "/* Loop_E */  for ( i = 0 ; i < N ; i++ ) {\n    a5[i] = a4[i];\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/arrays/diffy_cav21_bench/standard_copy4_ground-1.c

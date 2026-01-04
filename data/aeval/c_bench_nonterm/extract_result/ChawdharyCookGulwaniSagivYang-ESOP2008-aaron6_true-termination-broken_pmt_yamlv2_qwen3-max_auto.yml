@@ -7,15 +7,8 @@ basic:
   time: 2026-01-02T17:25
 loops:
 - id: 1
-  code: |-
-    while (x <= n && x >= 2 * tx + y && y >= ty + 1 ) {
-      if (__VERIFIER_nondet_int() != 0) {
-        tx = x;
-        ty = y;
-        x = __VERIFIER_nondet_int();
-        y = __VERIFIER_nondet_int();
-      } else {
-        tx = x;
-        x = __VERIFIER_nondet_int();
-      }
-    }
+  code: "while (x <= n && x >= 2 * tx + y && y >= ty + 1 ) {\n  if (__VERIFIER_nondet_int()\
+    \ != 0) {\n    tx = x;\n    ty = y;\n    x = __VERIFIER_nondet_int();\n    y =\
+    \ __VERIFIER_nondet_int();\n  } else {\n    tx = x;\n    x = __VERIFIER_nondet_int();\n\
+    \  }\n}"
+source_path: data/aeval/c_bench_nonterm/ChawdharyCookGulwaniSagivYang-ESOP2008-aaron6_true-termination-broken.c

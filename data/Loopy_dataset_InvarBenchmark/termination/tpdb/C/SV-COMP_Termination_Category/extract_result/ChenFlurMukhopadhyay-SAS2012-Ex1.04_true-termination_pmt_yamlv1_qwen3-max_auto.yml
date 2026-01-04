@@ -7,12 +7,6 @@ basic:
   time: 2026-01-03T14:32
 loops:
 - id: 1
-  code: |-
-    int x = unknown_int();
-    while (x > 1) {
-        int old_x = x;
-        x = unknown_int();
-        if (2*x > old_x) {
-            break;
-        }
-    }
+  code: "int x = unknown_int();\nwhile (x > 1) {\n    int old_x = x;\n    x = unknown_int();\n\
+    \    if (2*x > old_x) {\n        break;\n    }\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/tpdb/C/SV-COMP_Termination_Category/ChenFlurMukhopadhyay-SAS2012-Ex1.04_true-termination.c

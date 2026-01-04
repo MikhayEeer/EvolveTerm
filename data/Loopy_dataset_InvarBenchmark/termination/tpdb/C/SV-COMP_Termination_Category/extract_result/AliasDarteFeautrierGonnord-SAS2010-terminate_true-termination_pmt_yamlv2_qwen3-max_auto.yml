@@ -7,10 +7,6 @@ basic:
   time: 2026-01-03T14:31
 loops:
 - id: 1
-  code: |-
-    while (i <= 100 && j <= k) {
-        ell = i;
-        i = j;
-        j = ell + 1;
-        k--;
-    }
+  code: "while (i <= 100 && j <= k) {\n    ell = i;\n    i = j;\n    j = ell + 1;\n\
+    \    k--;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/tpdb/C/SV-COMP_Termination_Category/AliasDarteFeautrierGonnord-SAS2010-terminate_true-termination.c

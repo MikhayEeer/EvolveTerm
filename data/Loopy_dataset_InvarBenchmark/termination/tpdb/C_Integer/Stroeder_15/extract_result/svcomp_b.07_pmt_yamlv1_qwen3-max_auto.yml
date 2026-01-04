@@ -7,10 +7,6 @@ basic:
   time: 2026-01-03T14:23
 loops:
 - id: 1
-  code: |-
-    c = 0;
-    while ((x > z) && (y > z)) {
-        x = x - 1;
-        y = y - 1;
-        c = c + 1;
-    }
+  code: "c = 0;\nwhile ((x > z) && (y > z)) {\n    x = x - 1;\n    y = y - 1;\n  \
+    \  c = c + 1;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/tpdb/C_Integer/Stroeder_15/svcomp_b.07.c

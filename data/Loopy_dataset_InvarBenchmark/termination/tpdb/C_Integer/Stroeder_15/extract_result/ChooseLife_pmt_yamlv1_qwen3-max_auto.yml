@@ -10,3 +10,4 @@ loops:
   code: "while (life < death) {\n    temp = death;\n    death = life + 1;\n    life\
     \ = temp;\n    \n    if (choose < life || choose < death) {\n        life = choose;\n\
     \    }\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/tpdb/C_Integer/Stroeder_15/ChooseLife.c

@@ -7,6 +7,7 @@ basic:
   time: 2026-01-03T14:28
 loops:
 - id: 1
-  code: |-
-    while (false) {
-    }
+  code: 'while (false) {
+
+    }'
+source_path: data/Loopy_dataset_InvarBenchmark/termination/tpdb/C_Integer/Stroeder_15/WhileFalse_true-termination.c

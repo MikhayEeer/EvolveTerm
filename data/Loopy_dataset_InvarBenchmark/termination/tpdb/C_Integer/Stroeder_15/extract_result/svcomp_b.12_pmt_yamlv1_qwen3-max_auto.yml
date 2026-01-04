@@ -10,3 +10,4 @@ loops:
   code: "c = 0;\nwhile ((x > 0) || (y > 0)) {\n    if (x > 0) {\n        x = x - 1;\n\
     \    } else {\n        if (y > 0) {\n            y = y - 1;\n        } else {\n\
     \            \n        }\n    }\n    c = c + 1;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/tpdb/C_Integer/Stroeder_15/svcomp_b.12.c

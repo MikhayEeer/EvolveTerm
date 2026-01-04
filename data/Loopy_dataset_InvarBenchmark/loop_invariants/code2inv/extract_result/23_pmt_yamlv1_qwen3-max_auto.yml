@@ -7,16 +7,6 @@ basic:
   time: 2026-01-03T14:17
 loops:
 - id: 1
-  code: |-
-    int i;
-    int j;
-
-    (i = 1);
-    (j = 20);
-
-    while ((j >= i)) {
-      {
-      (i  = (i + 2));
-      (j  = (j - 1));
-      }
-    }
+  code: "int i;\nint j;\n\n(i = 1);\n(j = 20);\n\nwhile ((j >= i)) {\n  {\n  (i  =\
+    \ (i + 2));\n  (j  = (j - 1));\n  }\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/code2inv/23.c

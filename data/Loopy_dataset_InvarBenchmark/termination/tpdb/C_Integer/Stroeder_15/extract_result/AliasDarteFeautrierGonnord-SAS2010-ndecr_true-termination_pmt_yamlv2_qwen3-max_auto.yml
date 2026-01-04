@@ -7,7 +7,5 @@ basic:
   time: 2026-01-03T14:22
 loops:
 - id: 1
-  code: |-
-    while (i > 1) {
-        i = i - 1;
-    }
+  code: "while (i > 1) {\n    i = i - 1;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/tpdb/C_Integer/Stroeder_15/AliasDarteFeautrierGonnord-SAS2010-ndecr_true-termination.c

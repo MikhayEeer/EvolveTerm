@@ -7,15 +7,6 @@ basic:
   time: 2026-01-03T14:27
 loops:
 - id: 1
-  code: |-
-    int j;
-    int i;
-    int fac;
-    j = unknown_int();
-    i = 1;
-    fac = 1;
-
-    while (fac != j) {
-        fac = fac * i;
-        i = i + 1;
-    }
+  code: "int j;\nint i;\nint fac;\nj = unknown_int();\ni = 1;\nfac = 1;\n\nwhile (fac\
+    \ != j) {\n    fac = fac * i;\n    i = i + 1;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/tpdb/C_Integer/Stroeder_15/Factorial.c

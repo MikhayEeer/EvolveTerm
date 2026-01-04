@@ -7,8 +7,5 @@ basic:
   time: 2026-01-03T14:50
 loops:
 - id: 1
-  code: |-
-    for(; i < size_a+size_b; i++)
-    {
-        a[i] = b[i-size_a];
-    }
+  code: "for(; i < size_a+size_b; i++)\n{\n    a[i] = b[i-size_a];\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/arrays/dillig/safe/23.c

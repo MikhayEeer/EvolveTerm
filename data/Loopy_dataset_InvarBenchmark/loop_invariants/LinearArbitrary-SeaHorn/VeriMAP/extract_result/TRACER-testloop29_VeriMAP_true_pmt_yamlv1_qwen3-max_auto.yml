@@ -7,10 +7,5 @@ basic:
   time: 2026-01-03T14:08
 loops:
 - id: 1
-  code: |-
-    int x = 0;
-    while(x < 100) {
-      x++;
-      if(x == 50)
-        break;
-    }
+  code: "int x = 0;\nwhile(x < 100) {\n  x++;\n  if(x == 50)\n    break;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/VeriMAP/TRACER-testloop29_VeriMAP_true.c

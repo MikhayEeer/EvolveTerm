@@ -7,12 +7,6 @@ basic:
   time: 2026-01-03T14:19
 loops:
 - id: 1
-  code: |-
-    while (unknown()) {
-        if(c == n) {
-            c = 1;
-        }
-        else {
-            c = c + 1;
-        }
-    }
+  code: "while (unknown()) {\n    if(c == n) {\n        c = 1;\n    }\n    else {\n\
+    \        c = c + 1;\n    }\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/code2inv/38.c

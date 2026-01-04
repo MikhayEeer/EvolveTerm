@@ -7,8 +7,5 @@ basic:
   time: 2026-01-02T17:19
 loops:
 - id: 1
-  code: |-
-    while (a > 1) {
-        if (a % 3 == 0) a = a / 3;
-          else a = a + 2;
-    }
+  code: "while (a > 1) {\n    if (a % 3 == 0) a = a / 3;\n      else a = a + 2;\n}"
+source_path: data/aeval/c_bench_nonterm/aviad_true-termination_true-no-overflow-broken2.c

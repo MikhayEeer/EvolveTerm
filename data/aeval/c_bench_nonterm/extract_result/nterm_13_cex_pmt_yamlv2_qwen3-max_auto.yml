@@ -7,11 +7,6 @@ basic:
   time: 2026-01-02T17:25
 loops:
 - id: 1
-  code: |-
-    while (x > 0)
-    {
-      if (0 == __VERIFIER_nondet_int())
-        x = x % 2;
-      else
-        x = x - y;
-    }
+  code: "while (x > 0)\n{\n  if (0 == __VERIFIER_nondet_int())\n    x = x % 2;\n \
+    \ else\n    x = x - y;\n}"
+source_path: data/aeval/c_bench_nonterm/nterm_13_cex.c

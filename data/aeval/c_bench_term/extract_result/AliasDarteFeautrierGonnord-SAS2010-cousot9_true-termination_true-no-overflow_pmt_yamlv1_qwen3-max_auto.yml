@@ -7,13 +7,6 @@ basic:
   time: 2026-01-02T17:30
 loops:
 - id: 1
-  code: |-
-    i = N;
-    while (i > 0) {
-        if (j > 0) {
-            j = j - 1;
-        } else {
-            j = N;
-            i = i - 1;
-        }
-    }
+  code: "i = N;\nwhile (i > 0) {\n    if (j > 0) {\n        j = j - 1;\n    } else\
+    \ {\n        j = N;\n        i = i - 1;\n    }\n}"
+source_path: data/aeval/c_bench_term/AliasDarteFeautrierGonnord-SAS2010-cousot9_true-termination_true-no-overflow.c

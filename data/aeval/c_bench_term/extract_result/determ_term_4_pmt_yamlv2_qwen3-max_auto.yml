@@ -7,9 +7,5 @@ basic:
   time: 2026-01-02T17:35
 loops:
 - id: 1
-  code: |-
-    while (x + y != z) {
-      x = x * -3;
-      y = y + 2;
-      z = z - 36;
-    }
+  code: "while (x + y != z) {\n  x = x * -3;\n  y = y + 2;\n  z = z - 36;\n}"
+source_path: data/aeval/c_bench_term/determ_term_4.c

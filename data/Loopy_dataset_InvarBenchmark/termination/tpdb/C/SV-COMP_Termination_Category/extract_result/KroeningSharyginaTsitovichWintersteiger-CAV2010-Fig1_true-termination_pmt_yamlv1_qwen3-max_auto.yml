@@ -7,14 +7,6 @@ basic:
   time: 2026-01-03T14:34
 loops:
 - id: 1
-  code: |-
-    while (x < 255) {
-        if (x % 2 != 0) {
-            x--;
-        } else {
-            x += 2;
-        }
-        if (debug != 0) {
-            x = 0;
-        }
-    }
+  code: "while (x < 255) {\n    if (x % 2 != 0) {\n        x--;\n    } else {\n  \
+    \      x += 2;\n    }\n    if (debug != 0) {\n        x = 0;\n    }\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/tpdb/C/SV-COMP_Termination_Category/KroeningSharyginaTsitovichWintersteiger-CAV2010-Fig1_true-termination.c

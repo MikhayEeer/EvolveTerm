@@ -7,7 +7,5 @@ basic:
   time: 2026-01-03T14:24
 loops:
 - id: 1
-  code: |-
-    while (y >= 0) {
-        y = y - 1;
-    }
+  code: "while (y >= 0) {\n    y = y - 1;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/tpdb/C_Integer/Stroeder_15/PodelskiRybalchenko-TACAS2011-Fig1_true-termination.c

@@ -7,12 +7,6 @@ basic:
   time: 2026-01-03T14:02
 loops:
 - id: 1
-  code: |-
-    while(unknown2())
-    {
-      x++;
-      y++;
-      i+=x;
-      j+=y;
-      if(flag)  j+=1;
-    }
+  code: "while(unknown2())\n{\n  x++;\n  y++;\n  i+=x;\n  j+=y;\n  if(flag)  j+=1;\n\
+    }"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/pie/hola/05.c

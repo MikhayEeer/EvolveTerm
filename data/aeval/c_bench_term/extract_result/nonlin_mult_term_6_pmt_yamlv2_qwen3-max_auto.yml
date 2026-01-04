@@ -7,8 +7,5 @@ basic:
   time: 2026-01-02T17:32
 loops:
 - id: 1
-  code: |-
-    while (d * b > 0)
-    {
-      b = -b;
-    }
+  code: "while (d * b > 0)\n{\n  b = -b;\n}"
+source_path: data/aeval/c_bench_term/nonlin_mult_term_6.c

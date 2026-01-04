@@ -7,8 +7,5 @@ basic:
   time: 2026-01-02T17:19
 loops:
 - id: 1
-  code: |-
-    while (x != 0) {
-      x = x + y;
-      y = y + 1;
-    }
+  code: "while (x != 0) {\n  x = x + y;\n  y = y + 1;\n}"
+source_path: data/aeval/c_bench_nonterm/determ_nterm_2.c

@@ -7,9 +7,5 @@ basic:
   time: 2026-01-02T17:22
 loops:
 - id: 1
-  code: |-
-    while ((i <= l) && (j <= k)) {
-      tmp = i;
-      i = j;
-      j = tmp - 1;
-    }
+  code: "while ((i <= l) && (j <= k)) {\n  tmp = i;\n  i = j;\n  j = tmp - 1;\n}"
+source_path: data/aeval/c_bench_nonterm/nterm_21_cex.c

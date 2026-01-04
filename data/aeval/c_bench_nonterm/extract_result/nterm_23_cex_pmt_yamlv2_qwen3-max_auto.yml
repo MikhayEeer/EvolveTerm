@@ -7,9 +7,6 @@ basic:
   time: 2026-01-02T17:26
 loops:
 - id: 1
-  code: |-
-    while (x != y)
-    {
-      if (x > 0) x--; else if (x < 0) x++;
-      if (x < y) y++; else if (x > y) y--;
-    }
+  code: "while (x != y)\n{\n  if (x > 0) x--; else if (x < 0) x++;\n  if (x < y) y++;\
+    \ else if (x > y) y--;\n}"
+source_path: data/aeval/c_bench_nonterm/nterm_23_cex.c

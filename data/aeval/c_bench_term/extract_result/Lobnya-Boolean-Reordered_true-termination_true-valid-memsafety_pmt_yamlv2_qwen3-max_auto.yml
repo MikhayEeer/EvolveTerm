@@ -7,13 +7,6 @@ basic:
   time: 2026-01-02T17:34
 loops:
 - id: 1
-  code: |-
-    while (b != 0) {
-        b = __VERIFIER_nondet_int();
-        x = x - 1;
-        if (x >= 0) {
-            b = 1;
-        } else {
-            b = 0;
-        }
-    }
+  code: "while (b != 0) {\n    b = __VERIFIER_nondet_int();\n    x = x - 1;\n    if\
+    \ (x >= 0) {\n        b = 1;\n    } else {\n        b = 0;\n    }\n}"
+source_path: data/aeval/c_bench_term/Lobnya-Boolean-Reordered_true-termination_true-valid-memsafety.c

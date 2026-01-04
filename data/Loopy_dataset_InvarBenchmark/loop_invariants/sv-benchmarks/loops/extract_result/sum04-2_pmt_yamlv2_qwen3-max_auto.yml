@@ -7,7 +7,5 @@ basic:
   time: 2026-01-03T13:56
 loops:
 - id: 1
-  code: |-
-    for(i=1; i<=SIZE; i++) {
-      sn = sn + a;
-    }
+  code: "for(i=1; i<=SIZE; i++) {\n  sn = sn + a;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loops/sum04-2.c

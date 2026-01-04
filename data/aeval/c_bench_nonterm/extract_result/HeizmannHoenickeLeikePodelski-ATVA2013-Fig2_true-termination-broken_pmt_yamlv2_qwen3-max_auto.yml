@@ -7,8 +7,5 @@ basic:
   time: 2026-01-02T17:24
 loops:
 - id: 1
-  code: |-
-    while (x >= 0) {
-        y = 2*y - x;
-        x = (y + x) / 2;
-    }
+  code: "while (x >= 0) {\n    y = 2*y - x;\n    x = (y + x) / 2;\n}"
+source_path: data/aeval/c_bench_nonterm/HeizmannHoenickeLeikePodelski-ATVA2013-Fig2_true-termination-broken.c

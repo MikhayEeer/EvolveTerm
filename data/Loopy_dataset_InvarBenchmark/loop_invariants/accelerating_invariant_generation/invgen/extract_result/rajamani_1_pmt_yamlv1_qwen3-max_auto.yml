@@ -8,3 +8,4 @@ basic:
 loops:
 - id: 1
   code: while ( __BLAST_NONDET ){ if ( __BLAST_NONDET ) { x++; y = y+100; }
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/accelerating_invariant_generation/invgen/rajamani_1.c

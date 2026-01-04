@@ -7,8 +7,5 @@ basic:
   time: 2026-01-03T14:05
 loops:
 - id: 1
-  code: |-
-    while (y < 1000 && unknown_int()) {
-        x = x + y;
-        y = y + 1;
-    }
+  code: "while (y < 1000 && unknown_int()) {\n    x = x + y;\n    y = y + 1;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/pie/ICE/benchmarks/afnp2014_true-unreach-call.c

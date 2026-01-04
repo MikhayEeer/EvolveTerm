@@ -7,20 +7,6 @@ basic:
   time: 2026-01-03T14:21
 loops:
 - id: 1
-  code: |-
-    int i;
-    int j;
-    int x;
-    int y;
-
-    (j = 0);
-    (i = 0);
-    (y = 2);
-
-    while ((i <= x)) {
-      {
-      (i  = (i + 1));
-      (j  = (j + y));
-      }
-
-    }
+  code: "int i;\nint j;\nint x;\nint y;\n\n(j = 0);\n(i = 0);\n(y = 2);\n\nwhile ((i\
+    \ <= x)) {\n  {\n  (i  = (i + 1));\n  (j  = (j + y));\n  }\n\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/code2inv/98.c

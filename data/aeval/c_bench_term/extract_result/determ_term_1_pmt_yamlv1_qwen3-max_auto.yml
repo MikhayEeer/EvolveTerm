@@ -7,11 +7,6 @@ basic:
   time: 2026-01-02T17:31
 loops:
 - id: 1
-  code: |-
-    int x = -10;
-    int y = 1;
-
-    while (x != 0) {
-      x = x + y;
-      y = y + 1;
-    }
+  code: "int x = -10;\nint y = 1;\n\nwhile (x != 0) {\n  x = x + y;\n  y = y + 1;\n\
+    }"
+source_path: data/aeval/c_bench_term/determ_term_1.c

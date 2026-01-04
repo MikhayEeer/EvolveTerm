@@ -7,12 +7,6 @@ basic:
   time: 2026-01-03T13:58
 loops:
 - id: 1
-  code: |-
-    unsigned int x = 0;
-    unsigned int y = 10000000;
-    unsigned int z = 0;
-    while (x < y) {
-        if (x >= 5000000)
-            z = z + 2;
-        x++;
-    }
+  code: "unsigned int x = 0;\nunsigned int y = 10000000;\nunsigned int z = 0;\nwhile\
+    \ (x < y) {\n    if (x >= 5000000)\n        z = z + 2;\n    x++;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loops-crafted-1/mono-crafted_12.c

@@ -7,10 +7,7 @@ basic:
   time: 2026-01-02T17:31
 loops:
 - id: 1
-  code: |-
-    while (y > 0 && x > 0) {
-        if (x > y) z = y;
-        else z = x;
-        if (0 == __VERIFIER_nondet_int()) {y = y + x; x = z - 1; z = y + z; }
-        else {x = y + x; y = z - 1; z = x + z; }
-    }
+  code: "while (y > 0 && x > 0) {\n    if (x > y) z = y;\n    else z = x;\n    if\
+    \ (0 == __VERIFIER_nondet_int()) {y = y + x; x = z - 1; z = y + z; }\n    else\
+    \ {x = y + x; y = z - 1; z = x + z; }\n}"
+source_path: data/aeval/c_bench_term/min_rf-alloca_true-termination.c

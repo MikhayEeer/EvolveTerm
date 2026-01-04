@@ -7,24 +7,12 @@ basic:
   time: 2026-01-03T14:44
 loops:
 - id: 1
-  code: |-
-    int i = 0;
-    /* Loop_A */  while ( i < N ) {
-        a[i] = 42;
-        i = i + 1;
-    }
+  code: "int i = 0;\n/* Loop_A */  while ( i < N ) {\n    a[i] = 42;\n    i = i +\
+    \ 1;\n}"
 - id: 2
-  code: |-
-    i = 0;
-    /* Loop_B */  while ( i < N ) {
-        a[i] = 43;
-        i = i + 1;
-    }
+  code: "i = 0;\n/* Loop_B */  while ( i < N ) {\n    a[i] = 43;\n    i = i + 1;\n\
+    }"
 - id: 3
-  code: |-
-    /* Loop_C */  for ( x = 0 ; x < N ; x++ ) {
-        {;
-    //@ assert(  a[x] == 43  );
-    }
-
-    }
+  code: "/* Loop_C */  for ( x = 0 ; x < N ; x++ ) {\n    {;\n//@ assert(  a[x] ==\
+    \ 43  );\n}\n\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/arrays/diffy_cav21_bench/standard_init2_ground-2.c

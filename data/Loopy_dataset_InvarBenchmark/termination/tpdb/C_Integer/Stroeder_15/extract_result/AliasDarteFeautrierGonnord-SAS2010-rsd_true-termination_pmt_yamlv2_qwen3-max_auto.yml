@@ -7,13 +7,7 @@ basic:
   time: 2026-01-03T14:24
 loops:
 - id: 1
-  code: |-
-    while (da >= r) {
-        if (unknown_int() != 0) {
-            da = da - 1;
-        } else {
-            temp = da;
-            da = db - 1;
-            db = da;
-        }
-    }
+  code: "while (da >= r) {\n    if (unknown_int() != 0) {\n        da = da - 1;\n\
+    \    } else {\n        temp = da;\n        da = db - 1;\n        db = da;\n  \
+    \  }\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/tpdb/C_Integer/Stroeder_15/AliasDarteFeautrierGonnord-SAS2010-rsd_true-termination.c

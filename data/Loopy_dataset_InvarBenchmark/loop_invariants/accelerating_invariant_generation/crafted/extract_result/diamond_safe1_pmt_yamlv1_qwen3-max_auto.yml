@@ -7,13 +7,6 @@ basic:
   time: 2026-01-03T14:14
 loops:
 - id: 1
-  code: |-
-    unsigned int x = 0;
-    unsigned int y;
-    while (x < 99) {
-      if (y % 2 == 0) {
-        x += 2;
-      } else {
-        x++;
-      }
-    }
+  code: "unsigned int x = 0;\nunsigned int y;\nwhile (x < 99) {\n  if (y % 2 == 0)\
+    \ {\n    x += 2;\n  } else {\n    x++;\n  }\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/accelerating_invariant_generation/crafted/diamond_safe1.c

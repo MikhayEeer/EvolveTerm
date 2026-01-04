@@ -7,14 +7,7 @@ basic:
   time: 2026-01-02T17:25
 loops:
 - id: 1
-  code: |-
-    while (x > 0 && y > 0 && z > 0) {
-      if (y > x) {
-        y = z - 1;
-        x = __VERIFIER_nondet_int();
-        z = x - 1;
-      } else {
-        x = __VERIFIER_nondet_int();
-        y = x - 1;
-      }
-    }
+  code: "while (x > 0 && y > 0 && z > 0) {\n  if (y > x) {\n    y = z - 1;\n    x\
+    \ = __VERIFIER_nondet_int();\n    z = x - 1;\n  } else {\n    x = __VERIFIER_nondet_int();\n\
+    \    y = x - 1;\n  }\n}"
+source_path: data/aeval/c_bench_nonterm/Ben-Amram-2010LMCS-Ex2.3-alloca_true-termination-broken4.c

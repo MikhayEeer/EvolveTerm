@@ -7,9 +7,5 @@ basic:
   time: 2026-01-02T17:30
 loops:
 - id: 1
-  code: |-
-    while (i <= 100) {
-        tmp = i;
-        i = j;
-        j = tmp + 1;
-    }
+  code: "while (i <= 100) {\n    tmp = i;\n    i = j;\n    j = tmp + 1;\n}"
+source_path: data/aeval/c_bench_term/c.07_true-termination_true-no-overflow-simpl.c

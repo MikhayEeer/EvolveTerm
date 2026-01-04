@@ -7,7 +7,5 @@ basic:
   time: 2026-01-03T14:32
 loops:
 - id: 1
-  code: |-
-    while (x >= 0) {
-        x = x - y;
-    }
+  code: "while (x >= 0) {\n    x = x - y;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/tpdb/C/Ultimate/Bangalore_true-termination.c

@@ -7,32 +7,13 @@ basic:
   time: 2026-01-03T14:42
 loops:
 - id: 1
-  code: |-
-    for(i=0; i<N; i++)
-    {
-        a[i] = 1;
-    }
+  code: "for(i=0; i<N; i++)\n{\n    a[i] = 1;\n}"
 - id: 2
-  code: |-
-    for(i=0; i<N; i++)
-    {
-        b[i] = 1;
-    }
+  code: "for(i=0; i<N; i++)\n{\n    b[i] = 1;\n}"
 - id: 3
-  code: |-
-    for(i=0; i<N; i++)
-    {
-        c[i] = 1;
-    }
+  code: "for(i=0; i<N; i++)\n{\n    c[i] = 1;\n}"
 - id: 4
-  code: |-
-    for(i=0; i<N; i++)
-    {
-        sum[0] = sum[0] + a[i];
-    }
+  code: "for(i=0; i<N; i++)\n{\n    sum[0] = sum[0] + a[i];\n}"
 - id: 5
-  code: |-
-    for(i=0; i<N; i++)
-    {
-        sum[0] = sum[0] + b[i];
-    }
+  code: "for(i=0; i<N; i++)\n{\n    sum[0] = sum[0] + b[i];\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/arrays/diffy_cav21_bench/res2o.c

@@ -7,11 +7,6 @@ basic:
   time: 2026-01-03T14:24
 loops:
 - id: 1
-  code: |-
-    int x, y;
-    x = unknown_int();
-    y = 1;
-    while (x > 0) {
-        x = x - y;
-        y = y + 1;
-    }
+  code: "int x, y;\nx = unknown_int();\ny = 1;\nwhile (x > 0) {\n    x = x - y;\n\
+    \    y = y + 1;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/tpdb/C_Integer/Stroeder_15/BrockschmidtCookFuhs-CAV2013-Introduction_true-termination.c

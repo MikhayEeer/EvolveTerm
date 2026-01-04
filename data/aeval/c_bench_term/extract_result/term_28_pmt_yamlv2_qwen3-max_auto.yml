@@ -7,16 +7,11 @@ basic:
   time: 2026-01-02T17:31
 loops:
 - id: 1
-  code: |-
-    while (x > y) {
-        if (0 == __VERIFIER_nondet_int())      x = x - 1;
-        else if (0 == __VERIFIER_nondet_int()) y = y + 1;
-        else if (0 == __VERIFIER_nondet_int()) x = x - 2;
-        else if (0 == __VERIFIER_nondet_int()) y = y + 2;
-        else if (0 == __VERIFIER_nondet_int()) x = x - 3;
-        else if (0 == __VERIFIER_nondet_int()) y = y + 3;
-        else if (0 == __VERIFIER_nondet_int()) x = x - 4;
-        else if (0 == __VERIFIER_nondet_int()) y = y + 4;
-        else if (0 == __VERIFIER_nondet_int()) x = x - 5;
-        else                                   y = y + 5;
-    }
+  code: "while (x > y) {\n    if (0 == __VERIFIER_nondet_int())      x = x - 1;\n\
+    \    else if (0 == __VERIFIER_nondet_int()) y = y + 1;\n    else if (0 == __VERIFIER_nondet_int())\
+    \ x = x - 2;\n    else if (0 == __VERIFIER_nondet_int()) y = y + 2;\n    else\
+    \ if (0 == __VERIFIER_nondet_int()) x = x - 3;\n    else if (0 == __VERIFIER_nondet_int())\
+    \ y = y + 3;\n    else if (0 == __VERIFIER_nondet_int()) x = x - 4;\n    else\
+    \ if (0 == __VERIFIER_nondet_int()) y = y + 4;\n    else if (0 == __VERIFIER_nondet_int())\
+    \ x = x - 5;\n    else                                   y = y + 5;\n}"
+source_path: data/aeval/c_bench_term/term_28.c

@@ -7,8 +7,5 @@ basic:
   time: 2026-01-03T14:15
 loops:
 - id: 1
-  code: |-
-    while (x <= 100) {
-        y = 100 - x;
-        x = x +1;
-    }
+  code: "while (x <= 100) {\n    y = 100 - x;\n    x = x +1;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/code2inv/66.c

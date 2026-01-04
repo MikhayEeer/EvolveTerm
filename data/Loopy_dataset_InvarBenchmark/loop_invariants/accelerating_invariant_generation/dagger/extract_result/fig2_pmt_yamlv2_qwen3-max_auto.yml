@@ -7,13 +7,7 @@ basic:
   time: 2026-01-03T14:12
 loops:
 - id: 1
-  code: |-
-    while (unknown_int() ) {
-
-    if (unknown_int()) {x++; y = y+2;}
-    else if (unknown_int()) {
-        if (x >= 4) {x++; y = y+3; z = z+10; w = w+10;}
-    }
-    else if (x >= z && w > y) {x = -x; y = -y; }
-
-    }
+  code: "while (unknown_int() ) {\n\nif (unknown_int()) {x++; y = y+2;}\nelse if (unknown_int())\
+    \ {\n    if (x >= 4) {x++; y = y+3; z = z+10; w = w+10;}\n}\nelse if (x >= z &&\
+    \ w > y) {x = -x; y = -y; }\n\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/accelerating_invariant_generation/dagger/fig2.c

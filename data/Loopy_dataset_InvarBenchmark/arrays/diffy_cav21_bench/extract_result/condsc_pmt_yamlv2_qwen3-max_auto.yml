@@ -15,3 +15,4 @@ loops:
     }
 - id: 4
   code: for(i=0; i<N; i++) { {; //@ assert(a[i] >= sum[0]); }
+source_path: data/Loopy_dataset_InvarBenchmark/arrays/diffy_cav21_bench/condsc.c

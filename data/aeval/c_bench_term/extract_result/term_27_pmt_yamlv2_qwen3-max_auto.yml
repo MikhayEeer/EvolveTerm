@@ -7,10 +7,6 @@ basic:
   time: 2026-01-02T17:27
 loops:
 - id: 1
-  code: |-
-    while (x > y){
-      x = x + c1 / 3;
-      y = y + c2 / 2;
-      c1 = c1 + 2;
-      c2 = c2 + 3;
-    }
+  code: "while (x > y){\n  x = x + c1 / 3;\n  y = y + c2 / 2;\n  c1 = c1 + 2;\n  c2\
+    \ = c2 + 3;\n}"
+source_path: data/aeval/c_bench_term/term_27.c

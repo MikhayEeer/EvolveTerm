@@ -7,29 +7,11 @@ basic:
   time: 2026-01-03T14:47
 loops:
 - id: 1
-  code: |-
-    for(i=1; i<N; i++)
-    {
-        a[i] = a[i-1] + 6;
-    }
+  code: "for(i=1; i<N; i++)\n{\n    a[i] = a[i-1] + 6;\n}"
 - id: 2
-  code: |-
-    for(i=1; i<N; i++)
-    {
-        b[i] = b[i-1] + a[i-1];
-    }
+  code: "for(i=1; i<N; i++)\n{\n    b[i] = b[i-1] + a[i-1];\n}"
 - id: 3
-  code: |-
-    for(i=1; i<N; i++)
-    {
-        c[i] = c[i-1] + b[i-1];
-    }
+  code: "for(i=1; i<N; i++)\n{\n    c[i] = c[i-1] + b[i-1];\n}"
 - id: 4
-  code: |-
-    for(i=0; i<N; i++)
-    {
-        {;
-    //@ assert(c[i] == i*i*i);
-    }
-
-    }
+  code: "for(i=0; i<N; i++)\n{\n    {;\n//@ assert(c[i] == i*i*i);\n}\n\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/arrays/diffy_cav21_bench/pcomp.c

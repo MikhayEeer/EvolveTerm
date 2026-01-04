@@ -8,3 +8,4 @@ basic:
 loops:
 - id: 1
   code: "do{\n    \n}while( (wc = ( wc >> 6 ) & mask) );"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/non_termination/loop/Incorrect_Bit_Calculation_3_T.c

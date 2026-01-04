@@ -7,9 +7,5 @@ basic:
   time: 2026-01-02T17:19
 loops:
 - id: 1
-  code: |-
-    while (j < 100)
-    {
-      if (j < 0) j = 1;
-      else j = j*b;
-    }
+  code: "while (j < 100)\n{\n  if (j < 0) j = 1;\n  else j = j*b;\n}"
+source_path: data/aeval/c_bench_nonterm/nonlin_mult_nonterm_4.c

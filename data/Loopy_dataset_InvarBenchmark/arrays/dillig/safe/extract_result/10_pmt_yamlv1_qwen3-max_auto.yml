@@ -10,3 +10,4 @@ loops:
   code: for(i=1, j=0; i<size; i+=2, j++) { a[j] = b[i]; }
 - id: 2
   code: for(i=1, j=0; i<size; i+=2, j++) { {; //@ assert(a[j] == b[2*j+1]); }
+source_path: data/Loopy_dataset_InvarBenchmark/arrays/dillig/safe/10.c

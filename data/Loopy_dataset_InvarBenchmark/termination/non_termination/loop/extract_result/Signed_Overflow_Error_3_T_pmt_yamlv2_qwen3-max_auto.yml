@@ -7,6 +7,5 @@ basic:
   time: 2026-01-03T14:33
 loops:
 - id: 1
-  code: |-
-    for( width = 1; number >= 10 ; width++ )
-        number /= 10;
+  code: "for( width = 1; number >= 10 ; width++ )\n    number /= 10;"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/non_termination/loop/Signed_Overflow_Error_3_T.c

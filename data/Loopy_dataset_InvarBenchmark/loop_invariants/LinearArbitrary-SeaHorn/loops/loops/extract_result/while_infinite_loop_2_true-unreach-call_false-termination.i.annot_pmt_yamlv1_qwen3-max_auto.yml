@@ -7,11 +7,5 @@ basic:
   time: 2026-01-03T14:05
 loops:
 - id: 1
-  code: |-
-    while(1)
-    {
-      {;
-    //@ assert(x==0);
-    }
-
-    }
+  code: "while(1)\n{\n  {;\n//@ assert(x==0);\n}\n\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/loops/loops/while_infinite_loop_2_true-unreach-call_false-termination.i.annot.c

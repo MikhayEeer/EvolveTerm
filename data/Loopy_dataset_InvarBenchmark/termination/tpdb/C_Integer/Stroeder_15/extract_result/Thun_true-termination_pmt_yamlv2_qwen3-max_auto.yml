@@ -7,8 +7,5 @@ basic:
   time: 2026-01-03T14:27
 loops:
 - id: 1
-  code: |-
-    while (x >= 0) {
-        x = x + y;
-        y = (-2)*y - 1;
-    }
+  code: "while (x >= 0) {\n    x = x + y;\n    y = (-2)*y - 1;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/tpdb/C_Integer/Stroeder_15/Thun_true-termination.c

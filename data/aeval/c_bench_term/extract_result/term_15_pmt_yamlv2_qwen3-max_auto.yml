@@ -7,8 +7,5 @@ basic:
   time: 2026-01-02T17:34
 loops:
 - id: 1
-  code: |-
-    while (x / 50 == y) {
-        x = x + 51;
-        y = y + 1;
-    }
+  code: "while (x / 50 == y) {\n    x = x + 51;\n    y = y + 1;\n}"
+source_path: data/aeval/c_bench_term/term_15.c

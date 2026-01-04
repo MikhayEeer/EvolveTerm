@@ -7,10 +7,6 @@ basic:
   time: 2026-01-02T17:16
 loops:
 - id: 1
-  code: |-
-    while ( (b - c >= 1) && (a == c)) {
-        r = __VERIFIER_nondet_int();
-        b = 10;
-        c = c + 1 + r;
-        a = c;
-    }
+  code: "while ( (b - c >= 1) && (a == c)) {\n    r = __VERIFIER_nondet_int();\n \
+    \   b = 10;\n    c = c + 1 + r;\n    a = c;\n}"
+source_path: data/aeval/c_bench_nonterm/Et4_false-no-overflow_false-termination.c

@@ -7,16 +7,7 @@ basic:
   time: 2026-01-03T14:23
 loops:
 - id: 1
-  code: |-
-    int c, n;
-    c = 1;
-    n = unknown_int();
-    while (c > 0) {
-      if (n > 100) {
-        n = n - 10;
-        c = c - 1;
-      } else {
-        n = n + 11;
-        c = c + 1;
-      }
-    }
+  code: "int c, n;\nc = 1;\nn = unknown_int();\nwhile (c > 0) {\n  if (n > 100) {\n\
+    \    n = n - 10;\n    c = c - 1;\n  } else {\n    n = n + 11;\n    c = c + 1;\n\
+    \  }\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/tpdb/C_Integer/Ton_Chanh_15/McCarthy91_Iteration_true-termination.c

@@ -7,10 +7,5 @@ basic:
   time: 2026-01-03T14:14
 loops:
 - id: 1
-  code: |-
-    unsigned int y = x;
-
-    while (x < 100) {
-      x++;
-      y++;
-    }
+  code: "unsigned int y = x;\n\nwhile (x < 100) {\n  x++;\n  y++;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/accelerating_invariant_generation/crafted/multivar_safe1.c

@@ -7,7 +7,5 @@ basic:
   time: 2026-01-02T17:17
 loops:
 - id: 1
-  code: |-
-    while (i >= 0) {
-        i = __VERIFIER_nondet_int();
-    }
+  code: "while (i >= 0) {\n    i = __VERIFIER_nondet_int();\n}"
+source_path: data/aeval/c_bench_nonterm/ChenCookFuhsNimkarOHearn-TACAS2014-Introduction_false-termination_true-no-overflow.c

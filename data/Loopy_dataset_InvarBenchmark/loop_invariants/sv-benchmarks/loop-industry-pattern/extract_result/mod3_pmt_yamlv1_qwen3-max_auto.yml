@@ -8,3 +8,4 @@ basic:
 loops:
 - id: 1
   code: while(unknown_int()){ if(x % 3 == 1){ x += 2; y = 0;}
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-industry-pattern/mod3.c

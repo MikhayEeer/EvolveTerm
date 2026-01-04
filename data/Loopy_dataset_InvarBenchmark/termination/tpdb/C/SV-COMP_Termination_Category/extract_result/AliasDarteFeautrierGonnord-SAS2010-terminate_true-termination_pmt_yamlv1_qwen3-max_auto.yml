@@ -7,14 +7,7 @@ basic:
   time: 2026-01-03T14:34
 loops:
 - id: 1
-  code: |-
-    int i = unknown_int();
-    int j = unknown_int();
-    int k = unknown_int();
-    int ell;
-    while (i <= 100 && j <= k) {
-        ell = i;
-        i = j;
-        j = ell + 1;
-        k--;
-    }
+  code: "int i = unknown_int();\nint j = unknown_int();\nint k = unknown_int();\n\
+    int ell;\nwhile (i <= 100 && j <= k) {\n    ell = i;\n    i = j;\n    j = ell\
+    \ + 1;\n    k--;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/tpdb/C/SV-COMP_Termination_Category/AliasDarteFeautrierGonnord-SAS2010-terminate_true-termination.c

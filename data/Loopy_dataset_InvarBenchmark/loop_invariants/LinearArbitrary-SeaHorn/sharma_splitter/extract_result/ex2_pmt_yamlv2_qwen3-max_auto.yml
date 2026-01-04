@@ -7,17 +7,7 @@ basic:
   time: 2026-01-03T14:08
 loops:
 - id: 1
-  code: |-
-    while (x<100) {
-        if(x<=50)
-                y=y+1;
-        else
-                y=y-1;
-
-        if(x<25)
-                z=z+1;
-        else
-                z=z+5;
-
-        x=x+1;
-    }
+  code: "while (x<100) {\n    if(x<=50)\n            y=y+1;\n    else\n          \
+    \  y=y-1;\n\n    if(x<25)\n            z=z+1;\n    else\n            z=z+5;\n\n\
+    \    x=x+1;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/sharma_splitter/ex2.c

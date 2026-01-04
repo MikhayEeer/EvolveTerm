@@ -7,13 +7,6 @@ basic:
   time: 2026-01-03T14:06
 loops:
 - id: 1
-  code: |-
-    while (1) {
-        if (x < 50) {
-            y++;
-        } else {
-            y--;
-        }
-        if (y < 0) break;
-        x++;
-    }
+  code: "while (1) {\n    if (x < 50) {\n        y++;\n    } else {\n        y--;\n\
+    \    }\n    if (y < 0) break;\n    x++;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/loops/loop-lit/gr2006_true-unreach-call_true-termination.c

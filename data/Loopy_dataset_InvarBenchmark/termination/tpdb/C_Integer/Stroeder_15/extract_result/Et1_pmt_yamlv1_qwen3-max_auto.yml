@@ -7,8 +7,5 @@ basic:
   time: 2026-01-03T14:30
 loops:
 - id: 1
-  code: |-
-    while (a > b) {
-        b = b + a;
-        a = a + 1;
-    }
+  code: "while (a > b) {\n    b = b + a;\n    a = a + 1;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/tpdb/C_Integer/Stroeder_15/Et1.c

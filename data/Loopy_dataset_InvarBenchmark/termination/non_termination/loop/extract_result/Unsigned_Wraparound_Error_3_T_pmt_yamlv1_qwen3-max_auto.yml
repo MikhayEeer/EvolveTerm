@@ -7,11 +7,6 @@ basic:
   time: 2026-01-03T14:36
 loops:
 - id: 1
-  code: |-
-    while( newbufsize < pathlen + len + 1 )
-    {
-        if( newbufsize >= 0x80000000 )
-            newbufsize = 0xffffffff;
-        else
-            newbufsize *= 2;
-    }
+  code: "while( newbufsize < pathlen + len + 1 )\n{\n    if( newbufsize >= 0x80000000\
+    \ )\n        newbufsize = 0xffffffff;\n    else\n        newbufsize *= 2;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/non_termination/loop/Unsigned_Wraparound_Error_3_T.c

@@ -7,11 +7,6 @@ basic:
   time: 2026-01-02T17:27
 loops:
 - id: 1
-  code: |-
-    while (x > y)
-    {
-      if (0 == __VERIFIER_nondet_int())
-        x = x % y;
-      else
-        x = x - y;
-    }
+  code: "while (x > y)\n{\n  if (0 == __VERIFIER_nondet_int())\n    x = x % y;\n \
+    \ else\n    x = x - y;\n}"
+source_path: data/aeval/c_bench_term/nonlin_mod_term_2.c

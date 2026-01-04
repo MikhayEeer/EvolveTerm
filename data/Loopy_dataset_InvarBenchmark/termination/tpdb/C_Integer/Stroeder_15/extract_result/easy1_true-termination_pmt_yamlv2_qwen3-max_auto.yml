@@ -7,11 +7,6 @@ basic:
   time: 2026-01-03T14:23
 loops:
 - id: 1
-  code: |-
-    while (x < 40) {
-        if (z == 0) {
-            x = x + 1;
-        } else {
-            x = x + 2;
-        }
-    }
+  code: "while (x < 40) {\n    if (z == 0) {\n        x = x + 1;\n    } else {\n \
+    \       x = x + 2;\n    }\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/tpdb/C_Integer/Stroeder_15/easy1_true-termination.c

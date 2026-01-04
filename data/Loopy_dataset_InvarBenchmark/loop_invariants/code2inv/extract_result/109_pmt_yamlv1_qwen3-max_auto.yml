@@ -7,13 +7,6 @@ basic:
   time: 2026-01-03T14:20
 loops:
 - id: 1
-  code: |-
-    j = 0;
-    k = 0;
-
-    while ( k < c) {
-        if(m < a) {
-            m = a;
-        }
-        k = k + 1;
-    }
+  code: "j = 0;\nk = 0;\n\nwhile ( k < c) {\n    if(m < a) {\n        m = a;\n   \
+    \ }\n    k = k + 1;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/code2inv/109.c

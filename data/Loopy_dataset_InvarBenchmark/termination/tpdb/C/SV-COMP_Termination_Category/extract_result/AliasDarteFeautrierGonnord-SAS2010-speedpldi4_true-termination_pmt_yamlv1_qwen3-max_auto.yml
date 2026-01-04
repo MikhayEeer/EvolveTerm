@@ -7,11 +7,6 @@ basic:
   time: 2026-01-03T14:34
 loops:
 - id: 1
-  code: |-
-    i = n;
-    while (i > 0) {
-        if (i < m)
-            i--;
-        else
-            i -= m;
-    }
+  code: "i = n;\nwhile (i > 0) {\n    if (i < m)\n        i--;\n    else\n       \
+    \ i -= m;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/tpdb/C/SV-COMP_Termination_Category/AliasDarteFeautrierGonnord-SAS2010-speedpldi4_true-termination.c

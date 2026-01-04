@@ -7,11 +7,6 @@ basic:
   time: 2026-01-02T17:33
 loops:
 - id: 1
-  code: |-
-    while (x >= 0 || y >= 0) {
-        x = x + a - b - 1;
-        y = y + b - a - 1;
-        int tmp = a;
-        a = b;
-        b = tmp;
-    }
+  code: "while (x >= 0 || y >= 0) {\n    x = x + a - b - 1;\n    y = y + b - a - 1;\n\
+    \    int tmp = a;\n    a = b;\n    b = tmp;\n}"
+source_path: data/aeval/c_bench_term/Gothenburg_v3_false-no-overflow.c

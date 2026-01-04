@@ -7,12 +7,6 @@ basic:
   time: 2026-01-03T14:08
 loops:
 - id: 1
-  code: |-
-    while (new != old) {
-      lock = 1;
-      old = new;
-      if (unknown()) {
-        lock = 0;
-        new++;
-      }
-    }
+  code: "while (new != old) {\n  lock = 1;\n  old = new;\n  if (unknown()) {\n   \
+    \ lock = 0;\n    new++;\n  }\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/VeriMAP/TRACER-testloop10_VeriMAP_true.c

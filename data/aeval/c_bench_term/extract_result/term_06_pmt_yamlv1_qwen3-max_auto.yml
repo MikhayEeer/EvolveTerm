@@ -7,9 +7,5 @@ basic:
   time: 2026-01-02T17:35
 loops:
 - id: 1
-  code: |-
-    int x = 0;
-    while (x < 1000)
-    {
-      if (x != 7777) x++;
-    }
+  code: "int x = 0;\nwhile (x < 1000)\n{\n  if (x != 7777) x++;\n}"
+source_path: data/aeval/c_bench_term/term_06.c

@@ -7,11 +7,6 @@ basic:
   time: 2026-01-02T17:19
 loops:
 - id: 1
-  code: |-
-    int i;
-    i = 0;
-
-    while (i < 100) {
-        if (i < 50) { i = i+1; }
-        else { i = i-1; }
-    }
+  code: "int i;\ni = 0;\n\nwhile (i < 100) {\n    if (i < 50) { i = i+1; }\n    else\
+    \ { i = i-1; }\n}"
+source_path: data/aeval/c_bench_nonterm/NO_22_false-termination_true-no-overflow.c

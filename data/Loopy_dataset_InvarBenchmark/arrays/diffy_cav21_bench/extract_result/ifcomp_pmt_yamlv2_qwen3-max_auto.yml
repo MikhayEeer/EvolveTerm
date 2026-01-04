@@ -7,41 +7,14 @@ basic:
   time: 2026-01-03T14:43
 loops:
 - id: 1
-  code: |-
-    for(i=0; i<N; i++)
-    {
-        if(i==0) {
-            a[0] = 6;
-        } else {
-            a[i] = a[i-1] + 6;
-        }
-    }
+  code: "for(i=0; i<N; i++)\n{\n    if(i==0) {\n        a[0] = 6;\n    } else {\n\
+    \        a[i] = a[i-1] + 6;\n    }\n}"
 - id: 2
-  code: |-
-    for(i=0; i<N; i++)
-    {
-        if(i==0) {
-            b[0] = 1;
-        } else {
-            b[i] = b[i-1] + a[i-1];
-        }
-    }
+  code: "for(i=0; i<N; i++)\n{\n    if(i==0) {\n        b[0] = 1;\n    } else {\n\
+    \        b[i] = b[i-1] + a[i-1];\n    }\n}"
 - id: 3
-  code: |-
-    for(i=0; i<N; i++)
-    {
-        if(i==0) {
-            c[0] = 0;
-        } else {
-            c[i] = c[i-1] + b[i-1];
-        }
-    }
+  code: "for(i=0; i<N; i++)\n{\n    if(i==0) {\n        c[0] = 0;\n    } else {\n\
+    \        c[i] = c[i-1] + b[i-1];\n    }\n}"
 - id: 4
-  code: |-
-    for(i=0; i<N; i++)
-    {
-        {;
-    //@ assert(c[i] == i*i*i);
-    }
-
-    }
+  code: "for(i=0; i<N; i++)\n{\n    {;\n//@ assert(c[i] == i*i*i);\n}\n\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/arrays/diffy_cav21_bench/ifcomp.c

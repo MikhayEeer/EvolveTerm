@@ -7,6 +7,5 @@ basic:
   time: 2026-01-03T14:33
 loops:
 - id: 1
-  code: |-
-    for( bits = 0 ; val != 0 ; bits++ )
-        val >>= 1;
+  code: "for( bits = 0 ; val != 0 ; bits++ )\n    val >>= 1;"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/non_termination/loop/Missing_Corner-case_Handling_2_T.c

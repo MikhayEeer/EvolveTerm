@@ -7,110 +7,46 @@ basic:
   time: 2026-01-02T17:15
 loops:
 - id: 1
-  code: |-
-    for (i = 0; i < 256; i++) {
-        data[i] = 0;
-    }
+  code: "for (i = 0; i < 256; i++) {\n    data[i] = 0;\n}"
 - id: 2
-  code: |-
-    while (a < 50 && b > 5) {
-        idx = (a * 13 + b * 7) % 256;
-        data[idx] = (a << 2) ^ (b >> 1);
-        sink += data[idx];
-        a = a * 2;
-        b = b / 2;
-        val = (a + b) % 100;
-        temp = (val > 50) ? 1 : 0;
-        sink = sink + temp;
-        for (c = 1; c < 100 && d > 0; c = c * 2, d = d / 2) {
-            ptr = &data[(c + d) % 256];
-            *ptr = *ptr ^ c;
-            sink = sink ^ d;
-            do {
-                temp = (e > d) ? e : d;
-                data[temp % 256] = data[temp % 256] + 1;
-                sink = sink | temp;
-                while (e > 0 && c < 50) {
-                    val = (e * 2) - c;
-                    if (val > 0) {
-                        sink = sink + 1;
-                    } else {
-                        sink = sink - 1;
-                    }
-                    for (f = 50; f > 0 && e > 0; f = f / 2) {
-                        idx = f % 256;
-                        data[idx] = f * f + sink;
-                        temp = data[idx] & 0xFF;
-                        sink = sink + temp;
-                        e = e / 2;
-                    }
-                }
-            } while (d > 0 && e < 100);
-        }
-    }
+  code: "while (a < 50 && b > 5) {\n    idx = (a * 13 + b * 7) % 256;\n    data[idx]\
+    \ = (a << 2) ^ (b >> 1);\n    sink += data[idx];\n    a = a * 2;\n    b = b /\
+    \ 2;\n    val = (a + b) % 100;\n    temp = (val > 50) ? 1 : 0;\n    sink = sink\
+    \ + temp;\n    for (c = 1; c < 100 && d > 0; c = c * 2, d = d / 2) {\n       \
+    \ ptr = &data[(c + d) % 256];\n        *ptr = *ptr ^ c;\n        sink = sink ^\
+    \ d;\n        do {\n            temp = (e > d) ? e : d;\n            data[temp\
+    \ % 256] = data[temp % 256] + 1;\n            sink = sink | temp;\n          \
+    \  while (e > 0 && c < 50) {\n                val = (e * 2) - c;\n           \
+    \     if (val > 0) {\n                    sink = sink + 1;\n                }\
+    \ else {\n                    sink = sink - 1;\n                }\n          \
+    \      for (f = 50; f > 0 && e > 0; f = f / 2) {\n                    idx = f\
+    \ % 256;\n                    data[idx] = f * f + sink;\n                    temp\
+    \ = data[idx] & 0xFF;\n                    sink = sink + temp;\n             \
+    \       e = e / 2;\n                }\n            }\n        } while (d > 0 &&\
+    \ e < 100);\n    }\n}"
 - id: 3
-  code: |-
-    for (c = 1; c < 100 && d > 0; c = c * 2, d = d / 2) {
-        ptr = &data[(c + d) % 256];
-        *ptr = *ptr ^ c;
-        sink = sink ^ d;
-        do {
-            temp = (e > d) ? e : d;
-            data[temp % 256] = data[temp % 256] + 1;
-            sink = sink | temp;
-            while (e > 0 && c < 50) {
-                val = (e * 2) - c;
-                if (val > 0) {
-                    sink = sink + 1;
-                } else {
-                    sink = sink - 1;
-                }
-                for (f = 50; f > 0 && e > 0; f = f / 2) {
-                    idx = f % 256;
-                    data[idx] = f * f + sink;
-                    temp = data[idx] & 0xFF;
-                    sink = sink + temp;
-                    e = e / 2;
-                }
-            }
-        } while (d > 0 && e < 100);
-    }
+  code: "for (c = 1; c < 100 && d > 0; c = c * 2, d = d / 2) {\n    ptr = &data[(c\
+    \ + d) % 256];\n    *ptr = *ptr ^ c;\n    sink = sink ^ d;\n    do {\n       \
+    \ temp = (e > d) ? e : d;\n        data[temp % 256] = data[temp % 256] + 1;\n\
+    \        sink = sink | temp;\n        while (e > 0 && c < 50) {\n            val\
+    \ = (e * 2) - c;\n            if (val > 0) {\n                sink = sink + 1;\n\
+    \            } else {\n                sink = sink - 1;\n            }\n     \
+    \       for (f = 50; f > 0 && e > 0; f = f / 2) {\n                idx = f % 256;\n\
+    \                data[idx] = f * f + sink;\n                temp = data[idx] &\
+    \ 0xFF;\n                sink = sink + temp;\n                e = e / 2;\n   \
+    \         }\n        }\n    } while (d > 0 && e < 100);\n}"
 - id: 4
-  code: |-
-    do {
-        temp = (e > d) ? e : d;
-        data[temp % 256] = data[temp % 256] + 1;
-        sink = sink | temp;
-        while (e > 0 && c < 50) {
-            val = (e * 2) - c;
-            if (val > 0) {
-                sink = sink + 1;
-            } else {
-                sink = sink - 1;
-            }
-            for (f = 50; f > 0 && e > 0; f = f / 2) {
-                idx = f % 256;
-                data[idx] = f * f + sink;
-                temp = data[idx] & 0xFF;
-                sink = sink + temp;
-                e = e / 2;
-            }
-        }
-    } while (d > 0 && e < 100);
+  code: "do {\n    temp = (e > d) ? e : d;\n    data[temp % 256] = data[temp % 256]\
+    \ + 1;\n    sink = sink | temp;\n    while (e > 0 && c < 50) {\n        val =\
+    \ (e * 2) - c;\n        if (val > 0) {\n            sink = sink + 1;\n       \
+    \ } else {\n            sink = sink - 1;\n        }\n        for (f = 50; f >\
+    \ 0 && e > 0; f = f / 2) {\n            idx = f % 256;\n            data[idx]\
+    \ = f * f + sink;\n            temp = data[idx] & 0xFF;\n            sink = sink\
+    \ + temp;\n            e = e / 2;\n        }\n    }\n} while (d > 0 && e < 100);"
 - id: 5
-  code: |-
-    while (e > 0 && c < 50) {
-        val = (e * 2) - c;
-        if (val > 0) {
-            sink = sink + 1;
-        } else {
-            sink = sink - 1;
-        }
-        for (f = 50; f > 0 && e > 0; f = f / 2) {
-            idx = f % 256;
-            data[idx] = f * f + sink;
-            temp = data[idx] & 0xFF;
-            sink = sink + temp;
-            e = e / 2;
-        }
-    }
+  code: "while (e > 0 && c < 50) {\n    val = (e * 2) - c;\n    if (val > 0) {\n \
+    \       sink = sink + 1;\n    } else {\n        sink = sink - 1;\n    }\n    for\
+    \ (f = 50; f > 0 && e > 0; f = f / 2) {\n        idx = f % 256;\n        data[idx]\
+    \ = f * f + sink;\n        temp = data[idx] & 0xFF;\n        sink = sink + temp;\n\
+    \        e = e / 2;\n    }\n}"
+source_path: examples/llm_nested_term_samples/generated1229program2/program.c

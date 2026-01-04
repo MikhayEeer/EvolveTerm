@@ -14,3 +14,4 @@ loops:
   code: for(i=0; i<N; i++) { if(i==0) { c[0] = N; }
 - id: 4
   code: for(i=0; i<N; i++) { {; //@ assert(c[i] == N + i*i*i); }
+source_path: data/Loopy_dataset_InvarBenchmark/arrays/diffy_cav21_bench/ifncomp.c

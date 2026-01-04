@@ -7,10 +7,5 @@ basic:
   time: 2026-01-03T14:17
 loops:
 - id: 1
-  code: |-
-    while(x < 500) {
-       x += 1;
-       if( z <= y) {
-          y = z;
-       }
-    }
+  code: "while(x < 500) {\n   x += 1;\n   if( z <= y) {\n      y = z;\n   }\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/code2inv/4.c

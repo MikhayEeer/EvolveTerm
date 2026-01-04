@@ -7,11 +7,6 @@ basic:
   time: 2026-01-03T14:29
 loops:
 - id: 1
-  code: |-
-    while (y1 != y2) {
-        if (y1 > y2) {
-            y1 = y1 - y2;
-        } else {
-            y2 = y2 - y1;
-        }
-    }
+  code: "while (y1 != y2) {\n    if (y1 > y2) {\n        y1 = y1 - y2;\n    } else\
+    \ {\n        y2 = y2 - y1;\n    }\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/tpdb/C_Integer/Stroeder_15/BradleyMannaSipma-CAV2005-Fig1_true-termination.c

@@ -9,3 +9,4 @@ loops:
 - id: 1
   code: "assume ( j<=n );\nwhile ( j <= n ) {\n  \n  assume( i >= 0);\n  \n  j++;\n\
     }"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/accelerating_invariant_generation/invgen/up-nested.c

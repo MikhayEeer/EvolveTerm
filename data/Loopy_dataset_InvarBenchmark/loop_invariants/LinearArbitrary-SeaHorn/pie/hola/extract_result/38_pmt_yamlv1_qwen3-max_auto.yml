@@ -7,14 +7,6 @@ basic:
   time: 2026-01-03T14:03
 loops:
 - id: 1
-  code: |-
-    int x=0;
-    int y=0;
-    int i=0;
-    int n = unknown();
-
-    while(i<n) {
-      i++;
-      x++;
-      if(i%2 == 0) y++;
-    }
+  code: "int x=0;\nint y=0;\nint i=0;\nint n = unknown();\n\nwhile(i<n) {\n  i++;\n\
+    \  x++;\n  if(i%2 == 0) y++;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/pie/hola/38.c

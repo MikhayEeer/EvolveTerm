@@ -7,13 +7,6 @@ basic:
   time: 2026-01-03T14:03
 loops:
 - id: 1
-  code: |-
-    int x = 0;
-    int m = 0;
-    int n = unknown1();
-    while (x < n) {
-       if (unknown2()) {
-          m = x;
-       }
-       x = x + 1;
-    }
+  code: "int x = 0;\nint m = 0;\nint n = unknown1();\nwhile (x < n) {\n   if (unknown2())\
+    \ {\n      m = x;\n   }\n   x = x + 1;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/pie/hola/37.c

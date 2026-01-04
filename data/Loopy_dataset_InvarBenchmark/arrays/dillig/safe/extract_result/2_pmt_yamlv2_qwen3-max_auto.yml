@@ -9,11 +9,5 @@ loops:
 - id: 1
   code: "for(i=0; i<size; i++) \n{\n    a[i] =2*i+c;\n}"
 - id: 2
-  code: |-
-    for(i=0; i<size; i++)
-    {
-        {;
-    //@ assert(a[i] ==2*i+c);
-    }
-
-    }
+  code: "for(i=0; i<size; i++)\n{\n    {;\n//@ assert(a[i] ==2*i+c);\n}\n\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/arrays/dillig/safe/2.c

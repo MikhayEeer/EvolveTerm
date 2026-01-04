@@ -7,12 +7,6 @@ basic:
   time: 2026-01-03T14:02
 loops:
 - id: 1
-  code: |-
-    while(unknown1())
-    {
-       if(k%3 == 0)
-         x++;
-       y++;
-       z++;
-       k = x+y+z;
-    }
+  code: "while(unknown1())\n{\n   if(k%3 == 0)\n     x++;\n   y++;\n   z++;\n   k\
+    \ = x+y+z;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/pie/hola/22.c

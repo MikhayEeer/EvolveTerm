@@ -7,13 +7,6 @@ basic:
   time: 2026-01-02T17:28
 loops:
 - id: 1
-  code: |-
-    int x = 0;
-    int y = 0;
-    int z = 0;
-
-    while (x < 100) {
-      x = x + y;
-      y = z + 1;
-      z = y - 1;
-    }
+  code: "int x = 0;\nint y = 0;\nint z = 0;\n\nwhile (x < 100) {\n  x = x + y;\n \
+    \ y = z + 1;\n  z = y - 1;\n}"
+source_path: data/aeval/c_bench_term/term_20.c

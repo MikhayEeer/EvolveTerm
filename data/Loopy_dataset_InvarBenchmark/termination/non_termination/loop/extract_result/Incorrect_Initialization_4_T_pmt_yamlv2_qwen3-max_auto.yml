@@ -7,9 +7,6 @@ basic:
   time: 2026-01-03T14:33
 loops:
 - id: 1
-  code: |-
-    while( i < hash )
-    {
-        if( !r ) r = ( h % rehash ) + 1;
-        i += r;
-    }
+  code: "while( i < hash )\n{\n    if( !r ) r = ( h % rehash ) + 1;\n    i += r;\n\
+    }"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/non_termination/loop/Incorrect_Initialization_4_T.c

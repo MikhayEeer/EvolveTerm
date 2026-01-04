@@ -7,15 +7,7 @@ basic:
   time: 2026-01-03T14:04
 loops:
 - id: 1
-  code: |-
-    while(x1>0 && x2>0 && x3>0)
-    {
-        if (c1) x1=x1-d1;
-        else if (c2) x2=x2-d2;
-        else x3=x3-d3;
-        c1=unknown_bool();
-        c2=unknown_bool();
-        v1 = unknown_int();
-        v2 = unknown_int();
-        v3 = unknown_int();
-    }
+  code: "while(x1>0 && x2>0 && x3>0)\n{\n    if (c1) x1=x1-d1;\n    else if (c2) x2=x2-d2;\n\
+    \    else x3=x3-d3;\n    c1=unknown_bool();\n    c2=unknown_bool();\n    v1 =\
+    \ unknown_int();\n    v2 = unknown_int();\n    v3 = unknown_int();\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/pie/ICE/benchmarks/trex03.v.c

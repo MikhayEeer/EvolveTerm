@@ -7,7 +7,5 @@ basic:
   time: 2026-01-03T14:15
 loops:
 - id: 1
-  code: |-
-    while(y >= 0){
-        y = y + x;
-    }
+  code: "while(y >= 0){\n    y = y + x;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/code2inv/91.c

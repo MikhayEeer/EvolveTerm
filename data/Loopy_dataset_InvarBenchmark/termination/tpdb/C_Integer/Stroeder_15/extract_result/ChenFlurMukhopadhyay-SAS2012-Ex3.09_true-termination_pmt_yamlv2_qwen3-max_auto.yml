@@ -7,9 +7,6 @@ basic:
   time: 2026-01-03T14:24
 loops:
 - id: 1
-  code: |-
-    while (x > 0 && x < y && x > 2*oldx) {
-        oldx = x;
-        x = unknown_int();
-        y = z;
-    }
+  code: "while (x > 0 && x < y && x > 2*oldx) {\n    oldx = x;\n    x = unknown_int();\n\
+    \    y = z;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/tpdb/C_Integer/Stroeder_15/ChenFlurMukhopadhyay-SAS2012-Ex3.09_true-termination.c

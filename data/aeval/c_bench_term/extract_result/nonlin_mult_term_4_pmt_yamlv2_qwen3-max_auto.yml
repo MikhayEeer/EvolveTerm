@@ -7,9 +7,5 @@ basic:
   time: 2026-01-02T17:31
 loops:
 - id: 1
-  code: |-
-    while (i >= j)
-    {
-      i = i*d;
-      j = j*b;
-    }
+  code: "while (i >= j)\n{\n  i = i*d;\n  j = j*b;\n}"
+source_path: data/aeval/c_bench_term/nonlin_mult_term_4.c

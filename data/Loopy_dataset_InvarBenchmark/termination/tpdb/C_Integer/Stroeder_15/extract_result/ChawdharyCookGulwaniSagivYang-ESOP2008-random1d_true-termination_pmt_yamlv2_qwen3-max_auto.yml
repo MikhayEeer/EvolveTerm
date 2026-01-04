@@ -7,12 +7,6 @@ basic:
   time: 2026-01-03T14:21
 loops:
 - id: 1
-  code: |-
-    while (x <= max) {
-        if (unknown_int() != 0) {
-            a = a + 1;
-        } else {
-            a = a - 1;
-        }
-        x = x + 1;
-    }
+  code: "while (x <= max) {\n    if (unknown_int() != 0) {\n        a = a + 1;\n \
+    \   } else {\n        a = a - 1;\n    }\n    x = x + 1;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/tpdb/C_Integer/Stroeder_15/ChawdharyCookGulwaniSagivYang-ESOP2008-random1d_true-termination.c

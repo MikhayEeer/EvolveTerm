@@ -7,7 +7,5 @@ basic:
   time: 2026-01-02T17:19
 loops:
 - id: 1
-  code: |-
-    while (i != 1 && i != 0) {
-        i = i-2;
-    }
+  code: "while (i != 1 && i != 0) {\n    i = i-2;\n}"
+source_path: data/aeval/c_bench_nonterm/Even_false-no-overflow_false-termination.c

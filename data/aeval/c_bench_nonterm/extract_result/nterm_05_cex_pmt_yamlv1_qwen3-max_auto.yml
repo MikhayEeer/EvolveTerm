@@ -7,8 +7,6 @@ basic:
   time: 2026-01-02T17:24
 loops:
 - id: 1
-  code: |-
-    while (x != y && (x == z || y == z))
-    {
-      if (__VERIFIER_nondet_int() == 0) x++; else y++;
-    }
+  code: "while (x != y && (x == z || y == z))\n{\n  if (__VERIFIER_nondet_int() ==\
+    \ 0) x++; else y++;\n}"
+source_path: data/aeval/c_bench_nonterm/nterm_05_cex.c

@@ -7,11 +7,6 @@ basic:
   time: 2026-01-03T14:50
 loops:
 - id: 1
-  code: |-
-    for(i=0; i<size; i++)
-    {
-        if(a[i] != 0) {
-            pos = i;
-            break;
-        }
-    }
+  code: "for(i=0; i<size; i++)\n{\n    if(a[i] != 0) {\n        pos = i;\n       \
+    \ break;\n    }\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/arrays/dillig/safe/22.c

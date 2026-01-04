@@ -7,9 +7,5 @@ basic:
   time: 2026-01-03T13:56
 loops:
 - id: 1
-  code: |-
-    unsigned int x = 0;
-
-    while (x < 0x0fffffff) {
-      x += 2;
-    }
+  code: "unsigned int x = 0;\n\nwhile (x < 0x0fffffff) {\n  x += 2;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-acceleration/simple_1-2.c

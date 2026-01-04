@@ -7,12 +7,6 @@ basic:
   time: 2026-01-03T14:05
 loops:
 - id: 1
-  code: |-
-    while(1){
-        sn = sn + 1;
-        x++;
-        {;
-    //@ assert(sn==x*1 || sn == 0);
-    }
-
-    }
+  code: "while(1){\n    sn = sn + 1;\n    x++;\n    {;\n//@ assert(sn==x*1 || sn ==\
+    \ 0);\n}\n\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/pie/ICE/benchmarks/sum03_safe.c

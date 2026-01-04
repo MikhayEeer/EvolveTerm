@@ -7,13 +7,6 @@ basic:
   time: 2026-01-03T14:16
 loops:
 - id: 1
-  code: |-
-    int x = 1;
-    int m = 1;
-    int n;
-    while (x < n) {
-        if (unknown()) {
-            m = x;
-        }
-        x = x + 1;
-    }
+  code: "int x = 1;\nint m = 1;\nint n;\nwhile (x < n) {\n    if (unknown()) {\n \
+    \       m = x;\n    }\n    x = x + 1;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/code2inv/22.c

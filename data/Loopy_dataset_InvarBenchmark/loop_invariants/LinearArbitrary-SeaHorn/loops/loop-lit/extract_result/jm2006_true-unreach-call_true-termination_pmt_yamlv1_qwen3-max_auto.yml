@@ -7,10 +7,5 @@ basic:
   time: 2026-01-03T14:06
 loops:
 - id: 1
-  code: |-
-    int x = i;
-    int y = j;
-    while(x != 0) {
-        x--;
-        y--;
-    }
+  code: "int x = i;\nint y = j;\nwhile(x != 0) {\n    x--;\n    y--;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/loops/loop-lit/jm2006_true-unreach-call_true-termination.c

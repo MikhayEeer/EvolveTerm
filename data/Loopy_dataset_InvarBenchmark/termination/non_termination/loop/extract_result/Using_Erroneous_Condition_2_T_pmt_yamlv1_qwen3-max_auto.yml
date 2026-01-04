@@ -8,3 +8,4 @@ basic:
 loops:
 - id: 1
   code: "for( int i = 0 ; i < reg_count ; i++ )\n{\n    \n}"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/non_termination/loop/Using_Erroneous_Condition_2_T.c

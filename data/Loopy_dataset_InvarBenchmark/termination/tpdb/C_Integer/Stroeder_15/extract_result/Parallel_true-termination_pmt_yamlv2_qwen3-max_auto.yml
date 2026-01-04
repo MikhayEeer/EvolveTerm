@@ -7,11 +7,6 @@ basic:
   time: 2026-01-03T14:25
 loops:
 - id: 1
-  code: |-
-    while (x >= 0 || y >= 0) {
-        if (x >= 0) {
-            x = x - 1;
-        } else {
-            y = y - 1;
-        }
-    }
+  code: "while (x >= 0 || y >= 0) {\n    if (x >= 0) {\n        x = x - 1;\n    }\
+    \ else {\n        y = y - 1;\n    }\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/tpdb/C_Integer/Stroeder_15/Parallel_true-termination.c

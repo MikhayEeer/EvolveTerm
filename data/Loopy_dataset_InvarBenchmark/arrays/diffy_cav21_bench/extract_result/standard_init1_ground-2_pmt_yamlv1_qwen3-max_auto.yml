@@ -7,10 +7,6 @@ basic:
   time: 2026-01-03T14:45
 loops:
 - id: 1
-  code: |-
-    for ( x = 0 ; x < N ; x++ ) {
-        {;
-    //@ assert(  a[x] == 42  );
-    }
-
-    }
+  code: "for ( x = 0 ; x < N ; x++ ) {\n    {;\n//@ assert(  a[x] == 42  );\n}\n\n\
+    }"
+source_path: data/Loopy_dataset_InvarBenchmark/arrays/diffy_cav21_bench/standard_init1_ground-2.c

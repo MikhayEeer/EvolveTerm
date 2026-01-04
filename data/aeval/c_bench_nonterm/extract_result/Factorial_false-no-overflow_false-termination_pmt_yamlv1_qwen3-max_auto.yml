@@ -7,15 +7,6 @@ basic:
   time: 2026-01-02T17:20
 loops:
 - id: 1
-  code: |-
-    int j;
-    int i;
-    int fac;
-    j = __VERIFIER_nondet_int();
-    i = 1;
-    fac = 1;
-
-    while (fac != j) {
-        fac = fac * i;
-        i = i+1;
-    }
+  code: "int j;\nint i;\nint fac;\nj = __VERIFIER_nondet_int();\ni = 1;\nfac = 1;\n\
+    \nwhile (fac != j) {\n    fac = fac * i;\n    i = i+1;\n}"
+source_path: data/aeval/c_bench_nonterm/Factorial_false-no-overflow_false-termination.c

@@ -7,9 +7,5 @@ basic:
   time: 2026-01-03T14:14
 loops:
 - id: 1
-  code: |-
-    while( x < n ) {
-        if(__BLAST_NONDET)
-        m = x;
-        x++;
-    }
+  code: "while( x < n ) {\n    if(__BLAST_NONDET)\n    m = x;\n    x++;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/accelerating_invariant_generation/invgen/gulwani_cegar2.c

@@ -7,20 +7,8 @@ basic:
   time: 2026-01-03T14:30
 loops:
 - id: 1
-  code: |-
-    int i;
-    int range;
-    i = unknown_int();
-    range = 20;
-
-    while (-range <= i && i <= range) {
-        if (range-i < 5 || range+i < 5) {
-            i = i*(-1);
-        } else {
-            range = range+1;
-            i = i-1;
-            if (i == 0) {
-                range = -1;
-            }
-        }
-    }
+  code: "int i;\nint range;\ni = unknown_int();\nrange = 20;\n\nwhile (-range <= i\
+    \ && i <= range) {\n    if (range-i < 5 || range+i < 5) {\n        i = i*(-1);\n\
+    \    } else {\n        range = range+1;\n        i = i-1;\n        if (i == 0)\
+    \ {\n            range = -1;\n        }\n    }\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/tpdb/C_Integer/Stroeder_15/MirrorInterv.c

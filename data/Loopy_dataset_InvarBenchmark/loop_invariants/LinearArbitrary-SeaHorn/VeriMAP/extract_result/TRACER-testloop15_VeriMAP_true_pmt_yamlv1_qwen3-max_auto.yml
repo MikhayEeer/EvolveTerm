@@ -7,10 +7,5 @@ basic:
   time: 2026-01-03T14:08
 loops:
 - id: 1
-  code: |-
-    int i = 0;
-    int N = 100;
-
-    while (i<N) {
-      i++;
-    }
+  code: "int i = 0;\nint N = 100;\n\nwhile (i<N) {\n  i++;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/VeriMAP/TRACER-testloop15_VeriMAP_true.c

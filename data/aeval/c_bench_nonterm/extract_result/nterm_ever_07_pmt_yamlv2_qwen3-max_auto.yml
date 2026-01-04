@@ -8,3 +8,4 @@ basic:
 loops:
 - id: 1
   code: "while (x != 10) {\n    if (x % 5 == 1) x = x - 2;\n    else x--;\n    \n}"
+source_path: data/aeval/c_bench_nonterm/nterm_ever_07.c

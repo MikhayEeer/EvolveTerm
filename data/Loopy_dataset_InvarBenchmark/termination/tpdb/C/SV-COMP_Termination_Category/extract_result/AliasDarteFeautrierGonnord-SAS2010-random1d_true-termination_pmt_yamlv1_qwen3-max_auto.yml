@@ -7,13 +7,6 @@ basic:
   time: 2026-01-03T14:33
 loops:
 - id: 1
-  code: |-
-    a = 0;
-    x = 1;
-    while (x <= max) {
-        if (unknown_int())
-            a = a + 1;
-        else
-            a = a - 1;
-        x = x + 1;
-    }
+  code: "a = 0;\nx = 1;\nwhile (x <= max) {\n    if (unknown_int())\n        a = a\
+    \ + 1;\n    else\n        a = a - 1;\n    x = x + 1;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/tpdb/C/SV-COMP_Termination_Category/AliasDarteFeautrierGonnord-SAS2010-random1d_true-termination.c

@@ -7,17 +7,6 @@ basic:
   time: 2026-01-03T14:07
 loops:
 - id: 1
-  code: |-
-    int i, x;
-
-    x = 1;
-    i = 0;
-
-    while (i<N) {
-      if (x==1) {
-        x=2;
-      } else {
-        x=1;
-      }
-      i++;
-    }
+  code: "int i, x;\n\nx = 1;\ni = 0;\n\nwhile (i<N) {\n  if (x==1) {\n    x=2;\n \
+    \ } else {\n    x=1;\n  }\n  i++;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/VeriMAP/TRACER-testloop16_VeriMAP_true.c

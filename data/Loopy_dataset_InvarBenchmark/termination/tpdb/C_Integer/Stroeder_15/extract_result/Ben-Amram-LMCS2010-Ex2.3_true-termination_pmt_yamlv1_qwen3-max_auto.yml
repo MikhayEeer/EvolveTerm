@@ -7,15 +7,7 @@ basic:
   time: 2026-01-03T14:23
 loops:
 - id: 1
-  code: |-
-    while (x > 0 && y > 0 && z > 0) {
-        if (y > x) {
-            y = z;
-            x = unknown_int();
-            z = x - 1;
-        } else {
-            z = z - 1;
-            x = unknown_int();
-            y = x - 1;
-        }
-    }
+  code: "while (x > 0 && y > 0 && z > 0) {\n    if (y > x) {\n        y = z;\n   \
+    \     x = unknown_int();\n        z = x - 1;\n    } else {\n        z = z - 1;\n\
+    \        x = unknown_int();\n        y = x - 1;\n    }\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/tpdb/C_Integer/Stroeder_15/Ben-Amram-LMCS2010-Ex2.3_true-termination.c

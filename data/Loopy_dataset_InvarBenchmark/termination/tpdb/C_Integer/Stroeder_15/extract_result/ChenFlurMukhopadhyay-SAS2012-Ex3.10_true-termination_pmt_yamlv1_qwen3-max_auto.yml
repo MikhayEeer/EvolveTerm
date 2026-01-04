@@ -7,8 +7,5 @@ basic:
   time: 2026-01-03T14:26
 loops:
 - id: 1
-  code: |-
-    while (x >= 0 && x + y >= 0) {
-        x = x + y + z;
-        y = -z - 1;
-    }
+  code: "while (x >= 0 && x + y >= 0) {\n    x = x + y + z;\n    y = -z - 1;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/tpdb/C_Integer/Stroeder_15/ChenFlurMukhopadhyay-SAS2012-Ex3.10_true-termination.c

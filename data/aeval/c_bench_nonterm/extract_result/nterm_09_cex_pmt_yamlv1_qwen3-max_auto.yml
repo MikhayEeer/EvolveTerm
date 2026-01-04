@@ -7,12 +7,6 @@ basic:
   time: 2026-01-02T17:21
 loops:
 - id: 1
-  code: |-
-    int x = 0;
-    int y = 0;
-    while (x >= y)
-    {
-      int z = __VERIFIER_nondet_int();
-      y = y + z + 1;
-      x = x + 2*z + 2;
-    }
+  code: "int x = 0;\nint y = 0;\nwhile (x >= y)\n{\n  int z = __VERIFIER_nondet_int();\n\
+    \  y = y + z + 1;\n  x = x + 2*z + 2;\n}"
+source_path: data/aeval/c_bench_nonterm/nterm_09_cex.c

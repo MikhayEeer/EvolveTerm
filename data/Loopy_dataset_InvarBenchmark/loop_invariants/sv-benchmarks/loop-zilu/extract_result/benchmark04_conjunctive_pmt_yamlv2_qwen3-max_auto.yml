@@ -7,8 +7,5 @@ basic:
   time: 2026-01-03T14:01
 loops:
 - id: 1
-  code: |-
-    while (j<=n-1) {
-      j++;
-      k--;
-    }
+  code: "while (j<=n-1) {\n  j++;\n  k--;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-zilu/benchmark04_conjunctive.c

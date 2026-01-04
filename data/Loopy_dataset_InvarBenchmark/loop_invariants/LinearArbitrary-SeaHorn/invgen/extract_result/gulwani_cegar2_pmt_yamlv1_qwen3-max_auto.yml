@@ -7,13 +7,6 @@ basic:
   time: 2026-01-03T14:10
 loops:
 - id: 1
-  code: |-
-    int x,m,n;
-    n = unknown();
-    x = 0;
-    m = 0;
-    while( x < n ) {
-      if(unknown())
-        m = x;
-      x++;
-    }
+  code: "int x,m,n;\nn = unknown();\nx = 0;\nm = 0;\nwhile( x < n ) {\n  if(unknown())\n\
+    \    m = x;\n  x++;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/invgen/gulwani_cegar2.c

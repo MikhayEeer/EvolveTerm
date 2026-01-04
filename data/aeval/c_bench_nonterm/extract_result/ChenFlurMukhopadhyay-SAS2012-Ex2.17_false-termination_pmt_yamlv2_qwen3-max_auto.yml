@@ -7,8 +7,5 @@ basic:
   time: 2026-01-02T17:23
 loops:
 - id: 1
-  code: |-
-    while (x < 10) {
-        x = -y;
-        y = y + 1;
-    }
+  code: "while (x < 10) {\n    x = -y;\n    y = y + 1;\n}"
+source_path: data/aeval/c_bench_nonterm/ChenFlurMukhopadhyay-SAS2012-Ex2.17_false-termination.c

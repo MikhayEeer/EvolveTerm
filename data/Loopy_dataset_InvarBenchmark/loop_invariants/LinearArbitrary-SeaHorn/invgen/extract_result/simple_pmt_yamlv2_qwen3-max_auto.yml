@@ -7,7 +7,5 @@ basic:
   time: 2026-01-03T14:09
 loops:
 - id: 1
-  code: |-
-    while( x < n ){
-      x++;
-    }
+  code: "while( x < n ){\n  x++;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/invgen/simple.c

@@ -7,22 +7,9 @@ basic:
   time: 2026-01-03T14:49
 loops:
 - id: 1
-  code: |-
-    for(i=0; i<N; i++)
-    {
-        if(i%2==0) {
-            a[i] = 2;
-        } else {
-            a[i] = 0;
-        }
-    }
+  code: "for(i=0; i<N; i++)\n{\n    if(i%2==0) {\n        a[i] = 2;\n    } else {\n\
+    \        a[i] = 0;\n    }\n}"
 - id: 2
-  code: |-
-    for(i=0; i<N; i++)
-    {
-        if(i==0) {
-            sum[0] = 0;
-        } else {
-            sum[0] = sum[0] + a[i];
-        }
-    }
+  code: "for(i=0; i<N; i++)\n{\n    if(i==0) {\n        sum[0] = 0;\n    } else {\n\
+    \        sum[0] = sum[0] + a[i];\n    }\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/arrays/diffy_cav21_bench/brs2.c

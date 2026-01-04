@@ -7,8 +7,5 @@ basic:
   time: 2026-01-03T13:59
 loops:
 - id: 1
-  code: |-
-    unsigned int x = 5;
-    while (unknown_int()) {
-      x += 8;
-    }
+  code: "unsigned int x = 5;\nwhile (unknown_int()) {\n  x += 8;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-invariants/bin-suffix-5.c

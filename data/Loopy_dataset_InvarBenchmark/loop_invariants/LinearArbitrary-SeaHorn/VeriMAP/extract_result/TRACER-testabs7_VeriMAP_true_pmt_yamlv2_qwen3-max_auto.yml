@@ -8,3 +8,4 @@ basic:
 loops:
 - id: 1
   code: while (i < n){ i++; }
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/VeriMAP/TRACER-testabs7_VeriMAP_true.c

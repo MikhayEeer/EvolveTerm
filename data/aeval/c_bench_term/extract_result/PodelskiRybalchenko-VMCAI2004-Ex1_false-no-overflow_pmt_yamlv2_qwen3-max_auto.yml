@@ -7,17 +7,9 @@ basic:
   time: 2026-01-02T17:35
 loops:
 - id: 1
-  code: |-
-    while (i - j >= 1) {
-        nondetNat = __VERIFIER_nondet_int();
-        if (nondetNat < 0) {
-            nondetNat = -nondetNat;
-        }
-        i = i - nondetNat;
-        nondetPos = __VERIFIER_nondet_int();
-        if (nondetPos < 0) {
-            nondetPos = -nondetPos;
-        }
-        nondetPos = nondetPos + 1;
-        j = j + nondetPos;
-    }
+  code: "while (i - j >= 1) {\n    nondetNat = __VERIFIER_nondet_int();\n    if (nondetNat\
+    \ < 0) {\n        nondetNat = -nondetNat;\n    }\n    i = i - nondetNat;\n   \
+    \ nondetPos = __VERIFIER_nondet_int();\n    if (nondetPos < 0) {\n        nondetPos\
+    \ = -nondetPos;\n    }\n    nondetPos = nondetPos + 1;\n    j = j + nondetPos;\n\
+    }"
+source_path: data/aeval/c_bench_term/PodelskiRybalchenko-VMCAI2004-Ex1_false-no-overflow.c

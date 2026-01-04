@@ -7,10 +7,6 @@ basic:
   time: 2026-01-02T17:19
 loops:
 - id: 1
-  code: |-
-    int x = __VERIFIER_nondet_int();
-    int y = 1;
-    while (x >= 0) {
-      x = x - y + 1;
-      y = (y + 1) / 2;
-    }
+  code: "int x = __VERIFIER_nondet_int();\nint y = 1;\nwhile (x >= 0) {\n  x = x -\
+    \ y + 1;\n  y = (y + 1) / 2;\n}"
+source_path: data/aeval/c_bench_nonterm/HeizmannHoenickeLeikePodelski-ATVA2013-Fig5_true-termination_true-no-overflow-broken.c

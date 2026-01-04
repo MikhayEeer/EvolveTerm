@@ -7,9 +7,5 @@ basic:
   time: 2026-01-03T14:28
 loops:
 - id: 1
-  code: |-
-    c = 0;
-    while (x > y) {
-        x = x - 1;
-        c = c + 1;
-    }
+  code: "c = 0;\nwhile (x > y) {\n    x = x - 1;\n    c = c + 1;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/tpdb/C_Integer/Stroeder_15/svcomp_b.01.c

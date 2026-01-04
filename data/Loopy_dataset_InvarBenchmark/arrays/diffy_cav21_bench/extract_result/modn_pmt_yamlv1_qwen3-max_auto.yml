@@ -7,23 +7,9 @@ basic:
   time: 2026-01-03T14:38
 loops:
 - id: 1
-  code: |-
-    for(i=0; i<N; i++)
-    {
-        sum[0] = sum[0] + 1;
-    }
+  code: "for(i=0; i<N; i++)\n{\n    sum[0] = sum[0] + 1;\n}"
 - id: 2
-  code: |-
-    for(i=0; i<N; i++)
-    {
-        a[i] = sum[0] % N;
-    }
+  code: "for(i=0; i<N; i++)\n{\n    a[i] = sum[0] % N;\n}"
 - id: 3
-  code: |-
-    for(i=0; i<N; i++)
-    {
-        {;
-    //@ assert(a[i] == 0);
-    }
-
-    }
+  code: "for(i=0; i<N; i++)\n{\n    {;\n//@ assert(a[i] == 0);\n}\n\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/arrays/diffy_cav21_bench/modn.c

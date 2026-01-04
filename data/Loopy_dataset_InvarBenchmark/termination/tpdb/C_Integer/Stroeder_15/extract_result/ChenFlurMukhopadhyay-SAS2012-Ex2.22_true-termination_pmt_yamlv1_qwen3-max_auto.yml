@@ -7,12 +7,6 @@ basic:
   time: 2026-01-03T14:29
 loops:
 - id: 1
-  code: |-
-    int x, y, oldy;
-    x = unknown_int();
-    y = unknown_int();
-    while (x > 0 && y <= -oldy) {
-        x = y;
-        oldy = y;
-        y = unknown_int();
-    }
+  code: "int x, y, oldy;\nx = unknown_int();\ny = unknown_int();\nwhile (x > 0 &&\
+    \ y <= -oldy) {\n    x = y;\n    oldy = y;\n    y = unknown_int();\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/tpdb/C_Integer/Stroeder_15/ChenFlurMukhopadhyay-SAS2012-Ex2.22_true-termination.c

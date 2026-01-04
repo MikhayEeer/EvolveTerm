@@ -7,8 +7,5 @@ basic:
   time: 2026-01-03T14:14
 loops:
 - id: 1
-  code: |-
-    while (y < 10) {
-      x = 0;
-      y++;
-    }
+  code: "while (y < 10) {\n  x = 0;\n  y++;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/accelerating_invariant_generation/crafted/const_safe1.c

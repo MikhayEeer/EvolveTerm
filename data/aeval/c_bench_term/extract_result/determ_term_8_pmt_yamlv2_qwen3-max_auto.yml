@@ -7,12 +7,6 @@ basic:
   time: 2026-01-02T17:28
 loops:
 - id: 1
-  code: |-
-    while (a == 0) {
-        a = a + b;
-        b = b + c;
-        c = c + d;
-        d = d + e;
-        e = e + f;
-        f = f + 1;
-    }
+  code: "while (a == 0) {\n    a = a + b;\n    b = b + c;\n    c = c + d;\n    d =\
+    \ d + e;\n    e = e + f;\n    f = f + 1;\n}"
+source_path: data/aeval/c_bench_term/determ_term_8.c

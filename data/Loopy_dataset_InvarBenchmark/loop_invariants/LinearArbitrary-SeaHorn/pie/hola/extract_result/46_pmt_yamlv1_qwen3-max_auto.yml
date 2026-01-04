@@ -7,13 +7,6 @@ basic:
   time: 2026-01-03T14:02
 loops:
 - id: 1
-  code: |-
-    int w = 1;
-    int z = 0;
-    int x = 0;
-    int y = 0;
-
-    while(unknown2()){
-        if(w%2 == 1) {x++; w++;};
-        if(z%2==0) {y++; z++;};
-    }
+  code: "int w = 1;\nint z = 0;\nint x = 0;\nint y = 0;\n\nwhile(unknown2()){\n  \
+    \  if(w%2 == 1) {x++; w++;};\n    if(z%2==0) {y++; z++;};\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/pie/hola/46.c

@@ -7,9 +7,5 @@ basic:
   time: 2026-01-02T17:30
 loops:
 - id: 1
-  code: |-
-    while (x != y)
-    {
-      x--; y++;
-      if (x < y) x = x + 15;
-    }
+  code: "while (x != y)\n{\n  x--; y++;\n  if (x < y) x = x + 15;\n}"
+source_path: data/aeval/c_bench_term/term_23.c

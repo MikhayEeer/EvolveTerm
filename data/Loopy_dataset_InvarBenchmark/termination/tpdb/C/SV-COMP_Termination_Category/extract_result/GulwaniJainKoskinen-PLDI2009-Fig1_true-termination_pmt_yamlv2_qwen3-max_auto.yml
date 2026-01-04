@@ -7,11 +7,6 @@ basic:
   time: 2026-01-03T14:30
 loops:
 - id: 1
-  code: |-
-    while(tmp!=id && unknown_int()) {
-        if (tmp <= maxId) {
-            tmp = tmp + 1;
-        } else {
-            tmp = 0;
-        }
-    }
+  code: "while(tmp!=id && unknown_int()) {\n    if (tmp <= maxId) {\n        tmp =\
+    \ tmp + 1;\n    } else {\n        tmp = 0;\n    }\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/tpdb/C/SV-COMP_Termination_Category/GulwaniJainKoskinen-PLDI2009-Fig1_true-termination.c

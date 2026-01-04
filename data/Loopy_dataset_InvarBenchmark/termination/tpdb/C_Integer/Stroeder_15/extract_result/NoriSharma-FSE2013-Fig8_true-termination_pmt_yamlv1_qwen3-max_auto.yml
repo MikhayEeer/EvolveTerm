@@ -7,14 +7,6 @@ basic:
   time: 2026-01-03T14:27
 loops:
 - id: 1
-  code: |-
-    c = 0;
-    while (x >= y) {
-        c = c + 1;
-        if (z > 1) {
-            z = z - 1;
-            x = x + z;
-        } else {
-            y = y + 1;
-        }
-    }
+  code: "c = 0;\nwhile (x >= y) {\n    c = c + 1;\n    if (z > 1) {\n        z = z\
+    \ - 1;\n        x = x + z;\n    } else {\n        y = y + 1;\n    }\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/tpdb/C_Integer/Stroeder_15/NoriSharma-FSE2013-Fig8_true-termination.c

@@ -7,24 +7,12 @@ basic:
   time: 2026-01-03T14:48
 loops:
 - id: 1
-  code: |-
-    /* Loop_A */  for (int j = 0; j < N ; j++ ) {
-        a[j] = unknown_int();
-    }
+  code: "/* Loop_A */  for (int j = 0; j < N ; j++ ) {\n    a[j] = unknown_int();\n\
+    }"
 - id: 2
-  code: |-
-    int i = 0;
-    /* Loop_B */  while ( i < N ) {
-        if ( a[i] > max[0] ) {
-            max[0] = a[i];
-        }
-        i = i + 1;
-    }
+  code: "int i = 0;\n/* Loop_B */  while ( i < N ) {\n    if ( a[i] > max[0] ) {\n\
+    \        max[0] = a[i];\n    }\n    i = i + 1;\n}"
 - id: 3
-  code: |-
-    /* Loop_C */  for ( x = 0 ; x < N ; x++ ) {
-        {;
-    //@ assert(  a[x] <= max[0] );
-    }
-
-    }
+  code: "/* Loop_C */  for ( x = 0 ; x < N ; x++ ) {\n    {;\n//@ assert(  a[x] <=\
+    \ max[0] );\n}\n\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/arrays/diffy_cav21_bench/standard_maxInArray_ground.c

@@ -8,3 +8,4 @@ basic:
 loops:
 - id: 1
   code: "while (x / 50 == y) {\n  \n  x = x + 50;\n  y = y + 1;\n  \n}"
+source_path: data/aeval/c_bench_nonterm/nterm_ever_09.c

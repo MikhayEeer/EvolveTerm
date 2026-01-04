@@ -7,11 +7,6 @@ basic:
   time: 2026-01-03T14:22
 loops:
 - id: 1
-  code: |-
-    while (unknown()) {
-      {
-      (x  = (x + 10));
-      (y  = (y + 10));
-      }
-
-    }
+  code: "while (unknown()) {\n  {\n  (x  = (x + 10));\n  (y  = (y + 10));\n  }\n\n\
+    }"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/code2inv/11.c

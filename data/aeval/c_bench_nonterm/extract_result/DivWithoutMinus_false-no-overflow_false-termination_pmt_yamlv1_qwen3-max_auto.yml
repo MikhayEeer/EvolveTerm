@@ -9,3 +9,4 @@ loops:
 - id: 1
   code: while (z > 0 && (y == 0 || y > 0 && x > 0)) { if (y == 0) { res = res + 1;
     y = z; }
+source_path: data/aeval/c_bench_nonterm/DivWithoutMinus_false-no-overflow_false-termination.c

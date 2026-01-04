@@ -7,15 +7,7 @@ basic:
   time: 2026-01-02T17:30
 loops:
 - id: 1
-  code: |-
-    while (x > 0 && y > 0) {
-        int old_x = x;
-        int old_y = y;
-        if (0 == __VERIFIER_nondet_int()) {
-            x = old_x - 1;
-            y = old_x;
-        } else {
-            x = old_y - 3;
-            y = old_x + 1;
-        }
-    }
+  code: "while (x > 0 && y > 0) {\n    int old_x = x;\n    int old_y = y;\n    if\
+    \ (0 == __VERIFIER_nondet_int()) {\n        x = old_x - 1;\n        y = old_x;\n\
+    \    } else {\n        x = old_y - 3;\n        y = old_x + 1;\n    }\n}"
+source_path: data/aeval/c_bench_term/PodelskiRybalchenko-LICS2004-Fig2_true-termination-modif1.c

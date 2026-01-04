@@ -7,7 +7,5 @@ basic:
   time: 2026-01-02T17:25
 loops:
 - id: 1
-  code: |-
-    while (x >= 0) {
-      x = 2 *x + 10;
-    }
+  code: "while (x >= 0) {\n  x = 2 *x + 10;\n}"
+source_path: data/aeval/c_bench_nonterm/PodelskiRybalchenko-2004VMCAI-Ex2-alloca_false-termination.c

@@ -9,16 +9,9 @@ loops:
 - id: 1
   code: "for(i = 0; i< N; i++) \n{ \n    a[i] = unknown_int();\n}"
 - id: 2
-  code: |-
-    while ( i < N ) {
-        if ( a[i] >= 0 ) b[i] = 1;
-        else b[i] = 0;
-        i = i + 1;
-    }
+  code: "while ( i < N ) {\n    if ( a[i] >= 0 ) b[i] = 1;\n    else b[i] = 0;\n \
+    \   i = i + 1;\n}"
 - id: 3
-  code: |-
-    while ( i < N ) {
-        if ( a[i] >= 0 && !b[i] ) f[0] = 0;
-        if ( a[i] < 0 && b[i] ) f[0] = 0;
-        i = i + 1;
-    }
+  code: "while ( i < N ) {\n    if ( a[i] >= 0 && !b[i] ) f[0] = 0;\n    if ( a[i]\
+    \ < 0 && b[i] ) f[0] = 0;\n    i = i + 1;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/arrays/diffy_cav21_bench/standard_running-2.c

@@ -7,23 +7,9 @@ basic:
   time: 2026-01-03T14:42
 loops:
 - id: 1
-  code: |-
-    for (i = 0; i < N; i++)
-    {
-        a[i] = 0;
-    }
+  code: "for (i = 0; i < N; i++)\n{\n    a[i] = 0;\n}"
 - id: 2
-  code: |-
-    for (j = 0; j < N; j++)
-    {
-        a[i] = a[i] + i;
-    }
+  code: "for (j = 0; j < N; j++)\n{\n    a[i] = a[i] + i;\n}"
 - id: 3
-  code: |-
-    for (i = 0; i < N; i++)
-    {
-        {;
-    //@ assert(a[i] == N*i);
-    }
-
-    }
+  code: "for (i = 0; i < N; i++)\n{\n    {;\n//@ assert(a[i] == N*i);\n}\n\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/arrays/diffy_cav21_bench/nested-nli3.c

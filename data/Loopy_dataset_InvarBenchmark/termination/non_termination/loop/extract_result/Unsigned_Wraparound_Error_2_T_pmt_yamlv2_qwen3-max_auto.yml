@@ -7,6 +7,5 @@ basic:
   time: 2026-01-03T14:33
 loops:
 - id: 1
-  code: |-
-    while( (ui < size) && ( ui * 2 > ui ) )
-        ui *= 2;
+  code: "while( (ui < size) && ( ui * 2 > ui ) )\n    ui *= 2;"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/non_termination/loop/Unsigned_Wraparound_Error_2_T.c

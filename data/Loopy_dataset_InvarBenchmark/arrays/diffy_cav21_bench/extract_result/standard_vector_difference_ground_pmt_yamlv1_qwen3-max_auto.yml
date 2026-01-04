@@ -12,3 +12,4 @@ loops:
   code: while (i < SIZE) { c[i] = a[i] - b[i]; i = i + 1; }
 - id: 3
   code: for (x = 0; x < SIZE; x++) { {; //@ assert(c[x] == a[x] - b[x]); }
+source_path: data/Loopy_dataset_InvarBenchmark/arrays/diffy_cav21_bench/standard_vector_difference_ground.c

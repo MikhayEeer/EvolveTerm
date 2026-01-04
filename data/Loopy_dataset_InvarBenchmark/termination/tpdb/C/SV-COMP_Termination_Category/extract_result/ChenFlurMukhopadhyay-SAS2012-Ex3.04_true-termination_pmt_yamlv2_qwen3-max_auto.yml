@@ -7,8 +7,5 @@ basic:
   time: 2026-01-03T14:32
 loops:
 - id: 1
-  code: |-
-    while (x + y >= 0 && x <= z) {
-        x = 2*x + y;
-        y++;
-    }
+  code: "while (x + y >= 0 && x <= z) {\n    x = 2*x + y;\n    y++;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/tpdb/C/SV-COMP_Termination_Category/ChenFlurMukhopadhyay-SAS2012-Ex3.04_true-termination.c

@@ -7,13 +7,7 @@ basic:
   time: 2026-01-02T17:28
 loops:
 - id: 1
-  code: |-
-    z = 0;
-    while (x > 0) {
-      x = x - y;
-      y = y - z;
-      if (z == 0) z = 13;
-        else if (z == 13) z = -20;
-          else if (z == -20) z = 7;
-            else z = 0;
-    }
+  code: "z = 0;\nwhile (x > 0) {\n  x = x - y;\n  y = y - z;\n  if (z == 0) z = 13;\n\
+    \    else if (z == 13) z = -20;\n      else if (z == -20) z = 7;\n        else\
+    \ z = 0;\n}"
+source_path: data/aeval/c_bench_term/transform_1.c

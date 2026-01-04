@@ -7,7 +7,5 @@ basic:
   time: 2026-01-03T14:01
 loops:
 - id: 1
-  code: |-
-    while (unknown_bool()) {
-        if(j==i) {x++;y--;} else {y++;x--;} j++;
-    }
+  code: "while (unknown_bool()) {\n    if(j==i) {x++;y--;} else {y++;x--;} j++;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-zilu/benchmark06_conjunctive.c

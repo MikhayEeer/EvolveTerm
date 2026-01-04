@@ -7,9 +7,5 @@ basic:
   time: 2026-01-02T17:30
 loops:
 - id: 1
-  code: |-
-    while (i != j) {
-        i = i + j - k;
-        j = j * 2;
-        k = k - 1;
-    }
+  code: "while (i != j) {\n    i = i + j - k;\n    j = j * 2;\n    k = k - 1;\n}"
+source_path: data/aeval/c_bench_term/determ_term_5.c

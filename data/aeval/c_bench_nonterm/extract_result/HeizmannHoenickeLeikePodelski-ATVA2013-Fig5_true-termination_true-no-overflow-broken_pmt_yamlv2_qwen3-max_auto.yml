@@ -7,8 +7,5 @@ basic:
   time: 2026-01-02T17:20
 loops:
 - id: 1
-  code: |-
-    while (x >= 0) {
-        x = x - y + 1;
-        y = (y + 1) / 2;
-    }
+  code: "while (x >= 0) {\n    x = x - y + 1;\n    y = (y + 1) / 2;\n}"
+source_path: data/aeval/c_bench_nonterm/HeizmannHoenickeLeikePodelski-ATVA2013-Fig5_true-termination_true-no-overflow-broken.c

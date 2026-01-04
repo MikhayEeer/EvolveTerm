@@ -7,13 +7,6 @@ basic:
   time: 2026-01-03T14:06
 loops:
 - id: 1
-  code: |-
-    int x = 0;
-    int m = 0;
-    int n = unknown_int();
-    while(x < n) {
-        if(unknown_int()) {
-            m = x;
-        }
-        x = x + 1;
-    }
+  code: "int x = 0;\nint m = 0;\nint n = unknown_int();\nwhile(x < n) {\n    if(unknown_int())\
+    \ {\n        m = x;\n    }\n    x = x + 1;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/loops/loop-lit/gj2007b_true-unreach-call_true-termination.c

@@ -7,9 +7,6 @@ basic:
   time: 2026-01-03T14:33
 loops:
 - id: 1
-  code: |-
-    for( i = 1 ; i <= 0xFFFFFFFF ; i <<= 1 )
-    {
-        if( i == ( (long)1 << 31 ))
-            break;
-    }
+  code: "for( i = 1 ; i <= 0xFFFFFFFF ; i <<= 1 )\n{\n    if( i == ( (long)1 << 31\
+    \ ))\n        break;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/termination/non_termination/loop/Signed_Overflow_Error_1_T.c

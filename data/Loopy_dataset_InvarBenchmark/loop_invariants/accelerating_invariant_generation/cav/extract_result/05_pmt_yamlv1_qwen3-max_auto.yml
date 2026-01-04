@@ -7,16 +7,6 @@ basic:
   time: 2026-01-03T14:10
 loops:
 - id: 1
-  code: |-
-    int j = 0;
-    int i = 0;
-
-    while(unknown1())
-    {
-      x++;
-      y++;
-      i+=x;
-      j+=y;
-      if(flag)  j+=1;
-      j = j;
-    }
+  code: "int j = 0;\nint i = 0;\n\nwhile(unknown1())\n{\n  x++;\n  y++;\n  i+=x;\n\
+    \  j+=y;\n  if(flag)  j+=1;\n  j = j;\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/accelerating_invariant_generation/cav/05.c

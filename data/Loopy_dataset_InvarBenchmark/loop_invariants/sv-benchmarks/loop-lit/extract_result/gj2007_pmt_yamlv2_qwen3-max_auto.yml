@@ -7,12 +7,6 @@ basic:
   time: 2026-01-03T13:59
 loops:
 - id: 1
-  code: |-
-    while(x < 100) {
-        if (x < 50) {
-            x = x + 1;
-        } else {
-            x = x + 1;
-            y = y + 1;
-        }
-    }
+  code: "while(x < 100) {\n    if (x < 50) {\n        x = x + 1;\n    } else {\n \
+    \       x = x + 1;\n        y = y + 1;\n    }\n}"
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-lit/gj2007.c

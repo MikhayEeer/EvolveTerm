@@ -7,11 +7,7 @@ basic:
   time: 2026-01-02T17:25
 loops:
 - id: 1
-  code: |-
-    while (x > 0 && y > 0 && z > 0)
-    {
-      int a = __VERIFIER_nondet_int();
-      if (a == 0) {x--; y++; z++;}
-      else if (a == 1) {y--; x++; z++;}
-      else {y++; x++; z--;}
-    }
+  code: "while (x > 0 && y > 0 && z > 0)\n{\n  int a = __VERIFIER_nondet_int();\n\
+    \  if (a == 0) {x--; y++; z++;}\n  else if (a == 1) {y--; x++; z++;}\n  else {y++;\
+    \ x++; z--;}\n}"
+source_path: data/aeval/c_bench_nonterm/choices_dec_3.c

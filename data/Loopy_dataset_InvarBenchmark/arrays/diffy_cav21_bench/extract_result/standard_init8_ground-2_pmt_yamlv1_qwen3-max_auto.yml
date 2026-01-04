@@ -16,3 +16,4 @@ loops:
   code: while ( i < N ) { a[i] = 45; i = i + 1; }
 - id: 5
   code: while ( i < N ) { a[i] = 46; i = i + 1; }
+source_path: data/Loopy_dataset_InvarBenchmark/arrays/diffy_cav21_bench/standard_init8_ground-2.c
