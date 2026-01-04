@@ -34,12 +34,12 @@ class Predictor:
     def infer_ranking(self, code: str, invariants: List[str], references: List[KnowledgeCase], 
                       mode: str = "direct", known_terminating: bool = False) -> tuple[str | None, str, dict]:
         
-        prompt_name = "ranking_inference_direct"
+        prompt_name = "ranking_function/ranking_inference_direct"
         if mode == "template":
             if known_terminating:
-                prompt_name = "ranking_inference_template_known"
+                prompt_name = "ranking_function/ranking_inference_template_known"
             else:
-                prompt_name = "ranking_inference_template"
+                prompt_name = "ranking_function/ranking_inference_template"
 
         prompt = self.prompt_repo.render(
             prompt_name,
@@ -48,20 +48,29 @@ class Predictor:
             references=json.dumps([ref.__dict__ for ref in references], ensure_ascii=False, indent=2)
         )
         # If the backend supports it, request a strict JSON object response.
-        prompt["response_format"] = {"type": "json_object"}
+        # prompt["response_format"] = {"type": "json_object"}
         response = self.llm_client.complete(prompt)
         print("[Debug] Module Predict RankingFuntion Got LLM Response...\n")
         self.last_ranking_response = response
-        data = parse_llm_json_object(response)
+        
+        # Parse YAML
+        data = parse_llm_yaml(response)
         if not isinstance(data, dict):
             print(f"[Debug] Ranking Parsing Failed (Not a dict). Raw Response:\n{response}\n")
             return None, "", {}
         
-        ranking = data.get("ranking_function")
-        explanation = data.get("explanation", "")
+        # Extract info from either 'ranking' or 'configuration' key
+        info = data.get("ranking") or data.get("configuration") or {}
         
-        if ranking is None:
-             print(f"[Debug] Ranking Function is None in JSON. Raw Response:\n{response}\n")
+        # Flatten info into data for backward compatibility (so pipeline.py can access data['type'])
+        data.update(info)
+        
+        # 'function' is used in new YAML, 'ranking_function' was legacy JSON
+        ranking = info.get("function") or info.get("ranking_function")
+        explanation = info.get("explanation", "")
+        
+        if ranking is None and mode == "direct":
+             print(f"[Debug] Ranking Function is None in YAML. Raw Response:\n{response}\n")
 
         if ranking is not None and not isinstance(ranking, str):
             ranking = None
@@ -80,9 +89,16 @@ class Predictor:
             ranking_function=ranking_function or "None"
         )
         # If the backend supports it, request a strict JSON object response.
-        prompt["response_format"] = {"type": "json_object"}
+        # prompt["response_format"] = {"type": "json_object"}
         raw = self.llm_client.complete(prompt)
-        parsed = parse_llm_json_object(raw)
-        if not isinstance(parsed, dict):
-            raise LLMUnavailableError("LLM returned non-JSON response")
-        return parsed, raw
+        
+        # Parse YAML
+        data = parse_llm_yaml(raw)
+        if not isinstance(data, dict):
+            raise LLMUnavailableError("LLM returned non-YAML/JSON response")
+            
+        # Flatten 'prediction' key if present for backward compatibility
+        if "prediction" in data and isinstance(data["prediction"], dict):
+            data.update(data["prediction"])
+            
+        return data, raw
