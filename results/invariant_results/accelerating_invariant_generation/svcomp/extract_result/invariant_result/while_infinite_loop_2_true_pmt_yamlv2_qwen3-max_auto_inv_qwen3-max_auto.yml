@@ -1,0 +1,13 @@
+source_file: while_infinite_loop_2_true_pmt_yamlv2_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/accelerating_invariant_generation/svcomp/while_infinite_loop_2_true.c
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  config: {}
+  time: 2026-01-04T21:11
+invariants_result:
+- loop_id: 1
+  code: "while(1)\n{\n  {;\n//@ assert(x==0);\n}\n  \n}"
+  invariants:
+  - x == 0

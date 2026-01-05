@@ -1,0 +1,18 @@
+source_file: for_bounded_loop1_false-unreach-call_true-termination-simplified_pmt_yamlv2_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_term/for_bounded_loop1_false-unreach-call_true-termination-simplified.c
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  config: {}
+  time: 2026-01-04T21:54
+invariants_result:
+- loop_id: 1
+  code: |-
+    for(i=0; i<n; i++)
+    {
+      x = x-y;
+      y = __VERIFIER_nondet_int();
+      x = x+y;
+    }
+  invariants: []

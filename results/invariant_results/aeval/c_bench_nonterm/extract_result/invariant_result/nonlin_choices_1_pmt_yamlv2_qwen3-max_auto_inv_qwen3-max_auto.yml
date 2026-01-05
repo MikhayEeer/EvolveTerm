@@ -1,0 +1,18 @@
+source_file: nonlin_choices_1_pmt_yamlv2_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/nonlin_choices_1.c
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  config: {}
+  time: 2026-01-04T18:27
+invariants_result:
+- loop_id: 1
+  code: |-
+    while (x >= 0)
+    {
+      if (0 == __VERIFIER_nondet_int())
+        x = x / y;
+      else x = x-y;
+    }
+  invariants: []

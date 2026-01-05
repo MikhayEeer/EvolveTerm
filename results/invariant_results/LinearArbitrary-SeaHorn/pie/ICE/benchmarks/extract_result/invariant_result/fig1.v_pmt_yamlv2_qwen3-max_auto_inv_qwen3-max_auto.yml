@@ -1,0 +1,20 @@
+source_file: fig1.v_pmt_yamlv2_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/pie/ICE/benchmarks/fig1.v.c
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  config: {}
+  time: 2026-01-04T19:30
+invariants_result:
+- loop_id: 1
+  code: |-
+    while (x < 0) {
+        x = x + y;
+        y++;
+        v1 = unknown_int();
+        v2 = unknown_int();
+        v3 = unknown_int();
+
+    }
+  invariants: []

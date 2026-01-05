@@ -1,0 +1,17 @@
+source_file: sum04-2_pmt_yamlv2_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loops/sum04-2.c
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  config: {}
+  time: 2026-01-04T17:13
+invariants_result:
+- loop_id: 1
+  code: |-
+    for(i=1; i<=SIZE; i++) {
+      sn = sn + a;
+    }
+  invariants:
+  - 1 <= i && i <= SIZE + 1
+  - sn == \at(sn, Pre) + (i - 1) * a

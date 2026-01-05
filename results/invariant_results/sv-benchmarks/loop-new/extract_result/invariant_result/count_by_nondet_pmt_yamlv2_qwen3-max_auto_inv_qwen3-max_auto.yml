@@ -1,0 +1,18 @@
+source_file: count_by_nondet_pmt_yamlv2_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-new/count_by_nondet.c
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  config: {}
+  time: 2026-01-04T18:58
+invariants_result:
+- loop_id: 1
+  code: |-
+    while(i < LARGE_INT) {
+        int j = unknown_int();
+        if (!(1 <= j && j < LARGE_INT)) return 0;
+        i = i + j;
+        k ++;
+    }
+  invariants: []

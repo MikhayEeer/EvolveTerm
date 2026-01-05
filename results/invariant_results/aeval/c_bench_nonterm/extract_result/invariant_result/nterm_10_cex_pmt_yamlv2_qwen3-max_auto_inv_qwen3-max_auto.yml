@@ -1,0 +1,17 @@
+source_file: nterm_10_cex_pmt_yamlv2_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/nterm_10_cex.c
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  config: {}
+  time: 2026-01-04T18:17
+invariants_result:
+- loop_id: 1
+  code: |-
+    while (x < 100)
+    {
+      x = x + y;
+      y--;
+    }
+  invariants: []

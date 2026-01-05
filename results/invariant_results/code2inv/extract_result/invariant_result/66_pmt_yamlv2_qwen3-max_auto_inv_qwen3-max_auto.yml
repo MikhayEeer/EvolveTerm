@@ -1,0 +1,16 @@
+source_file: 66_pmt_yamlv2_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/code2inv/66.c
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  config: {}
+  time: 2026-01-04T22:01
+invariants_result:
+- loop_id: 1
+  code: |-
+    while (x <= 100) {
+        y = 100 - x;
+        x = x +1;
+    }
+  invariants: []

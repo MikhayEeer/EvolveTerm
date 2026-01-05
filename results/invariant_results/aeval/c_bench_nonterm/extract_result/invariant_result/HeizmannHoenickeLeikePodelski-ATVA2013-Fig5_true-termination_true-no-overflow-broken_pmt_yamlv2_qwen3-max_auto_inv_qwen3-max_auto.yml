@@ -1,0 +1,16 @@
+source_file: HeizmannHoenickeLeikePodelski-ATVA2013-Fig5_true-termination_true-no-overflow-broken_pmt_yamlv2_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/HeizmannHoenickeLeikePodelski-ATVA2013-Fig5_true-termination_true-no-overflow-broken.c
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  config: {}
+  time: 2026-01-04T19:04
+invariants_result:
+- loop_id: 1
+  code: |-
+    while (x >= 0) {
+        x = x - y + 1;
+        y = (y + 1) / 2;
+    }
+  invariants: []

@@ -1,0 +1,24 @@
+source_file: Choose_false-no-overflow_false-termination_pmt_yamlv2_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/Choose_false-no-overflow_false-termination.c
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  config: {}
+  time: 2026-01-04T18:59
+invariants_result:
+- loop_id: 1
+  code: |-
+    while (i >= 3) {
+        if (i > 5) {
+            i = i+3;
+        } else {
+            if (i > 10) {
+                i = i-2;
+            } else {
+                i = i+1;
+            }
+        }
+    }
+  invariants:
+  - i >= 3

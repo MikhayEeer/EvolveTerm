@@ -1,0 +1,16 @@
+source_file: even_pmt_yamlv2_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-invariants/even.c
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  config: {}
+  time: 2026-01-04T18:08
+invariants_result:
+- loop_id: 1
+  code: |-
+    while (unknown_int()) {
+      x += 2;
+    }
+  invariants:
+  - x % 2 == \at(x, Pre) % 2

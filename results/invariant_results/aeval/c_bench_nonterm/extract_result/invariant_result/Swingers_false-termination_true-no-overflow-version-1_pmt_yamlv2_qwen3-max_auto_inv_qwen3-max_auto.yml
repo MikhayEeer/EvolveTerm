@@ -1,0 +1,17 @@
+source_file: Swingers_false-termination_true-no-overflow-version-1_pmt_yamlv2_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/Swingers_false-termination_true-no-overflow-version-1.c
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  config: {}
+  time: 2026-01-04T17:48
+invariants_result:
+- loop_id: 1
+  code: |-
+    while (bob != samantha) {
+        int temp = bob;
+        bob = max+1;
+        max = temp+1;
+    }
+  invariants: []

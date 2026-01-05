@@ -1,0 +1,17 @@
+source_file: determ_nterm_3_pmt_yamlv2_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/determ_nterm_3.c
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  config: {}
+  time: 2026-01-04T17:46
+invariants_result:
+- loop_id: 1
+  code: |-
+    while (x != 1) {
+      x = x + z;
+      z = y + z;
+      y = y + 2;
+    }
+  invariants: []

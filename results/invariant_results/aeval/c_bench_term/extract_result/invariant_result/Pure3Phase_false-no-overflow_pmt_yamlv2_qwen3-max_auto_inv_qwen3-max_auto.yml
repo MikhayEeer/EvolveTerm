@@ -1,0 +1,21 @@
+source_file: Pure3Phase_false-no-overflow_pmt_yamlv2_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_term/Pure3Phase_false-no-overflow.c
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  config: {}
+  time: 2026-01-04T21:51
+invariants_result:
+- loop_id: 1
+  code: |-
+    while (x >= 0) {
+        if (__VERIFIER_nondet_int() != 0) {
+            x = x + y;
+        } else {
+            x = x + z;
+        }
+        y = y + z;
+        z = z - 1;
+    }
+  invariants: []

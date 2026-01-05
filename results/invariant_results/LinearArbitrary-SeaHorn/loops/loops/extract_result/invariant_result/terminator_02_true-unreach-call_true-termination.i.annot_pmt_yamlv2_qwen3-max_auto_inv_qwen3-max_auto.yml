@@ -1,0 +1,22 @@
+source_file: terminator_02_true-unreach-call_true-termination.i.annot_pmt_yamlv2_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/loops/loops/terminator_02_true-unreach-call_true-termination.i.annot.c
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  config: {}
+  time: 2026-01-04T19:47
+invariants_result:
+- loop_id: 1
+  code: |-
+    while(x<100 && 100<z)
+    {
+        int  tmp=unknown_bool();
+        if(tmp){
+            x++;
+        } else {
+            x--;
+            z--;
+        }
+    }
+  invariants: []

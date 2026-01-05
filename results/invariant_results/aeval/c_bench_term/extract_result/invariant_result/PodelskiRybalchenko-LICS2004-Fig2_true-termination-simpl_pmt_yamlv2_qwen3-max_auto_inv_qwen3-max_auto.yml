@@ -1,0 +1,18 @@
+source_file: PodelskiRybalchenko-LICS2004-Fig2_true-termination-simpl_pmt_yamlv2_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_term/PodelskiRybalchenko-LICS2004-Fig2_true-termination-simpl.c
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  config: {}
+  time: 2026-01-04T20:43
+invariants_result:
+- loop_id: 1
+  code: |-
+    while (x > 0 && y > 0) {
+        int old_x = x;
+        int old_y = y;
+        x = old_y - 2;
+        y = old_x + 1;
+    }
+  invariants: []

@@ -1,0 +1,26 @@
+source_file: mod3_pmt_yamlv2_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-industry-pattern/mod3.c
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  config: {}
+  time: 2026-01-04T17:49
+invariants_result:
+- loop_id: 1
+  code: |-
+    while(unknown_int()){
+      if(x % 3 == 1){
+        x += 2; y = 0;}
+      else{
+        if(x % 3 == 2){
+          x += 1; y = 0;}
+        else{
+          if(unknown_int()){
+            x += 4; y = 1;}
+          else{
+            x += 5; y = 1;}
+        }
+      }
+    }
+  invariants: []

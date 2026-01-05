@@ -1,0 +1,18 @@
+source_file: nested_1_pmt_yamlv2_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-simple/nested_1.c
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  config: {}
+  time: 2026-01-04T18:06
+invariants_result:
+- loop_id: 1
+  code: |-
+    for(a = 0; a < 6; ++a) {
+
+    }
+  invariants:
+  - 0 <= a
+  - a <= 6
+  - 0 <= a && a <= 6

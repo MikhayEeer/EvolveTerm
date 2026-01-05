@@ -1,0 +1,17 @@
+source_file: cggmp2005_variant_true-unreach-call_true-termination_pmt_yamlv2_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/loops/loop-lit/cggmp2005_variant_true-unreach-call_true-termination.c
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  config: {}
+  time: 2026-01-04T19:54
+invariants_result:
+- loop_id: 1
+  code: |-
+    while (mid > 0) {
+        lo = lo + 1;
+        hi = hi - 1;
+        mid = mid - 1;
+    }
+  invariants: []

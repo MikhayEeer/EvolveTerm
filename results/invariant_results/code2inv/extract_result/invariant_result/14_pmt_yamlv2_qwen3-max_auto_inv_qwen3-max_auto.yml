@@ -1,0 +1,18 @@
+source_file: 14_pmt_yamlv2_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/code2inv/14.c
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  config: {}
+  time: 2026-01-04T22:10
+invariants_result:
+- loop_id: 1
+  code: |-
+    while (unknown()) {
+        {
+            (x  = (x + 2));
+            (y  = (y + 2));
+        }
+    }
+  invariants: []

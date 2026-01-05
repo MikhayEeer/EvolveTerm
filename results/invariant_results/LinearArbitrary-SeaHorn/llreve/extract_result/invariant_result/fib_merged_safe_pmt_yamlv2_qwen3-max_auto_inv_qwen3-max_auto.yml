@@ -1,0 +1,27 @@
+source_file: fib_merged_safe_pmt_yamlv2_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/llreve/fib_merged_safe.c
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  config: {}
+  time: 2026-01-04T20:14
+invariants_result:
+- loop_id: 1
+  code: |-
+    while((n > 0)) {
+      h1 = f1 + g1;
+      f1 = g1;
+      g1 = h1;
+      n --;
+
+      h2 = f2 + g2;
+      f2 = g2;
+      g2 = h2;
+
+        {;
+    //@ assert(h2==h1+f1);
+    }
+
+    }
+  invariants: []

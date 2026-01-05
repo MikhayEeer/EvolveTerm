@@ -1,0 +1,18 @@
+source_file: Et4_false-no-overflow_false-termination_pmt_yamlv2_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/Et4_false-no-overflow_false-termination.c
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  config: {}
+  time: 2026-01-04T19:17
+invariants_result:
+- loop_id: 1
+  code: |-
+    while ( (b - c >= 1) && (a == c)) {
+        r = __VERIFIER_nondet_int();
+        b = 10;
+        c = c + 1 + r;
+        a = c;
+    }
+  invariants: []

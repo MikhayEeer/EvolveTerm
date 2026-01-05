@@ -1,0 +1,18 @@
+source_file: nterm_03_cex_pmt_yamlv2_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/nterm_03_cex.c
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  config: {}
+  time: 2026-01-04T19:28
+invariants_result:
+- loop_id: 1
+  code: |-
+    while (y > 0)
+    {
+      if (__VERIFIER_nondet_int() == 0)
+        y = y + 24*x + 7;
+      else x--;
+    }
+  invariants: []

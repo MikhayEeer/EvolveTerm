@@ -1,0 +1,21 @@
+source_file: fig2_pmt_yamlv2_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/accelerating_invariant_generation/dagger/fig2.c
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  config: {}
+  time: 2026-01-04T21:17
+invariants_result:
+- loop_id: 1
+  code: |-
+    while (unknown_int() ) {
+
+    if (unknown_int()) {x++; y = y+2;}
+    else if (unknown_int()) {
+        if (x >= 4) {x++; y = y+3; z = z+10; w = w+10;}
+    }
+    else if (x >= z && w > y) {x = -x; y = -y; }
+
+    }
+  invariants: []

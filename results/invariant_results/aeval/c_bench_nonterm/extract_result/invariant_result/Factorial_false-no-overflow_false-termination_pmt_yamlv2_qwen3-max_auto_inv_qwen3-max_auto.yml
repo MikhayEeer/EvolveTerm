@@ -1,0 +1,16 @@
+source_file: Factorial_false-no-overflow_false-termination_pmt_yamlv2_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/Factorial_false-no-overflow_false-termination.c
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  config: {}
+  time: 2026-01-04T19:31
+invariants_result:
+- loop_id: 1
+  code: |-
+    while (fac != j) {
+        fac = fac * i;
+        i = i+1;
+    }
+  invariants: []

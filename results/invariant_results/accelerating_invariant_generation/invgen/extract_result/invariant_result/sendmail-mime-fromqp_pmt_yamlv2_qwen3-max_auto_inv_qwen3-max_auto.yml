@@ -1,0 +1,13 @@
+source_file: sendmail-mime-fromqp_pmt_yamlv2_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/accelerating_invariant_generation/invgen/sendmail-mime-fromqp.c
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  config: {}
+  time: 2026-01-04T21:42
+invariants_result:
+- loop_id: 1
+  code: while(__BLAST_NONDET) { if(__BLAST_NONDET) { if(__BLAST_NONDET) goto AFTERLOOP;
+    if(__BLAST_NONDET) { out = 0; nchar = 0; goto LOOPEND; }
+  invariants: []

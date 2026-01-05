@@ -1,0 +1,16 @@
+source_file: benchmark11_linear_pmt_yamlv2_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-zilu/benchmark11_linear.c
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  config: {}
+  time: 2026-01-04T18:34
+invariants_result:
+- loop_id: 1
+  code: |-
+    while (x<n) {
+      x++;
+    }
+  invariants:
+  - x <= n

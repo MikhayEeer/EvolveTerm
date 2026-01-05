@@ -1,0 +1,19 @@
+source_file: term_27_pmt_yamlv2_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_term/term_27.c
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  config: {}
+  time: 2026-01-04T22:26
+invariants_result:
+- loop_id: 1
+  code: |-
+    while (x > y){
+      x = x + c1 / 3;
+      y = y + c2 / 2;
+      c1 = c1 + 2;
+      c2 = c2 + 3;
+    }
+  invariants:
+  - 3 * c1 - 2 * c2 == \at(3 * c1 - 2 * c2, Pre)

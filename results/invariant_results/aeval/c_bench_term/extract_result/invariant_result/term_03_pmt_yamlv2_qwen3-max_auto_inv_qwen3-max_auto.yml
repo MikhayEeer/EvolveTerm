@@ -1,0 +1,16 @@
+source_file: term_03_pmt_yamlv2_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_term/term_03.c
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  config: {}
+  time: 2026-01-04T22:27
+invariants_result:
+- loop_id: 1
+  code: while (x > y || y > z) { x = x-3; y = y-2; z = z-1; }
+  invariants:
+  - 2*x - 3*y == \old(2*x - 3*y)
+  - x - 3*z == \old(x - 3*z)
+  - y - 2*z == \old(y - 2*z)
+  - x - 3*y + 3*z == \old(x - 3*y + 3*z)

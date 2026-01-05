@@ -1,0 +1,17 @@
+source_file: 4NestedWith2Variables_false-no-overflow_pmt_yamlv2_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_term/4NestedWith2Variables_false-no-overflow.c
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  config: {}
+  time: 2026-01-04T20:00
+invariants_result:
+- loop_id: 1
+  code: |-
+    while (a > 0) {
+      olda = a;
+      a = 3*olda - 4*b;
+      b = 4*olda + 3*b;
+    }
+  invariants: []

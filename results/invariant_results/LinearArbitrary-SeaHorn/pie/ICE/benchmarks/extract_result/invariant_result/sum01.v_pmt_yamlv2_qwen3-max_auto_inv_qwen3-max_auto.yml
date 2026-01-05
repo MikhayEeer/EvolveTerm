@@ -1,0 +1,23 @@
+source_file: sum01.v_pmt_yamlv2_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/pie/ICE/benchmarks/sum01.v.c
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  config: {}
+  time: 2026-01-04T19:26
+invariants_result:
+- loop_id: 1
+  code: |-
+    for(i=1; i<=n; i++) {
+        sn = sn + a;
+        v1 = unknown_int();
+        v2 = unknown_int();
+        v3 = unknown_int();
+    }
+  invariants:
+  - 1 <= i
+  - i <= n + 1
+  - sn == \at(sn, LoopEntry) + (i - 1) * a
+  - a == \at(a, LoopEntry)
+  - n == \at(n, LoopEntry)

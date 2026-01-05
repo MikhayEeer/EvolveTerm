@@ -1,0 +1,17 @@
+source_file: vnew2_pmt_yamlv2_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loops-crafted-1/vnew2.c
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  config: {}
+  time: 2026-01-04T17:36
+invariants_result:
+- loop_id: 1
+  code: |-
+    while( i < n ) {
+        i = i + 3;
+        j = j+3;
+        k = k+3;
+    }
+  invariants: []

@@ -1,0 +1,19 @@
+source_file: mono-crafted_11_pmt_yamlv2_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loops-crafted-1/mono-crafted_11.c
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  config: {}
+  time: 2026-01-04T17:40
+invariants_result:
+- loop_id: 1
+  code: |-
+    while (x < 100000000) {
+      if (x < 10000000) {
+        x++;
+      } else {
+        x += 2;
+      }
+    }
+  invariants: []

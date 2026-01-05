@@ -1,0 +1,13 @@
+source_file: terminator_02-2_pmt_yamlv2_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loops/terminator_02-2.c
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  config: {}
+  time: 2026-01-04T17:09
+invariants_result:
+- loop_id: 1
+  code: "while(x<100 && z>100) \n{\n    _Bool tmp=unknown_bool();\n    if (tmp) {\n\
+    \        x++;\n    } else {\n        x--;\n        z--;\n    }\n}"
+  invariants: []

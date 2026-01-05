@@ -1,0 +1,20 @@
+source_file: Gothenburg_v4_false-no-overflow_pmt_yamlv2_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_term/Gothenburg_v4_false-no-overflow.c
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  config: {}
+  time: 2026-01-04T21:53
+invariants_result:
+- loop_id: 1
+  code: |-
+    while (x >= 0 || y >= 0) {
+      int tmp = x + a - b - 1;
+      x = y + b - a - 1;
+      y = tmp;
+      int tmp2 = a;
+      a = b;
+      b = tmp2;
+    }
+  invariants: []

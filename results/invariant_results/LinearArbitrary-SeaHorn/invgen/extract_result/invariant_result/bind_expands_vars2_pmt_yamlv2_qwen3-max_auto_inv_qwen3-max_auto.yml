@@ -1,0 +1,16 @@
+source_file: bind_expands_vars2_pmt_yamlv2_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/invgen/bind_expands_vars2.c
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  config: {}
+  time: 2026-01-04T20:53
+invariants_result:
+- loop_id: 1
+  code: "for (mc_i = 0; mc_i < n2; mc_i++) {\n    \n    {;\n//@ assert(cp1_off+mc_i\
+    \ < MAXDATA * 2);\n}\n\n}"
+  invariants:
+  - 0 <= mc_i
+  - mc_i <= n2
+  - mc_i >= 0

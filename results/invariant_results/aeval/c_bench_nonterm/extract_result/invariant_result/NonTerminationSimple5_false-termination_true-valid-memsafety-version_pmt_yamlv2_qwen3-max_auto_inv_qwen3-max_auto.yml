@@ -1,0 +1,19 @@
+source_file: NonTerminationSimple5_false-termination_true-valid-memsafety-version_pmt_yamlv2_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/NonTerminationSimple5_false-termination_true-valid-memsafety-version.c
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  config: {}
+  time: 2026-01-04T18:10
+invariants_result:
+- loop_id: 1
+  code: |-
+    while (x < 0) {
+        int c = __VERIFIER_nondet_int();
+        if (c == 0) x++;
+        else x--;
+    }
+  invariants:
+  - x <= 0
+  - 'true'

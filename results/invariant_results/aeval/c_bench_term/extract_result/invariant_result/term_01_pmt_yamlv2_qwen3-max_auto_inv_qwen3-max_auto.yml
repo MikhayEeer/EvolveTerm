@@ -1,0 +1,17 @@
+source_file: term_01_pmt_yamlv2_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_term/term_01.c
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  config: {}
+  time: 2026-01-04T22:10
+invariants_result:
+- loop_id: 1
+  code: |-
+    while (x != y)
+    {
+      x = x-2;
+      y = y-1;
+    }
+  invariants: []

@@ -1,0 +1,12 @@
+source_file: term_02_pmt_yamlv2_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_term/term_02.c
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  config: {}
+  time: 2026-01-04T21:17
+invariants_result:
+- loop_id: 1
+  code: while (x > y && y > z) { x = x-3; y = y-2; z = z-1; }
+  invariants: []

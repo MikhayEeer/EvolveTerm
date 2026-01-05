@@ -1,0 +1,13 @@
+source_file: 13_pmt_yamlv2_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/pie/hola/13.c
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  config: {}
+  time: 2026-01-04T19:06
+invariants_result:
+- loop_id: 1
+  code: "while(unknown1()){ \n  if (flag)\n    j = j + 4;\n  else {\n    j = j + 2;\n\
+    \    k = k + 1;\n  }\n}"
+  invariants: []

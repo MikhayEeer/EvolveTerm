@@ -1,0 +1,22 @@
+source_file: ddlm2013_true-unreach-call_pmt_yamlv2_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/loops/loop-lit/ddlm2013_true-unreach-call.c
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  config: {}
+  time: 2026-01-04T19:53
+invariants_result:
+- loop_id: 1
+  code: |-
+    while (unknown_int()) {
+        a++;
+        b += (j - i);
+        i += 2;
+        if (i%2 == 0) {
+            j += 2;
+        } else {
+            j++;
+        }
+    }
+  invariants: []

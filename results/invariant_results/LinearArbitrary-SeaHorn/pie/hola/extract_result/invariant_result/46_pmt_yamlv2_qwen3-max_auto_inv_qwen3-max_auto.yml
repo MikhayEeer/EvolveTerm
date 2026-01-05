@@ -1,0 +1,16 @@
+source_file: 46_pmt_yamlv2_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/pie/hola/46.c
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  config: {}
+  time: 2026-01-04T19:03
+invariants_result:
+- loop_id: 1
+  code: |-
+    while(unknown2()){
+        if(w%2 == 1) {x++; w++;};
+        if(z%2==0) {y++; z++;};
+    }
+  invariants: []

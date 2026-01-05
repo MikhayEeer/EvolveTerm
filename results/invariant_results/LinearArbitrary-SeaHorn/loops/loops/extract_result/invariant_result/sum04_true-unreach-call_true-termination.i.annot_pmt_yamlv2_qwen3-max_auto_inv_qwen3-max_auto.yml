@@ -1,0 +1,17 @@
+source_file: sum04_true-unreach-call_true-termination.i.annot_pmt_yamlv2_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/loops/loops/sum04_true-unreach-call_true-termination.i.annot.c
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  config: {}
+  time: 2026-01-04T19:51
+invariants_result:
+- loop_id: 1
+  code: |-
+    for(i=1; i<=8; i++){
+      sn = sn +(2);
+    }
+  invariants:
+  - 1 <= i && i <= 9
+  - sn == \at(sn, Pre) + 2 * (i - 1)

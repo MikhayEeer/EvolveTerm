@@ -1,0 +1,27 @@
+source_file: nterm_ever_16_pmt_yamlv2_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/nterm_ever_16.c
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  config: {}
+  time: 2026-01-04T17:47
+invariants_result:
+- loop_id: 1
+  code: |-
+    while (range1 <= i && i <= range2) {
+      if (flag == 1 && i < range2) {
+        i++;
+      } else if (i == range2) {
+        flag = -1;
+        range1 = range1 * 2;
+      } else if (flag == -1 && i > range1) {
+        i--;
+      } else if (i == range1) {
+        flag = 1;
+        range2 = range2 * 2;
+      }
+    }
+  invariants:
+  - range1 <= i && i <= range2
+  - flag == 1 || flag == -1

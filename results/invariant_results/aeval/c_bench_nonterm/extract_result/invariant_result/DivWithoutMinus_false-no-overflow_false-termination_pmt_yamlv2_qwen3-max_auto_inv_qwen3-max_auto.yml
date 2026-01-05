@@ -1,0 +1,14 @@
+source_file: DivWithoutMinus_false-no-overflow_false-termination_pmt_yamlv2_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/DivWithoutMinus_false-no-overflow_false-termination.c
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  config: {}
+  time: 2026-01-04T17:36
+invariants_result:
+- loop_id: 1
+  code: "while (z > 0 && (y == 0 || y > 0 && x > 0))    {\n    \n    if (y == 0) {\n\
+    \        res = res + 1;\n        y = z;\n    }\n    else {\n        x = x + 1;\n\
+    \        y = y - 1;\n    }\n}"
+  invariants: []

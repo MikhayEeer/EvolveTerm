@@ -1,0 +1,16 @@
+source_file: NonTerminationSimple9_false-no-overflow-version_pmt_yamlv2_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/NonTerminationSimple9_false-no-overflow-version.c
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  config: {}
+  time: 2026-01-04T19:14
+invariants_result:
+- loop_id: 1
+  code: |-
+    while (x >= 0) {
+      x = x - __VERIFIER_nondet_int();
+    }
+  invariants:
+  - x >= 0

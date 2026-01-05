@@ -1,0 +1,17 @@
+source_file: 2Nested_false-termination_true-valid-memsafety_pmt_yamlv2_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/2Nested_false-termination_true-valid-memsafety.c
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  config: {}
+  time: 2026-01-04T18:11
+invariants_result:
+- loop_id: 1
+  code: |-
+    while (x >= 0) {
+        x = x + y;
+        y = y + 1;
+    }
+  invariants:
+  - 2 * x - y * (y - 1) == \old(2 * x - y * (y - 1))

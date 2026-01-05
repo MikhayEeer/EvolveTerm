@@ -1,0 +1,21 @@
+source_file: BradleyMannaSipma-ICALP2005-Fig1_true-termination-broken2_pmt_yamlv2_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/BradleyMannaSipma-ICALP2005-Fig1_true-termination-broken2.c
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  config: {}
+  time: 2026-01-04T18:28
+invariants_result:
+- loop_id: 1
+  code: |-
+    while (x <= N) {
+        if (__VERIFIER_nondet_int() != 0) {
+          x = 2*x + y;
+        } else {
+          x = x + 1;
+        }
+    }
+  invariants:
+  - y == \at(y, Pre)
+  - N == \at(N, Pre)

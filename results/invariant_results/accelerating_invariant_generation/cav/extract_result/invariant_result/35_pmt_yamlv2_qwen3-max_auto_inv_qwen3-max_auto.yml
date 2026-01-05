@@ -1,0 +1,15 @@
+source_file: 35_pmt_yamlv2_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/accelerating_invariant_generation/cav/35.c
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  config: {}
+  time: 2026-01-04T21:01
+invariants_result:
+- loop_id: 1
+  code: |-
+    while(x<=n-1) {
+      x++;
+    }
+  invariants: []

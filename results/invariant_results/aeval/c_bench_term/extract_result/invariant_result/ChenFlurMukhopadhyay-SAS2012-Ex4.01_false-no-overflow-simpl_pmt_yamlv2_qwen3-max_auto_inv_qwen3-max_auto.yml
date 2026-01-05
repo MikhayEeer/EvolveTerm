@@ -1,0 +1,16 @@
+source_file: ChenFlurMukhopadhyay-SAS2012-Ex4.01_false-no-overflow-simpl_pmt_yamlv2_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_term/ChenFlurMukhopadhyay-SAS2012-Ex4.01_false-no-overflow-simpl.c
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  config: {}
+  time: 2026-01-04T21:28
+invariants_result:
+- loop_id: 1
+  code: |-
+    while (x + y >= 0 && x <= n) {
+        x = 2*x + y;
+        y ++;
+    }
+  invariants: []

@@ -1,0 +1,18 @@
+source_file: Swingers_false-termination_true-no-overflow_pmt_yamlv2_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/Swingers_false-termination_true-no-overflow.c
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  config: {}
+  time: 2026-01-04T18:33
+invariants_result:
+- loop_id: 1
+  code: |-
+    while (bob + samantha < 100) {
+        temp = bob;
+        bob = samantha;
+        samantha = temp;
+    }
+  invariants:
+  - bob + samantha == \at(bob + samantha, Pre)

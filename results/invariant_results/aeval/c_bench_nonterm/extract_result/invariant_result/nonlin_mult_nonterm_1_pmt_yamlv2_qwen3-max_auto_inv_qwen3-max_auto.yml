@@ -1,0 +1,17 @@
+source_file: nonlin_mult_nonterm_1_pmt_yamlv2_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/nonlin_mult_nonterm_1.c
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  config: {}
+  time: 2026-01-04T18:15
+invariants_result:
+- loop_id: 1
+  code: |-
+    while (x > 1)
+    {
+      x = x * x;
+    }
+  invariants:
+  - x > 1

@@ -1,0 +1,18 @@
+source_file: count_up_down-1_pmt_yamlv2_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loops/count_up_down-1.c
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  config: {}
+  time: 2026-01-04T17:12
+invariants_result:
+- loop_id: 1
+  code: |-
+    while(x>0)
+    {
+      x--;
+      y++;
+    }
+  invariants:
+  - x + y == \at(x + y, Pre)

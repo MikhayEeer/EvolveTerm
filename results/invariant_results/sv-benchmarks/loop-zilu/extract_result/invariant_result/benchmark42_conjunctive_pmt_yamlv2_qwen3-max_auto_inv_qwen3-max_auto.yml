@@ -1,0 +1,21 @@
+source_file: benchmark42_conjunctive_pmt_yamlv2_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-zilu/benchmark42_conjunctive.c
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  config: {}
+  time: 2026-01-04T18:53
+invariants_result:
+- loop_id: 1
+  code: |-
+    while (x > 0) {
+      x--;
+      y--;
+      z++;
+      z++;
+    }
+  invariants:
+  - x - y == \at(x - y, Pre)
+  - z + 2 * x == \at(z + 2 * x, Pre)
+  - z + 2 * y == \at(z + 2 * y, Pre)

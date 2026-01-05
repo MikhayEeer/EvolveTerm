@@ -1,0 +1,16 @@
+source_file: afnp2014_true-unreach-call_pmt_yamlv2_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/pie/ICE/benchmarks/afnp2014_true-unreach-call.c
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  config: {}
+  time: 2026-01-04T19:38
+invariants_result:
+- loop_id: 1
+  code: |-
+    while (y < 1000 && unknown_int()) {
+        x = x + y;
+        y = y + 1;
+    }
+  invariants: []

@@ -1,0 +1,21 @@
+source_file: css2003_pmt_yamlv2_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-lit/css2003.c
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  config: {}
+  time: 2026-01-04T17:58
+invariants_result:
+- loop_id: 1
+  code: |-
+    while (i < LARGE_INT) {
+        i = i + 1;
+        j = j + k;
+        k = k - 1;
+        {;
+    //@ assert(1 <= i + k && i + k <= 2 && i >= 1);
+    }
+
+    }
+  invariants: []

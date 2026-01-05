@@ -1,0 +1,16 @@
+source_file: PodelskiRybalchenko-2004VMCAI-Ex2-alloca_false-termination_pmt_yamlv2_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/PodelskiRybalchenko-2004VMCAI-Ex2-alloca_false-termination.c
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  config: {}
+  time: 2026-01-04T18:04
+invariants_result:
+- loop_id: 1
+  code: |-
+    while (x >= 0) {
+      x = 2 *x + 10;
+    }
+  invariants:
+  - x >= 0

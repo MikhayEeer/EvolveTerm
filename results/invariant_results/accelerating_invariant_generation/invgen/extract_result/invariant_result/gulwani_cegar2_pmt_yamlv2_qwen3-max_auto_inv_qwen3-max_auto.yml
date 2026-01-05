@@ -1,0 +1,17 @@
+source_file: gulwani_cegar2_pmt_yamlv2_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/accelerating_invariant_generation/invgen/gulwani_cegar2.c
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  config: {}
+  time: 2026-01-04T21:43
+invariants_result:
+- loop_id: 1
+  code: |-
+    while( x < n ) {
+        if(__BLAST_NONDET)
+        m = x;
+        x++;
+    }
+  invariants: []

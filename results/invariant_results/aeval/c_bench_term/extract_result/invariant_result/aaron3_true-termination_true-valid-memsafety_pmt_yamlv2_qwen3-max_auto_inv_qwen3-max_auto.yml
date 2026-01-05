@@ -1,0 +1,22 @@
+source_file: aaron3_true-termination_true-valid-memsafety_pmt_yamlv2_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_term/aaron3_true-termination_true-valid-memsafety.c
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  config: {}
+  time: 2026-01-04T20:02
+invariants_result:
+- loop_id: 1
+  code: |-
+    while (x >= y && x <= tx + z) {
+        if (__VERIFIER_nondet_int() != 0) {
+            z = z - 1;
+            tx = x;
+            x = __VERIFIER_nondet_int();
+            if(!(-1073741823<=x && x<=1073741823)) return 0;
+        } else {
+            y = y + 1;
+        }
+    }
+  invariants: []

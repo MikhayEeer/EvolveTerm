@@ -1,0 +1,29 @@
+source_file: 46_pmt_yamlv2_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/code2inv/46.c
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  config: {}
+  time: 2026-01-04T21:57
+invariants_result:
+- loop_id: 1
+  code: |-
+    while (unknown()) {
+      {
+        if ( unknown() ) {
+          if ( (c != n) )
+          {
+          (c  = (c + 1));
+          }
+        } else {
+          if ( (c == n) )
+          {
+          (c  = 1);
+          }
+        }
+
+      }
+
+    }
+  invariants: []

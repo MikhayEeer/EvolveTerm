@@ -1,0 +1,21 @@
+source_file: Masse-VMCAI2014-Fig1b_true-termination-version-1_pmt_yamlv2_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_term/Masse-VMCAI2014-Fig1b_true-termination-version-1.c
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  config: {}
+  time: 2026-01-04T21:44
+invariants_result:
+- loop_id: 1
+  code: |-
+    while (x <= 100) {
+        if (0 == __VERIFIER_nondet_int()) {
+            x = - 2 * x + 2;
+        } else if (0 == __VERIFIER_nondet_int()) {
+            x = - 3 * x - 2;
+        } else {
+            x = - 4 * x + 2;
+        }
+    }
+  invariants: []

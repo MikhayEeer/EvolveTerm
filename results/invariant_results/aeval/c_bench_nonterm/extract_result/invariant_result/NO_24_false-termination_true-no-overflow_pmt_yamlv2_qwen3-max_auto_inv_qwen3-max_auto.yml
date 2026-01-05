@@ -1,0 +1,17 @@
+source_file: NO_24_false-termination_true-no-overflow_pmt_yamlv2_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/NO_24_false-termination_true-no-overflow.c
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  config: {}
+  time: 2026-01-04T18:46
+invariants_result:
+- loop_id: 1
+  code: |-
+    while (a + b < 5) {
+        a = a - b;
+        b = a + b;
+        a = b - a;
+    }
+  invariants: []

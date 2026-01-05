@@ -1,0 +1,26 @@
+source_file: ex14n.v_pmt_yamlv2_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/pie/ICE/benchmarks/ex14n.v.c
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  config: {}
+  time: 2026-01-04T19:41
+invariants_result:
+- loop_id: 1
+  code: |-
+    while (x <= N){
+          y=N-x;
+
+        if(y < 0 || y >= N)
+            {;
+    //@ assert(0 == 1);
+    }
+
+          x++;
+        v1 = v2;
+        v2 = v3;
+        v3 = v1;
+
+      }
+  invariants: []

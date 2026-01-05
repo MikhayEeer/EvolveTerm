@@ -1,0 +1,17 @@
+source_file: benchmark16_conjunctive_pmt_yamlv2_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-zilu/benchmark16_conjunctive.c
+basic:
+  name: qwen3-max
+  type: llm
+  task: invariant_inference
+  config: {}
+  time: 2026-01-04T18:35
+invariants_result:
+- loop_id: 1
+  code: |-
+    while (unknown_bool()) {
+        i = i + 1;
+        k = k - 1;
+    }
+  invariants:
+  - "i + k == \at(i + k, Pre)"
