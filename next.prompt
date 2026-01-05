@@ -1,0 +1,20 @@
+请修改 ranking CLI（cli.py）以满足以下需求：
+
+批量输出保持目录结构
+当 ranking --input <dir> --mode yaml --output <outdir> 时，输出目录需保持输入目录结构（基于 input 的相对路径）。
+对每个 YAML 输出文件名追加 _ranking.yml 后缀。
+行为需与当前 rel_path 逻辑一致（若 f 不在 input 目录树内则退化为扁平输出）。
+空结果重试并原地填补
+“空结果”定义：
+a) LLM 未产出有效 ranking_function（如 None 或空字符串）；
+b) 解析失败（infer_ranking 未返回有效 dict/metadata），也视为空结果。
+c) 若使用 template 模式，template_type 或 template_depth 缺失也视为空结果。
+当空结果出现时，需要自动重试推理，最多再重试 2 次（总共最多 3 次推理）。
+若最终仍为空：跳过该条目（不写入结果），或保持空但必须显式标记为 “skipped/empty”（二选一，需在实现中固定一种规则）。
+若重试成功：应在原条目位置“填补空白”（即更新该条目的 ranking 结果，而不是生成重复条目）。
+补充说明
+
+重试逻辑应覆盖 YAML 输入（invariants_result / loops）以及 C 文件输入（非 YAML）两种路径。
+若 --output 未提供，当前是直接输出到控制台或写默认文件（保持现有逻辑即可），但空结果重试仍需生效。
+需要添加清晰日志：每次重试打印尝试次数与成功/失败结果。
+（如需补充：可新增 CLI 参数控制重试次数，比如 --retry-empty 2，但不是必需；默认值为 2 次重试即可。）

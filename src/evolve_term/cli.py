@@ -476,6 +476,7 @@ def invariant(
     mode: str = typer.Option("auto", "--mode", "-m", help="Filter mode for batch processing: 'auto' (all), 'yaml' (only extract results), 'code' (only C/C++ files)"),
     extract_prompt_version: str = typer.Option("all", "--extract-pmt-v", "--extv", help="Filter YAML files by extract prompt version in filename: all, v1, v2"),
     prompt_version: str = typer.Option("yaml_cot", "--prompt-version", "-pv", help="Prompt version for invariant inference: 'yaml_cot' (default) or 'yaml_direct'"),
+    fill_empty_invariants: bool = typer.Option(False, "--fill-empty-invariants", help="For invariant-result YAMLs, re-infer only empty invariants (invariants: [])"),
 ) -> None:
     """
     Infer invariants for the given code or extracted YAML.
@@ -532,6 +533,8 @@ def invariant(
         loops_to_analyze = []
         source_type = "code"
         source_path = str(f.relative_to(base_dir)) if base_dir else str(f)
+        existing_yaml = None
+        needs_fill = False
         
         # Determine input type
         if f.suffix.lower() in {'.yml', '.yaml'}:
@@ -540,7 +543,21 @@ def invariant(
                 data = yaml.safe_load(f.read_text(encoding="utf-8"))
                 if isinstance(data, dict) and "source_path" in data:
                     source_path = data["source_path"]
-                if "loops" in data:
+                if isinstance(data, dict) and "invariants_result" in data:
+                    if not fill_empty_invariants:
+                        return
+                    existing_yaml = data
+                    for item in data.get("invariants_result", []):
+                        invs = item.get("invariants", [])
+                        if not invs:
+                            code = item.get("code", "")
+                            if code:
+                                loops_to_analyze.append(code)
+                                needs_fill = True
+                    if not needs_fill:
+                        console.print(f"[yellow]No empty invariants in {f.name}, skipping.[/yellow]")
+                        return
+                elif "loops" in data:
                     loops_to_analyze = [item["code"] for item in data["loops"]]
                 else:
                     # Not an extract result, skip
@@ -569,31 +586,53 @@ def invariant(
         timestamp = datetime.now().strftime("%Y-%m-%dT%H:%M")
         safe_model_name = re.sub(r'[^\w\-]', '', str(model_name))
         
-        yaml_data = {
-            "source_file": f.name,
-            "source_path": source_path,
-            "basic": {
-                "name": safe_model_name,
-                "type": model_config.get("type", "llm"),
-                "task": "invariant_inference",
-                "prompt_version": prompt_version,
-                "config": model_config,
-                "time": timestamp
-            },
-            "invariants_result": all_invariants
-        }
+        if existing_yaml is not None and needs_fill:
+            fill_iter = iter(all_invariants)
+            for item in existing_yaml.get("invariants_result", []):
+                invs = item.get("invariants", [])
+                if not invs:
+                    new_item = next(fill_iter, None)
+                    if new_item:
+                        item["invariants"] = new_item.get("invariants", [])
+            yaml_data = existing_yaml
+        else:
+            yaml_data = {
+                "source_file": f.name,
+                "source_path": source_path,
+                "basic": {
+                    "name": safe_model_name,
+                    "type": model_config.get("type", "llm"),
+                    "task": "invariant_inference",
+                    "prompt_version": prompt_version,
+                    "config": model_config,
+                    "time": timestamp
+                },
+                "invariants_result": all_invariants
+            }
         
         filename = f"{f.stem}_inv_{safe_model_name}_{prompt_version}.yml"
-        if output_root:
-            rel_parent = Path(".") if base_dir is None else f.parent.relative_to(base_dir)
-            result_dir = output_root / rel_parent / "invariant_result"
-            result_dir.mkdir(parents=True, exist_ok=True)
-            out_path = result_dir / filename
+        if existing_yaml is not None and needs_fill:
+            if output_root:
+                if output_root.suffix in {".yml", ".yaml"}:
+                    out_path = output_root
+                else:
+                    rel_parent = Path(".") if base_dir is None else f.parent.relative_to(base_dir)
+                    result_dir = output_root / rel_parent
+                    result_dir.mkdir(parents=True, exist_ok=True)
+                    out_path = result_dir / f.name
+            else:
+                out_path = f
         else:
-            # Output directory: sibling 'invariant_result'
-            result_dir = f.parent / "invariant_result"
-            result_dir.mkdir(exist_ok=True)
-            out_path = result_dir / filename
+            if output_root:
+                rel_parent = Path(".") if base_dir is None else f.parent.relative_to(base_dir)
+                result_dir = output_root / rel_parent / "invariant_result"
+                result_dir.mkdir(parents=True, exist_ok=True)
+                out_path = result_dir / filename
+            else:
+                # Output directory: sibling 'invariant_result'
+                result_dir = f.parent / "invariant_result"
+                result_dir.mkdir(exist_ok=True)
+                out_path = result_dir / filename
         
         with open(out_path, 'w', encoding='utf-8') as yf:
             yaml.dump(yaml_data, yf, Dumper=LiteralDumper, sort_keys=False, allow_unicode=True)
@@ -714,6 +753,7 @@ def ranking(
         "--ranking-mode",
         help="Ranking prompt mode: 'direct', 'template', or 'template-known'",
     ),
+    retry_empty: int = typer.Option(2, "--retry-empty", help="Max retries when ranking result is empty"),
 ) -> None:
     """
     Infer ranking function for the given code.
@@ -741,12 +781,19 @@ def ranking(
         raise typer.BadParameter("ranking_mode must be one of: direct, template, template-known")
     
     references = load_references(references_file)
+    retry_empty = max(0, retry_empty)
+
+    def is_empty_result(rf: str | None, metadata: dict) -> bool:
+        return predictor.is_empty_ranking_result(rf, metadata, rf_mode)
 
     def process_file(f: Path, invs: List[str]) -> Dict[str, Any]:
         code = f.read_text(encoding="utf-8")
         rf, explanation, metadata = predictor.infer_ranking(
-            code, invs, references, mode=rf_mode, known_terminating=rf_known_terminating
+            code, invs, references, mode=rf_mode, known_terminating=rf_known_terminating,
+            retry_empty=retry_empty, log_prefix=f.name
         )
+        if is_empty_result(rf, metadata):
+            return {"status": "empty", "explanation": explanation}
         if rf_mode == "template":
             return {
                 "template_type": metadata.get("type"),
@@ -774,8 +821,17 @@ def ranking(
                 
                 console.print(f"  Inferring ranking for Loop {loop_id}...")
                 rf, explanation, metadata = predictor.infer_ranking(
-                    code, invs, references, mode=rf_mode, known_terminating=rf_known_terminating
+                    code, invs, references, mode=rf_mode, known_terminating=rf_known_terminating,
+                    retry_empty=retry_empty, log_prefix=f"{f.name} loop {loop_id}"
                 )
+                if is_empty_result(rf, metadata):
+                    results.append({
+                        "loop_id": loop_id,
+                        "code": code,
+                        "invariants": invs,
+                        "status": "empty",
+                    })
+                    continue
                 result_entry = {
                     "loop_id": loop_id,
                     "code": code,
@@ -803,8 +859,17 @@ def ranking(
                 
                 console.print(f"  Inferring ranking for Loop {loop_id}...")
                 rf, explanation, metadata = predictor.infer_ranking(
-                    code, [], references, mode=rf_mode, known_terminating=rf_known_terminating
+                    code, [], references, mode=rf_mode, known_terminating=rf_known_terminating,
+                    retry_empty=retry_empty, log_prefix=f"{f.name} loop {loop_id}"
                 )
+                if is_empty_result(rf, metadata):
+                    results.append({
+                        "loop_id": loop_id,
+                        "code": code,
+                        "invariants": [],
+                        "status": "empty",
+                    })
+                    continue
                 result_entry = {
                     "loop_id": loop_id,
                     "code": code,
