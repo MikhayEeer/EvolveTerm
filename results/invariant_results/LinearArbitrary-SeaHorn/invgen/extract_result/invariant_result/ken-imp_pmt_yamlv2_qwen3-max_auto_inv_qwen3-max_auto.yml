@@ -13,4 +13,5 @@ invariants_result:
       x--;
       y--;
     }
-  invariants: []
+  invariants:
+  - "x - y == \at(x - y, Pre)"

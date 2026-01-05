@@ -12,4 +12,5 @@ invariants_result:
     while (x < 0x0fffffff) {
       x++;
     }
-  invariants: []
+  invariants:
+  - x <= 0x0fffffff

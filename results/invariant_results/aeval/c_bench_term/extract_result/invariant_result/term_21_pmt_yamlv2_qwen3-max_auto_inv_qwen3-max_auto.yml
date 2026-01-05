@@ -13,4 +13,5 @@ invariants_result:
       if (z % 5 == 0) z = z - 5;
         else z++;
     }
-  invariants: []
+  invariants:
+  - z >= 0

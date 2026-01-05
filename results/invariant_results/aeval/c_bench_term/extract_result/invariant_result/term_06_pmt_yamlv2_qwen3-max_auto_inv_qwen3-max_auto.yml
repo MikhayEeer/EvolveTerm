@@ -13,4 +13,7 @@ invariants_result:
     {
       if (x != 7777) x++;
     }
-  invariants: []
+  invariants:
+  - x < 1000
+  - x != 7777
+  - x <= 1000

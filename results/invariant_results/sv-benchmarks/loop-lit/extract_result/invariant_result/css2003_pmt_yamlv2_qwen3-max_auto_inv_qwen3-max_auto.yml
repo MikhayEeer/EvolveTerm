@@ -18,4 +18,6 @@ invariants_result:
     }
 
     }
-  invariants: []
+  invariants:
+  - 1 <= i + k && i + k <= 2
+  - i >= 0

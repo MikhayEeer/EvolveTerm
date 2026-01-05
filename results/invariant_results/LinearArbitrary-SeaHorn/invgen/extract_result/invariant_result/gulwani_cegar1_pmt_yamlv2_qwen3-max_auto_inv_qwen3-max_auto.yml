@@ -13,4 +13,5 @@ invariants_result:
       x+=2;
       y+=2;
     }
-  invariants: []
+  invariants:
+  - x - y == \at(x - y, LoopEntry)

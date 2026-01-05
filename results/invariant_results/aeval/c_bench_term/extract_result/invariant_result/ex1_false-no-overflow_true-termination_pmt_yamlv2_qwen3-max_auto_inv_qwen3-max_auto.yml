@@ -13,4 +13,7 @@ invariants_result:
         r = r*x;
         y = y - 1;
     }
-  invariants: []
+  invariants:
+  - y >= 0
+  - r * \pow(x, y) == \at(r, Pre) * \pow(x, \at(y, Pre))
+  - x == \at(x, Pre)

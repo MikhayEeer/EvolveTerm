@@ -26,4 +26,5 @@ invariants_result:
       }
 
     }
-  invariants: []
+  invariants:
+  - 1 <= c && c <= 40

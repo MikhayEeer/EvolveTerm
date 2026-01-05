@@ -19,4 +19,5 @@ invariants_result:
           y++;
         }
     }
-  invariants: []
+  invariants:
+  - x + y <= -2

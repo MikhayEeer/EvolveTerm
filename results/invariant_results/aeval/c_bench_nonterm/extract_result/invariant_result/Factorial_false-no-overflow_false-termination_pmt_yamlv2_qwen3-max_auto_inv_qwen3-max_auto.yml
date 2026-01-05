@@ -13,4 +13,7 @@ invariants_result:
         fac = fac * i;
         i = i+1;
     }
-  invariants: []
+  invariants:
+  - fac == \fact(i - 1)
+  - i >= 1
+  - fac > 0

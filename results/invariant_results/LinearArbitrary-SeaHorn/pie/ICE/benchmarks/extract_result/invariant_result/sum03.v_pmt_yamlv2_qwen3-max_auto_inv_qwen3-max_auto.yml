@@ -20,4 +20,5 @@ invariants_result:
         v2 = unknown_int();
         v3 = unknown_int();
     }
-  invariants: []
+  invariants:
+  - sn == x * a

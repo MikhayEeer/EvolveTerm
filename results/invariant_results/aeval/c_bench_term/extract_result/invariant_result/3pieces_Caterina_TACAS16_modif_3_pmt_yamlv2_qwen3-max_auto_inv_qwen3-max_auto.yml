@@ -13,4 +13,6 @@ invariants_result:
     {
       if (x < N) x++; else x = y;
     }
-  invariants: []
+  invariants:
+  - y == \old(y)
+  - N == \old(N)

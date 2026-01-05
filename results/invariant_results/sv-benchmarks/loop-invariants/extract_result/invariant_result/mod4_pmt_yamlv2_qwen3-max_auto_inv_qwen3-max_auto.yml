@@ -12,4 +12,5 @@ invariants_result:
     while (unknown_int()) {
         x += 4;
     }
-  invariants: []
+  invariants:
+  - x % 4 == \at(x % 4, LoopEntry)

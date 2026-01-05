@@ -14,4 +14,5 @@ invariants_result:
         if(c == 0) x++;
         else x--;
     }
-  invariants: []
+  invariants:
+  - x >= 1

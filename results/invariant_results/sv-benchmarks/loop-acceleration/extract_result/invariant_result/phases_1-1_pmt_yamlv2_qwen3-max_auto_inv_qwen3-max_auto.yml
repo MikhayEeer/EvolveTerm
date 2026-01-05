@@ -16,4 +16,5 @@ invariants_result:
             x += 2;
         }
     }
-  invariants: []
+  invariants:
+  - x < 0x0fffffff

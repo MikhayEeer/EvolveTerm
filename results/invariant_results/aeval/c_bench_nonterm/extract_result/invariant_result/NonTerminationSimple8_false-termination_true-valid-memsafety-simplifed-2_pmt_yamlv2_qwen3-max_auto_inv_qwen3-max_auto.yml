@@ -18,4 +18,5 @@ invariants_result:
             x = -1;
         }}
     }
-  invariants: []
+  invariants:
+  - x >= 0

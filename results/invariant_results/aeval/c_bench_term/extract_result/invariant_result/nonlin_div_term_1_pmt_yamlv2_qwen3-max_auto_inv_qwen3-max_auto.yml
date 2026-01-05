@@ -13,4 +13,6 @@ invariants_result:
     {
       x--;
     }
-  invariants: []
+  invariants:
+  - y == \at(y, Pre)
+  - x <= \at(x, Pre)

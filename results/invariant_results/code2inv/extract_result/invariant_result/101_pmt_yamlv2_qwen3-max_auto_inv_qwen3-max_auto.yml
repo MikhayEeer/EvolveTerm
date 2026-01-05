@@ -15,4 +15,5 @@ invariants_result:
       }
 
     }
-  invariants: []
+  invariants:
+  - x <= n

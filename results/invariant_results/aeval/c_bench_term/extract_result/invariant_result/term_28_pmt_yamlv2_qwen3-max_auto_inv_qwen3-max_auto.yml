@@ -21,4 +21,5 @@ invariants_result:
         else if (0 == __VERIFIER_nondet_int()) x = x - 5;
         else                                   y = y + 5;
     }
-  invariants: []
+  invariants:
+  - x > y

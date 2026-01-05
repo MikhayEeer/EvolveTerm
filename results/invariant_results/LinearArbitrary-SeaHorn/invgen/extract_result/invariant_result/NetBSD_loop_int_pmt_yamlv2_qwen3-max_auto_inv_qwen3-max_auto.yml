@@ -12,4 +12,6 @@ invariants_result:
     \  else {\n    \n    glob3_dc++;\n    \n    {;\n//@ assert(0 <= glob3_dc);\n}\n\
     {;\n//@ assert(glob3_dc < MAXPATHLEN + 1);\n}\n\n    if (unknown()) goto END;\n\
     \  }"
-  invariants: []
+  invariants:
+  - glob3_dc >= 0
+  - glob3_dc < MAXPATHLEN + 1

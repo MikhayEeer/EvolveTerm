@@ -12,4 +12,5 @@ invariants_result:
     while(y >= 0){
         y = y + x;
     }
-  invariants: []
+  invariants:
+  - x == \at(x, Pre)

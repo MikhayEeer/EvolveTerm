@@ -14,4 +14,6 @@ invariants_result:
         i = j;
         j = t;
     }
-  invariants: []
+  invariants:
+  - i + j == \at(i + j, Pre)
+  - i * j == \at(i * j, Pre)

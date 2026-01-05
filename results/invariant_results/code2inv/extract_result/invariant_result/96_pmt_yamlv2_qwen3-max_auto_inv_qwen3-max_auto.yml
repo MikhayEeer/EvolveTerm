@@ -16,4 +16,8 @@ invariants_result:
       }
 
     }
-  invariants: []
+  invariants:
+  - j - y * i == \at(j - y * i, Pre)
+  - y == \at(y, Pre)
+  - x == \at(x, Pre)
+  - i >= \at(i, Pre)

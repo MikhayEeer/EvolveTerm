@@ -12,4 +12,6 @@ invariants_result:
     while (i<N){
       i=i+1;
     }
-  invariants: []
+  invariants:
+  - 0 <= i
+  - i <= N

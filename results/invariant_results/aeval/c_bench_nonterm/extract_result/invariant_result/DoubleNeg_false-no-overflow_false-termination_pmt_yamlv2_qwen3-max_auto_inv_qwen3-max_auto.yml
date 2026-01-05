@@ -13,4 +13,5 @@ invariants_result:
         i = i - 1;
         j = j - 1;
     }
-  invariants: []
+  invariants:
+  - i - j == \at(i - j, Pre)

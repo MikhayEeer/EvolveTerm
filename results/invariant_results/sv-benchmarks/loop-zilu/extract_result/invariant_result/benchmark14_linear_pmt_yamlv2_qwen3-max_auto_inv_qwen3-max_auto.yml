@@ -12,4 +12,5 @@ invariants_result:
     while (i>0) {
       i--;
     }
-  invariants: []
+  invariants:
+  - i >= 0

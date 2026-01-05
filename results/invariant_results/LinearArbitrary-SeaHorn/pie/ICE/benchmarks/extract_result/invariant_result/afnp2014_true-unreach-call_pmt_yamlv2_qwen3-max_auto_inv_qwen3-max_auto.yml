@@ -13,4 +13,7 @@ invariants_result:
         x = x + y;
         y = y + 1;
     }
-  invariants: []
+  invariants:
+  - x - (y * (y - 1)) / 2 == \at(x - (y * (y - 1)) / 2, Pre)
+  - y < 1000
+  - y >= \at(y, Pre)

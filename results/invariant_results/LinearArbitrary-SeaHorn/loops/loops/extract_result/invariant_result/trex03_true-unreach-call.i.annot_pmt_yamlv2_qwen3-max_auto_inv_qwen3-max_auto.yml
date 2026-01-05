@@ -17,4 +17,5 @@ invariants_result:
         c1=unknown_bool();
         c2=unknown_bool();
     }
-  invariants: []
+  invariants:
+  - x1 > 0 && x2 > 0 && x3 > 0

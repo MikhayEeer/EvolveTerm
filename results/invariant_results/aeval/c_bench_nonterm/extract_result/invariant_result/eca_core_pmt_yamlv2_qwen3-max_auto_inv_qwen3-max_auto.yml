@@ -18,4 +18,5 @@ invariants_result:
         // operate eca engine
         output = calculate_output(input);
     }
-  invariants: []
+  invariants:
+  - output != 0

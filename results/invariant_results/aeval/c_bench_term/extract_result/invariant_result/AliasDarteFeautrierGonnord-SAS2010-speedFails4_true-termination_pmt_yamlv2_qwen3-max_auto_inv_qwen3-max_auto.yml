@@ -16,4 +16,8 @@ invariants_result:
             x = x - t;
         }
     }
-  invariants: []
+  invariants:
+  - x <= n
+  - b == \at(b, Pre)
+  - t == \at(t, Pre)
+  - n == \at(n, Pre)

@@ -13,4 +13,8 @@ invariants_result:
         count++;
         i++;
     }
-  invariants: []
+  invariants:
+  - count == i
+  - 0 <= i
+  - i <= 100
+  - 0 <= count

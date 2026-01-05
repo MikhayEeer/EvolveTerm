@@ -19,4 +19,8 @@ invariants_result:
        }
        i = i+1;
     }
-  invariants: []
+  invariants:
+  - 0 <= i && i <= n
+  - a + b - 3*i == \at(a + b - 3*i, Pre)
+  - a >= \at(a, Pre)
+  - b >= \at(b, Pre)

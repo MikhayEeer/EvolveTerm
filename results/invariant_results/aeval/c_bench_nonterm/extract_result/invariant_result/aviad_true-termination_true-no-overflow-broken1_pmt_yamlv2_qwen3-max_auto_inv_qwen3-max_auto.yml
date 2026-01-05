@@ -12,4 +12,5 @@ invariants_result:
     while (a > 1) {
       if (a % 2 == 0) a = a / 2;
     }
-  invariants: []
+  invariants:
+  - a >= 1

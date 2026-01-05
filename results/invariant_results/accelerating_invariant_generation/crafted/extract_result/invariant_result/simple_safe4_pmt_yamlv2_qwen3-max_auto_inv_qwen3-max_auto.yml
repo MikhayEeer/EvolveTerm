@@ -12,4 +12,6 @@ invariants_result:
     while (x > 0) {
       x -= 2;
     }
-  invariants: []
+  invariants:
+  - x <= \old(x)
+  - x % 2 == \old(x) % 2

@@ -12,4 +12,7 @@ invariants_result:
     for (i =0; i< x ; i++){
       j = j + 2;
     }
-  invariants: []
+  invariants:
+  - 0 <= i
+  - i <= x
+  - "j == \at(j, Pre) + 2 * i"

@@ -15,4 +15,6 @@ invariants_result:
       y = __VERIFIER_nondet_int();
       x = x+y;
     }
-  invariants: []
+  invariants:
+  - 0 <= i && i <= n
+  - x - y == \at(x - y, Pre)

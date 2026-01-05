@@ -13,4 +13,6 @@ invariants_result:
         if(w%2 == 1) {x++; w++;};
         if(z%2==0) {y++; z++;};
     }
-  invariants: []
+  invariants:
+  - "w - x == \at(w - x, Pre)"
+  - "z - y == \at(z - y, Pre)"

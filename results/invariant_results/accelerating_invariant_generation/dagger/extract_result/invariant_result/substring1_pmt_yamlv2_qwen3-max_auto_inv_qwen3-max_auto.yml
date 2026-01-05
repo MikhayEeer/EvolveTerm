@@ -13,4 +13,6 @@ invariants_result:
     i++;
     j++;
     }
-  invariants: []
+  invariants:
+  - i <= k
+  - j - i == \at(j - i, Pre)

@@ -17,4 +17,5 @@ invariants_result:
             z = z - 1;
         }
     }
-  invariants: []
+  invariants:
+  - z >= 0

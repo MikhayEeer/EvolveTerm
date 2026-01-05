@@ -16,4 +16,5 @@ invariants_result:
       }
 
     }
-  invariants: []
+  invariants:
+  - x - y == \old(x - y)

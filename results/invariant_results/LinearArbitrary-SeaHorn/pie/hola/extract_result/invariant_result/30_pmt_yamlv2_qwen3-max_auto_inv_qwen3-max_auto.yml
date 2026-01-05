@@ -13,4 +13,7 @@ invariants_result:
         c = c + i;
         i = i + 1;
     }
-  invariants: []
+  invariants:
+  - 0 <= i
+  - i <= 1000
+  - 2 * c == i * (i - 1)

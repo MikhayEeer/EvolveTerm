@@ -20,4 +20,7 @@ invariants_result:
         x = __VERIFIER_nondet_int();
       }
     }
-  invariants: []
+  invariants:
+  - x <= n
+  - x >= 2 * tx + y
+  - y >= ty + 1

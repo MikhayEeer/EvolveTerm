@@ -18,4 +18,10 @@ invariants_result:
     \ 0;\n\n            unowned=0;\n            nonexclusive=0;\n            exclusive=1;\n\
     \            invalid=invalid+unowned+exclusive+nonexclusive-1;\n        }\n  \
     \  }\n}"
-  invariants: []
+  invariants:
+  - exclusive >= 0
+  - nonexclusive >= 0
+  - unowned >= 0
+  - invalid >= 0
+  - "exclusive + nonexclusive + unowned + invalid == \at(exclusive + nonexclusive\
+    \ + unowned + invalid, LoopEntry)"

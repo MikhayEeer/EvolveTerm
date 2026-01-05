@@ -13,4 +13,6 @@ invariants_result:
         y = y + x;
         z = z - x;
     }
-  invariants: []
+  invariants:
+  - y + z == \old(y + z)
+  - x == \old(x)

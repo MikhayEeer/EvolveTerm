@@ -12,4 +12,6 @@ invariants_result:
     while (x > 0 && y > 0) {
         x = 10*y - 2*x;
     }
-  invariants: []
+  invariants:
+  - "y == \at(y, Pre)"
+  - y > 0

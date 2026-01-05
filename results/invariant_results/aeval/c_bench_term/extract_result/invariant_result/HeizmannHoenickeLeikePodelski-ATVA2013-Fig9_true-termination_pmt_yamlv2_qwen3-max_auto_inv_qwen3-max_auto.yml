@@ -12,4 +12,6 @@ invariants_result:
     while (x >= 0 && z == 1) {
         x = x - 2*y + 1;
     }
-  invariants: []
+  invariants:
+  - y == \old(y)
+  - z == \old(z)

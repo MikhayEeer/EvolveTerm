@@ -17,4 +17,7 @@ invariants_result:
         i = i + 1;
       }
     }
-  invariants: []
+  invariants:
+  - 0 <= i && i <= n
+  - 0 <= j && j <= m
+  - i * m + j <= n * m

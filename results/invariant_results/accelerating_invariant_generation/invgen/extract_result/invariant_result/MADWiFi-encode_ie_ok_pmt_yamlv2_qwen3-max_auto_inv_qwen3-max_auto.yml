@@ -20,4 +20,11 @@ invariants_result:
 
         p += 2;
     }
-  invariants: []
+  invariants:
+  - i >= 0
+  - i <= ielen
+  - bufsize == \at(bufsize, Pre)
+  - bufsize > 2
+  - p == \at(p, Pre) + 2 * i
+  - 0 <= p
+  - p + 1 < \at(bufsize, Pre)

@@ -17,4 +17,5 @@ invariants_result:
     }
 
     }
-  invariants: []
+  invariants:
+  - sn == x * a

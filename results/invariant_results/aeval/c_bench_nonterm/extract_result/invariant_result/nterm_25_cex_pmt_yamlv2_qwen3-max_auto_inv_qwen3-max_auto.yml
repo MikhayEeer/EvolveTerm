@@ -17,4 +17,5 @@ invariants_result:
         else y = 5;
         x = x + y;
     }
-  invariants: []
+  invariants:
+  - x != 6

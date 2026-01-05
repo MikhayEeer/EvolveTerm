@@ -11,4 +11,10 @@ invariants_result:
   code: "while( l < n ) {\n    if(!(l%4))\n      v4 = v4 + 1;\n    else if(!(l%3))\n\
     \      i = i + 1;\n    else if(!(l%2)) \n        j = j+1;\n    else \n      k\
     \ = k+1;\n    l = l+1;\n}"
-  invariants: []
+  invariants:
+  - 0 <= l && l <= n
+  - v4 >= 0
+  - i >= 0
+  - j >= 0
+  - k >= 0
+  - v4 + i + j + k == l

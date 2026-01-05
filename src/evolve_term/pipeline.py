@@ -27,7 +27,7 @@ import os
 class TerminationPipeline:
     """Main façade that ties together embedding, retrieval, and LLM reasoning."""
 
-    def __init__(self, rebuild_threshold: int = 10, embed_config: str = "embed_config.json", llm_config: str = "llm_config.json", enable_translation: bool = False, knowledge_base_path: str | None = None, svm_ranker_path: str | None = None):
+    def __init__(self, rebuild_threshold: int = 10, embed_config: str = "embed_config.json", llm_config: str = "llm_config.json", enable_translation: bool = False, knowledge_base_path: str | None = None, svm_ranker_path: str | None = None, ranking_retry_empty: int = 0):
         self.prompt_repo = PromptRepository()
         self.llm_client = build_llm_client(llm_config)
         self.loop_extractor = LoopExtractor(self.llm_client,# loop extractor also use same model with prediction 
@@ -42,6 +42,7 @@ class TerminationPipeline:
         self.report_manager = ReportManager()
         self.predictor = Predictor(self.llm_client, self.prompt_repo)
         self.svm_ranker = SVMRankerClient(svm_ranker_path) if svm_ranker_path else None
+        self.ranking_retry_empty = max(0, ranking_retry_empty)
 
     # Core flow ------------------------------------------------------------
     def analyze(self, 
@@ -169,7 +170,8 @@ class TerminationPipeline:
                 # 1. Ask LLM for template/params
                 _, explanation, metadata = self.predictor.infer_ranking(
                     current_context, invariants, reasoning_references, 
-                    mode="template", known_terminating=known_terminating
+                    mode="template", known_terminating=known_terminating,
+                    retry_empty=self.ranking_retry_empty, log_prefix=f"Loop {loop_id} template"
                 )
                 
                 rf_type = metadata.get("type", "lnested")
@@ -222,7 +224,8 @@ class TerminationPipeline:
             if not ranking_function:
                 ranking_function, ranking_explanation, _ = self.predictor.infer_ranking(
                     current_context, invariants, reasoning_references, 
-                    mode="direct", known_terminating=known_terminating
+                    mode="direct", known_terminating=known_terminating,
+                    retry_empty=self.ranking_retry_empty, log_prefix=f"Loop {loop_id} direct"
                 )
 
             # 4.3 Z3 Verification

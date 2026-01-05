@@ -20,4 +20,5 @@ invariants_result:
         y = x - 1;
       }
     }
-  invariants: []
+  invariants:
+  - x > 0 && y > 0 && z > 0

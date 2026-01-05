@@ -15,4 +15,6 @@ invariants_result:
         x = x / y;
       else x = x-y;
     }
-  invariants: []
+  invariants:
+  - x >= 0
+  - y != 0

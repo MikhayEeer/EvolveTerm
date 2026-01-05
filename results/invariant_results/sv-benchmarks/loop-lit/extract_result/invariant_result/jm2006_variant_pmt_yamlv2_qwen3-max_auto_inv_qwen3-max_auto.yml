@@ -14,4 +14,7 @@ invariants_result:
         y -= 2;
         z ++;
     }
-  invariants: []
+  invariants:
+  - y - 2 * x == \at(y - 2 * x, Pre)
+  - x + z == \at(x + z, Pre)
+  - y + 2 * z == \at(y + 2 * z, Pre)

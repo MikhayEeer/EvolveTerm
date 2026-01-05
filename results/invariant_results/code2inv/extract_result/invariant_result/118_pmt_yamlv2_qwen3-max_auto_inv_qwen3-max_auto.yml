@@ -16,4 +16,6 @@ invariants_result:
       }
 
     }
-  invariants: []
+  invariants:
+  - "sn - i == \at(sn - i, LoopEntry)"
+  - i <= size + 1

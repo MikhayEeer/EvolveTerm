@@ -13,4 +13,5 @@ invariants_result:
         i = i + 2;
         j = -1 + j;
     }
-  invariants: []
+  invariants:
+  - "i + 2 * j == \at(i + 2 * j, Pre)"

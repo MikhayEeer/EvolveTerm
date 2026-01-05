@@ -13,4 +13,5 @@ invariants_result:
       x = x + y;
       y = y + 1;
     }
-  invariants: []
+  invariants:
+  - 2 * x - y * (y - 1) == \old(2 * x - y * (y - 1))

@@ -12,4 +12,6 @@ invariants_result:
     while (unknown_bool()) {
       if(x>0) y=y+x;
     }
-  invariants: []
+  invariants:
+  - x == \at(x, Pre)
+  - y >= \at(y, Pre)

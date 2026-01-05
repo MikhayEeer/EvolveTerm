@@ -17,4 +17,6 @@ invariants_result:
         }
         i++;
     }
-  invariants: []
+  invariants:
+  - 0 <= i && i <= N
+  - x == 1 || x == 2

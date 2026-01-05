@@ -20,4 +20,5 @@ invariants_result:
         x++;
       }
     }
-  invariants: []
+  invariants:
+  - y == \at(y, Pre)
