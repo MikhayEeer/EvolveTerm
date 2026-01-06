@@ -1,0 +1,8 @@
+source_file: NO_24_false-termination_true-no-overflow_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/NO_24_false-termination_true-no-overflow.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (a + b < 5) {\n    a = a - b;\n    b = a + b;\n    a = b - a;\n}"
+  invariants: []
+  status: empty

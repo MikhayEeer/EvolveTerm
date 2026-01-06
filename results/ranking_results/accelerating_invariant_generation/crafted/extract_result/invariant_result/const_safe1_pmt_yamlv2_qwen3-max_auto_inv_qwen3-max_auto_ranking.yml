@@ -1,0 +1,10 @@
+source_file: const_safe1_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/accelerating_invariant_generation/crafted/const_safe1.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (y < 10) {\n    x = 0;\n    y++;\n}"
+  invariants: []
+  explanation: The loop terminates because y increases toward 10; 10 - y is a non-negative
+    integer that strictly decreases each iteration.
+  ranking_function: 10 - y

@@ -1,0 +1,12 @@
+source_file: simple_if_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/accelerating_invariant_generation/invgen/simple_if.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while( i < n ) {\n    if( m > 0 ) {\n        i = 2*i;\n    } else {\n   \
+    \     i = 3*i;\n    }\n    \n}"
+  invariants: []
+  explanation: Under the assumption that i ≥ 1 and i < n initially, n - i is a non-negative
+    integer that strictly decreases with each iteration because i is multiplied by
+    2 or 3 (both > 1), ensuring termination.
+  ranking_function: n - i

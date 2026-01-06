@@ -1,0 +1,11 @@
+source_file: popl_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/sharma_splitter/popl.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while(x<100) {\n        x=x+1;\n        if (x>50) {\n                y=y+1;\n\
+    \        }\n}"
+  invariants: []
+  explanation: The loop terminates because x increases toward 100; 100 - x is a non-negative
+    integer that decreases by 1 each iteration.
+  ranking_function: 100 - x

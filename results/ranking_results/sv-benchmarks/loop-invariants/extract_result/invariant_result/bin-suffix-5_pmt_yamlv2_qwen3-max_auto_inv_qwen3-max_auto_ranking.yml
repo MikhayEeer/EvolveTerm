@@ -1,0 +1,13 @@
+source_file: bin-suffix-5_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-invariants/bin-suffix-5.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (unknown_int()) {\n    x += 8;\n}"
+  invariants:
+  - x % 8 == \at(x, Pre) % 8
+  - \true
+  explanation: The loop guard is an arbitrary unknown predicate, and the loop body
+    only increases x. No variable decreases, and no expression over program state
+    is guaranteed to decrease. Thus, no ranking function exists to prove termination.
+  ranking_function: none

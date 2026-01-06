@@ -1,0 +1,11 @@
+source_file: Choose_false-no-overflow_false-termination_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/Choose_false-no-overflow_false-termination.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (i >= 3) {\n    if (i > 5) {\n        i = i+3;\n    } else {\n    \
+    \    if (i > 10) {\n            i = i-2;\n        } else {\n            i = i+1;\n\
+    \        }\n    }\n}"
+  invariants:
+  - i >= 3
+  status: empty

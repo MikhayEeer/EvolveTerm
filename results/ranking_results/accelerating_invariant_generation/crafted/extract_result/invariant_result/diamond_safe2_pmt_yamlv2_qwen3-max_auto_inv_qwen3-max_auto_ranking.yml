@@ -1,0 +1,19 @@
+source_file: diamond_safe2_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/accelerating_invariant_generation/crafted/diamond_safe2.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x < 99) {\n    \n    if (y % 2 == 0) x += 2;\n    else x++;\n\n  \
+    \  if (y % 2 == 0) x += 2;\n    else x -= 2;\n\n    if (y % 2 == 0) x += 2;\n\
+    \    else x += 2;\n\n    if (y % 2 == 0) x += 2;\n    else x -= 2;\n\n    if (y\
+    \ % 2 == 0) x += 2;\n    else x += 2;\n\n    if (y % 2 == 0) x += 2;\n    else\
+    \ x -= 4;\n\n    if (y % 2 == 0) x += 2;\n    else x += 4;\n\n    if (y % 2 ==\
+    \ 0) x += 2;\n    else x += 2;\n\n    if (y % 2 == 0) x += 2;\n    else x -= 4;\n\
+    \n    if (y % 2 == 0) x += 2;\n    else x -= 4;\n}"
+  invariants:
+  - y == \at(y, Pre)
+  - x % 5 == \at(x, Pre) % 5
+  explanation: When y is even (the only terminating case), x increases by 20 per iteration,
+    so 99 - x is a non-negative integer that strictly decreases by 20 each loop iteration,
+    ensuring termination.
+  ranking_function: 99 - x

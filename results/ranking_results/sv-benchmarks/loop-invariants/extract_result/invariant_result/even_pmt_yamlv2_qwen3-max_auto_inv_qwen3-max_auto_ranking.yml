@@ -1,0 +1,13 @@
+source_file: even_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-invariants/even.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (unknown_int()) {\n  x += 2;\n}"
+  invariants:
+  - x % 2 == \at(x, Pre) % 2
+  explanation: The loop guard 'unknown_int()' is independent of program state, and
+    the only variable 'x' increases monotonically. No expression over program variables
+    can serve as a ranking function because no such expression is both bounded below
+    and strictly decreasing. The loop may not terminate.
+  ranking_function: none

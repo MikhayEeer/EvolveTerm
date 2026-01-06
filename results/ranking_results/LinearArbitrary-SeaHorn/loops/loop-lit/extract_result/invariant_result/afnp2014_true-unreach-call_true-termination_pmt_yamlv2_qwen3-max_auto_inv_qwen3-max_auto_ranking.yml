@@ -1,0 +1,11 @@
+source_file: afnp2014_true-unreach-call_true-termination_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/loops/loop-lit/afnp2014_true-unreach-call_true-termination.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (y < 1000 && unknown_int()) {\n    x = x + y;\n    y = y + 1;\n}"
+  invariants: []
+  explanation: The variable y increases by 1 each iteration and is bounded above by
+    1000, so 1000 - y is a non-negative integer that strictly decreases with each
+    loop iteration.
+  ranking_function: 1000 - y

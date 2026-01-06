@@ -1,0 +1,10 @@
+source_file: nterm_18_cex_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/nterm_18_cex.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (y != K) {\n    if (x > K) {\n        x = x - 1;\n    } else if (0\
+    \ == __VERIFIER_nondet_int()) {\n        x = x + 1;\n    }\n    if (y > x) {\n\
+    \        y = y - 1;\n    } else if (y < x) {\n        y = y + 1;\n    }\n}"
+  invariants: []
+  status: empty

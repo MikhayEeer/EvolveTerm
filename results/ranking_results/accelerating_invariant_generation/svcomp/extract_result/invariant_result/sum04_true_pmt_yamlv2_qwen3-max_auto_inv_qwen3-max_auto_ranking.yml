@@ -1,0 +1,14 @@
+source_file: sum04_true_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/accelerating_invariant_generation/svcomp/sum04_true.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "for(i=1; i<=SIZE; i++) {\n  sn = sn + a;\n}"
+  invariants:
+  - sn == \at(sn, Pre) + (i - 1) * a
+  - 1 <= i && i <= SIZE + 1
+  - a == \at(a, Pre)
+  explanation: This scalar ranking function represents the number of remaining loop
+    iterations. It starts at SIZE and decreases by 1 each iteration, staying non-negative
+    and ensuring termination.
+  ranking_function: SIZE - i + 1

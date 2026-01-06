@@ -1,0 +1,12 @@
+source_file: sum04_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/pie/ICE/benchmarks/sum04.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "for(i=1; i<=SIZE; i++) {\n  sn = sn + a;\n}"
+  invariants:
+  - 1 <= i && i <= SIZE + 1
+  - sn == \at(sn, Pre) + a * (i - 1)
+  explanation: The expression SIZE - i is non-negative during all loop iterations
+    (since i ≤ SIZE) and decreases by exactly 1 in each iteration, ensuring termination.
+  ranking_function: SIZE - i

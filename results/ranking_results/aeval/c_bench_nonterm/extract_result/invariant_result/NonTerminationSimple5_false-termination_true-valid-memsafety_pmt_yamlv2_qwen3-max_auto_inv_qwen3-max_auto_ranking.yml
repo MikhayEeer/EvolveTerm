@@ -1,0 +1,10 @@
+source_file: NonTerminationSimple5_false-termination_true-valid-memsafety_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/NonTerminationSimple5_false-termination_true-valid-memsafety.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x > 0) {\n    int c = __VERIFIER_nondet_int();\n    if(c == 0) x++;\n\
+    \    else x--;\n}"
+  invariants:
+  - x >= 1
+  status: empty

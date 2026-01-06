@@ -1,0 +1,13 @@
+source_file: 11_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/pie/hola/11.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "for (i =0; i< x ; i++){\n  j = j + 2;\n}"
+  invariants:
+  - 0 <= i
+  - i <= x
+  - "j == \at(j, Pre) + 2 * i"
+  explanation: The expression x - i is non-negative under the loop condition i < x
+    and decreases by 1 in each iteration, ensuring termination.
+  ranking_function: x - i

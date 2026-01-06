@@ -1,0 +1,8 @@
+source_file: nonlin_mult_nonterm_5_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/nonlin_mult_nonterm_5.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x == 10000000)\n{\n  x = x * y;\n}"
+  invariants: []
+  status: empty

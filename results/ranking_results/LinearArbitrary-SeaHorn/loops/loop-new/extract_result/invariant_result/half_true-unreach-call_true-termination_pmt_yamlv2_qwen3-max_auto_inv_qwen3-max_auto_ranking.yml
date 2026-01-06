@@ -1,0 +1,11 @@
+source_file: half_true-unreach-call_true-termination_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/loops/loop-new/half_true-unreach-call_true-termination.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "for(i = 0; i < 2*k; i++) {\n    if (i % 2 == 0) {\n        n ++;\n    }\n\
+    }"
+  invariants: []
+  explanation: The loop runs a fixed number of times (2*k), and the expression 2*k
+    - i counts down from 2*k to 0, strictly decreasing by 1 each iteration.
+  ranking_function: 2*k - i

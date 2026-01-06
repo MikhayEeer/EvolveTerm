@@ -1,0 +1,12 @@
+source_file: nterm_14_cex_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/nterm_14_cex.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (d > -4 && j > -4)\n{\n  if (0 == __VERIFIER_nondet_int()) j--;\n}"
+  invariants:
+  - d > -4
+  - j > -4
+  explanation: j is bounded below by -4 (so j+4 ≥ 0) and decreases by 1 whenever the
+    loop body executes the decrement, ensuring eventual termination under progress.
+  ranking_function: j + 4

@@ -1,0 +1,12 @@
+source_file: 20_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/accelerating_invariant_generation/cav/20.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while(j<=n-1) {\n  if(j==i)\n  {\n     x++;\n     y--;\n  }else\n  {\n  \
+    \   y++;\n     x--;\n  }\n    if(unknown1())\n        m = j;\n  j++;\n}"
+  invariants: []
+  explanation: The loop variable j increases by 1 each iteration and is bounded above
+    by n - 1. Thus, n - j is non-negative and strictly decreases by 1 each iteration,
+    ensuring termination.
+  ranking_function: n - j

@@ -1,0 +1,9 @@
+source_file: benchmark40_polynomial_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-zilu/benchmark40_polynomial.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (unknown_bool()) {\n    if(x==0) {if (y>0) x++;\n    else x--;} if(x>0)\
+    \ y++;\n    else x--;\n}"
+  invariants: []
+  status: empty

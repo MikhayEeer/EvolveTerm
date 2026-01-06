@@ -1,0 +1,10 @@
+source_file: PodelskiRybalchenko-TACAS2011-broken-Fig3_true-termination_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/PodelskiRybalchenko-TACAS2011-broken-Fig3_true-termination.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x > 0 && y > 0) {\n    int old_x = x;\n    int old_y = y;\n    if\
+    \ (0 == __VERIFIER_nondet_int()) {\n        x = old_x - 1;\n        y = old_x\
+    \ + 1;\n    } else {\n        x = old_y + 1;\n        y = old_x + 1;\n    }\n}"
+  invariants: []
+  status: empty

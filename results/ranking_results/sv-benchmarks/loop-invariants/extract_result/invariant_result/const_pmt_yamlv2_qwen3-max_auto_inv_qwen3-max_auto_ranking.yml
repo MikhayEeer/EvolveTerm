@@ -1,0 +1,12 @@
+source_file: const_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-invariants/const.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (unknown_uint()) {\n    if (s != 0) {\n        ++s;\n    }\n    if\
+    \ (unknown_uint()) {\n        {;\n//@ assert(s == 0);\n}\n\n    }\n}"
+  invariants:
+  - s == 0
+  explanation: No variable changes in the loop body, so no valid ranking function
+    exists. This is a placeholder; the loop is not provably terminating.
+  ranking_function: '0'

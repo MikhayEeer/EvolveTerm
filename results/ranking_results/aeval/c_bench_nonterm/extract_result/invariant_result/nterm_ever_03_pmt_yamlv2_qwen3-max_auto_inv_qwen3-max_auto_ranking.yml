@@ -1,0 +1,9 @@
+source_file: nterm_ever_03_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/nterm_ever_03.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x != y)\n{\n  x = x - 3;\n  y = y - 1;\n}"
+  invariants:
+  - x - 3 * y == \at(x - 3 * y, Pre)
+  status: empty

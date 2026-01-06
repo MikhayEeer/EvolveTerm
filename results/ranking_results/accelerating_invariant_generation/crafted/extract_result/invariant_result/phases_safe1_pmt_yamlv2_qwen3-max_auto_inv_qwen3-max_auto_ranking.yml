@@ -1,0 +1,11 @@
+source_file: phases_safe1_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/accelerating_invariant_generation/crafted/phases_safe1.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x < 0x0fffffff) {\n    if (x < 0xfff0) {\n        x++;\n    } else\
+    \ {\n        x += 2;\n    }\n}"
+  invariants: []
+  explanation: The distance from x to the upper bound 0x0fffffff strictly decreases
+    by 1 or 2 each iteration and remains non-negative.
+  ranking_function: 0x0fffffff - x

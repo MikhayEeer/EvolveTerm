@@ -1,0 +1,11 @@
+source_file: 38_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/pie/hola/38.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while(i<n) {\n    i++;\n    x++;\n    if(i%2 == 0) y++;\n}"
+  invariants: []
+  explanation: The loop variable i increases by 1 each iteration until it reaches
+    n; thus, n - i is a valid scalar ranking function that decreases by 1 each time
+    and is always non-negative under the loop condition.
+  ranking_function: n - i

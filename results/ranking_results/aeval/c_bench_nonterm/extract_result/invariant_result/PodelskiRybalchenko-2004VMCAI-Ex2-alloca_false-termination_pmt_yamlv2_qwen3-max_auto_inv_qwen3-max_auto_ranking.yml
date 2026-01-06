@@ -1,0 +1,11 @@
+source_file: PodelskiRybalchenko-2004VMCAI-Ex2-alloca_false-termination_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/PodelskiRybalchenko-2004VMCAI-Ex2-alloca_false-termination.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x >= 0) {\n  x = 2 *x + 10;\n}"
+  invariants:
+  - x >= 0
+  explanation: The loop does not terminate for any x >= 0 because x increases unboundedly.
+    Hence, no ranking function exists.
+  ranking_function: none

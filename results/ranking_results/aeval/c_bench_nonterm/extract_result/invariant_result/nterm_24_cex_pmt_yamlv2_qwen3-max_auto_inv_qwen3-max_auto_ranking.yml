@@ -1,0 +1,8 @@
+source_file: nterm_24_cex_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/nterm_24_cex.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x < z)\n{\n  if (x == y) { x = 0; y++; z = y+1; } else x++;\n}"
+  invariants: []
+  status: empty

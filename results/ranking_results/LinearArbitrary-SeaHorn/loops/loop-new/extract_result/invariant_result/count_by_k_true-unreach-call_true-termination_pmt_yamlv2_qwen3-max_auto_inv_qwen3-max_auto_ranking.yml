@@ -1,0 +1,13 @@
+source_file: count_by_k_true-unreach-call_true-termination_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/loops/loop-new/count_by_k_true-unreach-call_true-termination.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: for (i = 0; i < LARGE_INT*k; i += k) ;
+  invariants:
+  - i >= 0
+  - i <= LARGE_INT * k
+  - k != 0 ==> i % k == 0
+  explanation: The expression LARGE_INT * k - i is non-negative during loop execution
+    and decreases by k (>0) each iteration, ensuring termination.
+  ranking_function: LARGE_INT * k - i

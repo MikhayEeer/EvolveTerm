@@ -1,0 +1,12 @@
+source_file: 10_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/pie/hola/10.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while(unknown2()){\n    if(w) {\n        x++; \n        w=!w;\n    };\n \
+    \   if(!z) {\n        y++; \n        z=!z;\n    };\n}"
+  invariants: []
+  explanation: 'The expression counts the number of pending state-changing actions:
+    1 if w is true (will toggle), and 1 if z is false (will toggle). Each loop iteration
+    reduces this count by at least 1 when actions occur, and the count is always non-negative.'
+  ranking_function: w + (1 - z)

@@ -1,0 +1,9 @@
+source_file: nterm_ever_06_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/nterm_ever_06.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x < 52352)\n{\n  x = 37 * (__VERIFIER_nondet_int() % 1415);\n}"
+  invariants:
+  - x < 52352
+  status: empty

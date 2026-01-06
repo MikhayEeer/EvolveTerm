@@ -1,0 +1,8 @@
+source_file: ChenFlurMukhopadhyay-SAS2012-Ex2.03_false-no-overflow_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/ChenFlurMukhopadhyay-SAS2012-Ex2.03_false-no-overflow.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x > 0) {\n    x = x + y;\n    y = -2*y;\n}"
+  invariants: []
+  status: empty

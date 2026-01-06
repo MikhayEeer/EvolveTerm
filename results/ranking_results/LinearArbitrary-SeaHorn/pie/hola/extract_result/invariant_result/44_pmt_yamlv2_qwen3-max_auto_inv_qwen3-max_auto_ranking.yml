@@ -1,0 +1,10 @@
+source_file: 44_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/pie/hola/44.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while ( i <= k){\n  i++;\n  j= j +n;\n}"
+  invariants: []
+  explanation: The loop terminates because i increases toward k+1; k - i + 1 is a
+    non-negative integer that decreases by 1 each iteration.
+  ranking_function: k - i + 1

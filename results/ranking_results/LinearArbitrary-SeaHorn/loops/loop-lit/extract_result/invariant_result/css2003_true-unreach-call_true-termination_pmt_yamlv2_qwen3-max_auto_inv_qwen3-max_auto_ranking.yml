@@ -1,0 +1,12 @@
+source_file: css2003_true-unreach-call_true-termination_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/loops/loop-lit/css2003_true-unreach-call_true-termination.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (i < LARGE_INT) {\n    i = i + 1;\n    j = j + k;\n    k = k - 1;\n\
+    \    {;\n//@ assert(1 <= i + k && i + k <= 2 && i >= 1);\n}\n\n}"
+  invariants: []
+  explanation: The loop increments i until it reaches LARGE_INT. The expression LARGE_INT
+    - i is non-negative within the loop and decreases by 1 each iteration, ensuring
+    termination.
+  ranking_function: LARGE_INT - i

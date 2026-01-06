@@ -1,0 +1,11 @@
+source_file: HeizmannHoenickeLeikePodelski-ATVA2013-Fig8_true-termination-broken_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/HeizmannHoenickeLeikePodelski-ATVA2013-Fig8_true-termination-broken.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x >= 0) {\n    x = x - 2*y + 2;\n}"
+  invariants: []
+  explanation: Assuming y ≥ 2 (necessary for termination), x decreases by at least
+    2 each iteration and is non-negative at the start of each loop iteration, making
+    it a valid scalar ranking function.
+  ranking_function: x

@@ -1,0 +1,11 @@
+source_file: fib_merged_safe_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/llreve/fib_merged_safe.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while((n > 0)) {\n  h1 = f1 + g1;\n  f1 = g1;\n  g1 = h1;\n  n --;\n\n  h2\
+    \ = f2 + g2;\n  f2 = g2;\n  g2 = h2;\n\n    {;\n//@ assert(h2==h1+f1);\n}\n\n}"
+  invariants: []
+  explanation: The loop terminates because n decreases by 1 each iteration and is
+    bounded below by 0.
+  ranking_function: n

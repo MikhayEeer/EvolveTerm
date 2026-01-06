@@ -1,0 +1,11 @@
+source_file: nterm_ever_17_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/nterm_ever_17.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (range1 <= j && j <= range2) {\n    if (flag == 1 && i < range2) {\n\
+    \        i++;\n    } else if (i == range2) {\n        flag = -1;\n    } else if\
+    \ (flag == -1 && i > range1) {\n        i--;\n    } else if (i == range1) {\n\
+    \        flag = 1;\n    }\n    j = i;\n}"
+  invariants: []
+  status: empty

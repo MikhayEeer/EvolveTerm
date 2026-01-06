@@ -1,0 +1,12 @@
+source_file: jm2006_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-lit/jm2006.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while(x != 0) {\n    x--;\n    y--;\n}"
+  invariants:
+  - x - y == \old(x) - \old(y)
+  explanation: The variable x decreases by 1 each iteration and is bounded below by
+    0 when the loop terminates. The loop guard x != 0 ensures that as long as x >
+    0, the loop continues, and x serves as a valid ranking function.
+  ranking_function: x

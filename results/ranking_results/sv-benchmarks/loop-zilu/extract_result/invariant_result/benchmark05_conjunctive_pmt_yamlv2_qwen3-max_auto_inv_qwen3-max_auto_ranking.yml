@@ -1,0 +1,10 @@
+source_file: benchmark05_conjunctive_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-zilu/benchmark05_conjunctive.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x<n) {\n    x++;\n    if (x>y) y++;\n}"
+  invariants: []
+  explanation: The variable x increases by 1 each iteration, and the loop runs while
+    x < n. Thus, n - x is non-negative and strictly decreases by 1 per iteration.
+  ranking_function: n - x

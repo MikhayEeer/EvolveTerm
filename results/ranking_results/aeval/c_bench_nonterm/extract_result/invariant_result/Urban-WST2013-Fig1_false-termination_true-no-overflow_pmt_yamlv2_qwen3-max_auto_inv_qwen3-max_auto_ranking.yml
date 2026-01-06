@@ -1,0 +1,10 @@
+source_file: Urban-WST2013-Fig1_false-termination_true-no-overflow_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/Urban-WST2013-Fig1_false-termination_true-no-overflow.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x <= 10) {\n    if (x > 6) {\n        x = x + 2;\n    }\n}"
+  invariants: []
+  explanation: Assuming the loop makes progress (i.e., x > 6), the function 11 - x
+    is non-negative and decreases by 2 each iteration until x > 10.
+  ranking_function: 11 - x

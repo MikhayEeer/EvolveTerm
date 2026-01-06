@@ -1,0 +1,11 @@
+source_file: Middle_false-no-overflow_false-termination_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/Middle_false-no-overflow_false-termination.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (i != j) {\n    i = i-1;\n    j = j+1;\n}"
+  invariants:
+  - "i + j == \at(i + j, Pre)"
+  explanation: Under the assumption that the loop terminates (i ≥ j initially), i
+    - j is non-negative and decreases by 2 each iteration, ensuring termination.
+  ranking_function: i - j

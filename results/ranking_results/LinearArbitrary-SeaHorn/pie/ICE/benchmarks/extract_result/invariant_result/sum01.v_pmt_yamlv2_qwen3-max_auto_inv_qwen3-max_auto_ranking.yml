@@ -1,0 +1,16 @@
+source_file: sum01.v_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/pie/ICE/benchmarks/sum01.v.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "for(i=1; i<=n; i++) {\n    sn = sn + a;\n    v1 = unknown_int();\n    v2\
+    \ = unknown_int();\n    v3 = unknown_int();\n}"
+  invariants:
+  - 1 <= i
+  - i <= n + 1
+  - sn == \at(sn, LoopEntry) + (i - 1) * a
+  - a == \at(a, LoopEntry)
+  - n == \at(n, LoopEntry)
+  explanation: The expression n - i is non-negative under the loop condition i <=
+    n and decreases by exactly 1 in each iteration, ensuring termination.
+  ranking_function: n - i

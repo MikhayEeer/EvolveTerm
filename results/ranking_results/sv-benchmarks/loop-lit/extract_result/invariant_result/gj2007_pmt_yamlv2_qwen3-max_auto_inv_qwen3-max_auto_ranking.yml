@@ -1,0 +1,11 @@
+source_file: gj2007_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-lit/gj2007.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while(x < 100) {\n    if (x < 50) {\n        x = x + 1;\n    } else {\n \
+    \       x = x + 1;\n        y = y + 1;\n    }\n}"
+  invariants: []
+  explanation: The loop terminates because x increases by 1 each iteration until reaching
+    100. The expression 100 - x is non-negative and strictly decreases by 1 per iteration.
+  ranking_function: 100 - x

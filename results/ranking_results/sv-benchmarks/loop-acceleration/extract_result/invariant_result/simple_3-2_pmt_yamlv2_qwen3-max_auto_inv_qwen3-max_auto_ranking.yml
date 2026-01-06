@@ -1,0 +1,10 @@
+source_file: simple_3-2_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-acceleration/simple_3-2.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x < N) {\n  x += 2;\n}"
+  invariants: []
+  explanation: The expression N - x is non-negative under the loop condition x < N
+    and decreases by 2 in each iteration, ensuring termination.
+  ranking_function: N - x

@@ -1,0 +1,11 @@
+source_file: 02_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/pie/hola/02.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while(unknown2()) \n{\n    z+=x+y+w;\n    y++;\n    if(z%2==1) \n      x++;\n\
+    \    w+=2; \n}"
+  invariants: []
+  explanation: Assuming the loop guard implies an upper bound N on y, the expression
+    N - y is non-negative and decreases by exactly 1 in each iteration, ensuring termination.
+  ranking_function: N - y

@@ -1,0 +1,13 @@
+source_file: w2_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/pie/ICE/benchmarks/w2.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while ( 0 == 0 ) {\n    if ( input ) {\n\n        x = x + 1;\n        if\
+    \ (x >= n ) {\n            break;\n        }\n    }\n    input = unknown_int();\n\
+    }"
+  invariants: []
+  explanation: Measures the remaining increments needed for x to reach n. Decreases
+    by 1 whenever input is true, ensuring termination after at most n - x_initial
+    progress steps.
+  ranking_function: n - x

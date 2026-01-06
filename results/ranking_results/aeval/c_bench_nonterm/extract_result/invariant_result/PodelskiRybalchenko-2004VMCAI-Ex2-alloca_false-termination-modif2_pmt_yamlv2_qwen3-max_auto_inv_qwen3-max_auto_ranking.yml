@@ -1,0 +1,10 @@
+source_file: PodelskiRybalchenko-2004VMCAI-Ex2-alloca_false-termination-modif2_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/PodelskiRybalchenko-2004VMCAI-Ex2-alloca_false-termination-modif2.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x >= 0 || d < 0) {\n    d = __VERIFIER_nondet_int();\n    x = 2 *x\
+    \  + d;\n}"
+  invariants:
+  - x >= 0 || d < 0
+  status: empty

@@ -1,0 +1,11 @@
+source_file: nonlin_mult_nonterm_1_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/nonlin_mult_nonterm_1.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x > 1)\n{\n  x = x * x;\n}"
+  invariants:
+  - x > 1
+  explanation: The loop is non-terminating because x grows without bound when x >
+    1, so no ranking function exists.
+  ranking_function: none

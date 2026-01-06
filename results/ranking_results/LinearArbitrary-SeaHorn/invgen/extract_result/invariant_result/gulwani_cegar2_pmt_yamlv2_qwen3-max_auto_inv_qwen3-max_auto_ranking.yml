@@ -1,0 +1,10 @@
+source_file: gulwani_cegar2_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/invgen/gulwani_cegar2.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while( x < n ) {\n    if(unknown())\n        m = x;\n    x++;\n}"
+  invariants: []
+  explanation: The loop increments x until it reaches n; n - x is non-negative and
+    decreases by 1 each iteration.
+  ranking_function: n - x

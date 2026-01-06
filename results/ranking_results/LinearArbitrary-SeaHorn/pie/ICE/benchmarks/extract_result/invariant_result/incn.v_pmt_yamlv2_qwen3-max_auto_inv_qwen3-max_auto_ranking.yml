@@ -1,0 +1,12 @@
+source_file: incn.v_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/pie/ICE/benchmarks/incn.v.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while(x < N)\n{\n  x = x + 1;\n  v1 = unknown_int();\n  v2 = unknown_int();\n\
+    \  v3 = unknown_int();\n}"
+  invariants:
+  - x <= N
+  explanation: The expression N - x is non-negative under the loop condition x < N
+    and decreases by exactly 1 in each iteration, ensuring termination.
+  ranking_function: N - x

@@ -1,0 +1,12 @@
+source_file: benchmark30_conjunctive_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-zilu/benchmark30_conjunctive.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (unknown_bool()) {\n  x++;\n  y++;\n}"
+  invariants:
+  - x - y == \at(x - y, Pre)
+  explanation: No ranking function exists because both x and y increase without bound,
+    and their difference is constant. No non-negative expression over x and y strictly
+    decreases with each iteration.
+  ranking_function: none

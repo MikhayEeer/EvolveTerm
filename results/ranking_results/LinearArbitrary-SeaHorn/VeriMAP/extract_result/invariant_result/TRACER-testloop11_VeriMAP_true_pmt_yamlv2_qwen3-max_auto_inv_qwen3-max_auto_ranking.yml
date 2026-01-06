@@ -1,0 +1,13 @@
+source_file: TRACER-testloop11_VeriMAP_true_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/VeriMAP/TRACER-testloop11_VeriMAP_true.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (unknown()) {\n    if (s == 2){\n      if (e ==0) e=1;\n      s = 3;\n\
+    \    }\n    else if (s == 3){\n      if (e ==1) e=2;\n      s=4;\n    }\n    else\
+    \ if (s == 4){\n      {;\n//@ assert(!( e == 3 ));\n}\n\n      s=5;\n    }\n}"
+  invariants: []
+  explanation: The variable `s` progresses deterministically from 2 → 3 → 4 → 5. The
+    expression `5 - s` starts at 3 and decreases by 1 each iteration until it reaches
+    0, ensuring termination within 3 steps.
+  ranking_function: 5 - s

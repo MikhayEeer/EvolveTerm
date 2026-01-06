@@ -1,0 +1,10 @@
+source_file: nonlin_div_nonterm_1_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/nonlin_div_nonterm_1.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x >= 0)\n{\n  x = x / y;\n}"
+  invariants:
+  - x >= 0
+  - y == \at(y, Pre)
+  status: empty

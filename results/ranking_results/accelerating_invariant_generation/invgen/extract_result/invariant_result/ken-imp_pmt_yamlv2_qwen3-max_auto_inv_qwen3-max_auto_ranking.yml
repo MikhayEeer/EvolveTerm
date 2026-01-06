@@ -1,0 +1,12 @@
+source_file: ken-imp_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/accelerating_invariant_generation/invgen/ken-imp.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while(x!=0) {\n    x--;\n    y--;\n}"
+  invariants:
+  - x - y == \at(x, Pre) - \at(y, Pre)
+  explanation: The loop guard is x != 0, and x decreases by 1 each iteration. Assuming
+    x ≥ 0 initially (required for termination), x itself is a non-negative integer
+    that strictly decreases, making it a valid scalar ranking function.
+  ranking_function: x

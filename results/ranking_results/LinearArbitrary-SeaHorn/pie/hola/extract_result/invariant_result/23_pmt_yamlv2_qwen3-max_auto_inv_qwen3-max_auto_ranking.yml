@@ -1,0 +1,12 @@
+source_file: 23_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/pie/hola/23.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "for (i=0; i < n; ++i)\n   sum = sum +i;"
+  invariants:
+  - 0 <= i && i <= n
+  - sum == i * (i - 1) / 2
+  explanation: The expression n - i is non-negative during loop execution and decreases
+    by 1 in every iteration, ensuring termination.
+  ranking_function: n - i

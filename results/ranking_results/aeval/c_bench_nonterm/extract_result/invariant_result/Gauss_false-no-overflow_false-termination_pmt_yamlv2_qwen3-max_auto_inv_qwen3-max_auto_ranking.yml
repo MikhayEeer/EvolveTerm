@@ -1,0 +1,10 @@
+source_file: Gauss_false-no-overflow_false-termination_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/Gauss_false-no-overflow_false-termination.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (n != 0) {\n    sum = sum + n;\n    n = n - 1;\n}"
+  invariants: []
+  explanation: The variable n is non-negative and decreases by 1 each iteration until
+    it reaches 0, ensuring termination.
+  ranking_function: n

@@ -1,0 +1,14 @@
+source_file: TRACER-testabs15_VeriMAP_true_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/VeriMAP/TRACER-testabs15_VeriMAP_true.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (i < n){\n  if (TRACER_NONDET){\n    a=a+1;\n    b=b+2;\n  }\n  else{\n\
+    \    a=a+2;\n    b=b+1;\n  }\n  i++;\n}"
+  invariants:
+  - 0 <= i && i <= n
+  - a + b - 3 * i == \at(a + b - 3 * i, Pre)
+  - a + b == \at(a + b, Pre) + 3 * i
+  explanation: The loop variable i increases by 1 each iteration and is bounded above
+    by n, so n - i is a non-negative integer that strictly decreases.
+  ranking_function: n - i

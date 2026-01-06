@@ -1,0 +1,14 @@
+source_file: benchmark12_linear_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-zilu/benchmark12_linear.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (unknown_bool()) {\n  if(x>0) y=y+x;\n}"
+  invariants:
+  - x == \at(x, Pre)
+  - y >= \at(y, Pre)
+  explanation: No valid ranking function exists because the loop variables do not
+    decrease; x is constant and y is non-decreasing. The loop may not terminate. The
+    function '0' is provided only to satisfy output format but is not a valid ranking
+    function.
+  ranking_function: '0'

@@ -1,0 +1,11 @@
+source_file: sendmail-close-angle_true-unreach-call_true-termination_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/loops/loop-invgen/sendmail-close-angle_true-unreach-call_true-termination.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: while (unknown_int()) { if (buf == buflim) break; {; //@ assert(0<=buf); }
+  invariants:
+  - 0 <= buf
+  explanation: The loop guard is non-deterministic and no variable updates are visible;
+    thus, no provable ranking function can be constructed.
+  ranking_function: N/A

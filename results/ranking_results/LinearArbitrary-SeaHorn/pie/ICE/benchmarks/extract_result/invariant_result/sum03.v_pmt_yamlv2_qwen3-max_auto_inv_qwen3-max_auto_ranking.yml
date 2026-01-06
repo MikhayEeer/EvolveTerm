@@ -1,0 +1,13 @@
+source_file: sum03.v_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/pie/ICE/benchmarks/sum03.v.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while(1){\n    sn = sn + a;\n    x++;\n    {;\n//@ assert(sn==x*a || sn ==\
+    \ 0);\n}\n\n    v1 = unknown_int();\n    v2 = unknown_int();\n    v3 = unknown_int();\n\
+    }"
+  invariants:
+  - sn == x * a
+  explanation: Assuming the loop is bounded by an implicit condition x < n, the expression
+    n - x is non-negative and decreases by 1 each iteration, ensuring termination.
+  ranking_function: n - x

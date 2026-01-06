@@ -1,0 +1,16 @@
+source_file: substring1_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/accelerating_invariant_generation/cav/substring1.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: 'while (i < k) {
+
+    i++;
+
+    j++;
+
+    }'
+  invariants: []
+  explanation: The expression k - i is non-negative under the loop condition i < k
+    and decreases by 1 in each iteration, ensuring termination.
+  ranking_function: k - i

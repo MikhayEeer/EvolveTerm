@@ -1,0 +1,10 @@
+source_file: 41_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/pie/hola/41.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while(i <= n) {\n  i++;\n  j+=i;\n}"
+  invariants: []
+  explanation: The expression n - i + 1 is always positive when i <= n and decreases
+    by exactly 1 in each iteration, ensuring termination.
+  ranking_function: n - i + 1

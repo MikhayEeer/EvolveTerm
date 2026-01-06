@@ -1,0 +1,12 @@
+source_file: PastaC10_false-no-overflow_false-termination_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/PastaC10_false-no-overflow_false-termination.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (i - j >= 1) {\n    i = i - __VERIFIER_nondet_int();\n    r = __VERIFIER_nondet_int()\
+    \ + 1;\n    j = j + r;\n}"
+  invariants: []
+  explanation: Assuming __VERIFIER_nondet_int() returns non-negative integers, i -
+    j decreases by at least 1 each iteration and is always ≥1 during loop execution,
+    ensuring termination.
+  ranking_function: i - j

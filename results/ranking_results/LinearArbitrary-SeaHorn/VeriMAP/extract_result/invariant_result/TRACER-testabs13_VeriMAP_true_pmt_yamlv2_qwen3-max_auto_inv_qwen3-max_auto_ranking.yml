@@ -1,0 +1,12 @@
+source_file: TRACER-testabs13_VeriMAP_true_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/VeriMAP/TRACER-testabs13_VeriMAP_true.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: while (i < n){ i++; }
+  invariants:
+  - i <= n
+  - n == \at(n, Pre)
+  explanation: The expression n - i is non-negative due to the invariant i <= n, and
+    decreases by 1 on each iteration because i increments while n remains constant.
+  ranking_function: n - i

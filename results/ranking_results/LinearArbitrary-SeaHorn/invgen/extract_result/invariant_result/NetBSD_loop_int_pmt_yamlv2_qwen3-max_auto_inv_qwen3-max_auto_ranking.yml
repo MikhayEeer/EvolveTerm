@@ -1,0 +1,15 @@
+source_file: NetBSD_loop_int_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/invgen/NetBSD_loop_int.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "for (;;)\n  if (glob3_pathend_off + glob3_dc >= glob3_pathlim_off) break;\n\
+    \  else {\n    \n    glob3_dc++;\n    \n    {;\n//@ assert(0 <= glob3_dc);\n}\n\
+    {;\n//@ assert(glob3_dc < MAXPATHLEN + 1);\n}\n\n    if (unknown()) goto END;\n\
+    \  }"
+  invariants:
+  - glob3_dc >= 0
+  - glob3_dc < MAXPATHLEN + 1
+  explanation: This scalar ranking function is always non-negative under the loop
+    condition and decreases by exactly 1 on each iteration, ensuring termination.
+  ranking_function: glob3_pathlim_off - glob3_pathend_off - glob3_dc

@@ -1,0 +1,11 @@
+source_file: cegar2_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/pie/ICE/benchmarks/cegar2.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x < N) {\n\n    input = unknown_int();\n    if( input ) {\n\n    \
+    \    m = x;\n    }\n\n    x = x + 1;\n\n}"
+  invariants: []
+  explanation: The loop increments x until it reaches N. The difference N - x is non-negative
+    and decreases by 1 each iteration, guaranteeing termination.
+  ranking_function: N - x

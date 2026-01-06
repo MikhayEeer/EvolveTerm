@@ -1,0 +1,9 @@
+source_file: xy10_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/accelerating_invariant_generation/cav/xy10.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (unknown_int()){\n    x += 10;\n    y += 1;\n}"
+  invariants:
+  - x - 10 * y == \old(x - 10 * y)
+  status: empty

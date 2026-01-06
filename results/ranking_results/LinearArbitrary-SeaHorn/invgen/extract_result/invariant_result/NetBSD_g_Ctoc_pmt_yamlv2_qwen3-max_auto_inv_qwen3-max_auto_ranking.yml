@@ -1,0 +1,10 @@
+source_file: NetBSD_g_Ctoc_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/invgen/NetBSD_g_Ctoc.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: while (1) { if ( len == 0 ){ goto END; }
+  invariants: []
+  explanation: Assuming len is non-negative and strictly decreases each iteration
+    until reaching 0, len serves as a valid scalar ranking function.
+  ranking_function: len

@@ -1,0 +1,15 @@
+source_file: NarrowKonv_false-termination_true-no-overflow_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/NarrowKonv_false-termination_true-no-overflow.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (0 <= i && i <= range) {\n    if (!(0 == i && i == range)) {\n    \
+    \    if (i == range) {\n            i = 0;\n            range = range-1;\n   \
+    \     } else {\n            i = i+1;\n        }\n    }\n}"
+  invariants:
+  - 0 <= i
+  - i <= range
+  - range >= 0
+  explanation: The lexicographic tuple (range, range - i) strictly decreases in every
+    loop iteration under the given conditions, ensuring termination.
+  ranking_function: (range, range - i)

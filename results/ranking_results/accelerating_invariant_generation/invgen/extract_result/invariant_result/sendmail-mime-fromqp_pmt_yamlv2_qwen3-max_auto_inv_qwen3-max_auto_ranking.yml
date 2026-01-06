@@ -1,0 +1,12 @@
+source_file: sendmail-mime-fromqp_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/accelerating_invariant_generation/invgen/sendmail-mime-fromqp.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: while(__BLAST_NONDET) { if(__BLAST_NONDET) { if(__BLAST_NONDET) goto AFTERLOOP;
+    if(__BLAST_NONDET) { out = 0; nchar = 0; goto LOOPEND; }
+  invariants: []
+  explanation: The loop body contains only non-deterministic guards and no observable
+    variables that decrease. Without additional invariants or variables, no ranking
+    function can be constructed.
+  ranking_function: none

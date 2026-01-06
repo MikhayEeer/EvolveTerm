@@ -1,0 +1,10 @@
+source_file: nterm_17_cex_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/nterm_17_cex.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x < n) {\n  if (m == 1) {\n    x = x + 1;\n  }\n}"
+  invariants: []
+  explanation: Assuming m == 1 (so x increments each iteration), n - x is non-negative
+    and decreases by 1 per iteration, ensuring termination.
+  ranking_function: n - x

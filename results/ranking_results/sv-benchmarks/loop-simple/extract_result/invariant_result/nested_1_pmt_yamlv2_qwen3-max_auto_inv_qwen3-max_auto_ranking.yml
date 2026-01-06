@@ -1,0 +1,16 @@
+source_file: nested_1_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-simple/nested_1.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: 'for(a = 0; a < 6; ++a) {
+
+
+    }'
+  invariants:
+  - 0 <= a
+  - a <= 6
+  - 0 <= a && a <= 6
+  explanation: The expression 6 - a is non-negative while a < 6 and decreases by exactly
+    1 per iteration, ensuring termination.
+  ranking_function: 6 - a

@@ -1,0 +1,11 @@
+source_file: 15_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/pie/hola/15.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while( j < n ) {\n  j++;\n  k--;\n}"
+  invariants:
+  - j + k == \at(j + k, Pre)
+  explanation: The loop terminates as j increases toward n; n - j is non-negative
+    and decreases by 1 each iteration.
+  ranking_function: n - j

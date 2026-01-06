@@ -1,0 +1,11 @@
+source_file: Narrowing_false-termination_true-no-overflow_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/Narrowing_false-termination_true-no-overflow.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (0 <= i && i <= range) {\n    if (i == 0) {\n        up = 1;\n    }\n\
+    \    if (i == range) {\n        up = 0;\n    }\n    if (up == 1) {\n        i\
+    \ = i+1;\n    }\n    if (up == 0) {\n        i = i-1;\n    }\n    if (i == range-2)\
+    \ {\n        range = range-1;\n    }\n}"
+  invariants: []
+  status: empty

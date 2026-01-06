@@ -1,0 +1,14 @@
+source_file: Swingers_false-termination_true-no-overflow_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/Swingers_false-termination_true-no-overflow.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (bob + samantha < 100) {\n    temp = bob;\n    bob = samantha;\n  \
+    \  samantha = temp;\n}"
+  invariants:
+  - bob + samantha == \at(bob + samantha, Pre)
+  explanation: This function is bounded below by 1 when the loop condition holds,
+    but it remains constant across iterations due to the invariant bob + samantha
+    == constant. Therefore, it does NOT strictly decrease, and no valid ranking function
+    exists for this non-terminating loop.
+  ranking_function: 100 - (bob + samantha)

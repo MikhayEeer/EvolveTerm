@@ -1,0 +1,2 @@
+- 2026/01/05 23:10
+evolveterm ranking --input results/invariant_results_pmt_cot/ --mode yaml -r --output results/ranking_results/ --retry-empty 2

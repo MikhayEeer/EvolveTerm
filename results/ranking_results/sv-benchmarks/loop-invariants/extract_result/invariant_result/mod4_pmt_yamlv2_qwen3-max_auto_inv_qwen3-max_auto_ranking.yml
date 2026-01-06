@@ -1,0 +1,14 @@
+source_file: mod4_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-invariants/mod4.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (unknown_int()) {\n    x += 4;\n}"
+  invariants:
+  - x % 4 == \at(x % 4, LoopEntry)
+  explanation: The loop variable x increases by 4 each iteration with no upper bound
+    in the guard condition. Since the loop guard 'unknown_int()' does not depend on
+    x (as per visible code), no non-negative integer-valued function over the program
+    state can be shown to decrease strictly every iteration. Thus, no ranking function
+    exists.
+  ranking_function: undefined

@@ -1,0 +1,11 @@
+source_file: cggmp2005_true-unreach-call_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/pie/ICE/benchmarks/cggmp2005_true-unreach-call.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (j >= i) {\n    i = i + 2;\n    j = -1 + j;\n}"
+  invariants:
+  - "i + 2 * j == \at(i + 2 * j, Pre)"
+  explanation: The expression j - i is non-negative under the loop guard j >= i and
+    decreases by 3 in each iteration, ensuring termination.
+  ranking_function: j - i

@@ -1,0 +1,8 @@
+source_file: MenloPark_true-no-overflow_true-termination_true-valid-memsafety_modif_broken1_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/MenloPark_true-no-overflow_true-termination_true-valid-memsafety_modif_broken1.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x > 0) {\n    x = x - y;\n    y = y - z;\n    z = -z;\n}"
+  invariants: []
+  status: empty

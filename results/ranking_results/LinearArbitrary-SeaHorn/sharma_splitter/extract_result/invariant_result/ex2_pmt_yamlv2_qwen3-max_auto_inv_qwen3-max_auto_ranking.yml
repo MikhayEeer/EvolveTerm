@@ -1,0 +1,13 @@
+source_file: ex2_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/sharma_splitter/ex2.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x<100) {\n    if(x<=50)\n            y=y+1;\n    else\n          \
+    \  y=y-1;\n\n    if(x<25)\n            z=z+1;\n    else\n            z=z+5;\n\n\
+    \    x=x+1;\n}"
+  invariants: []
+  explanation: The loop variable x increases by 1 each iteration and is bounded above
+    by 100; thus, 100 - x is a non-negative integer that strictly decreases by 1 per
+    iteration.
+  ranking_function: 100 - x

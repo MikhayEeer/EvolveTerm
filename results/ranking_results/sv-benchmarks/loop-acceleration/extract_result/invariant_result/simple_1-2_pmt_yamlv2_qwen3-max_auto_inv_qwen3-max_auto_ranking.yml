@@ -1,0 +1,10 @@
+source_file: simple_1-2_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-acceleration/simple_1-2.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x < 0x0fffffff) {\n  x += 2;\n}"
+  invariants: []
+  explanation: The distance from x to the upper bound decreases by 2 each iteration,
+    ensuring termination.
+  ranking_function: 0x0fffffff - x

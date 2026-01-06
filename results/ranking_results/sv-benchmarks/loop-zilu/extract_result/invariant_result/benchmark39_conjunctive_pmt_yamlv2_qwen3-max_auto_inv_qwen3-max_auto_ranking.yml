@@ -1,0 +1,12 @@
+source_file: benchmark39_conjunctive_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-zilu/benchmark39_conjunctive.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x > 0) {\n    x-=4;\n    y--;\n}"
+  invariants:
+  - x - 4 * y == \at(x - 4 * y, Pre)
+  - x % 4 == \at(x, Pre) % 4
+  explanation: x is always positive at loop entry and decreases by 4 each iteration,
+    ensuring termination.
+  ranking_function: x

@@ -1,0 +1,11 @@
+source_file: benchmark32_linear_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-zilu/benchmark32_linear.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (unknown_bool()) {\n    if(x==1) x=2;\n    else if (x==2) x=1;\n}"
+  invariants: []
+  explanation: The loop condition is independent of program variables, and the state
+    of x cycles between 1 and 2 indefinitely. No expression over program variables
+    can strictly decrease on every iteration, so no ranking function exists.
+  ranking_function: none

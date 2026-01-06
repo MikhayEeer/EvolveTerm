@@ -1,0 +1,11 @@
+source_file: simple_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/invgen/simple.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while( x < n ){\n  x++;\n}"
+  invariants:
+  - x <= n
+  explanation: The expression n - x is always non-negative under the invariant x <=
+    n and decreases by 1 in every loop iteration, ensuring termination.
+  ranking_function: n - x

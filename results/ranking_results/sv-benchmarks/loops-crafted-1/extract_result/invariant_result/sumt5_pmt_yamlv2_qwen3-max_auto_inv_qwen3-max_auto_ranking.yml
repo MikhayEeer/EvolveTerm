@@ -1,0 +1,19 @@
+source_file: sumt5_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loops-crafted-1/sumt5.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while( l < n ) {\n\n    if(!(l%5))\n      v3 = v3 + 1;\n    else if(!(l%4))\n\
+    \      v4 = v4 + 1;\n    else if(!(l%3))\n      i = i + 1;\n    else if(!(l%2))\
+    \ \n        j = j+1;\n    else \n      k = k+1;\n  l = l+1;\n}"
+  invariants:
+  - 0 <= l && l <= n
+  - v3 >= 0
+  - v4 >= 0
+  - i >= 0
+  - j >= 0
+  - k >= 0
+  - v3 + v4 + i + j + k == l
+  explanation: The loop variable `l` increases by 1 each iteration until it reaches
+    `n`; thus, `n - l` is non-negative and strictly decreases by 1 per iteration.
+  ranking_function: n - l

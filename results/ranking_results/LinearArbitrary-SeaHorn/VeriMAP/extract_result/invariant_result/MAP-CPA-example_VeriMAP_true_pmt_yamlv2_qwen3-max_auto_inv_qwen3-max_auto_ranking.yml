@@ -1,0 +1,13 @@
+source_file: MAP-CPA-example_VeriMAP_true_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/VeriMAP/MAP-CPA-example_VeriMAP_true.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (1) {\n    if (i == 20) {\n       goto LOOPEND;\n    } else {\n   \
+    \    i++;\n       a++;\n    }\n\n    if (i != a) {\n      goto ERROR;\n    }\n\
+    }"
+  invariants:
+  - i == a
+  explanation: The loop increments i until it reaches 20. The expression 20 - i is
+    non-negative and decreases by 1 each iteration, ensuring termination.
+  ranking_function: 20 - i

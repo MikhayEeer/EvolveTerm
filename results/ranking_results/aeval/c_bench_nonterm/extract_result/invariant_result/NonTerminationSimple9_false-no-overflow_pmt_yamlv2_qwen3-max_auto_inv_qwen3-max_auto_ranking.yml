@@ -1,0 +1,11 @@
+source_file: NonTerminationSimple9_false-no-overflow_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/NonTerminationSimple9_false-no-overflow.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x >= 0) {\n  x = x + __VERIFIER_nondet_int();\n}"
+  invariants:
+  - x >= 0
+  explanation: The loop may not terminate because x can increase indefinitely due
+    to nondeterministic positive increments. Hence, no ranking function exists.
+  ranking_function: none

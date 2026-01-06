@@ -1,0 +1,12 @@
+source_file: 05_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/accelerating_invariant_generation/cav/05.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while(unknown1())\n{\n  x++;\n  y++;\n  i+=x;\n  j+=y;\n  if(flag)  j+=1;\n\
+    \  j = j;\n}"
+  invariants: []
+  explanation: Assuming the loop guard 'unknown1()' is equivalent to 'x < n' for some
+    fixed upper bound n, the expression n - x is non-negative and decreases by exactly
+    1 each iteration, ensuring termination.
+  ranking_function: n - x

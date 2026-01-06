@@ -1,0 +1,10 @@
+source_file: benchmark26_linear_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-zilu/benchmark26_linear.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x<y) {\n  x=x+1;\n}"
+  invariants: []
+  explanation: The difference y - x is a non-negative integer that decreases by 1
+    each iteration while the loop condition x < y holds.
+  ranking_function: y - x

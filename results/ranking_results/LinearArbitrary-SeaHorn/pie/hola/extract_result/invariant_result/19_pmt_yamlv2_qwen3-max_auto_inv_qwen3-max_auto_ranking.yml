@@ -1,0 +1,10 @@
+source_file: 19_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/pie/hola/19.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while(x<n) {\n  x++;\n  if(x>m) y++;\n}"
+  invariants: []
+  explanation: The loop terminates because x increases toward n; n - x is a non-negative
+    integer that decreases by 1 each iteration.
+  ranking_function: n - x

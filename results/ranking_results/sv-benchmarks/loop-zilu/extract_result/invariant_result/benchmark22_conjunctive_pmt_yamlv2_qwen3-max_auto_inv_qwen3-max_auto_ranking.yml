@@ -1,0 +1,9 @@
+source_file: benchmark22_conjunctive_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-zilu/benchmark22_conjunctive.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (unknown_bool()) {\n    x=x+y;\n    y++;\n}"
+  invariants:
+  - x - y*(y - 1)/2 == \at(x - y*(y - 1)/2, Pre)
+  status: empty

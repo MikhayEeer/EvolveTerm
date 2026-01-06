@@ -1,0 +1,12 @@
+source_file: benchmark18_conjunctive_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-zilu/benchmark18_conjunctive.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (i < n) {\n  i++;k++;\n}"
+  invariants:
+  - i <= n
+  - k - i == \at(k - i, Pre)
+  explanation: The loop terminates because i increases toward n; n - i is non-negative
+    and decreases by 1 each iteration.
+  ranking_function: n - i

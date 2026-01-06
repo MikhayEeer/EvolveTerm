@@ -1,0 +1,10 @@
+source_file: fig9_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/pie/ICE/benchmarks/fig9.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while(y >= 0) {\n    y = y + x;\n}"
+  invariants: []
+  explanation: Assuming x < 0 (required for termination), y is non-negative in the
+    loop and strictly decreases by |x| each iteration.
+  ranking_function: y

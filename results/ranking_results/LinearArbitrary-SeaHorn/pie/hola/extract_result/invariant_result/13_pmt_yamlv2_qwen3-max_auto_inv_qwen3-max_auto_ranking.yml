@@ -1,0 +1,12 @@
+source_file: 13_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/pie/hola/13.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while(unknown1()){ \n  if (flag)\n    j = j + 4;\n  else {\n    j = j + 2;\n\
+    \    k = k + 1;\n  }\n}"
+  invariants: []
+  explanation: Assuming the loop guard includes an upper bound 'n' on 'j', the expression
+    'n - j' is non-negative within the loop and decreases by at least 2 in every iteration,
+    ensuring termination.
+  ranking_function: n - j

@@ -1,0 +1,10 @@
+source_file: fig2_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/accelerating_invariant_generation/dagger/fig2.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (unknown_int() ) {\n\nif (unknown_int()) {x++; y = y+2;}\nelse if (unknown_int())\
+    \ {\n    if (x >= 4) {x++; y = y+3; z = z+10; w = w+10;}\n}\nelse if (x >= z &&\
+    \ w > y) {x = -x; y = -y; }\n\n}"
+  invariants: []
+  status: empty

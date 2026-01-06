@@ -1,0 +1,11 @@
+source_file: iftelse_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loops-crafted-1/iftelse.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while( i < n ) {\n    i = i + 3;\n    if(i%2)\n        j = j+3;\n    else\n\
+    \        k = k+3;\n    if(n>0)\n      {;\n//@ assert( (i/2<=j) );\n}\n\n  }"
+  invariants: []
+  explanation: The loop variable i increases by 3 each iteration, so n - i decreases
+    by 3 and remains non-negative while the loop condition holds.
+  ranking_function: n - i

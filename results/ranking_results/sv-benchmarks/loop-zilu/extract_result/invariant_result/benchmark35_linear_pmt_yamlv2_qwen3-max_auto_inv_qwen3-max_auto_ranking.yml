@@ -1,0 +1,13 @@
+source_file: benchmark35_linear_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-zilu/benchmark35_linear.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while ((x>=0) && (x<10)) {\n  x=x+1;\n}"
+  invariants:
+  - x >= 0
+  - x <= 10
+  - 0 <= x && x <= 10
+  explanation: The expression 10 - x is non-negative within the loop (since x < 10)
+    and decreases by 1 in each iteration, ensuring termination.
+  ranking_function: 10 - x

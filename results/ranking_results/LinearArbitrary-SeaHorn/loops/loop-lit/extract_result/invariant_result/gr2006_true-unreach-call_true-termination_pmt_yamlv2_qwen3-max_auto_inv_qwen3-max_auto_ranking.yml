@@ -1,0 +1,12 @@
+source_file: gr2006_true-unreach-call_true-termination_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/loops/loop-lit/gr2006_true-unreach-call_true-termination.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (1) {\n    if (x < 50) {\n        y++;\n    } else {\n        y--;\n\
+    \    }\n    if (y < 0) break;\n    x++;\n}"
+  invariants: []
+  explanation: The first component (50 - x, floored at 0) decreases while x < 50;
+    once x >= 50, the second component y decreases. Both components are non-negative
+    during loop execution, ensuring termination.
+  ranking_function: (max(0, 50 - x), y)

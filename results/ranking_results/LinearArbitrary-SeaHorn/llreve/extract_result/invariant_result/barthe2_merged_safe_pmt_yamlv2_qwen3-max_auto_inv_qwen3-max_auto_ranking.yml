@@ -1,0 +1,12 @@
+source_file: barthe2_merged_safe_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/llreve/barthe2_merged_safe.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (1)\n{\n    if ( i1 <= n) {\n        x1 = x1 + i1;\n        i1++;\n\
+    \    }\n\n    if ( i2 <= n) {\n        x2 = x2 + i2;\n        i2++;\n    }\n\n\
+    \    if (i1>n && i2>n) break;\n    {;\n//@ assert(x2==x1+i1);\n}\n\n}"
+  invariants: []
+  explanation: This function is always non-negative (since i1, i2 ≤ n+1) and strictly
+    decreases by at least 1 in every loop iteration, ensuring termination.
+  ranking_function: 2*(n + 1) - i1 - i2

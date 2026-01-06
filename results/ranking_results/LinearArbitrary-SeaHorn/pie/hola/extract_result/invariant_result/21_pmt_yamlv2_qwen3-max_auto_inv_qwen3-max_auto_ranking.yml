@@ -1,0 +1,15 @@
+source_file: 21_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/pie/hola/21.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while( i < n ) {\n    i++;\n    if(unknown2() % 2 == 0) \n      v = 0;\n\
+    \    else v = 1;\n    \n    if( v == 0 )\n      k += c1;\n    else \n      k +=\
+    \ c2;\n}"
+  invariants:
+  - 0 <= i && i <= n
+  - i >= 0
+  - i <= n
+  explanation: The loop variable i increases by 1 each iteration until it reaches
+    n; thus, n - i is a non-negative integer that strictly decreases each loop iteration.
+  ranking_function: n - i

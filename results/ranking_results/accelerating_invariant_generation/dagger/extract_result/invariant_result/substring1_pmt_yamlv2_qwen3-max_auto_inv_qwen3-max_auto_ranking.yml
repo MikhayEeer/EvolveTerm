@@ -1,0 +1,18 @@
+source_file: substring1_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/accelerating_invariant_generation/dagger/substring1.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: 'while (i < k) {
+
+    i++;
+
+    j++;
+
+    }'
+  invariants:
+  - i <= k
+  - j - i == \at(j - i, Pre)
+  explanation: The difference k - i is non-negative and decreases by 1 each iteration
+    until the loop terminates.
+  ranking_function: k - i

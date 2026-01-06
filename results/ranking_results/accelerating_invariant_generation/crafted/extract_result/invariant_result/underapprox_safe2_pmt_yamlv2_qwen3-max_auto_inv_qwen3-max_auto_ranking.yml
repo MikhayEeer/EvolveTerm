@@ -1,0 +1,10 @@
+source_file: underapprox_safe2_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/accelerating_invariant_generation/crafted/underapprox_safe2.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x < 6) {\n    x++;\n    y *= 2;\n}"
+  invariants: []
+  explanation: The loop terminates because x increases toward 6; 6 - x is a non-negative
+    integer that decreases by 1 each iteration.
+  ranking_function: 6 - x

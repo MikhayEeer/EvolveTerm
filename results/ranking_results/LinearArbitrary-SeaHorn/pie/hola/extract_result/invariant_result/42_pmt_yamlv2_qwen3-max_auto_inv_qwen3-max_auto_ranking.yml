@@ -1,0 +1,10 @@
+source_file: 42_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/pie/hola/42.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while(unknown1()){\n    if(flag)\n    {\n        a = x+y;\n        x++;\n\
+    \    }\n    else\n    {\n        a = x+y+1;\n        y++;\n    }\n    if(a%2==1)\n\
+    \        y++;\n    else\n        x++;      \n}"
+  invariants: []
+  status: empty

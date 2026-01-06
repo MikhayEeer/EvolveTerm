@@ -1,0 +1,9 @@
+source_file: benchmark06_conjunctive_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-zilu/benchmark06_conjunctive.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (unknown_bool()) {\n    if(j==i) {x++;y--;} else {y++;x--;} j++;\n}"
+  invariants:
+  - x + y == \at(x + y, LoopEntry)
+  status: empty

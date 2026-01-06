@@ -1,0 +1,11 @@
+source_file: count_up_down-1_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loops/count_up_down-1.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while(x>0)\n{\n  x--;\n  y++;\n}"
+  invariants:
+  - x + y == \at(x + y, Pre)
+  explanation: x is non-negative during loop execution and decreases by 1 in each
+    iteration, ensuring termination.
+  ranking_function: x

@@ -1,0 +1,12 @@
+source_file: NonTerminationSimple9_false-no-overflow-version_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/NonTerminationSimple9_false-no-overflow-version.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x >= 0) {\n  x = x - __VERIFIER_nondet_int();\n}"
+  invariants:
+  - x >= 0
+  explanation: The variable x itself is a valid ranking function under the assumption
+    that __VERIFIER_nondet_int() returns a positive integer, ensuring x strictly decreases
+    and remains non-negative during loop execution.
+  ranking_function: x

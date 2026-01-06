@@ -1,0 +1,12 @@
+source_file: sendmail-close-angle_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/accelerating_invariant_generation/invgen/sendmail-close-angle.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (__BLAST_NONDET)\n{\n  if (buf == buflim)\n    break;\n  {;\n//@ assert(0<=buf);\n\
+    }\n\n  {;\n//@ assert(buf<bufferlen);\n}\n \n  buf++;\nout:\n  in++;\n  {;\n//@\
+    \ assert(0<=in);\n}\n\n  {;\n//@ assert(in<inlen);\n}\n\n}"
+  invariants: []
+  explanation: The variable 'buf' increases each iteration and the loop breaks when
+    buf reaches buflim, so buflim - buf is a non-negative integer that strictly decreases.
+  ranking_function: buflim - buf

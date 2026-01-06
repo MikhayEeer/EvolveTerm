@@ -1,0 +1,13 @@
+source_file: terminator_02_true-unreach-call_true-termination.i.annot_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/loops/loops/terminator_02_true-unreach-call_true-termination.i.annot.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while(x<100 && 100<z)\n{\n    int  tmp=unknown_bool();\n    if(tmp){\n  \
+    \      x++;\n    } else {\n        x--;\n        z--;\n    }\n}"
+  invariants: []
+  explanation: The first component (z - 100) decreases in the else branch, ensuring
+    progress. In the if branch, it stays constant but the second component (100 -
+    x) decreases. Both components are non-negative under the loop guard, and the tuple
+    strictly decreases lexicographically in every iteration.
+  ranking_function: (z - 100, 100 - x)

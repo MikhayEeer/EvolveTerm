@@ -1,0 +1,13 @@
+source_file: HarrisLalNoriRajamani-SAS2010-Fig2_false-no-overflow_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/HarrisLalNoriRajamani-SAS2010-Fig2_false-no-overflow.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x > 0) {\n    x = x - d;\n}"
+  invariants:
+  - d == \at(d, Pre)
+  - \exists integer n; n >= 0 && x == \at(x, Pre) - n * d
+  explanation: Assuming d > 0 (required for termination), x is non-negative under
+    the loop guard and decreases by d > 0 each iteration, thus serving as a valid
+    scalar ranking function.
+  ranking_function: x

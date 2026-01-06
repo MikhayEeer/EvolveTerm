@@ -1,0 +1,13 @@
+source_file: for_infinite_loop_1_pmt_yamlv1_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loops/for_infinite_loop_1.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "for(i=0; 1; i++)\n{\n  {;\n//@ assert(x==0);\n}\n\n}"
+  invariants:
+  - x == 0
+  - i >= 0
+  explanation: The loop is non-terminating because 'i' increases indefinitely and
+    no variable decreases. No ranking function exists that is both non-negative and
+    strictly decreasing.
+  ranking_function: none

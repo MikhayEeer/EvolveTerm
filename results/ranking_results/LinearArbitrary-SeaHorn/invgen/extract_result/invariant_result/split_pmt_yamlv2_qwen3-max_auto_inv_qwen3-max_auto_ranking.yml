@@ -1,0 +1,12 @@
+source_file: split_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/invgen/split.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "for( n = 0 ; n < 2*k ; n++ ) {\n    \n    if(b) {\n      i++;\n    } else\
+    \ {\n      j++;\n    }\n    b = !b;\n}"
+  invariants: []
+  explanation: The loop iterates exactly 2*k times, with n increasing by 1 each time.
+    The expression 2*k - n is non-negative and decreases by 1 per iteration, ensuring
+    termination.
+  ranking_function: 2*k - n

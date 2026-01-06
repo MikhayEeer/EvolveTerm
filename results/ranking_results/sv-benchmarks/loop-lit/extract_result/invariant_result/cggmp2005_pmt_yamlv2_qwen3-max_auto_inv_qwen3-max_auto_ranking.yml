@@ -1,0 +1,10 @@
+source_file: cggmp2005_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-lit/cggmp2005.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (j >= i) {\n    i = i + 2;\n    j = -1 + j;\n}"
+  invariants: []
+  explanation: The expression j - i is non-negative when the loop condition holds
+    and decreases by 3 in each iteration, ensuring termination.
+  ranking_function: j - i

@@ -1,0 +1,13 @@
+source_file: benchmark19_conjunctive_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-zilu/benchmark19_conjunctive.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (j>0 && n>0) {\n  j--;k--;\n}"
+  invariants:
+  - n == \at(n, Pre)
+  - j - k == \at(j - k, Pre)
+  explanation: j is non-negative at loop entry (due to guard j > 0), strictly decreases
+    by 1 each iteration, and is bounded below by 0. n is invariant and only acts as
+    a static guard.
+  ranking_function: j

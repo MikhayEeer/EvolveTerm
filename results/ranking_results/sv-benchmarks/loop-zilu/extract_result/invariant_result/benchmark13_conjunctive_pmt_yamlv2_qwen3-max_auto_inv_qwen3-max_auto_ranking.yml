@@ -1,0 +1,10 @@
+source_file: benchmark13_conjunctive_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-zilu/benchmark13_conjunctive.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (i <= k) {\n  i++;\n  j=j+1;\n}"
+  invariants: []
+  explanation: The expression k - i + 1 is always positive when i <= k and decreases
+    by 1 each iteration, ensuring termination.
+  ranking_function: k - i + 1

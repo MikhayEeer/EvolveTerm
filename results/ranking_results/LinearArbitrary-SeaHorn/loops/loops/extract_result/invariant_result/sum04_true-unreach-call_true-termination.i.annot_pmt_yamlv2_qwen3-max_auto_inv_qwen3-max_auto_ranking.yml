@@ -1,0 +1,12 @@
+source_file: sum04_true-unreach-call_true-termination.i.annot_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/loops/loops/sum04_true-unreach-call_true-termination.i.annot.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "for(i=1; i<=8; i++){\n  sn = sn +(2);\n}"
+  invariants:
+  - 1 <= i && i <= 9
+  - sn == \at(sn, Pre) + 2 * (i - 1)
+  explanation: The expression 9 - i is non-negative within the loop and decreases
+    by 1 each iteration, ensuring termination.
+  ranking_function: 9 - i

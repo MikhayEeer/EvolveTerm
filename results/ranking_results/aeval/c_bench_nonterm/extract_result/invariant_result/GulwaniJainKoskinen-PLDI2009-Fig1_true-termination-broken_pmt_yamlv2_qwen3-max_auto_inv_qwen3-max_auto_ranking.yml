@@ -1,0 +1,11 @@
+source_file: GulwaniJainKoskinen-PLDI2009-Fig1_true-termination-broken_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/GulwaniJainKoskinen-PLDI2009-Fig1_true-termination-broken.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while(tmp!=id) {\n    if (tmp <= maxId) {\n        tmp = tmp + 1;\n    }\n\
+    }"
+  invariants: []
+  explanation: Assuming id <= maxId and initial tmp <= id, the expression id - tmp
+    is non-negative and decreases by 1 each iteration until reaching 0.
+  ranking_function: id - tmp

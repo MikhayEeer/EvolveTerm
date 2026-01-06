@@ -1,0 +1,16 @@
+source_file: sumt2_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loops-crafted-1/sumt2.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while( l < n ) {\n    \n      if(!(l%2))\n        i = i + 1;\n      else\
+    \ \n          j = j+1;\n  l = l+1;\n}"
+  invariants:
+  - \at(l, Pre) <= l
+  - l <= n
+  - i >= \at(i, Pre)
+  - j >= \at(j, Pre)
+  - i + j - l == \at(i + j - l, Pre)
+  explanation: The loop variable l increases by 1 each iteration until it reaches
+    n; thus, n - l is a non-negative integer that decreases by 1 per iteration.
+  ranking_function: n - l

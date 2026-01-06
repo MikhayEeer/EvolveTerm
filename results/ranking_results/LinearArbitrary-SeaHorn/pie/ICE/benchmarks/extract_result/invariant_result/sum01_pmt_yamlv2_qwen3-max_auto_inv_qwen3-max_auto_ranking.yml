@@ -1,0 +1,12 @@
+source_file: sum01_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/pie/ICE/benchmarks/sum01.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "for(i=1; i<=n; i++) {\n  sn = sn + a;\n}"
+  invariants:
+  - sn == (i - 1) * a
+  - 1 <= i <= n + 1
+  explanation: This scalar ranking function is always non-negative under the loop
+    condition and decreases by exactly 1 on each iteration, ensuring termination.
+  ranking_function: n - i + 1

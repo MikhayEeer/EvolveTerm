@@ -1,0 +1,10 @@
+source_file: Masse-alloca_true-termination-broken_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/Masse-alloca_true-termination-broken.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x <= 1000) {\n    if (0 == __VERIFIER_nondet_int()) {\n        x =\
+    \ - 2 * x + 2;\n    } else if (0 == __VERIFIER_nondet_int()) {\n        x = -\
+    \ 3 * x - 2;\n    } else {\n        x = - 4 * x ;\n    }\n}"
+  invariants: []
+  status: empty

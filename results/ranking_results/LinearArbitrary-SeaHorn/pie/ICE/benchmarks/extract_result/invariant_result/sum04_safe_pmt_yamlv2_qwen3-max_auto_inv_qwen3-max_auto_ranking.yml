@@ -1,0 +1,12 @@
+source_file: sum04_safe_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/pie/ICE/benchmarks/sum04_safe.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "for(i=1; i<=SIZE; i++) {\n  sn = sn + a;\n}"
+  invariants:
+  - 1 <= i && i <= SIZE + 1
+  - sn == \at(sn, Pre) + (i - 1) * a
+  explanation: This scalar ranking function starts at SIZE and decreases by 1 each
+    iteration, ensuring termination when i exceeds SIZE.
+  ranking_function: SIZE - i + 1

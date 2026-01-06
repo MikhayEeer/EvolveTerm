@@ -1,0 +1,11 @@
+source_file: NetBSD_g_Ctoc_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/accelerating_invariant_generation/invgen/NetBSD_g_Ctoc.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: while (1) { if ( len == 0 ){ goto END; }
+  invariants:
+  - len != 0
+  explanation: Assuming len is a non-negative integer that strictly decreases each
+    iteration, len itself is a valid ranking function.
+  ranking_function: len

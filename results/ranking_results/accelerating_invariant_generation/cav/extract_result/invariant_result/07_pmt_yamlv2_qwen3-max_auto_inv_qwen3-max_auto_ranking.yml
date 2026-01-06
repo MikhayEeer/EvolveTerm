@@ -1,0 +1,10 @@
+source_file: 07_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/accelerating_invariant_generation/cav/07.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while(i<n) {\n    i++;\n    j++;\n}"
+  invariants: []
+  explanation: The expression n - i is non-negative under the loop condition i < n
+    and decreases by 1 each iteration, ensuring termination.
+  ranking_function: n - i

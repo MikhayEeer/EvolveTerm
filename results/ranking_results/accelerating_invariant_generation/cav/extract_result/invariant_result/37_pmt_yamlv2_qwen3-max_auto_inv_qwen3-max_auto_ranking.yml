@@ -1,0 +1,10 @@
+source_file: 37_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/accelerating_invariant_generation/cav/37.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while(x<=n-1) {\n   if(unknown1()) {\n  m = x;\n   }\n   x= x+1;\n}"
+  invariants: []
+  explanation: The expression n - x is non-negative under the loop condition and decreases
+    by exactly 1 in every iteration, ensuring termination.
+  ranking_function: n - x

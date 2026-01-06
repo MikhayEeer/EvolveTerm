@@ -1,0 +1,15 @@
+source_file: sum03_true-unreach-call_false-termination.i.annot_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/loops/loops/sum03_true-unreach-call_false-termination.i.annot.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while(x < 1000000){\n    sn = sn +(2);\n    x++;\n    {;\n//@ assert(sn==x*(2)||\
+    \ sn == 0);\n}\n\n}"
+  invariants:
+  - sn == 2 * x
+  - x >= 0
+  - sn >= 0
+  explanation: The loop variable x increases toward a fixed upper bound (1000000).
+    The expression 1000000 - x is non-negative within the loop and decreases by 1
+    each iteration, ensuring termination.
+  ranking_function: 1000000 - x

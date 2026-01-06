@@ -1,0 +1,10 @@
+source_file: multivar_1-1_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-acceleration/multivar_1-1.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x < 1024) {\n    x++;\n    y++;\n}"
+  invariants: []
+  explanation: The expression 1024 - x is non-negative under the loop condition and
+    decreases by 1 each iteration, ensuring termination.
+  ranking_function: 1024 - x
