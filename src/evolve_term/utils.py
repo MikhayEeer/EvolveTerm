@@ -89,3 +89,11 @@ def parse_llm_yaml(response_text: str) -> dict | None:
     except Exception:
         return None
 
+
+class LiteralDumper(yaml.SafeDumper):
+    """Custom YAML Dumper that uses block style for multiline strings."""
+    def represent_scalar(self, tag, value, style=None):
+        if "\n" in value and tag == 'tag:yaml.org,2002:str':
+            style = '|'
+        return super().represent_scalar(tag, value, style)
+

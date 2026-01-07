@@ -7,6 +7,22 @@ from typing import Optional, List, Any
 import json
 
 from .models import KnowledgeCase
+import typer
+
+def resolve_svm_ranker_root(path: Path) -> Path:
+    if not path.exists():
+        raise typer.BadParameter(f"SVMRanker 路径不存在: {path}")
+    if path.is_file():
+        if path.name == "CLIMain.py" and path.parent.name == "src":
+            path = path.parent.parent
+        else:
+            raise typer.BadParameter("SVMRanker 路径应为仓库根目录或 src/CLIMain.py 文件。")
+
+    if (path / "src" / "CLIMain.py").exists():
+        return path
+    if path.name == "src" and (path / "CLIMain.py").exists():
+        return path.parent
+    raise typer.BadParameter("SVMRanker 路径无效，未找到 src/CLIMain.py。")
 
 _YAML_REQUIRED_KEYS = {
     "ranking": [
