@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import re
+import time
 from abc import ABC, abstractmethod
 from pathlib import Path
 
@@ -38,7 +39,7 @@ class APILLMClient(LLMClient):
             raise LLMUnavailableError("LLM base_url or API key missing")
         self.client = OpenAI(api_key=self.api_key, base_url=self.base_url)
 
-    def complete(self, prompt: str | dict[str, str]) -> str:
+    def complete(self, prompt: str | dict[str, str], retry: int = 3, retry_delay: float = 2.0) -> str:
         self.call_count += 1
         request_overrides: dict = {}
         if isinstance(prompt, str):
@@ -54,50 +55,39 @@ class APILLMClient(LLMClient):
                 messages.append({"role": "system", "content": prompt["system"]})
             if prompt.get("user"):
                 messages.append({"role": "user", "content": prompt["user"]})
-                
-        try:
-            response = self.client.chat.completions.create(
-                model=self.model,
-                messages=messages,
-                **{**self.payload_template, **request_overrides},
-            )
-        except Exception as exc:  # pragma: no cover - network path
-            raise LLMUnavailableError(f"LLM provider error: {exc}") from exc
-
-        # Debug print - handle dict prompt
-        def truncate(text: str, limit: int = 50) -> str:
-            if len(text) <= limit:
-                return text
-            head = limit // 2
-            tail = limit // 2
-            return f"{text[:head]}\n...[skipped {len(text)-limit} chars]...\n{text[-tail:]}"
-
-        '''
-        print("\n" + "="*60)
-        print("[Debug] LLM Request")
-        if isinstance(prompt, str):
-            print(f"Prompt:\n{truncate(prompt)}")
-        else:
-            if prompt.get("system"):
-                print(f"System:\n{truncate(prompt['system'])}")
-            if prompt.get("user"):
-                print(f"User:\n{truncate(prompt['user'])}")
         
-        print("[Debug] Info End"+"-" * 30)
-        '''
-        if not response.choices:
-            raise LLMUnavailableError("LLM provider returned no choices")
-        message = response.choices[0].message
-        if message is None:
-            raise LLMUnavailableError("LLM provider returned empty message")
-        content = getattr(message, "content", None)
-        if content is None and isinstance(message, dict):
-            content = message.get("content")
-        if isinstance(content, list):
-            content = "".join(part.get("text", "") for part in content if isinstance(part, dict))
-            
-        #print(f"[Debug] LLM Response:\n{truncate(content or '')}")
-        #print("="*60 + "\n")
+        last_exception = None
+        for attempt in range(retry + 1):
+            try:
+                response = self.client.chat.completions.create(
+                    model=self.model,
+                    messages=messages,
+                    **{**self.payload_template, **request_overrides},
+                )
+                
+                if not response.choices:
+                    raise LLMUnavailableError("LLM provider returned no choices")
+                message = response.choices[0].message
+                if message is None:
+                    raise LLMUnavailableError("LLM provider returned empty message")
+                content = getattr(message, "content", None)
+                if content is None and isinstance(message, dict):
+                    content = message.get("content")
+                if isinstance(content, list):
+                    content = "".join(part.get("text", "") for part in content if isinstance(part, dict))
+                
+                return content or ""
+                
+            except Exception as exc:  # pragma: no cover - network path
+                last_exception = exc
+                if attempt < retry:
+                    print(f"\n[Warning] LLM request failed (Attempt {attempt + 1}/{retry + 1}): {exc}")
+                    print(f"Retrying in {retry_delay * (attempt + 1)}s...")
+                    time.sleep(retry_delay * (attempt + 1))  # Simple exponential backoff
+                    continue
+                # If we're out of retries, we'll raise below
+
+        raise LLMUnavailableError(f"LLM provider error after {retry} retries: {last_exception}") from last_exception
         
         return content or ""
 
