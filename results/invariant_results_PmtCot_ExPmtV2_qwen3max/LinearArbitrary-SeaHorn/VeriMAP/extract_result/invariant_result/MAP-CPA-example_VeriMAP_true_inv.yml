@@ -1,25 +1,15 @@
 source_file: MAP-CPA-example_VeriMAP_true_pmt_yamlv2_qwen3-max_auto.yml
 source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/VeriMAP/MAP-CPA-example_VeriMAP_true.c
-basic:
-  name: qwen3-max
-  type: llm
-  task: invariant_inference
-  config: {}
-  time: 2026-01-04T20:38
+task: invariant_inference
+command: evolveterm invariant --input data/aeval/ -r -m yaml --extv v2 -pv yaml_cot
+pmt_ver: yaml_cot
+model: qwen3max
+time: 2026-01-04T20:38
+has_extract: true
 invariants_result:
 - loop_id: 1
-  code: |-
-    while (1) {
-        if (i == 20) {
-           goto LOOPEND;
-        } else {
-           i++;
-           a++;
-        }
-
-        if (i != a) {
-          goto ERROR;
-        }
-    }
+  code: "while (1) {\n    if (i == 20) {\n       goto LOOPEND;\n    } else {\n   \
+    \    i++;\n       a++;\n    }\n\n    if (i != a) {\n      goto ERROR;\n    }\n\
+    }"
   invariants:
   - i == a

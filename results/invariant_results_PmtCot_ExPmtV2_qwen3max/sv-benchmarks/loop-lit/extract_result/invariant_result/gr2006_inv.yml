@@ -1,21 +1,13 @@
 source_file: gr2006_pmt_yamlv2_qwen3-max_auto.yml
 source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-lit/gr2006.c
-basic:
-  name: qwen3-max
-  type: llm
-  task: invariant_inference
-  config: {}
-  time: 2026-01-04T17:53
+task: invariant_inference
+command: evolveterm invariant --input data/aeval/ -r -m yaml --extv v2 -pv yaml_cot
+pmt_ver: yaml_cot
+model: qwen3max
+time: 2026-01-04T17:53
+has_extract: true
 invariants_result:
 - loop_id: 1
-  code: |-
-    while (1) {
-        if (x < 50) {
-            y++;
-        } else {
-            y--;
-        }
-        if (y < 0) break;
-        x++;
-    }
+  code: "while (1) {\n    if (x < 50) {\n        y++;\n    } else {\n        y--;\n\
+    \    }\n    if (y < 0) break;\n    x++;\n}"
   invariants: []

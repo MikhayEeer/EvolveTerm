@@ -1,19 +1,15 @@
 source_file: benchmark15_conjunctive_pmt_yamlv2_qwen3-max_auto.yml
 source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-zilu/benchmark15_conjunctive.c
-basic:
-  name: qwen3-max
-  type: llm
-  task: invariant_inference
-  config: {}
-  time: 2026-01-04T18:27
+task: invariant_inference
+command: evolveterm invariant --input data/aeval/ -r -m yaml --extv v2 -pv yaml_cot
+pmt_ver: yaml_cot
+model: qwen3max
+time: 2026-01-04T18:27
+has_extract: true
 invariants_result:
 - loop_id: 1
-  code: |-
-    while (mid > 0) {
-        low = low + 1;
-        high = high - 1;
-        mid = mid - 1;
-    }
+  code: "while (mid > 0) {\n    low = low + 1;\n    high = high - 1;\n    mid = mid\
+    \ - 1;\n}"
   invariants:
   - low + high == \at(low + high, Pre)
   - low + mid == \at(low + mid, Pre)

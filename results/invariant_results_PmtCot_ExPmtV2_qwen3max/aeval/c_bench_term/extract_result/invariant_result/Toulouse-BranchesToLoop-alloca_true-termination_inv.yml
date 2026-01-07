@@ -1,18 +1,14 @@
 source_file: Toulouse-BranchesToLoop-alloca_true-termination_pmt_yamlv2_qwen3-max_auto.yml
 source_path: data/aeval/c_bench_term/Toulouse-BranchesToLoop-alloca_true-termination.c
-basic:
-  name: qwen3-max
-  type: llm
-  task: invariant_inference
-  config: {}
-  time: 2026-01-04T21:05
+task: invariant_inference
+command: evolveterm invariant --input data/aeval/ -r -m yaml --extv v2 -pv yaml_cot
+pmt_ver: yaml_cot
+model: qwen3max
+time: 2026-01-04T21:05
+has_extract: true
 invariants_result:
 - loop_id: 1
-  code: |-
-    while (y < 100 && z < 100) {
-        y = y + x;
-        z = z - x;
-    }
+  code: "while (y < 100 && z < 100) {\n    y = y + x;\n    z = z - x;\n}"
   invariants:
   - y + z == \old(y + z)
   - x == \old(x)

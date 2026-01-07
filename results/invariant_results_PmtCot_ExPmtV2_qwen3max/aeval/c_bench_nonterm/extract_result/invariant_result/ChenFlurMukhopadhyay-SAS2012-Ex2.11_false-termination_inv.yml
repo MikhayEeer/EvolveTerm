@@ -1,17 +1,13 @@
 source_file: ChenFlurMukhopadhyay-SAS2012-Ex2.11_false-termination_pmt_yamlv2_qwen3-max_auto.yml
 source_path: data/aeval/c_bench_nonterm/ChenFlurMukhopadhyay-SAS2012-Ex2.11_false-termination.c
-basic:
-  name: qwen3-max
-  type: llm
-  task: invariant_inference
-  config: {}
-  time: 2026-01-04T18:34
+task: invariant_inference
+command: evolveterm invariant --input data/aeval/ -r -m yaml --extv v2 -pv yaml_cot
+pmt_ver: yaml_cot
+model: qwen3max
+time: 2026-01-04T18:34
+has_extract: true
 invariants_result:
 - loop_id: 1
-  code: |-
-    while (4*x - 5*y > 0) {
-        oldx = x;
-        x = 2*oldx + 4*y;
-        y = 4*oldx;
-    }
+  code: "while (4*x - 5*y > 0) {\n    oldx = x;\n    x = 2*oldx + 4*y;\n    y = 4*oldx;\n\
+    }"
   invariants: []

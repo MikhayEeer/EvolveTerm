@@ -1,23 +1,13 @@
 source_file: loop4_merged_safe_pmt_yamlv2_qwen3-max_auto.yml
 source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/llreve/loop4_merged_safe.c
-basic:
-  name: qwen3-max
-  type: llm
-  task: invariant_inference
-  config: {}
-  time: 2026-01-04T20:16
+task: invariant_inference
+command: evolveterm invariant --input data/aeval/ -r -m yaml --extv v2 -pv yaml_cot
+pmt_ver: yaml_cot
+model: qwen3max
+time: 2026-01-04T20:16
+has_extract: true
 invariants_result:
 - loop_id: 1
-  code: |-
-    while (1) {
-        if (i1 < n + n) {
-            j1++;
-            i1++;
-        }
-
-        if (i2 < n) {
-            j2 = j2 + 2;
-            i2++;
-        }
-    }
+  code: "while (1) {\n    if (i1 < n + n) {\n        j1++;\n        i1++;\n    }\n\
+    \n    if (i2 < n) {\n        j2 = j2 + 2;\n        i2++;\n    }\n}"
   invariants: []

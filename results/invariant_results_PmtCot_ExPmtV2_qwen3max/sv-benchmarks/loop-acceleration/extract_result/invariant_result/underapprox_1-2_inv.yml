@@ -1,16 +1,12 @@
 source_file: underapprox_1-2_pmt_yamlv2_qwen3-max_auto.yml
 source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-acceleration/underapprox_1-2.c
-basic:
-  name: qwen3-max
-  type: llm
-  task: invariant_inference
-  config: {}
-  time: 2026-01-04T17:20
+task: invariant_inference
+command: evolveterm invariant --input data/aeval/ -r -m yaml --extv v2 -pv yaml_cot
+pmt_ver: yaml_cot
+model: qwen3max
+time: 2026-01-04T17:20
+has_extract: true
 invariants_result:
 - loop_id: 1
-  code: |-
-    while (x < 6) {
-      x++;
-      y *= 2;
-    }
+  code: "while (x < 6) {\n  x++;\n  y *= 2;\n}"
   invariants: []

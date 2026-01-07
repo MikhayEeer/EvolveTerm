@@ -1,20 +1,15 @@
 source_file: trex03_false-unreach-call_true-termination-modif_pmt_yamlv2_qwen3-max_auto.yml
 source_path: data/aeval/c_bench_term/trex03_false-unreach-call_true-termination-modif.c
-basic:
-  name: qwen3-max
-  type: llm
-  task: invariant_inference
-  config: {}
-  time: 2026-01-04T20:59
+task: invariant_inference
+command: evolveterm invariant --input data/aeval/ -r -m yaml --extv v2 -pv yaml_cot
+pmt_ver: yaml_cot
+model: qwen3max
+time: 2026-01-04T20:59
+has_extract: true
 invariants_result:
 - loop_id: 1
-  code: |-
-    while(x1>0 && x2>0 && x3>0)
-    {
-      if (__VERIFIER_nondet_int() == 0) x1=x1-d1;
-      else if (__VERIFIER_nondet_int() == 0) x2=x2-d2;
-      else x3=x3-d3;
-    }
+  code: "while(x1>0 && x2>0 && x3>0)\n{\n  if (__VERIFIER_nondet_int() == 0) x1=x1-d1;\n\
+    \  else if (__VERIFIER_nondet_int() == 0) x2=x2-d2;\n  else x3=x3-d3;\n}"
   invariants:
   - x1 > 0
   - x2 > 0

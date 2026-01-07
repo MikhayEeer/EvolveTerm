@@ -1,23 +1,14 @@
 source_file: Ben-Amram-2010LMCS-Ex2.3-alloca_true-termination-broken3_pmt_yamlv2_qwen3-max_auto.yml
 source_path: data/aeval/c_bench_nonterm/Ben-Amram-2010LMCS-Ex2.3-alloca_true-termination-broken3.c
-basic:
-  name: qwen3-max
-  type: llm
-  task: invariant_inference
-  config: {}
-  time: 2026-01-04T18:01
+task: invariant_inference
+command: evolveterm invariant --input data/aeval/ -r -m yaml --extv v2 -pv yaml_cot
+pmt_ver: yaml_cot
+model: qwen3max
+time: 2026-01-04T18:01
+has_extract: true
 invariants_result:
 - loop_id: 1
-  code: |-
-    while (x > 0 && y + z > 0) {
-      if (y > x) {
-        y = z;
-        x = __VERIFIER_nondet_int();
-        z = x - 1;
-      } else {
-        z = z - 1;
-        x = __VERIFIER_nondet_int();
-        y = x - 1;
-      }
-    }
+  code: "while (x > 0 && y + z > 0) {\n  if (y > x) {\n    y = z;\n    x = __VERIFIER_nondet_int();\n\
+    \    z = x - 1;\n  } else {\n    z = z - 1;\n    x = __VERIFIER_nondet_int();\n\
+    \    y = x - 1;\n  }\n}"
   invariants: []

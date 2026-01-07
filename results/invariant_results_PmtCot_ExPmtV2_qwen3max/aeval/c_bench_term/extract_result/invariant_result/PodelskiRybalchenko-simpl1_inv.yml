@@ -1,11 +1,11 @@
 source_file: PodelskiRybalchenko-simpl1_pmt_yamlv2_qwen3-max_auto.yml
 source_path: data/aeval/c_bench_term/PodelskiRybalchenko-simpl1.c
-basic:
-  name: qwen3-max
-  type: llm
-  task: invariant_inference
-  config: {}
-  time: 2026-01-04T21:06
+task: invariant_inference
+command: evolveterm invariant --input data/aeval/ -r -m yaml --extv v2 -pv yaml_cot
+pmt_ver: yaml_cot
+model: qwen3max
+time: 2026-01-04T21:06
+has_extract: true
 invariants_result:
 - loop_id: 1
   code: "while (x > 0 && y > 0) {\n    if (__VERIFIER_nondet_int() != 0) {\n     \

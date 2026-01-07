@@ -1,30 +1,14 @@
 source_file: 89_pmt_yamlv2_qwen3-max_auto.yml
 source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/code2inv/89.c
-basic:
-  name: qwen3-max
-  type: llm
-  task: invariant_inference
-  config: {}
-  time: 2026-01-04T23:04
+task: invariant_inference
+command: evolveterm invariant --input data/aeval/ -r -m yaml --extv v2 -pv yaml_cot
+pmt_ver: yaml_cot
+model: qwen3max
+time: 2026-01-04T23:04
+has_extract: true
 invariants_result:
 - loop_id: 1
-  code: |-
-    while ((x != y)) {
-      {
-        if ( unknown() ) {
-          {
-          (lock  = 1);
-          (x  = y);
-          }
-        } else {
-          {
-          (lock  = 0);
-          (x  = y);
-          (y  = (y + 1));
-          }
-        }
-
-      }
-
-    }
+  code: "while ((x != y)) {\n  {\n    if ( unknown() ) {\n      {\n      (lock  =\
+    \ 1);\n      (x  = y);\n      }\n    } else {\n      {\n      (lock  = 0);\n \
+    \     (x  = y);\n      (y  = (y + 1));\n      }\n    }\n\n  }\n\n}"
   invariants: []

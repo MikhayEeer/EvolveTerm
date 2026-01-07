@@ -1,22 +1,14 @@
 source_file: Pure2Phase_true-termination_true-valid-memsafety_pmt_yamlv2_qwen3-max_auto.yml
 source_path: data/aeval/c_bench_term/Pure2Phase_true-termination_true-valid-memsafety.c
-basic:
-  name: qwen3-max
-  type: llm
-  task: invariant_inference
-  config: {}
-  time: 2026-01-04T20:24
+task: invariant_inference
+command: evolveterm invariant --input data/aeval/ -r -m yaml --extv v2 -pv yaml_cot
+pmt_ver: yaml_cot
+model: qwen3max
+time: 2026-01-04T20:24
+has_extract: true
 invariants_result:
 - loop_id: 1
-  code: |-
-    while (z >= 0) {
-        y = y - 1;
-        if (y >= 0) {
-            z = __VERIFIER_nondet_int();
-                //prevent overflow
-                if(!(z<=1073741823)) return 0;
-        } else {
-            z = z - 1;
-        }
-    }
+  code: "while (z >= 0) {\n    y = y - 1;\n    if (y >= 0) {\n        z = __VERIFIER_nondet_int();\n\
+    \            //prevent overflow\n            if(!(z<=1073741823)) return 0;\n\
+    \    } else {\n        z = z - 1;\n    }\n}"
   invariants: []

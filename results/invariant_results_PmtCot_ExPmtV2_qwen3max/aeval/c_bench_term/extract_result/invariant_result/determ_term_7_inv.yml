@@ -1,19 +1,13 @@
 source_file: determ_term_7_pmt_yamlv2_qwen3-max_auto.yml
 source_path: data/aeval/c_bench_term/determ_term_7.c
-basic:
-  name: qwen3-max
-  type: llm
-  task: invariant_inference
-  config: {}
-  time: 2026-01-04T20:06
+task: invariant_inference
+command: evolveterm invariant --input data/aeval/ -r -m yaml --extv v2 -pv yaml_cot
+pmt_ver: yaml_cot
+model: qwen3max
+time: 2026-01-04T20:06
+has_extract: true
 invariants_result:
 - loop_id: 1
-  code: |-
-    while (a == 0) {
-        a = a + b;
-        b = b + c;
-        c = c + d;
-        d = d + e;
-        e = e + 1;
-    }
+  code: "while (a == 0) {\n    a = a + b;\n    b = b + c;\n    c = c + d;\n    d =\
+    \ d + e;\n    e = e + 1;\n}"
   invariants: []

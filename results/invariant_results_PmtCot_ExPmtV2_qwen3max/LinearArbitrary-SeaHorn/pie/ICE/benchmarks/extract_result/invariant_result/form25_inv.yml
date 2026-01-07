@@ -1,30 +1,18 @@
 source_file: form25_pmt_yamlv2_qwen3-max_auto.yml
 source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/pie/ICE/benchmarks/form25.c
-basic:
-  name: qwen3-max
-  type: llm
-  task: invariant_inference
-  config: {}
-  time: 2026-01-04T19:44
+task: invariant_inference
+command: evolveterm invariant --input data/aeval/ -r -m yaml --extv v2 -pv yaml_cot
+pmt_ver: yaml_cot
+model: qwen3max
+time: 2026-01-04T19:44
+has_extract: true
 invariants_result:
 - loop_id: 1
-  code: |-
-    while(input)
-    {
-        x1p = unknown_int();
-        x2p = unknown_int();
-        x3p = unknown_int();
-        x4p = unknown_int();
-
-        if (x1p <= 0 && x1p >= x4p + 1 && x2p == x3p && (x4p >= 0 || x4p <= x3p))
-        {
-            x1 = x1p;
-            x2 = x2p;
-            x3 = x3p;
-            x4 = x4p;
-        }
-        input = unknown_int();
-    }
+  code: "while(input)\n{\n    x1p = unknown_int();\n    x2p = unknown_int();\n   \
+    \ x3p = unknown_int();\n    x4p = unknown_int();\n\n    if (x1p <= 0 && x1p >=\
+    \ x4p + 1 && x2p == x3p && (x4p >= 0 || x4p <= x3p))\n    {\n        x1 = x1p;\n\
+    \        x2 = x2p;\n        x3 = x3p;\n        x4 = x4p;\n    }\n    input = unknown_int();\n\
+    }"
   invariants:
   - x1 <= 0
   - x4 <= -1

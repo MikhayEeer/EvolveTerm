@@ -1,20 +1,13 @@
 source_file: NoriSharma-2013FSE-Fig8-true-termination-modif_pmt_yamlv2_qwen3-max_auto.yml
 source_path: data/aeval/c_bench_term/NoriSharma-2013FSE-Fig8-true-termination-modif.c
-basic:
-  name: qwen3-max
-  type: llm
-  task: invariant_inference
-  config: {}
-  time: 2026-01-04T21:23
+task: invariant_inference
+command: evolveterm invariant --input data/aeval/ -r -m yaml --extv v2 -pv yaml_cot
+pmt_ver: yaml_cot
+model: qwen3max
+time: 2026-01-04T21:23
+has_extract: true
 invariants_result:
 - loop_id: 1
-  code: |-
-    while (x >= y) {
-      if (0 == __VERIFIER_nondet_int()) {
-        z = z - 1;
-        x = x + z;
-      } else {
-        y = y + 1;
-      }
-    }
+  code: "while (x >= y) {\n  if (0 == __VERIFIER_nondet_int()) {\n    z = z - 1;\n\
+    \    x = x + z;\n  } else {\n    y = y + 1;\n  }\n}"
   invariants: []

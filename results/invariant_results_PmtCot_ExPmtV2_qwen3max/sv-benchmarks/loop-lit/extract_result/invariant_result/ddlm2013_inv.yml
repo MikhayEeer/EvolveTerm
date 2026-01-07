@@ -1,22 +1,13 @@
 source_file: ddlm2013_pmt_yamlv2_qwen3-max_auto.yml
 source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-lit/ddlm2013.c
-basic:
-  name: qwen3-max
-  type: llm
-  task: invariant_inference
-  config: {}
-  time: 2026-01-04T17:52
+task: invariant_inference
+command: evolveterm invariant --input data/aeval/ -r -m yaml --extv v2 -pv yaml_cot
+pmt_ver: yaml_cot
+model: qwen3max
+time: 2026-01-04T17:52
+has_extract: true
 invariants_result:
 - loop_id: 1
-  code: |-
-    while (unknown_int()) {
-        a++;
-        b += (j - i);
-        i += 2;
-        if (i%2 == 0) {
-            j += 2;
-        } else {
-            j++;
-        }
-    }
+  code: "while (unknown_int()) {\n    a++;\n    b += (j - i);\n    i += 2;\n    if\
+    \ (i%2 == 0) {\n        j += 2;\n    } else {\n        j++;\n    }\n}"
   invariants: []

@@ -1,16 +1,12 @@
 source_file: const_safe1_pmt_yamlv2_qwen3-max_auto.yml
 source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/accelerating_invariant_generation/crafted/const_safe1.c
-basic:
-  name: qwen3-max
-  type: llm
-  task: invariant_inference
-  config: {}
-  time: 2026-01-04T21:38
+task: invariant_inference
+command: evolveterm invariant --input data/aeval/ -r -m yaml --extv v2 -pv yaml_cot
+pmt_ver: yaml_cot
+model: qwen3max
+time: 2026-01-04T21:38
+has_extract: true
 invariants_result:
 - loop_id: 1
-  code: |-
-    while (y < 10) {
-        x = 0;
-        y++;
-    }
+  code: "while (y < 10) {\n    x = 0;\n    y++;\n}"
   invariants: []

@@ -1,18 +1,13 @@
 source_file: term_24_pmt_yamlv2_qwen3-max_auto.yml
 source_path: data/aeval/c_bench_term/term_24.c
-basic:
-  name: qwen3-max
-  type: llm
-  task: invariant_inference
-  config: {}
-  time: 2026-01-04T22:08
+task: invariant_inference
+command: evolveterm invariant --input data/aeval/ -r -m yaml --extv v2 -pv yaml_cot
+pmt_ver: yaml_cot
+model: qwen3max
+time: 2026-01-04T22:08
+has_extract: true
 invariants_result:
 - loop_id: 1
-  code: |-
-    while (x != y)
-    {
-      x++; y++;
-      if (x > z) x = z;
-      if (y > z) y = y - 1;
-    }
+  code: "while (x != y)\n{\n  x++; y++;\n  if (x > z) x = z;\n  if (y > z) y = y -\
+    \ 1;\n}"
   invariants: []

@@ -1,21 +1,15 @@
 source_file: eca_bounded_core_pmt_yamlv2_qwen3-max_auto.yml
 source_path: data/aeval/c_bench_term/eca_bounded_core.c
-basic:
-  name: qwen3-max
-  type: llm
-  task: invariant_inference
-  config: {}
-  time: 2026-01-04T21:10
+task: invariant_inference
+command: evolveterm invariant --input data/aeval/ -r -m yaml --extv v2 -pv yaml_cot
+pmt_ver: yaml_cot
+model: qwen3max
+time: 2026-01-04T21:10
+has_extract: true
 invariants_result:
 - loop_id: 1
-  code: |-
-    while(c < limit)
-    {
-        // read input
-        int input = __VERIFIER_nondet_int();
-        if ((input != 1) && (input != 2) && (input != 3) && (input != 4) && (input != 5) && (input != 6)) return -2;
-
-        // operate eca engine
-        if (calculate_output(input) != 0) c++;
-    }
+  code: "while(c < limit)\n{\n    // read input\n    int input = __VERIFIER_nondet_int();\n\
+    \    if ((input != 1) && (input != 2) && (input != 3) && (input != 4) && (input\
+    \ != 5) && (input != 6)) return -2;\n\n    // operate eca engine\n    if (calculate_output(input)\
+    \ != 0) c++;\n}"
   invariants: []

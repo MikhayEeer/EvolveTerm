@@ -1,23 +1,15 @@
 source_file: CookSeeZuleger-TACAS2013-Fig7b-true-termination_true-no-overflow_pmt_yamlv2_qwen3-max_auto.yml
 source_path: data/aeval/c_bench_term/CookSeeZuleger-TACAS2013-Fig7b-true-termination_true-no-overflow.c
-basic:
-  name: qwen3-max
-  type: llm
-  task: invariant_inference
-  config: {}
-  time: 2026-01-04T19:50
+task: invariant_inference
+command: evolveterm invariant --input data/aeval/ -r -m yaml --extv v2 -pv yaml_cot
+pmt_ver: yaml_cot
+model: qwen3max
+time: 2026-01-04T19:50
+has_extract: true
 invariants_result:
 - loop_id: 1
-  code: |-
-    while (x > 0 && y > 0 && z > 0) {
-        if (0 == __VERIFIER_nondet_int()) {
-            x = x - 1;
-        } else if (0 == __VERIFIER_nondet_int()) {
-            y = y - 1;
-            z = __VERIFIER_nondet_int();
-        } else {
-            z = z - 1;
-            x = __VERIFIER_nondet_int();
-        }
-    }
+  code: "while (x > 0 && y > 0 && z > 0) {\n    if (0 == __VERIFIER_nondet_int())\
+    \ {\n        x = x - 1;\n    } else if (0 == __VERIFIER_nondet_int()) {\n    \
+    \    y = y - 1;\n        z = __VERIFIER_nondet_int();\n    } else {\n        z\
+    \ = z - 1;\n        x = __VERIFIER_nondet_int();\n    }\n}"
   invariants: []

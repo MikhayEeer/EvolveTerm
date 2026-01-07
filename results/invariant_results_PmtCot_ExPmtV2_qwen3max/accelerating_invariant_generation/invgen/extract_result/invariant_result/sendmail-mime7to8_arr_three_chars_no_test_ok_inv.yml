@@ -1,11 +1,11 @@
 source_file: sendmail-mime7to8_arr_three_chars_no_test_ok_pmt_yamlv2_qwen3-max_auto.yml
 source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/accelerating_invariant_generation/invgen/sendmail-mime7to8_arr_three_chars_no_test_ok.c
-basic:
-  name: qwen3-max
-  type: llm
-  task: invariant_inference
-  config: {}
-  time: 2026-01-04T21:46
+task: invariant_inference
+command: evolveterm invariant --input data/aeval/ -r -m yaml --extv v2 -pv yaml_cot
+pmt_ver: yaml_cot
+model: qwen3max
+time: 2026-01-04T21:46
+has_extract: true
 invariants_result:
 - loop_id: 1
   code: "while (__BLAST_NONDET)\n{\n  \n  if (__BLAST_NONDET)\n    break;\n\n  if\

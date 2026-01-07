@@ -1,23 +1,13 @@
 source_file: pldi082_unbounded_pmt_yamlv2_qwen3-max_auto.yml
 source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/accelerating_invariant_generation/cav/pldi082_unbounded.c
-basic:
-  name: qwen3-max
-  type: llm
-  task: invariant_inference
-  config: {}
-  time: 2026-01-04T21:04
+task: invariant_inference
+command: evolveterm invariant --input data/aeval/ -r -m yaml --extv v2 -pv yaml_cot
+pmt_ver: yaml_cot
+model: qwen3max
+time: 2026-01-04T21:04
+has_extract: true
 invariants_result:
 - loop_id: 1
-  code: |-
-    while (1){
-       if (x <= N)
-          y++;
-       else if(x >= N+1)
-         y--;
-       else return 1;
-
-       if ( y < 0)
-         break;
-       x++;
-    }
+  code: "while (1){\n   if (x <= N)\n      y++;\n   else if(x >= N+1)\n     y--;\n\
+    \   else return 1;\n\n   if ( y < 0)\n     break;\n   x++;\n}"
   invariants: []

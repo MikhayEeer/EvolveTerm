@@ -1,27 +1,15 @@
 source_file: fig3.v_pmt_yamlv2_qwen3-max_auto.yml
 source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/pie/ICE/benchmarks/fig3.v.c
-basic:
-  name: qwen3-max
-  type: llm
-  task: invariant_inference
-  config: {}
-  time: 2026-01-04T19:28
+task: invariant_inference
+command: evolveterm invariant --input data/aeval/ -r -m yaml --extv v2 -pv yaml_cot
+pmt_ver: yaml_cot
+model: qwen3max
+time: 2026-01-04T19:28
+has_extract: true
 invariants_result:
 - loop_id: 1
-  code: |-
-    while(x != y) {
-
-        lock = 1;
-        x = y;
-        input = unknown_int();
-        if ( input ) {
-
-            lock = 0;
-            y = y + 1;
-        }
-        v1 = unknown_int();
-        v2 = unknown_int();
-        v3 = unknown_int();
-    }
+  code: "while(x != y) {\n\n    lock = 1;\n    x = y;\n    input = unknown_int();\n\
+    \    if ( input ) {\n\n        lock = 0;\n        y = y + 1;\n    }\n    v1 =\
+    \ unknown_int();\n    v2 = unknown_int();\n    v3 = unknown_int();\n}"
   invariants:
   - x != y

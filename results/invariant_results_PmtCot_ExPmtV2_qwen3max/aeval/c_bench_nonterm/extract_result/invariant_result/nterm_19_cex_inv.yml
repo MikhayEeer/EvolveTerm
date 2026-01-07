@@ -1,24 +1,14 @@
 source_file: nterm_19_cex_pmt_yamlv2_qwen3-max_auto.yml
 source_path: data/aeval/c_bench_nonterm/nterm_19_cex.c
-basic:
-  name: qwen3-max
-  type: llm
-  task: invariant_inference
-  config: {}
-  time: 2026-01-04T17:55
+task: invariant_inference
+command: evolveterm invariant --input data/aeval/ -r -m yaml --extv v2 -pv yaml_cot
+pmt_ver: yaml_cot
+model: qwen3max
+time: 2026-01-04T17:55
+has_extract: true
 invariants_result:
 - loop_id: 1
-  code: |-
-    while (x != K || y != K) {
-        if (x > K) {
-            x = x - 1;
-        } else {
-            x = x + 1;
-        }
-        if (y > K) {
-            y = y - 1;
-        } else {
-            y = y + 1;
-        }
-    }
+  code: "while (x != K || y != K) {\n    if (x > K) {\n        x = x - 1;\n    } else\
+    \ {\n        x = x + 1;\n    }\n    if (y > K) {\n        y = y - 1;\n    } else\
+    \ {\n        y = y + 1;\n    }\n}"
   invariants: []

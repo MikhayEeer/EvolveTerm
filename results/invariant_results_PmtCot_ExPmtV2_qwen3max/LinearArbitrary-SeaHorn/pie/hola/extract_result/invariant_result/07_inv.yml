@@ -1,22 +1,13 @@
 source_file: 07_pmt_yamlv2_qwen3-max_auto.yml
 source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/pie/hola/07.c
-basic:
-  name: qwen3-max
-  type: llm
-  task: invariant_inference
-  config: {}
-  time: 2026-01-04T19:20
+task: invariant_inference
+command: evolveterm invariant --input data/aeval/ -r -m yaml --extv v2 -pv yaml_cot
+pmt_ver: yaml_cot
+model: qwen3max
+time: 2026-01-04T19:20
+has_extract: true
 invariants_result:
 - loop_id: 1
-  code: |-
-    while( i < n ) {
-        if(unknown2()) {
-          a = a+1;
-          b = b+2;
-        } else {
-          a = a+2;
-          b = b+1;
-        }
-        i = i+1;
-    }
+  code: "while( i < n ) {\n    if(unknown2()) {\n      a = a+1;\n      b = b+2;\n\
+    \    } else {\n      a = a+2;\n      b = b+1;\n    }\n    i = i+1;\n}"
   invariants: []

@@ -1,17 +1,13 @@
 source_file: MenloPark_true-no-overflow_true-termination_true-valid-memsafety_modif_broken2_pmt_yamlv2_qwen3-max_auto.yml
 source_path: data/aeval/c_bench_nonterm/MenloPark_true-no-overflow_true-termination_true-valid-memsafety_modif_broken2.c
-basic:
-  name: qwen3-max
-  type: llm
-  task: invariant_inference
-  config: {}
-  time: 2026-01-04T17:37
+task: invariant_inference
+command: evolveterm invariant --input data/aeval/ -r -m yaml --extv v2 -pv yaml_cot
+pmt_ver: yaml_cot
+model: qwen3max
+time: 2026-01-04T17:37
+has_extract: true
 invariants_result:
 - loop_id: 1
-  code: |-
-    while (x > 0) {
-        x = x - y;
-        y = y - z;
-        if (z == 2) z = 0; else z++;
-    }
+  code: "while (x > 0) {\n    x = x - y;\n    y = y - z;\n    if (z == 2) z = 0; else\
+    \ z++;\n}"
   invariants: []

@@ -1,20 +1,15 @@
 source_file: for_bounded_loop1_false-unreach-call_true-termination-simplified_pmt_yamlv2_qwen3-max_auto.yml
 source_path: data/aeval/c_bench_term/for_bounded_loop1_false-unreach-call_true-termination-simplified.c
-basic:
-  name: qwen3-max
-  type: llm
-  task: invariant_inference
-  config: {}
-  time: 2026-01-04T21:54
+task: invariant_inference
+command: evolveterm invariant --input data/aeval/ -r -m yaml --extv v2 -pv yaml_cot
+pmt_ver: yaml_cot
+model: qwen3max
+time: 2026-01-04T21:54
+has_extract: true
 invariants_result:
 - loop_id: 1
-  code: |-
-    for(i=0; i<n; i++)
-    {
-      x = x-y;
-      y = __VERIFIER_nondet_int();
-      x = x+y;
-    }
+  code: "for(i=0; i<n; i++)\n{\n  x = x-y;\n  y = __VERIFIER_nondet_int();\n  x =\
+    \ x+y;\n}"
   invariants:
   - 0 <= i && i <= n
   - x - y == \at(x - y, Pre)

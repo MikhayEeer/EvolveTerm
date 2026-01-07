@@ -1,17 +1,14 @@
 source_file: sum01_safe_pmt_yamlv2_qwen3-max_auto.yml
 source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/pie/ICE/benchmarks/sum01_safe.c
-basic:
-  name: qwen3-max
-  type: llm
-  task: invariant_inference
-  config: {}
-  time: 2026-01-04T19:24
+task: invariant_inference
+command: evolveterm invariant --input data/aeval/ -r -m yaml --extv v2 -pv yaml_cot
+pmt_ver: yaml_cot
+model: qwen3max
+time: 2026-01-04T19:24
+has_extract: true
 invariants_result:
 - loop_id: 1
-  code: |-
-    for(i=1; i<=n; i++) {
-      sn = sn + 1;
-    }
+  code: "for(i=1; i<=n; i++) {\n  sn = sn + 1;\n}"
   invariants:
   - 1 <= i && i <= n + 1
   - sn == i - 1

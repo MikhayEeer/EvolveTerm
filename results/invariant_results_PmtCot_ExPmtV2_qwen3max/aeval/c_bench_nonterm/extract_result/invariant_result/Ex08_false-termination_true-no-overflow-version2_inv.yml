@@ -1,49 +1,21 @@
 source_file: Ex08_false-termination_true-no-overflow-version2_pmt_yamlv2_qwen3-max_auto.yml
 source_path: data/aeval/c_bench_nonterm/Ex08_false-termination_true-no-overflow-version2.c
-basic:
-  name: qwen3-max
-  type: llm
-  task: invariant_inference
-  config: {}
-  time: 2026-01-04T18:31
+task: invariant_inference
+command: evolveterm invariant --input data/aeval/ -r -m yaml --extv v2 -pv yaml_cot
+pmt_ver: yaml_cot
+model: qwen3max
+time: 2026-01-04T18:31
+has_extract: true
 invariants_result:
 - loop_id: 1
-  code: |-
-    while (i > 0 && j > 0 && k > 0) {
-        if (i == 1) {
-            up = 1;
-        }
-        if (i == 10) {
-            up = 0;
-        }
-        if (j == 1) {
-            left = 1;
-        }
-        if (j == 10) {
-            left = 0;
-        }
-        if (k == 1) {
-            closer = 1;
-        }
-        if (k == 10) {
-            closer = 0;
-        }
-        if (up == 1) {
-            i = i+1;
-        } else {
-            i = i-1;
-        }
-        if (left == 1) {
-            j = j+1;
-        } else {
-            j = j-1;
-        }
-        if (closer == 1) {
-            k = k+1;
-        } else {
-            k = k-1;
-        }
-    }
+  code: "while (i > 0 && j > 0 && k > 0) {\n    if (i == 1) {\n        up = 1;\n \
+    \   }\n    if (i == 10) {\n        up = 0;\n    }\n    if (j == 1) {\n       \
+    \ left = 1;\n    }\n    if (j == 10) {\n        left = 0;\n    }\n    if (k ==\
+    \ 1) {\n        closer = 1;\n    }\n    if (k == 10) {\n        closer = 0;\n\
+    \    }\n    if (up == 1) {\n        i = i+1;\n    } else {\n        i = i-1;\n\
+    \    }\n    if (left == 1) {\n        j = j+1;\n    } else {\n        j = j-1;\n\
+    \    }\n    if (closer == 1) {\n        k = k+1;\n    } else {\n        k = k-1;\n\
+    \    }\n}"
   invariants:
   - i > 0
   - j > 0
