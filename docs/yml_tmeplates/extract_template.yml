@@ -1,0 +1,12 @@
+source_path: "源文件路径（相对或绝对）"
+task: "任务类型，例如 loop_extraction"
+command: "生成该文件的命令或脚本"
+pmt_ver: "提示词版本/配置标识"
+model: "模型名称或版本"
+time: "生成时间（字符串）"
+loops_count: "循环数量"
+loops_depth: "循环深度"
+loops_ids: "一共extract多少个"
+loops:
+  - id: "循环编号"
+    code: "循环代码片段"

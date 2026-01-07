@@ -22,13 +22,44 @@ from .loop_extractor import LoopExtractor
 from .predict import Predictor
 from .verifier import Z3Verifier
 from .svm_ranker import SVMRankerClient
-from .cli_utils import ensure_output_dir, collect_files, load_references
+from .cli_utils import ensure_output_dir, collect_files, load_references, validate_yaml_required_keys
 from .prompts_loader import PromptRepository
 from .llm_client import build_llm_client
 
 app = typer.Typer(help="EvolveTerm CLI - analyze and curate C termination cases")
 console = Console()
 VALID_LABELS = {"terminating", "non-terminating", "unknown"}
+SVM_RANKER_EXAMPLE = "evolveterm analyze --code-file examples/llm_nested_term_samples/generated1229program1/program.c --svm-ranker /path/to/SVMRanker"
+SVM_RANKER_HELP = (
+    "SVMRanker 仓库根目录（包含 src/CLIMain.py）。"
+    " 若传入的是 src 目录或 CLIMain.py 文件，会自动纠正到根目录。"
+)
+
+
+def resolve_svm_ranker_root(path: Path) -> Path:
+    if not path.exists():
+        raise typer.BadParameter(f"SVMRanker 路径不存在: {path}")
+    if path.is_file():
+        if path.name == "CLIMain.py" and path.parent.name == "src":
+            path = path.parent.parent
+        else:
+            raise typer.BadParameter("SVMRanker 路径应为仓库根目录或 src/CLIMain.py 文件。")
+
+    if (path / "src" / "CLIMain.py").exists():
+        return path
+    if path.name == "src" and (path / "CLIMain.py").exists():
+        return path.parent
+    raise typer.BadParameter("SVMRanker 路径无效，未找到 src/CLIMain.py。")
+
+
+def _check_yaml_required_keys(path: Path, content: Any, strict: bool) -> bool:
+    missing = validate_yaml_required_keys(path, content)
+    if not missing:
+        return True
+    console.print(f"[red]YAML missing keys in {path}: {', '.join(missing)}[/red]")
+    if strict:
+        raise typer.Exit(code=1)
+    return False
 
 
 @app.command()
@@ -39,14 +70,18 @@ def analyze(
     knowledge_base: Optional[Path] = typer.Option(None, "--kb", help="Path to a custom knowledge base JSON file"),
     use_rag_reasoning: bool = typer.Option(True, "--use-rag-reasoning/--no-rag-reasoning", 
                                            help="Use RAG references for invariant and ranking function inference; Default is enabled"),
-    svm_ranker_path: Optional[Path] = typer.Option(None, "--svm-ranker", help="Path to SVMRanker root directory"),
+    svm_ranker_path: Optional[Path] = typer.Option(None, "--svm-ranker", "--svmranker", help=SVM_RANKER_HELP),
     known_terminating: bool = typer.Option(False, "--known-terminating", help="Hint that the program is known to terminate"),
     # Ablation parameters
     extraction_prompt_version: str = typer.Option("v2", "--prompt-version", "-p", help="Prompt version for loop extraction (v1 or v2)"),
     use_loops_for_embedding: bool = typer.Option(True, "--embed-loops/--embed-code", help="Use extracted loops for embedding vs full code"),
     use_loops_for_reasoning: bool = typer.Option(True, "--reason-loops/--reason-code", help="Use extracted loops for reasoning vs full code")
 ) -> None:
-    """Analyze a source snippet for termination likelihood."""
+    """分析 C/C++ 代码的终止性。
+
+    示例（可直接复制）:
+        {example}
+    """.format(example=SVM_RANKER_EXAMPLE)
 
     # Check file extension
     suffix = code_file.suffix.lower()
@@ -57,17 +92,21 @@ def analyze(
         console.print("Please use [bold]--enable-translation[/bold] to enable automatic translation.")
         raise typer.Exit(code=1)
 
+    svm_ranker_root = None
+    if svm_ranker_path:
+        svm_ranker_root = resolve_svm_ranker_root(svm_ranker_path)
+
     pipeline = TerminationPipeline(
         enable_translation=enable_translation, 
         knowledge_base_path=str(knowledge_base) if knowledge_base else None,
-        svm_ranker_path=str(svm_ranker_path) if svm_ranker_path else None
+        svm_ranker_path=str(svm_ranker_root) if svm_ranker_root else None
     )
     code = code_file.read_text(encoding="utf-8")
     result = pipeline.analyze(
         code, 
         top_k=top_k, 
         use_rag_in_reasoning=use_rag_reasoning,
-        use_svm_ranker=bool(svm_ranker_path),
+        use_svm_ranker=bool(svm_ranker_root),
         known_terminating=known_terminating,
         extraction_prompt_version=extraction_prompt_version,
         use_loops_for_embedding=use_loops_for_embedding,
@@ -120,7 +159,7 @@ def batch_analyze(
     knowledge_base: Optional[Path] = typer.Option(None, "--kb", help="Path to a custom knowledge base JSON file"),
     recursive: bool = typer.Option(False, "--recursive", "-r", help="Recursively search for files"),
     use_rag_reasoning: bool = typer.Option(True, "--use-rag-reasoning/--no-rag-reasoning", help="Use RAG references for invariant and ranking function inference"),
-    svm_ranker_path: Optional[Path] = typer.Option(None, "--svm-ranker", help="Path to SVMRanker root directory"),
+    svm_ranker_path: Optional[Path] = typer.Option(None, "--svm-ranker", "--svmranker", help=SVM_RANKER_HELP),
     known_terminating: bool = typer.Option(False, "--known-terminating", help="Hint that the program is known to terminate"),
     # Ablation parameters
     extraction_prompt_version: str = typer.Option("v2", "--prompt-version", "-p", help="Prompt version for loop extraction (v1 or v2)"),
@@ -147,10 +186,14 @@ def batch_analyze(
         
     console.print(f"[bold]Found {len(files)} files to analyze.[/bold]")
     
+    svm_ranker_root = None
+    if svm_ranker_path:
+        svm_ranker_root = resolve_svm_ranker_root(svm_ranker_path)
+
     pipeline = TerminationPipeline(
         enable_translation=enable_translation,
         knowledge_base_path=str(knowledge_base) if knowledge_base else None,
-        svm_ranker_path=str(svm_ranker_path) if svm_ranker_path else None
+        svm_ranker_path=str(svm_ranker_root) if svm_ranker_root else None
     )
     
     # Prepare CSV
@@ -189,7 +232,7 @@ def batch_analyze(
                         code, 
                         top_k=top_k, 
                         use_rag_in_reasoning=use_rag_reasoning,
-                        use_svm_ranker=bool(svm_ranker_path),
+                        use_svm_ranker=bool(svm_ranker_root),
                         known_terminating=known_terminating,
                         extraction_prompt_version=extraction_prompt_version,
                         use_loops_for_embedding=use_loops_for_embedding,
@@ -529,7 +572,7 @@ def invariant(
                 style = '|'
             return super().represent_scalar(tag, value, style)
 
-    def process_file(f: Path, base_dir: Optional[Path], output_root: Optional[Path]):
+    def process_file(f: Path, base_dir: Optional[Path], output_root: Optional[Path], strict: bool):
         loops_to_analyze = []
         source_type = "code"
         source_path = str(f.relative_to(base_dir)) if base_dir else str(f)
@@ -541,11 +584,13 @@ def invariant(
             source_type = "yaml"
             try:
                 data = yaml.safe_load(f.read_text(encoding="utf-8"))
+                if not _check_yaml_required_keys(f, data, strict):
+                    return False
                 if isinstance(data, dict) and "source_path" in data:
                     source_path = data["source_path"]
                 if isinstance(data, dict) and "invariants_result" in data:
                     if not fill_empty_invariants:
-                        return
+                        return True
                     existing_yaml = data
                     for item in data.get("invariants_result", []):
                         invs = item.get("invariants", [])
@@ -556,15 +601,15 @@ def invariant(
                                 needs_fill = True
                     if not needs_fill:
                         console.print(f"[yellow]No empty invariants in {f.name}, skipping.[/yellow]")
-                        return
+                        return True
                 elif "loops" in data:
                     loops_to_analyze = [item["code"] for item in data["loops"]]
                 else:
                     # Not an extract result, skip
-                    return
+                    return True
             except Exception as e:
                 console.print(f"[red]Error parsing YAML {f}: {e}[/red]")
-                return
+                return False
         else:
             # Treat as raw code file
             code = f.read_text(encoding="utf-8")
@@ -638,6 +683,7 @@ def invariant(
             yaml.dump(yaml_data, yf, Dumper=LiteralDumper, sort_keys=False, allow_unicode=True)
             
         console.print(f"Saved invariants to {out_path}")
+        return True
 
     if input.is_file():
         output_root = None
@@ -645,7 +691,9 @@ def invariant(
             if not output.exists():
                 output.mkdir(parents=True)
             output_root = output
-        process_file(input, None, output_root)
+        ok = process_file(input, None, output_root, True)
+        if not ok:
+            raise typer.Exit(code=1)
     elif input.is_dir():
         def matches_yaml_prompt_version(path: Path) -> bool:
             if not extract_prompt_version or extract_prompt_version.lower() in {"all", "auto"}:
@@ -686,7 +734,7 @@ def invariant(
             output.mkdir(parents=True)
         for f in filtered_files:
             try:
-                process_file(f, input, output)
+                process_file(f, input, output, False)
             except Exception as e:
                 console.print(f"[red]Error processing {f.name}: {e}[/red]")
         return
@@ -802,12 +850,15 @@ def ranking(
             }
         return {"ranking_function": rf, "explanation": explanation}
 
-    def process_yaml_input(f: Path) -> tuple[List[Dict[str, Any]], str]:
+    def process_yaml_input(f: Path, strict: bool) -> tuple[Optional[List[Dict[str, Any]]], str]:
         try:
             content = yaml.safe_load(f.read_text(encoding="utf-8"))
         except Exception as e:
             console.print(f"[red]Error parsing YAML {f}: {e}[/red]")
-            return [], str(f)
+            return None, str(f)
+
+        if not _check_yaml_required_keys(f, content, strict):
+            return None, str(f)
 
         results = []
         source_path = content.get("source_path") if isinstance(content, dict) else None
@@ -893,7 +944,9 @@ def ranking(
 
     if input.is_file():
         if input.suffix.lower() in {'.yml', '.yaml'}:
-            results, source_path = process_yaml_input(input)
+            results, source_path = process_yaml_input(input, True)
+            if results is None:
+                raise typer.Exit(code=1)
             if output:
                 if output.is_dir():
                     out_path = output / (input.stem + "_ranking.yml")
@@ -964,7 +1017,9 @@ def ranking(
                 console.print(f"Processing {f.name}...")
                 
                 if f.suffix.lower() in yaml_extensions:
-                    results, source_path = process_yaml_input(f)
+                    results, source_path = process_yaml_input(f, False)
+                    if results is None:
+                        continue
                     if output:
                         try:
                             rel_path = f.relative_to(input)
@@ -1025,12 +1080,15 @@ def predict(
     
     references = load_references(references_file)
 
-    def process_yaml_input(f: Path) -> List[Dict[str, Any]]:
+    def process_yaml_input(f: Path, strict: bool) -> Optional[List[Dict[str, Any]]]:
         try:
             content = yaml.safe_load(f.read_text(encoding="utf-8"))
         except Exception as e:
             console.print(f"[red]Error parsing YAML {f}: {e}[/red]")
-            return []
+            return None
+
+        if not _check_yaml_required_keys(f, content, strict):
+            return None
 
         results = []
         loops_to_predict = []
@@ -1101,7 +1159,9 @@ def predict(
 
     if input.is_file():
         if input.suffix.lower() in {'.yml', '.yaml'}:
-            results = process_yaml_input(input)
+            results = process_yaml_input(input, True)
+            if results is None:
+                raise typer.Exit(code=1)
             if output:
                 if output.is_dir():
                     out_path = output / (input.stem + "_prediction.yml")
@@ -1139,7 +1199,9 @@ def predict(
         for f in files:
             try:
                 if f.suffix.lower() in {'.yml', '.yaml'}:
-                    results = process_yaml_input(f)
+                    results = process_yaml_input(f, False)
+                    if results is None:
+                        continue
                     # Save YAML
                     out_path = output / (f.stem + "_prediction.yml")
                     out_data = {"source_file": f.name, "results": results}
@@ -1276,14 +1338,15 @@ def z3verify(
 @app.command()
 def svmranker(
     input: Path = typer.Option(..., exists=True, help="Input YAML file or directory from ranking template output"),
-    svm_ranker_path: Path = typer.Option(..., "--svm-ranker", help="Path to SVMRanker root directory"),
+    svm_ranker_path: Path = typer.Option(..., "--svm-ranker", "--svmranker", help=SVM_RANKER_HELP),
     output: Optional[Path] = typer.Option(None, help="Output file or directory"),
     recursive: bool = typer.Option(False, "--recursive", "-r", help="Recursively search for files if input is directory"),
 ) -> None:
     """
     Run SVMRanker using template parameters from ranking-template YAML output.
     """
-    client = SVMRankerClient(str(svm_ranker_path))
+    svm_ranker_root = resolve_svm_ranker_root(svm_ranker_path)
+    client = SVMRankerClient(str(svm_ranker_root))
 
     def parse_results(content: Any) -> List[Dict[str, Any]]:
         if isinstance(content, dict) and "ranking_results" in content:
@@ -1333,11 +1396,13 @@ def svmranker(
             "ranking_functions": rf_list,
         }
 
-    def process_yaml(f: Path) -> Dict[str, Any]:
+    def process_yaml(f: Path, strict: bool) -> Optional[Dict[str, Any]]:
         try:
             content = yaml.safe_load(f.read_text(encoding="utf-8"))
         except Exception as e:
             return {"source_file": f.name, "error": f"YAML parse error: {e}"}
+        if not _check_yaml_required_keys(f, content, strict):
+            return None
 
         entries = parse_results(content)
         base_dir = f.parent
@@ -1345,7 +1410,9 @@ def svmranker(
         return {"source_file": f.name, "task": "svmranker", "results": results}
 
     if input.is_file():
-        result = process_yaml(input)
+        result = process_yaml(input, True)
+        if result is None:
+            raise typer.Exit(code=1)
         if output:
             if output.is_dir():
                 out_path = output / (input.stem + "_svmranker.yml")
@@ -1363,7 +1430,9 @@ def svmranker(
 
         for f in files:
             try:
-                result = process_yaml(f)
+                result = process_yaml(f, False)
+                if result is None:
+                    continue
                 if output:
                     try:
                         rel_path = f.relative_to(input)

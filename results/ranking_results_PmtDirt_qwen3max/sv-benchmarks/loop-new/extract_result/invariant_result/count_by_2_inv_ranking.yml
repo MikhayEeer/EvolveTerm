@@ -1,6 +1,13 @@
 source_file: count_by_2_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
 source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-new/count_by_2.c
 task: ranking_inference
+command: evolveterm ranking --input results/invariant_results_PmtCot_ExtPmtV2_qwen3max/
+  -r -m yaml --ranking-mode direct --retry-empty 0
+pmt_ver: direct
+model: qwen3max
+time: 2026/01/06
+has_extract: true
+has_invariants: true
 ranking_results:
 - loop_id: 1
   code: for (i = 0; i < LARGE_INT; i += 2) ;

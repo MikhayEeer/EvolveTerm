@@ -1,6 +1,13 @@
 source_file: fib_merged_safe_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
 source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/llreve/fib_merged_safe.c
 task: ranking_inference
+command: evolveterm ranking --input results/invariant_results_PmtCot_ExtPmtV2_qwen3max/
+  -r -m yaml --ranking-mode direct --retry-empty 0
+pmt_ver: direct
+model: qwen3max
+time: 2026/01/06
+has_extract: true
+has_invariants: false
 ranking_results:
 - loop_id: 1
   code: "while((n > 0)) {\n  h1 = f1 + g1;\n  f1 = g1;\n  g1 = h1;\n  n --;\n\n  h2\
