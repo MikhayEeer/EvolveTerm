@@ -4,6 +4,8 @@ import threading
 import re
 import tempfile
 import subprocess
+import io
+import contextlib
 from pathlib import Path
 from typing import Optional, Tuple, List
 
@@ -65,8 +67,14 @@ class SVMRankerClient:
         return set()
 
     def _build_minimal_c(self, code: str) -> str:
-        print("[Info] Minimal C build disabled; returning original code.")
-        return code
+        # Remove #include directives to avoid macro expansion issues in C2Boogie
+        lines = code.splitlines()
+        filtered_lines = []
+        for line in lines:
+            if re.match(r'^\s*#\s*include', line):
+                continue
+            filtered_lines.append(line)
+        return "\n".join(filtered_lines)
 
     def run(self, file_path: Path, mode: str = "lnested", depth: int = 1) -> Tuple[str, Optional[str], List[str]]:
         """
@@ -91,11 +99,29 @@ class SVMRankerClient:
         temp_bpl_path: Optional[Path] = None
         if abs_file_path.suffix.lower() in {".c", ".h", ".cpp", ".cc", ".cxx"}:
             try:
-                code = abs_file_path.read_text(encoding="utf-8")
+                # Read original code
+                raw_code = abs_file_path.read_text(encoding="utf-8")
+                
+                # Sanitize code (remove includes)
+                sanitized_code = self._build_minimal_c(raw_code)
+                
+                # Write to a temporary file for processing
+                temp_c = tempfile.NamedTemporaryFile(mode="w", suffix=".c", delete=False, encoding="utf-8")
+                temp_c.write(sanitized_code)
+                temp_c.close()
+                process_file_path = Path(temp_c.name)
+                temp_path = process_file_path # Mark for cleanup
+
+                # Debug log
                 debug_path = Path.cwd() / "svmranker_last_input.c"
-                debug_path.write_text(code, encoding="utf-8")
-            except OSError:
-                code = ""
+                debug_path.write_text(sanitized_code, encoding="utf-8")
+                
+            except OSError as e:
+                print(f"[Error] Failed to prepare input file: {e}")
+                return "ERROR", None, []
+        else:
+            # For non-C files (e.g. .bpl), use as is
+            process_file_path = abs_file_path
         
         # Configuration based on guide
         sample_strategy = "ENLARGE"
@@ -115,8 +141,18 @@ class SVMRankerClient:
                         temp_bpl_path = Path(temp_bpl.name)
                         temp_bpl.close()
                         cli_main = self.src_dir / "CLIMain.py"
-                        cmd = [sys.executable, str(cli_main), "parsectoboogie", str(abs_file_path), str(temp_bpl_path)]
+                        # Use process_file_path (sanitized temp file) instead of abs_file_path
+                        cmd = [sys.executable, str(cli_main), "parsectoboogie", str(process_file_path), str(temp_bpl_path)]
+                        
+                        log_buffer.write(f"Executing: {' '.join(cmd)}\n")
                         result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
+                        
+                        log_buffer.write(f"Return Code: {result.returncode}\n")
+                        if result.stdout:
+                            log_buffer.write(f"STDOUT:\n{result.stdout}\n")
+                        if result.stderr:
+                            log_buffer.write(f"STDERR:\n{result.stderr}\n")
+
                         try:
                             debug_log = Path.cwd() / "svmranker_last_log.txt"
                             log_body = (
@@ -131,7 +167,7 @@ class SVMRankerClient:
                         if result.returncode != 0:
                             msg = (result.stderr or result.stdout or "parseCtoBoogie failed").strip()
                             print(f"[Error] parseCtoBoogie failed: {msg}")
-                            return "ERROR", None, []
+                            return "ERROR", None, [], log_buffer.getvalue()
                         try:
                             debug_bpl = Path.cwd() / "svmranker_last_input.bpl"
                             debug_bpl.write_text(temp_bpl_path.read_text(encoding="utf-8"), encoding="utf-8")
@@ -144,26 +180,37 @@ class SVMRankerClient:
                     # If the user says C is supported, we assume this parser handles it 
                     # or we are passing a .bpl file converted elsewhere.
                     # For now, we pass the file path as is.
-                    (sourceFilePath, sourceFileName, 
-                     templatePath, templateFileName, 
-                     Info, 
-                     parse_oldtime, parse_newtime) = parseBoogieProgramMulti(str(abs_file_path), "OneLoop.py")
+                    # Warning: parseBoogieProgramMulti expects the boogie file path if we just converted it?
+                    # The original code passed abs_file_path, but if we did conversion, we should pass temp_bpl_path?
+                    # However, SVMLearnMulti takes 'sourceFilePath'. 
+                    # Based on flow: parseCtoBoogie -> output.bpl. 
+                    # Then we likely parse the output.bpl.
+                    target_bpl = temp_bpl_path if temp_bpl_path else process_file_path
+                    
+                    log_buffer.write(f"\n--- calling parseBoogieProgramMulti on {target_bpl} ---\n")
+                    
+                    with contextlib.redirect_stdout(log_buffer), contextlib.redirect_stderr(log_buffer):
+                        (sourceFilePath, sourceFileName, 
+                        templatePath, templateFileName, 
+                        Info, 
+                        parse_oldtime, parse_newtime) = parseBoogieProgramMulti(str(target_bpl), "OneLoop.py")
 
-                    # Step B: Learn
-                    result, rf_list = SVMLearnMulti(
-                        sourceFilePath, 
-                        sourceFileName, 
-                        depth,
-                        parse_oldtime, 
-                        parse_newtime, 
-                        sample_strategy, 
-                        cutting_strategy, 
-                        template_strategy, 
-                        print_level
-                    )
+                        # Step B: Learn
+                        log_buffer.write(f"\n--- calling SVMLearnMulti ---\n")
+                        result, rf_list = SVMLearnMulti(
+                            sourceFilePath, 
+                            sourceFileName, 
+                            depth,
+                            parse_oldtime, 
+                            parse_newtime, 
+                            sample_strategy, 
+                            cutting_strategy, 
+                            template_strategy, 
+                            print_level
+                        )
                     
                     first_rf = rf_list[0] if rf_list else None
-                    return result, first_rf, rf_list
+                    return result, first_rf, rf_list, log_buffer.getvalue()
 
                 finally:
                     # Restore cwd
@@ -174,5 +221,7 @@ class SVMRankerClient:
                         temp_bpl_path.unlink(missing_ok=True)
 
             except Exception as e:
-                print(f"[Error] SVMRanker execution exception: {e}")
-                return "ERROR", None, []
+                msg = f"[Error] SVMRanker execution exception: {e}"
+                print(msg)
+                log_buffer.write(f"\n{msg}\n")
+                return "ERROR", None, [], log_buffer.getvalue()
