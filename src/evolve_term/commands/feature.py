@@ -10,6 +10,7 @@ from rich.console import Console
 from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TaskProgressColumn
 
 from ..llm_client import build_llm_client
+from ..prompts_loader import PromptRepository
 from ..utils import LiteralDumper
 from ..cli_utils import collect_files
 
@@ -18,6 +19,9 @@ console = Console()
 class FeatureHandler:
     def __init__(self, llm_config: str):
         self.llm_client = build_llm_client(llm_config)
+        # Force model to qwen-plus as requested
+        self.llm_client.model = "qwen-plus"
+        self.prompt_repo = PromptRepository()
 
     def run(self, input_path: Path, output: Optional[Path], recursive: bool):
         files = collect_files(input_path, recursive, {".c", ".cpp", ".cc", ".h", ".hpp"})
@@ -159,25 +163,12 @@ class FeatureHandler:
         }
 
     def _analyze_llm(self, code: str, static_feats: Dict[str, Any]) -> Dict[str, Any]:
-        prompt = f"""
-You are a code analysis expert. Analyze the following C/C++ code.
-Return a JSON object with exactly these keys:
-- "summary": A concise summary of what the code does (in Chinese).
-- "recur_type": First check if there is recursion. If yes, classify as "tail" (tail recursion) or "non-tail". If no recursion, return null.
-- "initial_sat_condition": Boolean. Analyze if the main loop or recursion logic will execute at least once (i.e., initial entries condition is true). If it's a "while(false)" or similar dead code, return false. If not sure, return true.
-
-Code:
-```c
-{code}
-```
-
-JSON Output:
-"""
         try:
-            # We assume a simple wrapper that returns content
-            # If using openai generic client
-            messages = [{"role": "user", "content": prompt}]
-            response_text = self.llm_client.get_chat_completion(messages=messages, temperature=0.1)
+            prompt_dict = self.prompt_repo.render("summary", code=code)
+            # Add JSON enforcement hint if not in prompt
+            prompt_dict["response_format"] = {"type": "json_object"}
+            
+            response_text = self.llm_client.complete(prompt_dict)
             
             # Simple JSON parse
             json_match = re.search(r'\{.*\}', response_text, re.DOTALL)
