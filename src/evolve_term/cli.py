@@ -23,6 +23,7 @@ from .commands.svmranker import SVMRankerHandler
 from .commands.z3verify import Z3VerifyHandler
 from .commands.batch import BatchHandler
 from .commands.translate import TranslateHandler
+from .commands.feature import FeatureHandler
 
 app = typer.Typer(help="EvolveTerm CLI - analyze and curate C termination cases")
 console = Console()
@@ -335,3 +336,17 @@ def svmranker(
     """
     handler = SVMRankerHandler()
     handler.run(input, svm_ranker_path, output, recursive)
+
+
+@app.command()
+def feature(
+    input: Path = typer.Option(..., exists=True, help="Input file or directory (C/C++)"),
+    output: Optional[Path] = typer.Option(None, help="Output directory"),
+    llm_config: str = typer.Option("llm_config.json", help="Path to LLM config"),
+    recursive: bool = typer.Option(False, "--recursive", "-r", help="Recursively search for files if input is directory"),
+) -> None:
+    """
+    Extract code features (loop count, depth, semantic summary, etc.) for code summarization.
+    """
+    handler = FeatureHandler(llm_config)
+    handler.run(input, output, recursive)
