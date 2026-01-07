@@ -1,0 +1,17 @@
+source_file: Fibonacci01-2_aug3_yaml_cot_inv.yml
+source_path: Fibonacci01-2_aug3.c
+task: ranking_inference
+command: /home/clexma/Desktop/fox3/TermDB/EvolveTerm/.venv_evolve/bin/evolveterm ranking
+  --input test_result/invar/invariant_result/ --ranking-mode template --output test_result/ranking/
+pmt_ver: template
+model: qwen3-max
+time: 2026-01-07T15:09
+has_extract: true
+has_invariants: false
+ranking_results:
+- loop_id: 1
+  code: /* no loops detected */
+  invariants: []
+  explanation: No loops present; default minimal configuration provided.
+  template_type: lnested
+  template_depth: 1
