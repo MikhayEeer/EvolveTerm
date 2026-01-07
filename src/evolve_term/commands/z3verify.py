@@ -4,9 +4,10 @@ import json
 import typer
 from rich.console import Console
 
-from evolve_term.utils import build_llm_client, collect_files, ensure_output_dir
-from evolve_term.prompt_repo import PromptRepository
-from evolve_term.modules.z3_verifier import Z3Verifier
+from evolve_term.llm_client import build_llm_client
+from evolve_term.cli_utils import collect_files, ensure_output_dir
+from evolve_term.prompts_loader import PromptRepository
+from evolve_term.verifier import Z3Verifier
 
 console = Console()
 

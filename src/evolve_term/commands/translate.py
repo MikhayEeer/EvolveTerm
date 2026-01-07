@@ -2,7 +2,7 @@ from pathlib import Path
 from typing import Optional
 from rich.console import Console
 from evolve_term.translator import CodeTranslator
-from evolve_term.utils import collect_files, ensure_output_dir
+from evolve_term.cli_utils import collect_files, ensure_output_dir
 
 console = Console()
 
