@@ -1,0 +1,11 @@
+source_file: simple_3-2_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-acceleration/simple_3-2.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x < N) {\n  x += 2;\n}"
+  invariants: []
+  explanation: Single loop with linear progress; a simple linear ranking function
+    like N - x suffices.
+  template_type: lnested
+  template_depth: 1

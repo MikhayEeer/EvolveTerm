@@ -1,0 +1,12 @@
+source_file: Singapore_false-no-overflow-broken_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/Singapore_false-no-overflow-broken.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x > 0) {\n    x = x + x + x + y;\n    y = y - 1;\n}"
+  invariants: []
+  explanation: The loop exhibits nested behavior where y decreases unconditionally
+    and eventually forces x to decrease; a 2-component lexicographic ranking function
+    is needed.
+  template_type: lnested
+  template_depth: 2

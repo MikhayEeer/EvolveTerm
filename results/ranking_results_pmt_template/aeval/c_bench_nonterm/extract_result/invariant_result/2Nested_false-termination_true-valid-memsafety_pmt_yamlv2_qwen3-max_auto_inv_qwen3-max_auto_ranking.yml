@@ -1,0 +1,13 @@
+source_file: 2Nested_false-termination_true-valid-memsafety_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/2Nested_false-termination_true-valid-memsafety.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x >= 0) {\n    x = x + y;\n    y = y + 1;\n}"
+  invariants:
+  - 2 * x - y * (y - 1) == \old(2 * x - y * (y - 1))
+  explanation: The loop requires a lexicographic ranking function due to the interplay
+    between x and y; y increases monotonically while x may decrease then increase,
+    but in terminating runs, a two-component linear lexicographic function suffices.
+  template_type: lnested
+  template_depth: 2

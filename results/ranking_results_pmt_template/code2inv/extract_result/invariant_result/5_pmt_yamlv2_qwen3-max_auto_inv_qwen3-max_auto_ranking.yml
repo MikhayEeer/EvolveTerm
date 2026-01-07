@@ -1,0 +1,11 @@
+source_file: 5_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/code2inv/5.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while(x < size) {\n   x += 1;\n   if( z <= y) {\n      y = z;\n   }\n}"
+  invariants: []
+  explanation: The loop terminates due to a single monotonic variable x approaching
+    a fixed bound. A simple linear ranking function like size - x suffices.
+  template_type: lnested
+  template_depth: 1

@@ -1,0 +1,12 @@
+source_file: jm2006_true-unreach-call_true-termination_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/loops/loop-lit/jm2006_true-unreach-call_true-termination.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while(x != 0) {\n    x--;\n    y--;\n}"
+  invariants:
+  - \at(x - y, Pre) == x - y
+  explanation: A single linear ranking function (e.g., x) suffices for termination;
+    no multi-phase or nested structure is present.
+  template_type: lnested
+  template_depth: 1

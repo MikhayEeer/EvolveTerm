@@ -1,0 +1,15 @@
+source_file: TRACER-testabs12_VeriMAP_true_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/VeriMAP/TRACER-testabs12_VeriMAP_true.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (i < 100 ){\n    count++;\n    i++;\n}"
+  invariants:
+  - count == i
+  - 0 <= i
+  - i <= 100
+  - 0 <= count
+  explanation: A single linear ranking function (e.g., 100 - i) suffices for this
+    simple loop.
+  template_type: lnested
+  template_depth: 1

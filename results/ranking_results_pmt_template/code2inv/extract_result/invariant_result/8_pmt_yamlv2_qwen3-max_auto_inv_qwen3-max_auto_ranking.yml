@@ -1,0 +1,13 @@
+source_file: 8_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/code2inv/8.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (unknown()) {\n  {\n  (x  = (x + 10));\n  (y  = (y + 10));\n  }\n\n\
+    }"
+  invariants:
+  - x - y == \old(x - y)
+  explanation: Single loop with no decreasing variables; use simplest linear template
+    to attempt (and likely fail) to find a ranking function, confirming non-termination.
+  template_type: lnested
+  template_depth: 1

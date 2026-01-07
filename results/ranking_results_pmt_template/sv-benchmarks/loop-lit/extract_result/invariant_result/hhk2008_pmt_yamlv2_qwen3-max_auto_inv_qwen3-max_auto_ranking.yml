@@ -1,0 +1,10 @@
+source_file: hhk2008_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-lit/hhk2008.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (cnt > 0) {\n    cnt = cnt - 1;\n    res = res + 1;\n}"
+  invariants: []
+  explanation: Single-variable decreasing loop; linear ranking function suffices.
+  template_type: lnested
+  template_depth: 1

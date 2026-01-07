@@ -1,0 +1,12 @@
+source_file: TRACER-testloop10_VeriMAP_true_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/VeriMAP/TRACER-testloop10_VeriMAP_true.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (new != old) {\n    lock = 1;\n    old = new;\n    if (unknown()) {\n\
+    \        lock = 0;\n        new++;\n    }\n}"
+  invariants: []
+  explanation: Single-loop with no nesting; attempt a linear ranking function despite
+    the challenge posed by the increasing variable 'new'.
+  template_type: lmulti
+  template_depth: 1

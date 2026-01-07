@@ -1,0 +1,16 @@
+source_file: PodelskiRybalchenko-VMCAI2004-Ex1_false-no-overflow_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_term/PodelskiRybalchenko-VMCAI2004-Ex1_false-no-overflow.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (i - j >= 1) {\n    nondetNat = __VERIFIER_nondet_int();\n    if (nondetNat\
+    \ < 0) {\n        nondetNat = -nondetNat;\n    }\n    i = i - nondetNat;\n   \
+    \ nondetPos = __VERIFIER_nondet_int();\n    if (nondetPos < 0) {\n        nondetPos\
+    \ = -nondetPos;\n    }\n    nondetPos = nondetPos + 1;\n    j = j + nondetPos;\n\
+    }"
+  invariants:
+  - i - j >= 1
+  explanation: A single linear ranking function (i - j) suffices because it strictly
+    decreases by at least 1 per iteration.
+  template_type: lnested
+  template_depth: 1

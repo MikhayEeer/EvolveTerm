@@ -1,0 +1,13 @@
+source_file: 89_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/code2inv/89.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while ((x != y)) {\n  {\n    if ( unknown() ) {\n      {\n      (lock  =\
+    \ 1);\n      (x  = y);\n      }\n    } else {\n      {\n      (lock  = 0);\n \
+    \     (x  = y);\n      (y  = (y + 1));\n      }\n    }\n\n  }\n\n}"
+  invariants: []
+  explanation: Single loop with no nesting; attempt to find a linear ranking function,
+    though none exists due to non-terminating else branch.
+  template_type: lmulti
+  template_depth: 1

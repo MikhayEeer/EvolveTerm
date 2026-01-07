@@ -1,0 +1,12 @@
+source_file: 19_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/accelerating_invariant_generation/cav/19.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while(x<=n-1) {\n  x++;\n  if(x>=m+1) y++;\n  else if(x > m) \nreturn;\n\n\
+    \  x = x;\n}"
+  invariants: []
+  explanation: The loop has a single phase with a linearly increasing variable x bounded
+    by n; a simple linear ranking function like n - x proves termination.
+  template_type: lnested
+  template_depth: 1

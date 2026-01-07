@@ -1,0 +1,12 @@
+source_file: 07_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/pie/hola/07.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while( i < n ) {\n    if(unknown2()) {\n      a = a+1;\n      b = b+2;\n\
+    \    } else {\n      a = a+2;\n      b = b+1;\n    }\n    i = i+1;\n}"
+  invariants: []
+  explanation: Termination is ensured by the loop counter `i` approaching `n`; no
+    multi-phase or lexicographic ranking is needed.
+  template_type: lnested
+  template_depth: 1

@@ -1,0 +1,19 @@
+source_file: MADWiFi-encode_ie_ok_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/accelerating_invariant_generation/invgen/MADWiFi-encode_ie_ok.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "for (i = 0; i < ielen && bufsize > 2; i++) {\n    {;\n//@ assert(0<=p);\n\
+    }\n\n    {;\n//@ assert(p+1<bufsize_0);\n}\n\n    p += 2;\n}"
+  invariants:
+  - i >= 0
+  - i <= ielen
+  - bufsize == \at(bufsize, Pre)
+  - bufsize > 2
+  - p == \at(p, Pre) + 2 * i
+  - 0 <= p
+  - p + 1 < \at(bufsize, Pre)
+  explanation: The loop terminates due to a single increasing counter i bounded by
+    constants; a simple linear ranking function suffices.
+  template_type: lnested
+  template_depth: 1

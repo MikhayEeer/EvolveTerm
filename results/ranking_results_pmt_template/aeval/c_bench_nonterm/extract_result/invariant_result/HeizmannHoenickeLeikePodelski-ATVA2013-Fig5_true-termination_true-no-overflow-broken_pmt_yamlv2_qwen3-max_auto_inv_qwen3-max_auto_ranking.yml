@@ -1,0 +1,12 @@
+source_file: HeizmannHoenickeLeikePodelski-ATVA2013-Fig5_true-termination_true-no-overflow-broken_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/HeizmannHoenickeLeikePodelski-ATVA2013-Fig5_true-termination_true-no-overflow-broken.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x >= 0) {\n    x = x - y + 1;\n    y = (y + 1) / 2;\n}"
+  invariants: []
+  explanation: 'The loop exhibits nested behavior: y decreases logarithmically and
+    governs the rate at which x decreases. A depth-2 nested ranking function can capture
+    the primary decrease in y and secondary progress in x.'
+  template_type: lnested
+  template_depth: 2

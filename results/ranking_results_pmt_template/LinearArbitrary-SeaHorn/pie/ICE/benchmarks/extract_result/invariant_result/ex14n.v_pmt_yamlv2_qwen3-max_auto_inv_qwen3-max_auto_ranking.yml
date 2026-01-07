@@ -1,0 +1,13 @@
+source_file: ex14n.v_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/pie/ICE/benchmarks/ex14n.v.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x <= N){\n      y=N-x;\n\n    if(y < 0 || y >= N)\n        {;\n//@\
+    \ assert(0 == 1);\n}\n\n      x++;\n    v1 = v2;\n    v2 = v3;\n    v3 = v1;\n\
+    \n  }"
+  invariants: []
+  explanation: The loop terminates due to x increasing toward N, making N - x a linear
+    decreasing measure. A single linear ranking function suffices.
+  template_type: lnested
+  template_depth: 1

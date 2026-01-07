@@ -1,0 +1,11 @@
+source_file: ChenFlurMukhopadhyay-SAS2012-Ex2.04_false-no-overflow_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/ChenFlurMukhopadhyay-SAS2012-Ex2.04_false-no-overflow.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x < y) {\n    x = x + y;\n    y = -2*y;\n}"
+  invariants: []
+  explanation: The loop exhibits periodic behavior with period 2 due to sign flipping
+    of y. A multi-phase ranking function with depth 2 can model the alternating dynamics.
+  template_type: lmulti
+  template_depth: 2

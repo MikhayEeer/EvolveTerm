@@ -1,0 +1,11 @@
+source_file: benchmark43_conjunctive_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-zilu/benchmark43_conjunctive.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x < 100 && y < 100) {\n  x=x+1;\n  y=y+1;\n}"
+  invariants: []
+  explanation: A single linear ranking function such as 200 - x - y suffices, so depth
+    1 with lnested type is appropriate.
+  template_type: lnested
+  template_depth: 1

@@ -1,0 +1,12 @@
+source_file: 15_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/pie/hola/15.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while( j < n ) {\n  j++;\n  k--;\n}"
+  invariants:
+  - j + k == \at(j + k, Pre)
+  explanation: Single-loop with monotonic progress via j; linear ranking function
+    n - j suffices.
+  template_type: lnested
+  template_depth: 1

@@ -1,0 +1,13 @@
+source_file: 05_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/pie/hola/05.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while(unknown2())\n{\n  x++;\n  y++;\n  i+=x;\n  j+=y;\n  if(flag)  j+=1;\n\
+    }"
+  invariants: []
+  explanation: The loop is non-nested with multiple increasing variables; 'lmulti'
+    with depth 1 is the standard configuration for attempting a linear ranking function
+    in such cases, though termination is not evident from the given code.
+  template_type: lmulti
+  template_depth: 1

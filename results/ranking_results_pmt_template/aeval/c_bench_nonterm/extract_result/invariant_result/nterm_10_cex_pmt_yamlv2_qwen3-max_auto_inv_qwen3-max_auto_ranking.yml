@@ -1,0 +1,12 @@
+source_file: nterm_10_cex_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/nterm_10_cex.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x < 100)\n{\n  x = x + y;\n  y--;\n}"
+  invariants: []
+  explanation: The loop updates x using y, while y decreases unconditionally. A single
+    linear ranking function is insufficient due to opposing effects on x; a lexicographic
+    (nested) ranking function of depth 2 can capture the dependency.
+  template_type: lnested
+  template_depth: 2

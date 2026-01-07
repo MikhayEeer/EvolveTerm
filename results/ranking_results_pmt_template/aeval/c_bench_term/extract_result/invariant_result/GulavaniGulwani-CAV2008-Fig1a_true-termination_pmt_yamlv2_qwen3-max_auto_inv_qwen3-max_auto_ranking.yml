@@ -1,0 +1,13 @@
+source_file: GulavaniGulwani-CAV2008-Fig1a_true-termination_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_term/GulavaniGulwani-CAV2008-Fig1a_true-termination.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x < y) {\n    if (z > x) {\n        x = x + 1;\n    } else {\n   \
+    \     z = z + 1;\n    }\n}"
+  invariants: []
+  explanation: 'The loop exhibits nested progress: z increases until it exceeds x,
+    enabling x to increase toward y. A 2-component lexicographic (nested) ranking
+    function is needed.'
+  template_type: lnested
+  template_depth: 2

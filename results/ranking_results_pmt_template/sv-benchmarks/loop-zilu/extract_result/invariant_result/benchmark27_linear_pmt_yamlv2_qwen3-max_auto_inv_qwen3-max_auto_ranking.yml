@@ -1,0 +1,13 @@
+source_file: benchmark27_linear_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-zilu/benchmark27_linear.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (i<j) {\n  k=k+1;\n  i=i+1;\n}"
+  invariants:
+  - j == \at(j, Pre)
+  - k - i == \at(k - i, Pre)
+  explanation: A single linear ranking function (e.g., j - i) suffices; no multi-phase
+    or nested structure is present.
+  template_type: lnested
+  template_depth: 1

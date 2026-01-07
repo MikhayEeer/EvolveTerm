@@ -1,0 +1,13 @@
+source_file: benchmark06_conjunctive_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-zilu/benchmark06_conjunctive.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (unknown_bool()) {\n    if(j==i) {x++;y--;} else {y++;x--;} j++;\n}"
+  invariants:
+  - x + y == \at(x + y, LoopEntry)
+  explanation: The loop exhibits two distinct phases based on the comparison j ==
+    i, which can be true at most once. A multi-phase ranking function with depth 2
+    can capture the change in behavior before and after j passes i.
+  template_type: lmulti
+  template_depth: 2

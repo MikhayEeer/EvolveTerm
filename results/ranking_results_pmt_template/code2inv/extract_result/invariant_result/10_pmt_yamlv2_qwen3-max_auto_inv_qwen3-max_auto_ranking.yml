@@ -1,0 +1,13 @@
+source_file: 10_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/code2inv/10.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (unknown()) {\n    {\n        (x  = (x + 2));\n        (y  = (y + 2));\n\
+    \    }\n}"
+  invariants:
+  - "x - y == \at(x - y, Pre)"
+  explanation: Single-loop with no nesting; attempt a linear ranking function despite
+    monotonic increase, as it's the standard first attempt.
+  template_type: lmulti
+  template_depth: 1

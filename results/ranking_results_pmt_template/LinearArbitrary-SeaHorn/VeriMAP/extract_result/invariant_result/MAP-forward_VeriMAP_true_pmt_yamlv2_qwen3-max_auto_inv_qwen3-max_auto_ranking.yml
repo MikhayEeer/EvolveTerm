@@ -1,0 +1,16 @@
+source_file: MAP-forward_VeriMAP_true_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/VeriMAP/MAP-forward_VeriMAP_true.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while( i < n ){\n   if(unknown_int()) {\n      a = a+1;\n      b = b+2;\n\
+    \   } else {\n      a = a+2;\n      b = b+1;\n   }\n   i = i+1;\n}"
+  invariants:
+  - 0 <= i && i <= n
+  - a + b - 3*i == \at(a + b - 3*i, Pre)
+  - a >= \at(a, Pre)
+  - b >= \at(b, Pre)
+  explanation: Termination is ensured by the linear decrease of n - i; no multi-phase
+    or nested structure is present.
+  template_type: lnested
+  template_depth: 1

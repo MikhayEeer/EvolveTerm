@@ -1,0 +1,13 @@
+source_file: GulwaniJainKoskinen-PLDI2009-Fig1_true-termination_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_term/GulwaniJainKoskinen-PLDI2009-Fig1_true-termination.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while(tmp!=id) {\n    if (tmp <= maxId) {\n        tmp = tmp + 1;\n    }\
+    \ else {\n        tmp = 0;\n    }\n}"
+  invariants: []
+  explanation: 'The loop exhibits two phases: (1) incrementing tmp until wrap-around,
+    (2) counting up from 0 to id. A multi-phase ranking function with depth 2 captures
+    this behavior.'
+  template_type: lmulti
+  template_depth: 2

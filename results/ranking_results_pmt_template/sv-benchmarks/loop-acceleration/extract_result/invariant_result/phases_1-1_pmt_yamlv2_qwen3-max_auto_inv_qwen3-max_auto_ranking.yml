@@ -1,0 +1,13 @@
+source_file: phases_1-1_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-acceleration/phases_1-1.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x < 0x0fffffff) {\n    if (x < 0xfff0) {\n        x++;\n    } else\
+    \ {\n        x += 2;\n    }\n}"
+  invariants:
+  - x < 0x0fffffff
+  explanation: A single linear ranking function (e.g., 0x0fffffff - x) suffices; no
+    multi-phase or nested structure needed.
+  template_type: lnested
+  template_depth: 1

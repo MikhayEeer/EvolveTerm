@@ -1,0 +1,11 @@
+source_file: underapprox_safe2_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/accelerating_invariant_generation/crafted/underapprox_safe2.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x < 6) {\n    x++;\n    y *= 2;\n}"
+  invariants: []
+  explanation: A single linear ranking function (e.g., 6 - x) suffices since x monotonically
+    increases to a fixed bound, ensuring termination.
+  template_type: lnested
+  template_depth: 1

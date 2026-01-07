@@ -1,0 +1,12 @@
+source_file: benchmark49_linear_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-zilu/benchmark49_linear.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (i > 0) {\n    i = i - 1;\n    j = j + 1;\n}"
+  invariants:
+  - i + j == \old(i + j)
+  explanation: A single linear ranking function (e.g., f = i) suffices since i decreases
+    monotonically and independently ensures termination.
+  template_type: lnested
+  template_depth: 1

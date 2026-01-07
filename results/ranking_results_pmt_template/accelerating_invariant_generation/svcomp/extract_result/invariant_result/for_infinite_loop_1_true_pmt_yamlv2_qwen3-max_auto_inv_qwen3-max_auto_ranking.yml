@@ -1,0 +1,13 @@
+source_file: for_infinite_loop_1_true_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/accelerating_invariant_generation/svcomp/for_infinite_loop_1_true.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "for(i=0; 1; i++)\n{\n  {;\n//@ assert(x==0);\n}\n\n}"
+  invariants:
+  - x == 0
+  - i >= 0
+  explanation: Single non-nested loop; no decreasing variables, but lnested with depth
+    1 is the minimal structural fit.
+  template_type: lnested
+  template_depth: 1

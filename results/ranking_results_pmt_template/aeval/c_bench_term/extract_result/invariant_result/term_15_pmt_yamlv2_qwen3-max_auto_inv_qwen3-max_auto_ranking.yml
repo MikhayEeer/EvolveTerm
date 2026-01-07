@@ -1,0 +1,11 @@
+source_file: term_15_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_term/term_15.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x / 50 == y) {\n    x = x + 51;\n    y = y + 1;\n}"
+  invariants: []
+  explanation: A single linear ranking function R = 50*y - x + 49 decreases by 1 each
+    iteration, proving termination.
+  template_type: lnested
+  template_depth: 1

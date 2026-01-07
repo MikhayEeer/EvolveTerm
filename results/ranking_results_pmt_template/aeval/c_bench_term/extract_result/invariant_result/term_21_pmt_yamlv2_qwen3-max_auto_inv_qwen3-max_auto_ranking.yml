@@ -1,0 +1,13 @@
+source_file: term_21_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_term/term_21.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (z >= 0) {\n  if (z % 5 == 0) z = z - 5;\n    else z++;\n}"
+  invariants:
+  - z >= 0
+  explanation: 'The loop exhibits multi-phase behavior: a bounded number of increments
+    (phase 1) followed by a decrement (phase 2). A multi-phase ranking function with
+    depth 2 can capture this eventual decrease.'
+  template_type: lmulti
+  template_depth: 2

@@ -1,0 +1,12 @@
+source_file: MAP-singleloop2-pepm-proc.c_VeriMAP_true_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/VeriMAP/MAP-singleloop2-pepm-proc.c_VeriMAP_true.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while(x < 2*n){\n   x = x + 1;\n\n   if ( x > n )\n      y = y - 1;\n   else\n\
+    \      y = y + 2;\n}"
+  invariants: []
+  explanation: Termination is ensured by x increasing toward 2*n; a single linear
+    ranking function (e.g., 2*n - x) suffices.
+  template_type: lnested
+  template_depth: 1

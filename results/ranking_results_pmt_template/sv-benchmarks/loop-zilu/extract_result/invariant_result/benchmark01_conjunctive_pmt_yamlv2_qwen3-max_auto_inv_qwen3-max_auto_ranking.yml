@@ -1,0 +1,11 @@
+source_file: benchmark01_conjunctive_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-zilu/benchmark01_conjunctive.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (unknown_bool()) {\n    x=x+y;\n    y=x;\n}"
+  invariants: []
+  explanation: Single linear ranking function attempt for a non-nested loop; although
+    the loop appears non-terminating, this is the minimal configuration to try.
+  template_type: lnested
+  template_depth: 1

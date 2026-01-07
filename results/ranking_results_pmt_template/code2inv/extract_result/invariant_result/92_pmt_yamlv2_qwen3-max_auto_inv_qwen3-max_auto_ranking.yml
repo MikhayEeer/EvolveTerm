@@ -1,0 +1,11 @@
+source_file: 92_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/code2inv/92.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while(y >= 0){\n    y = y + x;\n}"
+  invariants: []
+  explanation: Single-loop with linear decrease in y when x < 0; a simple linear ranking
+    function suffices.
+  template_type: lnested
+  template_depth: 1

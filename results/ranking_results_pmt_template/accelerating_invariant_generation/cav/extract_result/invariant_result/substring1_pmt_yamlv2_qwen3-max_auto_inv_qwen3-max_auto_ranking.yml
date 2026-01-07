@@ -1,0 +1,17 @@
+source_file: substring1_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/accelerating_invariant_generation/cav/substring1.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: 'while (i < k) {
+
+    i++;
+
+    j++;
+
+    }'
+  invariants: []
+  explanation: Single-loop with linear ranking function (e.g., k - i); no nesting
+    or multi-phase behavior required.
+  template_type: lnested
+  template_depth: 1

@@ -1,0 +1,14 @@
+source_file: Mono1_1-2_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loops-crafted-1/Mono1_1-2.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x < 100000000) {\n    if (x < 10000000) {\n        x++;\n    } else\
+    \ {\n        x += 2;\n    }\n}"
+  invariants:
+  - x < 100000000
+  explanation: A single linear ranking function (e.g., 100000000 - x) suffices since
+    x increases by at least 1 per iteration, ensuring termination. No need for multi-phase
+    analysis.
+  template_type: lnested
+  template_depth: 1

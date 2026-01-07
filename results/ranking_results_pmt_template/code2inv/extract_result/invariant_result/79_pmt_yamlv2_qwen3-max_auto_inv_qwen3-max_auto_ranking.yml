@@ -1,0 +1,12 @@
+source_file: 79_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/code2inv/79.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (unknown()) {\n    if ( (i < y) )\n    {\n    (i  = (i + 1));\n   \
+    \ }\n\n}"
+  invariants: []
+  explanation: The loop has a single phase of progress where i increases toward y;
+    a linear ranking function y - i suffices, modeled as a depth-1 nested loop template.
+  template_type: lnested
+  template_depth: 1

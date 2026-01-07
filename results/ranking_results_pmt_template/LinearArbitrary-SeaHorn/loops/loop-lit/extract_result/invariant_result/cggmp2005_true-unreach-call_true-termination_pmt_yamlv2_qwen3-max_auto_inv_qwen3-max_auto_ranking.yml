@@ -1,0 +1,13 @@
+source_file: cggmp2005_true-unreach-call_true-termination_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/loops/loop-lit/cggmp2005_true-unreach-call_true-termination.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (j >= i) {\n    i = i + 2;\n    j = -1 + j;\n}"
+  invariants:
+  - j >= i
+  - i + 2 * j == \old(i + 2 * j)
+  explanation: A single linear ranking function suffices because j - i decreases by
+    3 each iteration, ensuring termination.
+  template_type: lnested
+  template_depth: 1

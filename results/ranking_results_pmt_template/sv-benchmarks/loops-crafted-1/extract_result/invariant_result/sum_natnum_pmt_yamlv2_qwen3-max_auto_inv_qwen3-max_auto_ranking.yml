@@ -1,0 +1,14 @@
+source_file: sum_natnum_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loops-crafted-1/sum_natnum.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while(i< SIZE){ \n    i = i + 1; \n    sum += i;\n}"
+  invariants:
+  - 0 <= i
+  - i <= SIZE
+  - sum == i * (i + 1) / 2
+  explanation: A simple linear ranking function (e.g., SIZE - i) suffices; no need
+    for multi-phase or complex nested structures.
+  template_type: lnested
+  template_depth: 1

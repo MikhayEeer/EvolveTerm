@@ -1,0 +1,12 @@
+source_file: ChenFlurMukhopadhyay-SAS2012-Ex2.05_false-termination_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/ChenFlurMukhopadhyay-SAS2012-Ex2.05_false-termination.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x < y) {\n    x = x + y;\n    y = y / 2;\n}"
+  invariants: []
+  explanation: The loop terminates because y decreases exponentially and serves as
+    a linear ranking function under standard non-negative assumptions. A single-phase
+    linear ranking function suffices.
+  template_type: lmulti
+  template_depth: 1

@@ -1,0 +1,11 @@
+source_file: term_01_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_term/term_01.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x != y)\n{\n  x = x-2;\n  y = y-1;\n}"
+  invariants: []
+  explanation: A single linear ranking function (e.g., x - y) suffices, assuming appropriate
+    initial conditions (e.g., x >= y). The loop is not nested and has one phase.
+  template_type: lnested
+  template_depth: 1

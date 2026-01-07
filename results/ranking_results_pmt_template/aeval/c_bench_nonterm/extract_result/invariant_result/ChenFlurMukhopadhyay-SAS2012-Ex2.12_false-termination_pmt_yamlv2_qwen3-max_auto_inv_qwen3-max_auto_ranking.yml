@@ -1,0 +1,12 @@
+source_file: ChenFlurMukhopadhyay-SAS2012-Ex2.12_false-termination_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/ChenFlurMukhopadhyay-SAS2012-Ex2.12_false-termination.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x < 5) {\n    oldx = x;\n    x = oldx - y;\n    y = oldx + y;\n}"
+  invariants: []
+  explanation: The loop updates x and y in a coupled linear way that likely requires
+    a multi-phase linear ranking function; a single linear function may not suffice
+    due to rotational dynamics.
+  template_type: lmulti
+  template_depth: 2

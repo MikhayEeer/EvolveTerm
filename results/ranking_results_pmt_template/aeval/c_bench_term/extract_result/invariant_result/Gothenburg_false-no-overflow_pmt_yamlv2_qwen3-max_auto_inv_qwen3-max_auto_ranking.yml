@@ -1,0 +1,15 @@
+source_file: Gothenburg_false-no-overflow_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_term/Gothenburg_false-no-overflow.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x >= 0 || y >= 0) {\n    x = x + a - b - 1;\n    y = y + b - a - 1;\n\
+    }"
+  invariants: []
+  explanation: The disjunctive loop guard (x >= 0 || y >= 0) and symmetric updates
+    suggest a multi-phase ranking function. Although x+y decreases globally, it may
+    be negative while the loop continues, so a single linear function is insufficient.
+    A 2-phase linear ranking function (lmulti, depth=2) can handle the two cases where
+    either x or y dominates the continuation condition.
+  template_type: lmulti
+  template_depth: 2

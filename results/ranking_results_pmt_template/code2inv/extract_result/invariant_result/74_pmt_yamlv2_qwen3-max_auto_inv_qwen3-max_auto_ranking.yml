@@ -1,0 +1,13 @@
+source_file: 74_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/code2inv/74.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (unknown()) {\n  if ( (c < 36) )\n  {\n  (z  = (z + 1));\n  (c  = (c\
+    \ + 1));\n  }\n\n}"
+  invariants: []
+  explanation: A simple linear ranking function based on 'c' suffices, as the conditional
+    branch can execute at most (36 - c) times. No multi-phase or nested structure
+    is needed.
+  template_type: lnested
+  template_depth: 1

@@ -1,0 +1,11 @@
+source_file: 38_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/pie/hola/38.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while(i<n) {\n    i++;\n    x++;\n    if(i%2 == 0) y++;\n}"
+  invariants: []
+  explanation: The loop has a single phase with a straightforward linear ranking function
+    (e.g., n - i). No need for multi-phase or complex lexicographic ranking.
+  template_type: lnested
+  template_depth: 1

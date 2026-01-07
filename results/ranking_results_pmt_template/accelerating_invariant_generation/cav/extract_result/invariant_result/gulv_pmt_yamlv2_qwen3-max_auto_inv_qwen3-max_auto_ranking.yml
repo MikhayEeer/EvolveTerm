@@ -1,0 +1,17 @@
+source_file: gulv_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/accelerating_invariant_generation/cav/gulv.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (unknown_int()) {\n   if (unknown_int())\n     {x = x+1; y = y+100;}\n\
+    \   else if (unknown_int()){\n     if (x >= 4)\n       {x = x+1; y = y+1;}\n \
+    \  }\n else if (y > 10*w && z >= 100*x)\n     {y = -y;}\n   w = w+1; z = z+10;\n\
+    \  x = x; \n \n}"
+  invariants:
+  - z - 10*w == \at(z - 10*w, LoopEntry)
+  explanation: The loop exhibits multi-phase behavior due to conditional resets of
+    y based on the growing variable w. A multi-phase ranking function (depth 2) is
+    needed to handle the distinct behaviors when y is large positive versus when it
+    is not.
+  template_type: lmulti
+  template_depth: 2

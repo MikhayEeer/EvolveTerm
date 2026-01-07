@@ -1,0 +1,12 @@
+source_file: 108_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/code2inv/108.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while ( k < c) {\n    if(m < a) {\n        m = a;\n    }\n    k = k + 1;\n\
+    }"
+  invariants: []
+  explanation: The loop terminates due to a single monotonic variable (k) progressing
+    toward a fixed bound (c). No multi-phase or complex lexicographic ranking is needed.
+  template_type: lnested
+  template_depth: 1

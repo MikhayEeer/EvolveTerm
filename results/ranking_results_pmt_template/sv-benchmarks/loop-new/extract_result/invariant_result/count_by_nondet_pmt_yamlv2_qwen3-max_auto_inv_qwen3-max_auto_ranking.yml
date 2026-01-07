@@ -1,0 +1,12 @@
+source_file: count_by_nondet_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-new/count_by_nondet.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while(i < LARGE_INT) {\n    int j = unknown_int();\n    if (!(1 <= j && j\
+    \ < LARGE_INT)) return 0;\n    i = i + j;\n    k ++;\n}"
+  invariants: []
+  explanation: A single linear ranking function (e.g., LARGE_INT - i) suffices; no
+    nesting or multiple phases needed.
+  template_type: lnested
+  template_depth: 1

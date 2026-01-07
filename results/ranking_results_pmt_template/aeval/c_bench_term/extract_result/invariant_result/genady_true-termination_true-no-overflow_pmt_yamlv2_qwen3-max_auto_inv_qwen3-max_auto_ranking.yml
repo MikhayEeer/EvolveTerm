@@ -1,0 +1,14 @@
+source_file: genady_true-termination_true-no-overflow_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_term/genady_true-termination_true-no-overflow.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (i-j >= 1) {\n    j = j + 1;\n    i = i - 1;\n}"
+  invariants:
+  - i + j == \at(i + j, Pre)
+  - j >= \at(j, Pre)
+  - i <= \at(i, Pre)
+  explanation: A single linear ranking function (i - j) suffices; loop is simple with
+    no phases or nesting.
+  template_type: lnested
+  template_depth: 1

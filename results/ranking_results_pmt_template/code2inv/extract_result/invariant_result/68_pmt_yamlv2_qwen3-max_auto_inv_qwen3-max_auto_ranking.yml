@@ -1,0 +1,11 @@
+source_file: 68_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/code2inv/68.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x <= n) {\n    y = n - x;\n    x = x +1;\n}"
+  invariants: []
+  explanation: The loop has a simple linear ranking function (n - x) that decreases
+    by 1 each iteration. A single-phase nested-loop style template suffices.
+  template_type: lnested
+  template_depth: 1

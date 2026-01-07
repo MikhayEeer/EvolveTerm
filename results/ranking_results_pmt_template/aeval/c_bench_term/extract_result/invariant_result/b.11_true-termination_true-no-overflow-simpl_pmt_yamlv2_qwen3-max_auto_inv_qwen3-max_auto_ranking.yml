@@ -1,0 +1,13 @@
+source_file: b.11_true-termination_true-no-overflow-simpl_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_term/b.11_true-termination_true-no-overflow-simpl.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x + y > 0) {\n    if (x > y) {\n        x = x - 1;\n    } else {\n\
+    \        if (x == y) {\n            x = x - 1;\n        } else {\n           \
+    \ y = y - 1;\n        }\n    }\n}"
+  invariants: []
+  explanation: A single linear ranking function (e.g., x + y) suffices since it decreases
+    by 1 each iteration and matches the loop guard.
+  template_type: lnested
+  template_depth: 1

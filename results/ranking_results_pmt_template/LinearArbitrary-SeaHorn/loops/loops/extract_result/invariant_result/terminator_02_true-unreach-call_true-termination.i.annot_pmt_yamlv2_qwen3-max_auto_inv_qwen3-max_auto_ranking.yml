@@ -1,0 +1,14 @@
+source_file: terminator_02_true-unreach-call_true-termination.i.annot_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/loops/loops/terminator_02_true-unreach-call_true-termination.i.annot.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while(x<100 && 100<z)\n{\n    int  tmp=unknown_bool();\n    if(tmp){\n  \
+    \      x++;\n    } else {\n        x--;\n        z--;\n    }\n}"
+  invariants: []
+  explanation: 'A lexicographic ranking function with two components is needed: the
+    first based on z (which decreases in one branch), and the second based on (100
+    - x) (which decreases in the other branch). This requires a multi-phase (lmulti)
+    template with depth 2.'
+  template_type: lmulti
+  template_depth: 2

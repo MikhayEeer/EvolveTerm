@@ -1,0 +1,12 @@
+source_file: while_infinite_loop_2_true_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/accelerating_invariant_generation/svcomp/while_infinite_loop_2_true.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while(1)\n{\n  {;\n//@ assert(x==0);\n}\n  \n}"
+  invariants:
+  - x == 0
+  explanation: Single non-nested loop; no variable updates, so only a trivial (unsatisfiable)
+    ranking function is possible. Using simplest configuration.
+  template_type: lnested
+  template_depth: 1

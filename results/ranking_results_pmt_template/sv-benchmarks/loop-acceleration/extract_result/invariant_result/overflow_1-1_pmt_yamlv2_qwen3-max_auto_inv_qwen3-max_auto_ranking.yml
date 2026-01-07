@@ -1,0 +1,12 @@
+source_file: overflow_1-1_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-acceleration/overflow_1-1.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x >= 10) {\n  x += 2;\n}"
+  invariants:
+  - x >= 10
+  explanation: Single loop; use simple linear ranking function template, though loop
+    is non-terminating as written.
+  template_type: lnested
+  template_depth: 1

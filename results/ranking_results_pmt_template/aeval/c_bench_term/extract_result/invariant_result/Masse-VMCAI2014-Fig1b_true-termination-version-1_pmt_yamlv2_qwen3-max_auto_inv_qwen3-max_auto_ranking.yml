@@ -1,0 +1,16 @@
+source_file: Masse-VMCAI2014-Fig1b_true-termination-version-1_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_term/Masse-VMCAI2014-Fig1b_true-termination-version-1.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x <= 100) {\n    if (0 == __VERIFIER_nondet_int()) {\n        x =\
+    \ - 2 * x + 2;\n    } else if (0 == __VERIFIER_nondet_int()) {\n        x = -\
+    \ 3 * x - 2;\n    } else {\n        x = - 4 * x + 2;\n    }\n}"
+  invariants: []
+  explanation: The loop has non-deterministic updates that cause oscillatory and expansive
+    behavior in x. A single linear ranking function is insufficient due to sign flips
+    and non-monotonicity. A multi-phase ranking function with depth 2 can capture
+    different decreasing measures for different transition behaviors, ensuring termination
+    across all non-deterministic choices.
+  template_type: lmulti
+  template_depth: 2

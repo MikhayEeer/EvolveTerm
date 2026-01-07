@@ -1,0 +1,13 @@
+source_file: 3pieces_Caterina_TACAS16_nonterm_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/3pieces_Caterina_TACAS16_nonterm.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x != 0)\n{\n  if (x < 10) x++; else x = __VERIFIER_nondet_int();\n\
+    }"
+  invariants:
+  - x != 0
+  explanation: Single-loop with one variable; use simplest linear template despite
+    nondeterminism.
+  template_type: lnested
+  template_depth: 1

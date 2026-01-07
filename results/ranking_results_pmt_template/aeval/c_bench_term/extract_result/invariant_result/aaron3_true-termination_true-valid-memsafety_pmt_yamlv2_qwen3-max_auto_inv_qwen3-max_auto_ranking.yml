@@ -1,0 +1,15 @@
+source_file: aaron3_true-termination_true-valid-memsafety_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_term/aaron3_true-termination_true-valid-memsafety.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x >= y && x <= tx + z) {\n    if (__VERIFIER_nondet_int() != 0) {\n\
+    \        z = z - 1;\n        tx = x;\n        x = __VERIFIER_nondet_int();\n \
+    \       if(!(-1073741823<=x && x<=1073741823)) return 0;\n    } else {\n     \
+    \   y = y + 1;\n    }\n}"
+  invariants: []
+  explanation: 'The loop has two disjunctive branches: one decreases z, the other
+    increases y. A lexicographic ranking function with two phases (z as primary, y-related
+    term as secondary) is needed.'
+  template_type: lmulti
+  template_depth: 2

@@ -1,0 +1,14 @@
+source_file: 71_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/code2inv/71.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (unknown()) {\n  if ( (c < 36) )\n  {\n  (z  = (z + 1));\n  (c  = (c\
+    \ + 1));\n  }\n\n}"
+  invariants:
+  - "z - c == \at(z - c, Pre)"
+  explanation: A single linear ranking function (e.g., 36 - c) suffices, as c increases
+    monotonically and is bounded above. No multi-phase or lexicographic structure
+    is needed.
+  template_type: lnested
+  template_depth: 1

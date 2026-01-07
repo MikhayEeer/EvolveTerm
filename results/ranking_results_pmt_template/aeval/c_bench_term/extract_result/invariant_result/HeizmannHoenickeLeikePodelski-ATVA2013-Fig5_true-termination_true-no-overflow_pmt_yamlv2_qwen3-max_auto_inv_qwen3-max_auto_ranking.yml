@@ -1,0 +1,12 @@
+source_file: HeizmannHoenickeLeikePodelski-ATVA2013-Fig5_true-termination_true-no-overflow_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_term/HeizmannHoenickeLeikePodelski-ATVA2013-Fig5_true-termination_true-no-overflow.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x >= 0) {\n    x = x - y;\n    y = (y + 1) / 2;\n}"
+  invariants: []
+  explanation: 'The loop exhibits two phases: first y decreases until it stabilizes
+    at 1, then x decreases linearly. A lexicographic ranking function (y, x) suffices,
+    requiring depth 2 with nested structure.'
+  template_type: lnested
+  template_depth: 2

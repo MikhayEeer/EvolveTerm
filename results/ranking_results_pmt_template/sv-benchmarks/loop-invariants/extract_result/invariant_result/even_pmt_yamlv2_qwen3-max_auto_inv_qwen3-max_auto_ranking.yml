@@ -1,0 +1,11 @@
+source_file: even_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-invariants/even.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (unknown_int()) {\n  x += 2;\n}"
+  invariants:
+  - x % 2 == \at(x, Pre) % 2
+  explanation: Single loop with no decreasing variables; using simplest linear template.
+  template_type: lnested
+  template_depth: 1

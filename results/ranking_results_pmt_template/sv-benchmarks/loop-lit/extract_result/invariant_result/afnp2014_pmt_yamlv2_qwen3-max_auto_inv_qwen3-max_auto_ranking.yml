@@ -1,0 +1,11 @@
+source_file: afnp2014_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-lit/afnp2014.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (y < 1000 && unknown_int()) {\n    x = x + y;\n    y = y + 1;\n}"
+  invariants: []
+  explanation: A single linear ranking function (e.g., 1000 - y) suffices; no multi-phase
+    or complex nesting needed.
+  template_type: lnested
+  template_depth: 1

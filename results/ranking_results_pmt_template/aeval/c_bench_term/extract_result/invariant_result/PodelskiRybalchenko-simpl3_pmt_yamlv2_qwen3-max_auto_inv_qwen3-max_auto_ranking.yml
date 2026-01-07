@@ -1,0 +1,13 @@
+source_file: PodelskiRybalchenko-simpl3_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_term/PodelskiRybalchenko-simpl3.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x > 0 && y > 0) {\n    if (__VERIFIER_nondet_int() != 0) {\n     \
+    \   x = x - 1;\n        y = 2 * y;\n    } else {\n        y = y - 1;\n    }\n}"
+  invariants: []
+  explanation: 'A lexicographic ranking function (x, y) works: x decreases in one
+    branch, and y decreases in the other while x is fixed. This requires a nested
+    ranking function of depth 2.'
+  template_type: lnested
+  template_depth: 2

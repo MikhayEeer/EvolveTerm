@@ -1,0 +1,14 @@
+source_file: w2_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/pie/ICE/benchmarks/w2.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while ( 0 == 0 ) {\n    if ( input ) {\n\n        x = x + 1;\n        if\
+    \ (x >= n ) {\n            break;\n        }\n    }\n    input = unknown_int();\n\
+    }"
+  invariants: []
+  explanation: The loop has a single progress measure (n - x) that decreases when
+    input is true. Although some iterations don't make progress, the primary termination
+    argument relies on this single linear measure, making lmulti with depth 1 appropriate.
+  template_type: lmulti
+  template_depth: 1

@@ -1,0 +1,11 @@
+source_file: 41_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/pie/hola/41.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while(i <= n) {\n  i++;\n  j+=i;\n}"
+  invariants: []
+  explanation: Single loop with linear progress via variable i; simple linear ranking
+    function suffices.
+  template_type: lnested
+  template_depth: 1

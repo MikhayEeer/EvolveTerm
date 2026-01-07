@@ -1,0 +1,13 @@
+source_file: 132_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/code2inv/132.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while( unknown() ) {\n    if(c > 48) {\n        if (c < 57) {\n         \
+    \   j = i + i;\n            t = c - 48;\n            i = j + t;\n        }\n \
+    \   }\n}"
+  invariants: []
+  explanation: Single-loop structure with no nested loops or multi-phase behavior;
+    a simple linear ranking function is hypothesized if termination is possible.
+  template_type: lnested
+  template_depth: 1

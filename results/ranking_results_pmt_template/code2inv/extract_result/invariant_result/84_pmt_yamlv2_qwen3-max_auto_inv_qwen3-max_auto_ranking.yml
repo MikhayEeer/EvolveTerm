@@ -1,0 +1,14 @@
+source_file: 84_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/code2inv/84.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while ((x < 0)) {\n    {\n    (x  = (x + y));\n    (y  = (y + 1));\n    }\n\
+    \n}"
+  invariants: []
+  explanation: 'The loop exhibits two distinct phases: first, y increases until it
+    becomes positive (use -y as ranking function); second, x increases until it becomes
+    non-negative (use -x as ranking function). A multi-phase linear ranking function
+    of depth 2 captures this behavior.'
+  template_type: lmulti
+  template_depth: 2

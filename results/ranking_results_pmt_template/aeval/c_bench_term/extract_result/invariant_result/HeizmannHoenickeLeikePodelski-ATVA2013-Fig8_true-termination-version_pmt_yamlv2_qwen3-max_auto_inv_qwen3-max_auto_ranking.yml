@@ -1,0 +1,10 @@
+source_file: HeizmannHoenickeLeikePodelski-ATVA2013-Fig8_true-termination-version_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_term/HeizmannHoenickeLeikePodelski-ATVA2013-Fig8_true-termination-version.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x >= 0) {\n  x = x - 4*y + 3;\n}"
+  invariants: []
+  explanation: Single-loop with linear update; a simple linear ranking function suffices.
+  template_type: lnested
+  template_depth: 1

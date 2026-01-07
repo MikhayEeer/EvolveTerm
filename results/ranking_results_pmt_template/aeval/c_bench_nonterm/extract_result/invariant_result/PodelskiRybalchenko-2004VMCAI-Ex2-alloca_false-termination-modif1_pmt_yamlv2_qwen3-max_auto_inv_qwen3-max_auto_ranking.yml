@@ -1,0 +1,11 @@
+source_file: PodelskiRybalchenko-2004VMCAI-Ex2-alloca_false-termination-modif1_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/PodelskiRybalchenko-2004VMCAI-Ex2-alloca_false-termination-modif1.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x > 0) {\n  x = 2 *x + d;\n}"
+  invariants: []
+  explanation: Single-loop with one variable; attempt a linear ranking function of
+    depth 1 using nested template (standard for basic loops).
+  template_type: lnested
+  template_depth: 1

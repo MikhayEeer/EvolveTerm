@@ -1,0 +1,14 @@
+source_file: cav_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/sharma_splitter/cav.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (flag < 1) {\n        if (x<=50)\n                y=y+1;\n        else\n\
+    \                y=y-1;\n        \n        if (y<0) {\n                flag=1;\n\
+    \        }\n        if (flag < 1) {\n                x=x+1;\n        }\n}"
+  invariants: []
+  explanation: 'The loop has two phases: (1) x ≤ 50, where y increases and x increases;
+    (2) x > 50, where y decreases until y < 0 triggers termination. A multi-phase
+    ranking function with depth 2 can model the transition between these phases.'
+  template_type: lmulti
+  template_depth: 2

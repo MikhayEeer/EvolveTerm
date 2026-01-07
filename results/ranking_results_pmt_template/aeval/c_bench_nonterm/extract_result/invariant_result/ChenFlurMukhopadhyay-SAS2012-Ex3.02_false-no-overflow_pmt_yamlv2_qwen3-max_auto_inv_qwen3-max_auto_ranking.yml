@@ -1,0 +1,12 @@
+source_file: ChenFlurMukhopadhyay-SAS2012-Ex3.02_false-no-overflow_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/ChenFlurMukhopadhyay-SAS2012-Ex3.02_false-no-overflow.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x > 0) {\n    x = x + y;\n    y = y + z;\n}"
+  invariants: []
+  explanation: 'The loop exhibits multi-phase behavior: first y evolves (driven by
+    constant z), and once y becomes sufficiently negative, x decreases. A 2-phase
+    linear ranking function can capture this.'
+  template_type: lmulti
+  template_depth: 2

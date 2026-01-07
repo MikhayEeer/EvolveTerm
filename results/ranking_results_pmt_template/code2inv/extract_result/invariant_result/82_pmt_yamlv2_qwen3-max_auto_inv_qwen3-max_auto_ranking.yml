@@ -1,0 +1,11 @@
+source_file: 82_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/code2inv/82.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (unknown()) {\n  if ( (i < y) )\n  {\n  (i  = (i + 1));\n  }\n\n}"
+  invariants: []
+  explanation: A single linear ranking function based on y - i suffices; no multi-phase
+    or complex nesting needed.
+  template_type: lnested
+  template_depth: 1

@@ -1,0 +1,13 @@
+source_file: Singapore_v1_false-termination_true-valid-memsafety_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/Singapore_v1_false-termination_true-valid-memsafety.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x > 0) {\n    x = x + x + y;\n    y = y - 1;\n}"
+  invariants: []
+  explanation: The loop features a monotonically decreasing variable (y) and a complex
+    update to x that may temporarily increase. A multi-phase ranking function with
+    depth 2 may capture a first phase driven by y's decrease and a second phase where
+    x eventually decreases.
+  template_type: lmulti
+  template_depth: 2

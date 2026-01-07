@@ -1,0 +1,13 @@
+source_file: Singapore_plus_false-no-overflow_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/Singapore_plus_false-no-overflow.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x > 0) {\n    x = x + x + y;\n    y = y + 1;\n}"
+  invariants: []
+  explanation: The loop is flat and non-nested; termination (if any) likely requires
+    a linear ranking function over x and y. 'lnested' is for nested loops and not
+    applicable. 'lmulti' with depth 1 attempts a linear ranking function, which is
+    the simplest candidate.
+  template_type: lmulti
+  template_depth: 1

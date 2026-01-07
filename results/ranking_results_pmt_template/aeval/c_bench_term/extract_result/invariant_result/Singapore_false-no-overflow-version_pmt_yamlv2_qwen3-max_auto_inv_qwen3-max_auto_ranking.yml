@@ -1,0 +1,12 @@
+source_file: Singapore_false-no-overflow-version_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_term/Singapore_false-no-overflow-version.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x > 0) {\n    x = x + y + 2;\n    y = y - 1;\n}"
+  invariants: []
+  explanation: 'The loop exhibits multi-phase behavior: initially x may increase while
+    y decreases, but eventually x decreases. A depth-2 lexicographic linear ranking
+    function is needed.'
+  template_type: lmulti
+  template_depth: 2

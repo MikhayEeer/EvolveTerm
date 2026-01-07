@@ -1,0 +1,15 @@
+source_file: 130_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/code2inv/130.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while( x1 > 0) {\n    if(x2 > 0) {\n        if(x3 > 0) {\n            x1\
+    \ = x1 - d1;\n            x2 = x2 - d2;\n            x3 = x3 - d3;\n        }\n\
+    \    }\n}"
+  invariants: []
+  explanation: The loop has a single level with conditional updates, but any infinite
+    execution must involve infinitely many body executions, during which a linear
+    combination of x1, x2, x3 decreases. Thus, a linear (depth 1) multi-phase ranking
+    function suffices.
+  template_type: lmulti
+  template_depth: 1

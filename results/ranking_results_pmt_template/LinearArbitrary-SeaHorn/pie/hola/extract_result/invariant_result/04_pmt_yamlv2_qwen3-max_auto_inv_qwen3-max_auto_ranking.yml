@@ -1,0 +1,12 @@
+source_file: 04_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/pie/hola/04.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while( x < 0 ) {\n  x = x+y;\n  y++;\n}"
+  invariants:
+  - 2 * x - y * (y - 1) == \at(2 * x - y * (y - 1), Pre)
+  explanation: Single-loop with uniform behavior; quadratic invariant suggests need
+    for non-linear features, but only one phase exists, so depth 1 with lnested suffices.
+  template_type: lnested
+  template_depth: 1

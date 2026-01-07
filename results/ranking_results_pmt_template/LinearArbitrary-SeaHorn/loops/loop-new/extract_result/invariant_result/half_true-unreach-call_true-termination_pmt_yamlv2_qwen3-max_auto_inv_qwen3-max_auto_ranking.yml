@@ -1,0 +1,12 @@
+source_file: half_true-unreach-call_true-termination_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/loops/loop-new/half_true-unreach-call_true-termination.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "for(i = 0; i < 2*k; i++) {\n    if (i % 2 == 0) {\n        n ++;\n    }\n\
+    }"
+  invariants: []
+  explanation: The loop is a simple, non-nested loop with a linear ranking function
+    (e.g., 2*k - i). A depth-1 lnested template suffices.
+  template_type: lnested
+  template_depth: 1

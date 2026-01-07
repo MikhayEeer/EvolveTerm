@@ -1,0 +1,12 @@
+source_file: TRACER-testloop2_VeriMAP_true_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/VeriMAP/TRACER-testloop2_VeriMAP_true.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (i<N){\n  i=i+1;\n}"
+  invariants:
+  - i <= N
+  explanation: A single linear ranking function (e.g., N - i) suffices for this simple
+    count-up loop.
+  template_type: lnested
+  template_depth: 1

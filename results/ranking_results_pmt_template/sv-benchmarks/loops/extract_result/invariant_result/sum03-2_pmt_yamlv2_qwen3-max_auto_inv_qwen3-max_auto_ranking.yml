@@ -1,0 +1,13 @@
+source_file: sum03-2_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loops/sum03-2.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while(1){\n    sn = sn + a;\n    x++;\n    {;\n//@ assert(sn==x*a || sn ==\
+    \ 0);\n}\n\n}"
+  invariants:
+  - sn == x * a
+  explanation: Single-loop structure; attempting to find a single linear ranking function
+    despite apparent non-termination.
+  template_type: lmulti
+  template_depth: 1

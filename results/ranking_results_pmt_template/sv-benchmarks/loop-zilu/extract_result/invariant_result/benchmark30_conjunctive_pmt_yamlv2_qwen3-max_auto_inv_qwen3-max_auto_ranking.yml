@@ -1,0 +1,12 @@
+source_file: benchmark30_conjunctive_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-zilu/benchmark30_conjunctive.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (unknown_bool()) {\n  x++;\n  y++;\n}"
+  invariants:
+  - x - y == \at(x - y, Pre)
+  explanation: Single-loop with no nesting or phase changes; attempt simple linear
+    ranking function despite lack of decreasing variables.
+  template_type: lnested
+  template_depth: 1

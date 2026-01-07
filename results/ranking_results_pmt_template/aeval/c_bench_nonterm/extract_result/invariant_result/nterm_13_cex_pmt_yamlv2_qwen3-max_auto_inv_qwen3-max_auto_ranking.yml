@@ -1,0 +1,14 @@
+source_file: nterm_13_cex_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/nterm_13_cex.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x > 0)\n{\n  if (0 == __VERIFIER_nondet_int())\n    x = x % 2;\n \
+    \ else\n    x = x - y;\n}"
+  invariants: []
+  explanation: 'The loop exhibits two distinct phases: (1) when x >= 2, where x can
+    be reduced significantly via modulo or subtraction, and (2) when x <= 1, where
+    termination relies on the subtraction branch. A multi-phase linear ranking function
+    with depth 2 can capture this behavior.'
+  template_type: lmulti
+  template_depth: 2

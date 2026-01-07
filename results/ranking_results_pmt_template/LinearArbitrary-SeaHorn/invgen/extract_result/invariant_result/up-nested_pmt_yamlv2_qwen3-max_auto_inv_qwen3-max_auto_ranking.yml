@@ -1,0 +1,13 @@
+source_file: up-nested_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/invgen/up-nested.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while ( j <= n ) {\n  \n  j++;\n}"
+  invariants:
+  - j >= \at(j, Pre)
+  - n == \at(n, Pre)
+  explanation: The loop has a simple linear ranking function (e.g., n - j), requiring
+    only a single-phase linear template.
+  template_type: lnested
+  template_depth: 1

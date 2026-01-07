@@ -1,0 +1,12 @@
+source_file: term_25_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_term/term_25.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (w == x + y + z){\n    if (c < 100) y --;\n    c++;\n    x = x + y\
+    \ + c;\n    z = z - y;\n}"
+  invariants: []
+  explanation: The loop has two distinct phases based on c < 100, requiring a multi-phase
+    ranking function with depth 2.
+  template_type: lmulti
+  template_depth: 2

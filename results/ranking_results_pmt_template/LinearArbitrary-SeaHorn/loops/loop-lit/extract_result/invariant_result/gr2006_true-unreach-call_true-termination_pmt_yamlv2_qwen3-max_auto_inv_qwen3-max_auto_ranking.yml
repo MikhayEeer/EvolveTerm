@@ -1,0 +1,12 @@
+source_file: gr2006_true-unreach-call_true-termination_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/loops/loop-lit/gr2006_true-unreach-call_true-termination.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (1) {\n    if (x < 50) {\n        y++;\n    } else {\n        y--;\n\
+    \    }\n    if (y < 0) break;\n    x++;\n}"
+  invariants: []
+  explanation: 'The loop has two distinct phases: before and after x reaches 50. A
+    lexicographic ranking function with two components is needed to capture termination.'
+  template_type: lmulti
+  template_depth: 2

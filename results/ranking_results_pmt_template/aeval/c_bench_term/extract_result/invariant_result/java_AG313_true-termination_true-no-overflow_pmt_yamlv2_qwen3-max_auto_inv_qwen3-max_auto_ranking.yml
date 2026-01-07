@@ -1,0 +1,11 @@
+source_file: java_AG313_true-termination_true-no-overflow_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_term/java_AG313_true-termination_true-no-overflow.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x > 0 && y > 0) {\n    i = i + 1;\n    x = (x - 1)- (y - 1);\n}"
+  invariants: []
+  explanation: A single linear ranking function (e.g., x) suffices because y is constant
+    and x decreases by y (>0) each iteration.
+  template_type: lnested
+  template_depth: 1

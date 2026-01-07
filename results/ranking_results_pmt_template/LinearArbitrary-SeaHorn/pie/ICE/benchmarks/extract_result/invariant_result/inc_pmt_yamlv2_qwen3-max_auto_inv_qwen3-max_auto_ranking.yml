@@ -1,0 +1,11 @@
+source_file: inc_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/pie/ICE/benchmarks/inc.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while(x < 100)\n{\n  m = unknown_int();\n  x = x + 1;\n}"
+  invariants: []
+  explanation: Single loop with linear progress; a simple linear ranking function
+    like 100 - x suffices.
+  template_type: lnested
+  template_depth: 1

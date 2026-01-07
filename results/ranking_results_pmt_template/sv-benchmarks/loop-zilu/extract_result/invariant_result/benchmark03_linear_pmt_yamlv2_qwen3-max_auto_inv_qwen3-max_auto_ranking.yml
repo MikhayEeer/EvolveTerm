@@ -1,0 +1,12 @@
+source_file: benchmark03_linear_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-zilu/benchmark03_linear.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (unknown_bool()) {\n    x++;\n    y++;\n    i+=x;\n    j+=y;\n    if\
+    \ (flag) j+=1;\n}"
+  invariants: []
+  explanation: Single-loop with monotonic increases; attempt a single-phase linear
+    ranking function as a baseline.
+  template_type: lmulti
+  template_depth: 1

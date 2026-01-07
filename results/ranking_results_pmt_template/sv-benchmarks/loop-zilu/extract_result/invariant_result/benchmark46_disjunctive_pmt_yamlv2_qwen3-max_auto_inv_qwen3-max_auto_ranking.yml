@@ -1,0 +1,13 @@
+source_file: benchmark46_disjunctive_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-zilu/benchmark46_disjunctive.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (unknown_bool()) {\n    if (x>0) {\n      x++;\n    }\n    if (y>0)\
+    \ {\n      y++;\n    } else {\n      z++;\n    }\n}"
+  invariants: []
+  explanation: Single-loop structure with no nesting; although variables only increase,
+    a linear template (via lnested depth 1) is the appropriate configuration to attempt
+    finding a ranking function, even if none exists in the well-founded sense.
+  template_type: lnested
+  template_depth: 1

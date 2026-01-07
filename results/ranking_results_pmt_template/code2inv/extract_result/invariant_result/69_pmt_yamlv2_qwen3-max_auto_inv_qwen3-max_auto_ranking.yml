@@ -1,0 +1,11 @@
+source_file: 69_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/code2inv/69.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x <= n) {\n    y = n - x;\n    x = x +1;\n}"
+  invariants: []
+  explanation: The loop terminates in a single phase with a linear ranking function
+    (e.g., n - x).
+  template_type: lnested
+  template_depth: 1

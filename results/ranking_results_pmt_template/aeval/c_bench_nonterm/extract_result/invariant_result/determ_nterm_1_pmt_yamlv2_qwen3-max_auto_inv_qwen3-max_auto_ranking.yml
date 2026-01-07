@@ -1,0 +1,11 @@
+source_file: determ_nterm_1_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/determ_nterm_1.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x != 0) {\n    x = x + y;\n    y = y + 1;\n}"
+  invariants: []
+  explanation: The loop has coupled linear updates with accelerating behavior; a lexicographic
+    (nested) ranking function of depth 2 is needed to capture the hierarchical decrease.
+  template_type: lnested
+  template_depth: 2

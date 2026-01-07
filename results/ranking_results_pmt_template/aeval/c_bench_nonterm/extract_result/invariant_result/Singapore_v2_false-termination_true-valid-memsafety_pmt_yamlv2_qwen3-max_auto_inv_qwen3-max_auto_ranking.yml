@@ -1,0 +1,12 @@
+source_file: Singapore_v2_false-termination_true-valid-memsafety_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/Singapore_v2_false-termination_true-valid-memsafety.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x > 0) {\n    x = x + x + y;\n    y = y - 1;\n}"
+  invariants: []
+  explanation: 'The loop exhibits two distinct behaviors: initially y decreases while
+    x may grow, but once y becomes sufficiently negative, x begins to decrease. A
+    multi-phase ranking function with depth 2 can capture this transition.'
+  template_type: lmulti
+  template_depth: 2

@@ -1,0 +1,12 @@
+source_file: 10_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/pie/hola/10.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while(unknown2()){\n    if(w) {\n        x++; \n        w=!w;\n    };\n \
+    \   if(!z) {\n        y++; \n        z=!z;\n    };\n}"
+  invariants: []
+  explanation: The loop has two independent toggling conditions; a multi-phase ranking
+    function with depth 2 can model the alternating progress in each branch.
+  template_type: lmulti
+  template_depth: 2

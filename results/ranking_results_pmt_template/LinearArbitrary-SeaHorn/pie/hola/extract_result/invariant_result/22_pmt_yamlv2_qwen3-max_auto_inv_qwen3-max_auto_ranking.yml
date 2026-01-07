@@ -1,0 +1,12 @@
+source_file: 22_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/pie/hola/22.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while(unknown1())\n{\n   if(k%3 == 0)\n     x++;\n   y++;\n   z++;\n   k\
+    \ = x+y+z;\n}"
+  invariants: []
+  explanation: Single loop with dependent updates; standard choice is lnested with
+    depth 1, though no true ranking function exists due to all variables increasing.
+  template_type: lnested
+  template_depth: 1

@@ -1,0 +1,13 @@
+source_file: 32_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/pie/hola/32.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "for( n = 0 ; n < 2*k ; n++ ) {\n    if((int )b == 1) {\n        i++;\n  \
+    \      b = 0;\n    } else if ((int )b == 0) {\n        j++;\n        b = 1;\n\
+    \    } \n    \n}"
+  invariants: []
+  explanation: A single linear ranking function (e.g., 2*k - n) suffices; no multi-phase
+    or nested structure is needed.
+  template_type: lnested
+  template_depth: 1

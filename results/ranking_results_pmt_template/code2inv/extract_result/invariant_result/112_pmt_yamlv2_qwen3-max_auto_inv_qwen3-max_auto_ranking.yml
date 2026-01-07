@@ -1,0 +1,11 @@
+source_file: 112_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/code2inv/112.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while ((i <= n)) {\n  {\n  (i  = (i + 1));\n  (sn  = (sn + 1));\n  }\n\n}"
+  invariants: []
+  explanation: Single linear ranking function suffices; loop variable i increases
+    toward bound n, so n - i is a valid ranking function.
+  template_type: lnested
+  template_depth: 1

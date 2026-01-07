@@ -1,0 +1,13 @@
+source_file: simple_safe4_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/accelerating_invariant_generation/crafted/simple_safe4.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x > 0) {\n  x -= 2;\n}"
+  invariants:
+  - x <= \old(x)
+  - x % 2 == \old(x) % 2
+  explanation: Single linear ranking function suffices; no nesting or multiple phases
+    needed.
+  template_type: lnested
+  template_depth: 1

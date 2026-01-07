@@ -1,0 +1,13 @@
+source_file: for_infinite_loop_2_true-unreach-call_false-termination.i.annot_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/loops/loops/for_infinite_loop_2_true-unreach-call_false-termination.i.annot.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "for(i=0; 1; i++)\n{\n  {;\n//@ assert(x==0);\n}\n\n}"
+  invariants:
+  - x == 0
+  - i >= 0
+  explanation: Single infinite loop with no decreasing variables; using simplest template
+    to attempt ranking function synthesis.
+  template_type: lnested
+  template_depth: 1

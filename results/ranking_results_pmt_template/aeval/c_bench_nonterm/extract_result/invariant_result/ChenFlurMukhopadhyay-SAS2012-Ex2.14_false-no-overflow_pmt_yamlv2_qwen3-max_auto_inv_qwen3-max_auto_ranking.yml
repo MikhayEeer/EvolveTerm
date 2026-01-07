@@ -1,0 +1,13 @@
+source_file: ChenFlurMukhopadhyay-SAS2012-Ex2.14_false-no-overflow_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/ChenFlurMukhopadhyay-SAS2012-Ex2.14_false-no-overflow.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x > 0 && y > 0) {\n    x = 10*y - 2*x;\n}"
+  invariants:
+  - "y == \at(y, Pre)"
+  - y > 0
+  explanation: Single-loop with constant y; requires a linear ranking function over
+    x and y. No nesting, so lmulti with depth 1 is appropriate.
+  template_type: lmulti
+  template_depth: 1

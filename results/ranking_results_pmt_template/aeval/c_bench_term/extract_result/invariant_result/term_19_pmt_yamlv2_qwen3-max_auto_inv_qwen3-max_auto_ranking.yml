@@ -1,0 +1,13 @@
+source_file: term_19_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_term/term_19.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x != 2*y) {\n    if (x % 5 == 1) x++;\n      else x = x - 2;\n}"
+  invariants:
+  - y == \at(y, Pre)
+  explanation: The loop has a single variable x updated conditionally based on x mod
+    5, with y constant. A multi-phase ranking function (type lmulti) with depth 2
+    can capture the alternating behavior and ensure descent toward termination.
+  template_type: lmulti
+  template_depth: 2

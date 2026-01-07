@@ -1,0 +1,11 @@
+source_file: nterm_07_cex_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/nterm_07_cex.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x != y)\n{\n  x = x - 3;\n  y = y - 1;\n}"
+  invariants: []
+  explanation: The loop has a single linear phase where the difference x - y decreases
+    by 2 each iteration; a simple linear ranking function suffices.
+  template_type: lnested
+  template_depth: 1

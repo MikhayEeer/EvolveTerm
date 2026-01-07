@@ -1,0 +1,12 @@
+source_file: split_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/accelerating_invariant_generation/invgen/split.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "for( n = 0 ; n < 2*k ; n++ ) {\n    \n  if(b) {\n    i++;\n  } else {\n \
+    \   j++;\n  }\n  b = !b;\n}"
+  invariants: []
+  explanation: The loop has a clear linear bound (2*k - n). A single linear ranking
+    function suffices; no multi-phase or complex nesting needed.
+  template_type: lnested
+  template_depth: 1

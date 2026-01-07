@@ -1,0 +1,16 @@
+source_file: 97_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/code2inv/97.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while ((i <= x)) {\n    {\n    (i  = (i + 1));\n    (j  = (j + y));\n   \
+    \ }\n\n}"
+  invariants:
+  - j - y * i == \at(j - y * i, Pre)
+  - x == \at(x, Pre)
+  - y == \at(y, Pre)
+  - i <= x + 1
+  explanation: The loop terminates due to a single linear ranking function (x - i).
+    No multi-phase or nested structure requires deeper analysis.
+  template_type: lnested
+  template_depth: 1

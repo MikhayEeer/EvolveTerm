@@ -1,0 +1,15 @@
+source_file: 46_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/code2inv/46.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (unknown()) {\n  {\n    if ( unknown() ) {\n      if ( (c != n) )\n\
+    \      {\n      (c  = (c + 1));\n      }\n    } else {\n      if ( (c == n) )\n\
+    \      {\n      (c  = 1);\n      }\n    }\n\n  }\n\n}"
+  invariants: []
+  explanation: The loop manipulates a counter c in a structured way (incrementing
+    up to n, then resetting), resembling an inner loop in a nested loop structure.
+    A nested loop template with depth 1 is appropriate to capture the bounded behavior
+    of c relative to n.
+  template_type: lnested
+  template_depth: 1

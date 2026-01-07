@@ -1,0 +1,14 @@
+source_file: 30_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/pie/hola/30.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (i < 1000) {\n    c = c + i;\n    i = i + 1;\n}"
+  invariants:
+  - 0 <= i
+  - i <= 1000
+  - 2 * c == i * (i - 1)
+  explanation: Single linear ranking function suffices; loop is flat and driven by
+    one increasing variable.
+  template_type: lnested
+  template_depth: 1

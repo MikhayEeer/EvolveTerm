@@ -1,0 +1,12 @@
+source_file: gulwani_fig1a_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/invgen/gulwani_fig1a.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while( x < 0 ) {\n    x = x+y;\n    y++;\n}"
+  invariants: []
+  explanation: 'The loop exhibits two phases: when y <= 0, x may decrease, but y is
+    increasing; once y > 0, x increases quadratically. A 2-phase linear ranking function
+    can handle this.'
+  template_type: lmulti
+  template_depth: 2

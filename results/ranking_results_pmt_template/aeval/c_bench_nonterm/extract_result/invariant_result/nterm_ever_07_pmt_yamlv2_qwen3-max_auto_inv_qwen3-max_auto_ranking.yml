@@ -1,0 +1,12 @@
+source_file: nterm_ever_07_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/nterm_ever_07.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x != 10) {\n    if (x % 5 == 1) x = x - 2;\n    else x--;\n    \n}"
+  invariants: []
+  explanation: A single linear ranking function (e.g., x - 10) suffices under the
+    implicit assumption that x >= 10 initially. No multi-phase or nested structure
+    is needed.
+  template_type: lnested
+  template_depth: 1

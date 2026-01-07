@@ -1,0 +1,14 @@
+source_file: 46_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/pie/hola/46.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while(unknown2()){\n    if(w%2 == 1) {x++; w++;};\n    if(z%2==0) {y++; z++;};\n\
+    }"
+  invariants:
+  - "w - x == \at(w - x, Pre)"
+  - "z - y == \at(z - y, Pre)"
+  explanation: Each conditional branch can fire at most once, leading to a two-phase
+    termination behavior. A multi-phase ranking function with depth 2 captures this.
+  template_type: lmulti
+  template_depth: 2

@@ -1,0 +1,13 @@
+source_file: benchmark20_conjunctive_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-zilu/benchmark20_conjunctive.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (i<n) {\n  sum = sum + i;\n  i++;\n}"
+  invariants:
+  - 0 <= i && i <= n
+  - sum == i * (i - 1) / 2
+  explanation: The loop is a simple incrementing loop; a single linear ranking function
+    like n - i suffices.
+  template_type: lnested
+  template_depth: 1

@@ -1,0 +1,12 @@
+source_file: up-nested_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/accelerating_invariant_generation/invgen/up-nested.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while ( j <= n ) {\n    \n    assume( i >= 0);\n    \n    j++;\n}"
+  invariants:
+  - i >= 0
+  - j <= n + 1
+  explanation: Single loop with monotonic variable j; linear ranking function suffices.
+  template_type: lnested
+  template_depth: 1

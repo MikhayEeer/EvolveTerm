@@ -1,0 +1,12 @@
+source_file: benchmark16_conjunctive_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-zilu/benchmark16_conjunctive.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (unknown_bool()) {\n    i = i + 1;\n    k = k - 1;\n}"
+  invariants:
+  - "i + k == \at(i + k, Pre)"
+  explanation: A single linear ranking function (e.g., k) suffices due to the invariant
+    i + k = const and k decreasing each iteration.
+  template_type: lnested
+  template_depth: 1

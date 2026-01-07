@@ -1,0 +1,12 @@
+source_file: gsv2008_true-unreach-call_true-termination_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/loops/loop-lit/gsv2008_true-unreach-call_true-termination.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x < 0) {\n    x = x + y;\n    y++;\n}"
+  invariants: []
+  explanation: 'The loop exhibits two-phase behavior: initially y may be negative
+    and x might not increase, but y grows monotonically and eventually forces x upward.
+    A nested (lexicographic) ranking function of depth 2 can capture this.'
+  template_type: lnested
+  template_depth: 2

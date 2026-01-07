@@ -1,0 +1,11 @@
+source_file: c.07_true-termination_true-no-overflow-simpl_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_term/c.07_true-termination_true-no-overflow-simpl.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (i <= 100) {\n    tmp = i;\n    i = j;\n    j = tmp + 1;\n}"
+  invariants: []
+  explanation: The loop swaps and increments variables, requiring a lexicographic
+    ranking function with two components to handle the alternating updates.
+  template_type: lnested
+  template_depth: 2

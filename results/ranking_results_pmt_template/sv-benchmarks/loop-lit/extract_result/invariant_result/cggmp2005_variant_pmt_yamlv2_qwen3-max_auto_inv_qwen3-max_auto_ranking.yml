@@ -1,0 +1,12 @@
+source_file: cggmp2005_variant_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-lit/cggmp2005_variant.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (mid > 0) {\n    lo = lo + 1;\n    hi = hi - 1;\n    mid = mid - 1;\n\
+    }"
+  invariants: []
+  explanation: A single linear ranking function (e.g., f = mid) suffices since mid
+    decreases by 1 each iteration and controls loop termination.
+  template_type: lnested
+  template_depth: 1

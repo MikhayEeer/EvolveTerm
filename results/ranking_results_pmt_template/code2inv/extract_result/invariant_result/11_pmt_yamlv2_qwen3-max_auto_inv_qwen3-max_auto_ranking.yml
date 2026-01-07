@@ -1,0 +1,13 @@
+source_file: 11_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/code2inv/11.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (unknown()) {\n    {\n        (x  = (x + 10));\n        (y  = (y +\
+    \ 10));\n    }\n}"
+  invariants:
+  - x - y == \old(x - y)
+  explanation: Flat loop with no nesting; attempting a single-phase linear ranking
+    function, though none exists due to non-termination.
+  template_type: lmulti
+  template_depth: 1

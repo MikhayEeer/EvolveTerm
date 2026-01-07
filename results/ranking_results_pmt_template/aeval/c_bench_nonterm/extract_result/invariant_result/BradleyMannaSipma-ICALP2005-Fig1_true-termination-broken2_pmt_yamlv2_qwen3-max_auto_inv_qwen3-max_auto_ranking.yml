@@ -1,0 +1,14 @@
+source_file: BradleyMannaSipma-ICALP2005-Fig1_true-termination-broken2_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/BradleyMannaSipma-ICALP2005-Fig1_true-termination-broken2.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x <= N) {\n    if (__VERIFIER_nondet_int() != 0) {\n      x = 2*x\
+    \ + y;\n    } else {\n      x = x + 1;\n    }\n}"
+  invariants:
+  - y == \at(y, Pre)
+  - N == \at(N, Pre)
+  explanation: Single linear ranking function expected due to simple loop structure
+    and constant parameters; non-determinism handled within linear template.
+  template_type: lnested
+  template_depth: 1

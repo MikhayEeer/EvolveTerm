@@ -1,0 +1,14 @@
+source_file: fig1.v_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/pie/ICE/benchmarks/fig1.v.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x < 0) {\n    x = x + y;\n    y++;\n    v1 = unknown_int();\n    v2\
+    \ = unknown_int();\n    v3 = unknown_int();\n\n}"
+  invariants: []
+  explanation: 'The loop exhibits two behavioral phases: (1) y increasing while possibly
+    still non-positive, during which x may decrease; (2) y positive, causing x to
+    increase toward termination. A multi-phase linear ranking function of depth 2
+    can capture this.'
+  template_type: lmulti
+  template_depth: 2

@@ -1,0 +1,12 @@
+source_file: diamond_safe1_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/accelerating_invariant_generation/crafted/diamond_safe1.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x < 99) {\n    if (y % 2 == 0) {\n        x += 2;\n    } else {\n\
+    \        x++;\n    }\n}"
+  invariants: []
+  explanation: A simple linear ranking function like 99 - x suffices because x increases
+    monotonically and y is unchanged.
+  template_type: lnested
+  template_depth: 1

@@ -1,0 +1,11 @@
+source_file: nterm_ever_09_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/nterm_ever_09.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x / 50 == y) {\n    x = x + 50;\n    y = y + 1;\n}"
+  invariants: []
+  explanation: Single-loop structure; attempt simplest linear nested ranking function
+    despite likely non-termination.
+  template_type: lnested
+  template_depth: 1

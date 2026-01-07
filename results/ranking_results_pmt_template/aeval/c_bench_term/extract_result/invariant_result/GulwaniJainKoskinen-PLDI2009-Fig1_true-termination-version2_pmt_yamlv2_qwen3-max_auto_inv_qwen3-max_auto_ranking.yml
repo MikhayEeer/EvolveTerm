@@ -1,0 +1,16 @@
+source_file: GulwaniJainKoskinen-PLDI2009-Fig1_true-termination-version2_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_term/GulwaniJainKoskinen-PLDI2009-Fig1_true-termination-version2.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while(tmp!=id) {\n    if (tmp <= maxId) {\n        tmp = tmp + 1;\n    }\
+    \ else {\n        tmp = -tmp;\n    }\n}"
+  invariants:
+  - tmp != id
+  - id == \at(id, Pre)
+  - maxId == \at(maxId, Pre)
+  explanation: 'The loop exhibits distinct phases: one where tmp is negated when exceeding
+    maxId, and another where tmp increments toward id. A multi-phase ranking function
+    with depth 2 can model these behaviors.'
+  template_type: lmulti
+  template_depth: 2

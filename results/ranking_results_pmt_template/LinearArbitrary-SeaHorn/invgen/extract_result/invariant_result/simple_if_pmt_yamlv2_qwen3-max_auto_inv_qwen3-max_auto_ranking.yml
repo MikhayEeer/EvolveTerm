@@ -1,0 +1,13 @@
+source_file: simple_if_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/invgen/simple_if.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while( i < n ) {\n    if( m > 0 ) {\n        i = 2*i;\n    } else {\n   \
+    \     i = 3*i;\n    }\n    \n}"
+  invariants: []
+  explanation: Single loop with uniform multiplicative update; attempt a simple linear
+    ranking function (depth 1). Type 'lnested' with depth 1 acts as a basic linear
+    template.
+  template_type: lnested
+  template_depth: 1

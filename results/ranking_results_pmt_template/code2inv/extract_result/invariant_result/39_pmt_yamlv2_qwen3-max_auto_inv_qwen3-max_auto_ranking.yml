@@ -1,0 +1,15 @@
+source_file: 39_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/code2inv/39.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (unknown()) {\n    if(c == n) {\n        c = 1;\n    }\n    else {\n\
+    \        c = c + 1;\n    }\n}"
+  invariants:
+  - c >= 1
+  - c <= n
+  - 1 <= c && c <= n
+  explanation: The cyclic update of c prevents a simple linear ranking function. A
+    multi-phase approach with depth 2 may capture progress across wrap-around boundaries.
+  template_type: lmulti
+  template_depth: 2

@@ -1,0 +1,11 @@
+source_file: nonlin_mult_nonterm_3_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/nonlin_mult_nonterm_3.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x * y < 0)\n{\n  x = -x;\n  y = -y;\n}"
+  invariants: []
+  explanation: Flat loop; attempt single-phase linear ranking function despite likely
+    non-termination.
+  template_type: lmulti
+  template_depth: 1

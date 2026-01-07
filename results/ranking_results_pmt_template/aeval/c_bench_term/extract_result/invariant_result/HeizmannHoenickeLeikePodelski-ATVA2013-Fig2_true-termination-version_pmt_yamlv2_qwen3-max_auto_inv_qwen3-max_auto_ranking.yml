@@ -1,0 +1,11 @@
+source_file: HeizmannHoenickeLeikePodelski-ATVA2013-Fig2_true-termination-version_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_term/HeizmannHoenickeLeikePodelski-ATVA2013-Fig2_true-termination-version.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x >= 0) {\n    y = 2*y - x;\n    x = (y + x + 1) / 2;\n}"
+  invariants: []
+  explanation: The loop updates are interdependent and non-monotonic in individual
+    variables, suggesting a multi-phase linear ranking function may be needed.
+  template_type: lmulti
+  template_depth: 2

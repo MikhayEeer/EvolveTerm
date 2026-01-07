@@ -1,0 +1,13 @@
+source_file: benchmark41_conjunctive_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-zilu/benchmark41_conjunctive.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (unknown_bool()) {\n  x++;y++;z-=2;\n}"
+  invariants:
+  - x - y == \at(x - y, LoopEntry)
+  - x + y + z == \at(x + y + z, LoopEntry)
+  explanation: Single-phase loop with linear decrease in z; linear ranking function
+    suffices.
+  template_type: lnested
+  template_depth: 1

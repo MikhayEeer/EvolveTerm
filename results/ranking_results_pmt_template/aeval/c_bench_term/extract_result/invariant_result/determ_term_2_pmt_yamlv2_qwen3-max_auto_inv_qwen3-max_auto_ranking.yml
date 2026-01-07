@@ -1,0 +1,12 @@
+source_file: determ_term_2_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_term/determ_term_2.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x != 0) {\n  x = x + y;\n  y = y + 1;\n}"
+  invariants: []
+  explanation: The loop variables x and y are updated in a coupled affine manner,
+    making a single linear ranking function insufficient. A multi-phase linear ranking
+    function with depth 2 may capture the descent in terminating traces.
+  template_type: lmulti
+  template_depth: 2

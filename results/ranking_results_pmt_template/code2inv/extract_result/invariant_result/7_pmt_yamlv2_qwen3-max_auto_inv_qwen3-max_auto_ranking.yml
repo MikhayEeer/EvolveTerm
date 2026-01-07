@@ -1,0 +1,13 @@
+source_file: 7_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/code2inv/7.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (unknown()) {\n  {\n  (x  = (x + 10));\n  (y  = (y + 10));\n  }\n\n\
+    }"
+  invariants:
+  - x - y == \at(x - y, LoopEntry)
+  explanation: Single loop with synchronized increments; no nesting or phases. Use
+    single-phase linear ranking function search.
+  template_type: lmulti
+  template_depth: 1

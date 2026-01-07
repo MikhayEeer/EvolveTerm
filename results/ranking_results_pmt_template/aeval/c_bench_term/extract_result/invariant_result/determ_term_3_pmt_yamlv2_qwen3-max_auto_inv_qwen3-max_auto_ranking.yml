@@ -1,0 +1,12 @@
+source_file: determ_term_3_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_term/determ_term_3.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (!(x == y && y == z)) {\n    x = x + 1;\n    y = y * 2;\n    z = z\
+    \ - 3;\n}"
+  invariants: []
+  explanation: Variables evolve with opposing monotonicity (x↑, y↑↑, z↓); a multi-phase
+    linear ranking function with depth 2 can potentially capture convergence in stages.
+  template_type: lmulti
+  template_depth: 2

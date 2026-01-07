@@ -1,0 +1,14 @@
+source_file: 40_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/code2inv/40.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (unknown()) {\n    {\n        if ( unknown() ) {\n            if (\
+    \ (c > n) )\n            {\n                (c  = (c + 1));\n            }\n \
+    \       } else {\n            if ( (c == n) )\n            {\n               \
+    \ (c  = 1);\n            }\n        }\n\n    }\n\n}"
+  invariants: []
+  explanation: Assuming intended decreasing behavior when c > n, a 2-phase linear
+    ranking function can model countdown to n and reset to 1.
+  template_type: lmulti
+  template_depth: 2

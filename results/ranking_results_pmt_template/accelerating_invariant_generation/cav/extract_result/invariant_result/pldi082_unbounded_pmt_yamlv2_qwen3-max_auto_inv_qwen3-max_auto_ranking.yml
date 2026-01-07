@@ -1,0 +1,13 @@
+source_file: pldi082_unbounded_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/accelerating_invariant_generation/cav/pldi082_unbounded.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (1){\n   if (x <= N)\n      y++;\n   else if(x >= N+1)\n     y--;\n\
+    \   else return 1;\n\n   if ( y < 0)\n     break;\n   x++;\n}"
+  invariants: []
+  explanation: 'The loop exhibits two distinct phases: y increases while x ≤ N, then
+    y decreases while x > N. A multi-phase ranking function of depth 2 captures this
+    behavior.'
+  template_type: lmulti
+  template_depth: 2

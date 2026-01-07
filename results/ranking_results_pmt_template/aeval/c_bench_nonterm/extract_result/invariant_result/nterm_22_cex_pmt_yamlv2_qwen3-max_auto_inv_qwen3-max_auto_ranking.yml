@@ -1,0 +1,13 @@
+source_file: nterm_22_cex_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/nterm_22_cex.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x != y)\n{\n  if (x > 0) x--; else x++;\n  if (x < y) y++; else if\
+    \ (x > y) y--;\n}"
+  invariants: []
+  explanation: 'Assuming y moves toward x (likely intended behavior), the loop has
+    two phases: first x decreases in magnitude, then y converges to x. A multi-phase
+    ranking function of depth 2 captures this.'
+  template_type: lmulti
+  template_depth: 2

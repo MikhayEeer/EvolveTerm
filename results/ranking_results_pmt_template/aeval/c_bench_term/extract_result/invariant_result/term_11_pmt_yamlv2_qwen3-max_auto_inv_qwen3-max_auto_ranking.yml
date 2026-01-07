@@ -1,0 +1,15 @@
+source_file: term_11_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_term/term_11.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x != K || y != K) {\n    if (x > K) {\n        x = x - 1;\n    } else\
+    \ if (x < K) {\n        x = x + 1;\n    }\n    if (y > K) {\n        y = y - 1;\n\
+    \    } else if (y < K) {\n        y = y + 1;\n    }\n}"
+  invariants: []
+  explanation: The loop terminates when both x and y reach K. Each variable moves
+    independently toward K, so a lexicographic ranking function based on their distances
+    from K is appropriate. Since absolute values aren't linear, a depth-2 nested ranking
+    function allows modeling the two-dimensional descent.
+  template_type: lnested
+  template_depth: 2

@@ -1,0 +1,14 @@
+source_file: term_26_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_term/term_26.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x == y){\n    x = x + c1 % 2;\n    y = y + c2 % 3;\n    c1++; c2++;\n\
+    }"
+  invariants: []
+  explanation: The loop's termination depends on the divergent evolution of x and
+    y driven by counters c1 and c2 with different modulo periods. A multi-phase ranking
+    function of depth 2 can model the periodic behavior and ensure progress across
+    phases.
+  template_type: lmulti
+  template_depth: 2

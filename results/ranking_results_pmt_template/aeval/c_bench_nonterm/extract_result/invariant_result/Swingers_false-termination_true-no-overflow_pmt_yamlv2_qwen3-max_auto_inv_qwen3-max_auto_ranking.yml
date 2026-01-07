@@ -1,0 +1,14 @@
+source_file: Swingers_false-termination_true-no-overflow_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/Swingers_false-termination_true-no-overflow.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (bob + samantha < 100) {\n    temp = bob;\n    bob = samantha;\n  \
+    \  samantha = temp;\n}"
+  invariants:
+  - bob + samantha == \at(bob + samantha, Pre)
+  explanation: Loop body preserves the sum bob + samantha, so no progress is made
+    toward termination. A depth-1 linear template is sufficient to capture the (nonexistent)
+    ranking function.
+  template_type: lnested
+  template_depth: 1

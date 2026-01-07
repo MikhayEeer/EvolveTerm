@@ -1,0 +1,14 @@
+source_file: 116_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/code2inv/116.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (unknown()) {\n    {\n        (x  = (x + 1));\n        (sn  = (sn +\
+    \ 1));\n    }\n\n}"
+  invariants:
+  - "x - sn == \at(x - sn, Pre)"
+  explanation: Variables x and sn increase together, preserving x - sn. No local decrease,
+    but lnested with depth 1 is suitable for simple loops possibly bounded by outer
+    context.
+  template_type: lnested
+  template_depth: 1

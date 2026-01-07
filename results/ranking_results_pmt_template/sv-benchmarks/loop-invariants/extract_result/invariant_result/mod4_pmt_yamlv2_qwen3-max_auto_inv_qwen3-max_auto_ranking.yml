@@ -1,0 +1,12 @@
+source_file: mod4_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-invariants/mod4.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (unknown_int()) {\n    x += 4;\n}"
+  invariants:
+  - x % 4 == \at(x % 4, LoopEntry)
+  explanation: Simple non-nested loop; attempt single-phase linear ranking function
+    despite increasing x.
+  template_type: lnested
+  template_depth: 1

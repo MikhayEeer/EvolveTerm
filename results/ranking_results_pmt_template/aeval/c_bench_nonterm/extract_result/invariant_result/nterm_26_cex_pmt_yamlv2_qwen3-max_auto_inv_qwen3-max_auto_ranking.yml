@@ -1,0 +1,12 @@
+source_file: nterm_26_cex_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/nterm_26_cex.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x < n) {\n  if (m == 1) {\n    x = x + 1;\n  }\n  if (m == 0) {\n\
+    \    n = n - 1;\n  }\n}"
+  invariants: []
+  explanation: A single linear ranking function f = n - x suffices, as it decreases
+    by 1 in every iteration regardless of m's value.
+  template_type: lnested
+  template_depth: 1

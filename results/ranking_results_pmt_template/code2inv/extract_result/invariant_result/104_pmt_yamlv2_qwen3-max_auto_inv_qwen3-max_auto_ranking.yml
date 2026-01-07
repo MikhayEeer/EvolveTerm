@@ -1,0 +1,12 @@
+source_file: 104_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/code2inv/104.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while ((x < n)) {\n    {\n        (x  = (x + 1));\n    }\n}"
+  invariants:
+  - x <= n
+  explanation: A simple linear ranking function like n - x suffices; no nesting or
+    multiple phases needed.
+  template_type: lnested
+  template_depth: 1

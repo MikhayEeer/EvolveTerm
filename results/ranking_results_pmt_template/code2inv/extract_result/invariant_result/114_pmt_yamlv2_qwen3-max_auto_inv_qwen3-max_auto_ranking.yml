@@ -1,0 +1,13 @@
+source_file: 114_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/code2inv/114.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (unknown()) {\n    {\n        (x  = (x + 1));\n        (sn  = (sn +\
+    \ 1));\n    }\n}"
+  invariants:
+  - x - sn == \at(x - sn, Pre)
+  explanation: Single-phase linear template; although no ranking function exists due
+    to monotonic increase of all variables, this is the minimal configuration to attempt.
+  template_type: lnested
+  template_depth: 1

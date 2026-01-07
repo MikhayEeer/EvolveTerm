@@ -1,0 +1,13 @@
+source_file: benchmark39_conjunctive_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-zilu/benchmark39_conjunctive.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x > 0) {\n    x-=4;\n    y--;\n}"
+  invariants:
+  - x - 4 * y == \at(x - 4 * y, Pre)
+  - x % 4 == \at(x, Pre) % 4
+  explanation: A single linear ranking function (e.g., x) suffices since x decreases
+    by 4 each iteration. No lexicographic or multi-phase reasoning is needed.
+  template_type: lnested
+  template_depth: 1

@@ -1,0 +1,12 @@
+source_file: nterm_09_cex_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/nterm_09_cex.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x >= y)\n{\n  int z = __VERIFIER_nondet_int();\n  y = y + z + 1;\n\
+    \  x = x + 2*z + 2;\n}"
+  invariants: []
+  explanation: Single-loop with linear updates; attempt a basic linear ranking function
+    despite nondeterminism suggesting non-termination.
+  template_type: lnested
+  template_depth: 1

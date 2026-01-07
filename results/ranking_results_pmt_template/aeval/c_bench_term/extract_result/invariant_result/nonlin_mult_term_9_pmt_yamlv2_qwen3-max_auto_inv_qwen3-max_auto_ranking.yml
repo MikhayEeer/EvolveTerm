@@ -1,0 +1,11 @@
+source_file: nonlin_mult_term_9_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_term/nonlin_mult_term_9.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (j < 10)\n{\n   j = -2 * j * b;\n}"
+  invariants: []
+  explanation: Single loop with one updating variable; no nesting, so lmulti with
+    depth 1 suffices for a linear ranking function.
+  template_type: lmulti
+  template_depth: 1

@@ -1,0 +1,13 @@
+source_file: Sunset_false-termination_true-no-overflow_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/Sunset_false-termination_true-no-overflow.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (i > 10) {\n    if (i == 25) {\n        i = 30;\n    }\n    if (i <=\
+    \ 30) {\n        i = i-1;\n    } else {\n        i = 20;\n    }\n}"
+  invariants: []
+  explanation: The loop exhibits non-monotonic behavior (i=25→30) but eventually decreases.
+    A multi-phase ranking function with depth 2 can handle the transient increase
+    and ensure overall progress.
+  template_type: lmulti
+  template_depth: 2

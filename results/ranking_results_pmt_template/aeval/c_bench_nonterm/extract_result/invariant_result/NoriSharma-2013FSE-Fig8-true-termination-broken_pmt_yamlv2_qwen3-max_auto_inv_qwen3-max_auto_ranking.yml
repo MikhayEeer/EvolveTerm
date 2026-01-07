@@ -1,0 +1,14 @@
+source_file: NoriSharma-2013FSE-Fig8-true-termination-broken_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/NoriSharma-2013FSE-Fig8-true-termination-broken.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x >= y) {\n  if (0 == __VERIFIER_nondet_int()) {\n    z = z + 1;\n\
+    \    x = x + z;\n  } else {\n    y = y + 1;\n  }\n}"
+  invariants: []
+  explanation: The loop has two non-deterministic branches with opposing effects on
+    the loop condition. A multi-phase ranking function (lmulti) with depth 2 is appropriate
+    to handle the distinct progress measures in each branch, even though termination
+    is not guaranteed in all cases.
+  template_type: lmulti
+  template_depth: 2

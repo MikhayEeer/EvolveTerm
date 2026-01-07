@@ -1,0 +1,15 @@
+source_file: NonTermination2_false-no-overflow_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/NonTermination2_false-no-overflow.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x > 1 && x >= 2*oldx) {\n    oldx = x;\n    x = __VERIFIER_nondet_int();\n\
+    }"
+  invariants:
+  - x > 1
+  - x >= 2 * oldx
+  explanation: Single-loop with two variables; try a linear multi-phase (depth 1)
+    ranking function as a baseline, though termination is unlikely due to required
+    exponential growth of x.
+  template_type: lmulti
+  template_depth: 1

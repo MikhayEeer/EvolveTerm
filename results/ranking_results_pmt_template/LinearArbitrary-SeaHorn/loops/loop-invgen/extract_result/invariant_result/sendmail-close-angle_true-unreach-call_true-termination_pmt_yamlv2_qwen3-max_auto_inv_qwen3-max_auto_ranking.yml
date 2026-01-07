@@ -1,0 +1,12 @@
+source_file: sendmail-close-angle_true-unreach-call_true-termination_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/loops/loop-invgen/sendmail-close-angle_true-unreach-call_true-termination.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: while (unknown_int()) { if (buf == buflim) break; {; //@ assert(0<=buf); }
+  invariants:
+  - 0 <= buf
+  explanation: Single-loop with potential linear ranking function based on buf and
+    buflim; depth 1 suffices.
+  template_type: lnested
+  template_depth: 1

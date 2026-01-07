@@ -1,0 +1,14 @@
+source_file: sum03_safe.v_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/pie/ICE/benchmarks/sum03_safe.v.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while(1){\n    sn = sn + 1;\n    x++;\n    {;\n//@ assert(sn==x*1 || sn ==\
+    \ 0);\n}\n\n    v1 = unknown_int();\n    v2 = unknown_int();\n    v3 = unknown_int();\n\
+    \n}"
+  invariants:
+  - sn == x
+  explanation: Single-loop structure with no nesting or phases; attempting simplest
+    linear ranking function despite non-termination.
+  template_type: lnested
+  template_depth: 1

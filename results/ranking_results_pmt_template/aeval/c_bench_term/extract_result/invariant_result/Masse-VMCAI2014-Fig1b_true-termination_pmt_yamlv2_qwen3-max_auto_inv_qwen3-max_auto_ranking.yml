@@ -1,0 +1,14 @@
+source_file: Masse-VMCAI2014-Fig1b_true-termination_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_term/Masse-VMCAI2014-Fig1b_true-termination.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x <= 100) {\n    if (__VERIFIER_nondet_int() != 0) {\n        x =\
+    \ -2*x + 2;\n    } else {\n        x = -3*x - 2;\n    }\n}"
+  invariants:
+  - x <= 100
+  explanation: The loop terminates in at most two iterations due to alternating sign
+    updates; a multi-phase linear ranking function with depth 2 can capture the two-step
+    progress.
+  template_type: lmulti
+  template_depth: 2

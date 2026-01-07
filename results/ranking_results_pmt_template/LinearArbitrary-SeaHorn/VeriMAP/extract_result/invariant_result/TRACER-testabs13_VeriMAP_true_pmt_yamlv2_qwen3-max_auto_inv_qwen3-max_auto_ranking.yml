@@ -1,0 +1,13 @@
+source_file: TRACER-testabs13_VeriMAP_true_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/VeriMAP/TRACER-testabs13_VeriMAP_true.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: while (i < n){ i++; }
+  invariants:
+  - i <= n
+  - n == \at(n, Pre)
+  explanation: The loop has a simple linear ranking function (n - i); no multi-phase
+    or nested structure needed.
+  template_type: lnested
+  template_depth: 1

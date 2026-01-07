@@ -1,0 +1,12 @@
+source_file: GulwaniJainKoskinen-PLDI2009-Fig1_true-termination-broken_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/GulwaniJainKoskinen-PLDI2009-Fig1_true-termination-broken.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while(tmp!=id) {\n    if (tmp <= maxId) {\n        tmp = tmp + 1;\n    }\n\
+    }"
+  invariants: []
+  explanation: The loop has a single variable (tmp) that monotonically increases toward
+    a fixed bound (id), requiring only a simple linear ranking function.
+  template_type: lnested
+  template_depth: 1

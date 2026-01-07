@@ -1,0 +1,13 @@
+source_file: NoriSharma-2013FSE-Fig8-true-termination-modif_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_term/NoriSharma-2013FSE-Fig8-true-termination-modif.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x >= y) {\n  if (0 == __VERIFIER_nondet_int()) {\n    z = z - 1;\n\
+    \    x = x + z;\n  } else {\n    y = y + 1;\n  }\n}"
+  invariants: []
+  explanation: The loop has non-deterministic updates affecting different variables
+    (y increases in one branch, z decreases in the other). A multi-phase lexicographic
+    ranking function with depth 2 is suitable to handle both branches.
+  template_type: lmulti
+  template_depth: 2

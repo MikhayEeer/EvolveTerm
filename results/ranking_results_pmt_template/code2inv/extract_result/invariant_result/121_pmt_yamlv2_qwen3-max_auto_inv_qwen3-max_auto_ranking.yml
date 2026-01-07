@@ -1,0 +1,11 @@
+source_file: 121_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/code2inv/121.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while ((i <= 8)) {\n  {\n  (i  = (i + 1));\n  (sn  = (sn + 1));\n  }\n\n}"
+  invariants: []
+  explanation: A single linear ranking function (e.g., 8 - i) suffices for this simple
+    loop.
+  template_type: lnested
+  template_depth: 1

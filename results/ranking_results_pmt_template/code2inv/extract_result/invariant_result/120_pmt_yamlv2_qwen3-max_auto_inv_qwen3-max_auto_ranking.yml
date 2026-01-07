@@ -1,0 +1,15 @@
+source_file: 120_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/code2inv/120.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while ((i <= 8)) {\n  {\n  (i  = (i + 1));\n  (sn  = (sn + 1));\n  }\n\n}"
+  invariants:
+  - sn - i == \old(sn - i)
+  - i >= \old(i)
+  - sn >= \old(sn)
+  - i <= 9
+  explanation: The loop has a simple linear ranking function (e.g., 9 - i). No nesting
+    or multi-phase behavior is present, so depth 1 with lnested suffices.
+  template_type: lnested
+  template_depth: 1

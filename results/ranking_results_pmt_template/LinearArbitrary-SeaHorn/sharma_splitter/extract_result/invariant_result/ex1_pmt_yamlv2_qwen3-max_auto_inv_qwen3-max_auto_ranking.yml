@@ -1,0 +1,15 @@
+source_file: ex1_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/sharma_splitter/ex1.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while(flag<1) {\n        if (y<0){\n                 flag=1;\n        }\n\
+    \        if(flag<1) \n                 x=x+1;\n        \n        if (x<50) \n\
+    \                y=y+1;\n        else\n                y=y-1;\n        \n}"
+  invariants: []
+  explanation: 'The loop has two distinct phases: before and after x reaches 50. A
+    lexicographic multi-phase ranking function of depth 2 can model the transition
+    from increasing x (and y) to decreasing y, ensuring eventual termination when
+    y becomes negative.'
+  template_type: lmulti
+  template_depth: 2

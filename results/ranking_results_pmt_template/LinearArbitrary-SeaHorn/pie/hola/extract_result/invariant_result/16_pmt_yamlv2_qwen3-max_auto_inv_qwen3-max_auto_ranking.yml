@@ -1,0 +1,12 @@
+source_file: 16_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/pie/hola/16.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while(x!=0) {\n  x--;\n  y--;\n}"
+  invariants:
+  - x - y == \at(x, Pre) - \at(y, Pre)
+  explanation: A single linear ranking function (e.g., x) suffices because x decreases
+    by 1 each iteration and controls the loop exit condition.
+  template_type: lnested
+  template_depth: 1

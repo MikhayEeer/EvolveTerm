@@ -1,0 +1,12 @@
+source_file: gulwani_cegar1_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/invgen/gulwani_cegar1.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while( unknown() ) {\n  x+=2;\n  y+=2;\n}"
+  invariants:
+  - x - y == \at(x - y, LoopEntry)
+  explanation: Single flat loop with no phase changes; use simple nested (degenerates
+    to linear) ranking function.
+  template_type: lnested
+  template_depth: 1

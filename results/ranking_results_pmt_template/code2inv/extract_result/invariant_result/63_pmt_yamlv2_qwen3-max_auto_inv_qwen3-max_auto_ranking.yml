@@ -1,0 +1,11 @@
+source_file: 63_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/code2inv/63.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x <= 10) {\n    y = 10 - x;\n    x = x +1;\n}"
+  invariants: []
+  explanation: Single-variable loop with monotonic progress; simple linear ranking
+    function suffices.
+  template_type: lnested
+  template_depth: 1

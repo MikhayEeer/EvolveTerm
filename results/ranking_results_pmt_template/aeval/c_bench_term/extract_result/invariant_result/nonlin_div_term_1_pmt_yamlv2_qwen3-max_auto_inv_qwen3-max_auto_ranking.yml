@@ -1,0 +1,13 @@
+source_file: nonlin_div_term_1_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_term/nonlin_div_term_1.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x != y)\n{\n  x--;\n}"
+  invariants:
+  - y == \at(y, Pre)
+  - x <= \at(x, Pre)
+  explanation: A single linear ranking function (e.g., x - y) suffices since only
+    x decreases and y is constant.
+  template_type: lnested
+  template_depth: 1

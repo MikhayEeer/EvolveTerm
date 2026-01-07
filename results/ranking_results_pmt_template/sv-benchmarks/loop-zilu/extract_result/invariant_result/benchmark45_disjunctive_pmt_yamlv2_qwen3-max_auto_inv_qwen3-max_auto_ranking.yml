@@ -1,0 +1,13 @@
+source_file: benchmark45_disjunctive_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-zilu/benchmark45_disjunctive.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (unknown_bool()) {\n    if (x>0) {\n        x++;\n    } else {\n  \
+    \      y++;\n    }\n}"
+  invariants: []
+  explanation: The loop has two distinct behaviors based on x's sign, suggesting a
+    2-phase multi-ranking function, even though no decreasing measure exists—this
+    is the closest structural match.
+  template_type: lmulti
+  template_depth: 2

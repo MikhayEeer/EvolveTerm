@@ -1,0 +1,14 @@
+source_file: incn.v_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/LinearArbitrary-SeaHorn/pie/ICE/benchmarks/incn.v.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while(x < N)\n{\n  x = x + 1;\n  v1 = unknown_int();\n  v2 = unknown_int();\n\
+    \  v3 = unknown_int();\n}"
+  invariants:
+  - x <= N
+  explanation: A single linear ranking function (e.g., N - x) suffices because x increases
+    monotonically toward a fixed upper bound N, and other variables do not affect
+    termination.
+  template_type: lnested
+  template_depth: 1

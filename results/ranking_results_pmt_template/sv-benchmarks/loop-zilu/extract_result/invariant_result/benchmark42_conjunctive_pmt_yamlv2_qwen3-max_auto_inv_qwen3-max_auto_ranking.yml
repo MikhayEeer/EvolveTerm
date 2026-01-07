@@ -1,0 +1,14 @@
+source_file: benchmark42_conjunctive_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loop-zilu/benchmark42_conjunctive.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x > 0) {\n  x--;\n  y--;\n  z++;\n  z++;\n}"
+  invariants:
+  - x - y == \at(x - y, Pre)
+  - z + 2 * x == \at(z + 2 * x, Pre)
+  - z + 2 * y == \at(z + 2 * y, Pre)
+  explanation: A single linear ranking function (e.g., f = x) suffices; no nesting
+    or multiple phases needed.
+  template_type: lnested
+  template_depth: 1

@@ -1,0 +1,11 @@
+source_file: WhileSingle_false-termination_true-no-overflow_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/WhileSingle_false-termination_true-no-overflow.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (i < 10) {\n    if (i != 3) {\n        i = i+1;\n    }\n}"
+  invariants: []
+  explanation: A single linear ranking function (e.g., 10 - i) suffices under the
+    assumption that i ≠ 3 during loop execution.
+  template_type: lnested
+  template_depth: 1

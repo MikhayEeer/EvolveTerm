@@ -1,0 +1,12 @@
+source_file: nonlin_jump_over_1_term_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_term/nonlin_jump_over_1_term.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x >= y) {\n    if (x % y == 1) x++;\n      else x = x - 2;\n}"
+  invariants: []
+  explanation: The loop has non-monotonic behavior due to conditional increment, but
+    overall descent. A lexicographic ranking function of depth 2 can capture the net
+    decreasing trend by using a secondary component to handle the temporary increase.
+  template_type: lnested
+  template_depth: 2

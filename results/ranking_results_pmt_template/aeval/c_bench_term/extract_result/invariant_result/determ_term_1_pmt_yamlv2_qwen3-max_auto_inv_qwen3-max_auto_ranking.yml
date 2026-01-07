@@ -1,0 +1,11 @@
+source_file: determ_term_1_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_term/determ_term_1.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x != 0) {\n    x = x + y;\n    y = y + 1;\n}"
+  invariants: []
+  explanation: Single loop with linear updates; attempt to find a linear ranking function
+    using a single-phase multi-variable template.
+  template_type: lmulti
+  template_depth: 1

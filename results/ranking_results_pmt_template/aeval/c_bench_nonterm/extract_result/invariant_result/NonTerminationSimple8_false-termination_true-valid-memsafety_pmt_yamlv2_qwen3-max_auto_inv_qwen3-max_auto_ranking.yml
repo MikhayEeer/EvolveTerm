@@ -1,0 +1,17 @@
+source_file: NonTerminationSimple8_false-termination_true-valid-memsafety_pmt_yamlv2_qwen3-max_auto_inv_qwen3-max_auto.yml
+source_path: data/aeval/c_bench_nonterm/NonTerminationSimple8_false-termination_true-valid-memsafety.c
+task: ranking_inference
+ranking_results:
+- loop_id: 1
+  code: "while (x >= 0) {\n    if (__VERIFIER_nondet_int() != 0) {\n        x = x\
+    \ + 1;\n    } else {if (__VERIFIER_nondet_int() != 0) {\n        x = x + 2;\n\
+    \    } else {if (__VERIFIER_nondet_int() != 0) {\n        x = x + 3;\n    } else\
+    \ {if (__VERIFIER_nondet_int() != 0) {\n        x = x + 4;\n    } else {\n   \
+    \     x = -1;\n    }}}}\n}"
+  invariants:
+  - x >= 0
+  explanation: The loop has transitions that increase x and one that resets it to
+    -1. A multi-phase ranking function with depth 2 may capture the reset as a phase
+    transition.
+  template_type: lmulti
+  template_depth: 2
