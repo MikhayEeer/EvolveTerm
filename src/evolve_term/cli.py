@@ -420,7 +420,7 @@ def extract(
     Output:
         Saves a YAML file for each input file in a 'extract_result' subdirectory 
         next to the input file.
-        Filename format: {filename}_pmt_yaml{version}_{model}_auto.yml
+        Filename format: {name}_{prompt_version}_extract.yml
     """
     # Load config to get model details
     config_path = Path(llm_config)
@@ -445,7 +445,9 @@ def extract(
     
     # Determine prompt name based on version
     prompt_name = f"loop_extraction/yaml_{prompt_version}"
-    prompt_type = f"yaml{prompt_version}"
+    pmt_ver = f"pmt_yaml{prompt_version}"
+    safe_pmt_ver = re.sub(r"[^\w\-]", "", pmt_ver)
+    command = " ".join(sys.argv)
 
     # Custom Dumper for block style strings
     class LiteralDumper(yaml.SafeDumper):
@@ -459,19 +461,16 @@ def extract(
         loops = extractor.extract(code, prompt_name=prompt_name)
         
         timestamp = datetime.now().strftime("%Y-%m-%dT%H:%M")
-        safe_model_name = re.sub(r'[^\w\-]', '', str(model_name))
-        
         yaml_data = {
-            "source_file": f.name,
             "source_path": str(f.relative_to(base_dir)) if base_dir else str(f),
-            "basic": {
-                "name": safe_model_name,
-                "type": model_config.get("type", "llm"),
-                "prompt": f"prompts/{prompt_name}",
-                "config": model_config,
-                "call_type": "cli_extract",
-                "time": timestamp
-            },
+            "task": "extract",
+            "command": command,
+            "pmt_ver": pmt_ver,
+            "model": str(model_name),
+            "time": timestamp,
+            "loops_count": -1,
+            "loops_depth": -1,
+            "loops_ids": len(loops),
             "loops": [
                 {
                     "id": i + 1,
@@ -485,7 +484,7 @@ def extract(
         result_dir = f.parent / "extract_result"
         result_dir.mkdir(exist_ok=True)
         
-        filename = f"{f.stem}_pmt_{prompt_type}_{safe_model_name}_auto.yml"
+        filename = f"{f.stem}_{safe_pmt_ver}_extract.yml"
         out_path = result_dir / filename
         
         with open(out_path, 'w', encoding='utf-8') as yf:
@@ -564,6 +563,9 @@ def invariant(
     predictor = Predictor(llm_client, prompt_repo)
     
     references = load_references(references_file)
+    command = " ".join(sys.argv)
+    pmt_ver = prompt_version
+    safe_pmt_ver = re.sub(r"[^\w\-]", "", pmt_ver)
 
     # Custom Dumper for block style strings
     class LiteralDumper(yaml.SafeDumper):
@@ -578,6 +580,8 @@ def invariant(
         source_path = str(f.relative_to(base_dir)) if base_dir else str(f)
         existing_yaml = None
         needs_fill = False
+        input_has_extract = None
+        input_source_file = None
         
         # Determine input type
         if f.suffix.lower() in {'.yml', '.yaml'}:
@@ -586,6 +590,9 @@ def invariant(
                 data = yaml.safe_load(f.read_text(encoding="utf-8"))
                 if not _check_yaml_required_keys(f, data, strict):
                     return False
+                if isinstance(data, dict):
+                    input_has_extract = data.get("has_extract")
+                    input_source_file = data.get("source_file")
                 if isinstance(data, dict) and "source_path" in data:
                     source_path = data["source_path"]
                 if isinstance(data, dict) and "invariants_result" in data:
@@ -617,6 +624,19 @@ def invariant(
             # But 'invariant' command is low-level. Let's assume user wants to analyze the file content.
             loops_to_analyze = [code]
 
+        def infer_has_extract() -> bool:
+            if source_type != "yaml":
+                return False
+            if isinstance(input_has_extract, bool):
+                return input_has_extract
+            if isinstance(input_source_file, str):
+                lower_name = input_source_file.lower()
+                if lower_name.endswith((".c", ".cpp", ".h", ".hpp", ".cc", ".cxx")):
+                    return False
+                if lower_name.endswith((".yml", ".yaml")):
+                    return True
+            return True
+
         all_invariants = []
         for i, loop_code in enumerate(loops_to_analyze):
             invariants = predictor.infer_invariants(loop_code, references, prompt_version=prompt_version)
@@ -629,8 +649,8 @@ def invariant(
 
         # Output generation
         timestamp = datetime.now().strftime("%Y-%m-%dT%H:%M")
-        safe_model_name = re.sub(r'[^\w\-]', '', str(model_name))
-        
+        has_extract = infer_has_extract()
+
         if existing_yaml is not None and needs_fill:
             fill_iter = iter(all_invariants)
             for item in existing_yaml.get("invariants_result", []):
@@ -639,23 +659,31 @@ def invariant(
                     new_item = next(fill_iter, None)
                     if new_item:
                         item["invariants"] = new_item.get("invariants", [])
-            yaml_data = existing_yaml
+            invariants_result = existing_yaml.get("invariants_result", [])
         else:
-            yaml_data = {
-                "source_file": f.name,
-                "source_path": source_path,
-                "basic": {
-                    "name": safe_model_name,
-                    "type": model_config.get("type", "llm"),
-                    "task": "invariant_inference",
-                    "prompt_version": prompt_version,
-                    "config": model_config,
-                    "time": timestamp
-                },
-                "invariants_result": all_invariants
-            }
-        
-        filename = f"{f.stem}_inv_{safe_model_name}_{prompt_version}.yml"
+            invariants_result = all_invariants
+
+        yaml_data = {
+            "source_file": f.name,
+            "source_path": source_path,
+            "task": "invariant_inference",
+            "command": command,
+            "pmt_ver": pmt_ver,
+            "model": str(model_name),
+            "time": timestamp,
+            "has_extract": has_extract,
+            "invariants_result": invariants_result,
+        }
+
+        if existing_yaml is not None:
+            for key, value in existing_yaml.items():
+                if key not in yaml_data and key != "basic":
+                    yaml_data[key] = value
+
+        base_name = f.stem
+        if isinstance(source_path, str) and source_path.strip():
+            base_name = Path(source_path).stem
+        filename = f"{base_name}_{safe_pmt_ver}_inv.yml"
         if existing_yaml is not None and needs_fill:
             if output_root:
                 if output_root.suffix in {".yml", ".yaml"}:
@@ -664,7 +692,7 @@ def invariant(
                     rel_parent = Path(".") if base_dir is None else f.parent.relative_to(base_dir)
                     result_dir = output_root / rel_parent
                     result_dir.mkdir(parents=True, exist_ok=True)
-                    out_path = result_dir / f.name
+                    out_path = result_dir / filename
             else:
                 out_path = f
         else:
@@ -814,7 +842,21 @@ def ranking(
     Invariants JSON Format (for single file):
     ["inv1", "inv2", ...]
     """
+    config_path = Path(llm_config)
+    model_name = "unknown"
+    model_config = {}
+    if config_path.exists():
+        try:
+            model_config = json.loads(config_path.read_text(encoding="utf-8"))
+            model_name = model_config.get("model_name", model_config.get("model", "unknown"))
+        except:
+            pass
+
     llm_client = build_llm_client(llm_config)
+    if hasattr(llm_client, "model"):
+        model_name = llm_client.model
+    elif hasattr(llm_client, "model_name"):
+        model_name = llm_client.model_name
     prompt_repo = PromptRepository()
     predictor = Predictor(llm_client, prompt_repo)
 
@@ -822,17 +864,39 @@ def ranking(
     if ranking_mode_value in {"template-known", "template_known"}:
         rf_mode = "template"
         rf_known_terminating = True
+        pmt_ver = "template-known"
     elif ranking_mode_value in {"direct", "template"}:
         rf_mode = ranking_mode_value
         rf_known_terminating = False
+        pmt_ver = ranking_mode_value
     else:
         raise typer.BadParameter("ranking_mode must be one of: direct, template, template-known")
+
+    safe_pmt_ver = re.sub(r"[^\w\-]", "", pmt_ver)
+    command = " ".join(sys.argv)
     
     references = load_references(references_file)
     retry_empty = max(0, retry_empty)
 
     def is_empty_result(rf: str | None, metadata: dict) -> bool:
         return predictor.is_empty_ranking_result(rf, metadata, rf_mode)
+
+    def derive_base_name(source_path: Optional[str], fallback: Path) -> str:
+        if isinstance(source_path, str) and source_path.strip():
+            return Path(source_path).stem
+        return fallback.stem
+
+    def has_non_empty_invariants(results: List[Dict[str, Any]]) -> bool:
+        for item in results:
+            if not isinstance(item, dict):
+                continue
+            invs = item.get("invariants")
+            if isinstance(invs, list):
+                if any(str(val).strip() for val in invs if val is not None):
+                    return True
+            elif isinstance(invs, str) and invs.strip():
+                return True
+        return False
 
     def process_file(f: Path, invs: List[str]) -> Dict[str, Any]:
         code = f.read_text(encoding="utf-8")
@@ -850,18 +914,24 @@ def ranking(
             }
         return {"ranking_function": rf, "explanation": explanation}
 
-    def process_yaml_input(f: Path, strict: bool) -> tuple[Optional[List[Dict[str, Any]]], str]:
+    def process_yaml_input(f: Path, strict: bool) -> tuple[Optional[List[Dict[str, Any]]], str, bool, bool]:
         try:
             content = yaml.safe_load(f.read_text(encoding="utf-8"))
         except Exception as e:
             console.print(f"[red]Error parsing YAML {f}: {e}[/red]")
-            return None, str(f)
+            return None, str(f), False, False
 
         if not _check_yaml_required_keys(f, content, strict):
-            return None, str(f)
+            return None, str(f), False, False
 
         results = []
         source_path = content.get("source_path") if isinstance(content, dict) else None
+        has_extract = False
+        if isinstance(content, dict):
+            if isinstance(content.get("has_extract"), bool):
+                has_extract = content["has_extract"]
+            elif "loops" in content or "invariants_result" in content:
+                has_extract = True
         # Case 1: Invariant Result YAML
         if "invariants_result" in content:
             console.print(f"[blue]Detected Invariant Result YAML: {f.name}[/blue]")
@@ -940,16 +1010,19 @@ def ranking(
         else:
             console.print(f"[yellow]Unknown YAML format in {f.name}. Expected 'loops' or 'invariants_result'.[/yellow]")
             
-        return results, source_path or str(f)
+        has_invariants = has_non_empty_invariants(results)
+        return results, source_path or str(f), has_extract, has_invariants
 
     if input.is_file():
         if input.suffix.lower() in {'.yml', '.yaml'}:
-            results, source_path = process_yaml_input(input, True)
+            results, source_path, has_extract, has_invariants = process_yaml_input(input, True)
             if results is None:
                 raise typer.Exit(code=1)
+            base_name = derive_base_name(source_path, input)
+            timestamp = datetime.now().strftime("%Y-%m-%dT%H:%M")
             if output:
                 if output.is_dir():
-                    out_path = output / (input.stem + "_ranking.yml")
+                    out_path = output / f"{base_name}_{safe_pmt_ver}_ranking.yml"
                 else:
                     out_path = output
                 
@@ -958,13 +1031,31 @@ def ranking(
                     "source_file": input.name,
                     "source_path": source_path,
                     "task": "ranking_inference",
+                    "command": command,
+                    "pmt_ver": pmt_ver,
+                    "model": str(model_name),
+                    "time": timestamp,
+                    "has_extract": has_extract,
+                    "has_invariants": has_invariants,
                     "ranking_results": results
                 }
                 with open(out_path, 'w', encoding='utf-8') as f:
                     yaml.dump(out_data, f, sort_keys=False, allow_unicode=True)
                 console.print(f"Saved ranking results to {out_path}")
             else:
-                console.print(yaml.dump(results, sort_keys=False, allow_unicode=True))
+                out_data = {
+                    "source_file": input.name,
+                    "source_path": source_path,
+                    "task": "ranking_inference",
+                    "command": command,
+                    "pmt_ver": pmt_ver,
+                    "model": str(model_name),
+                    "time": timestamp,
+                    "has_extract": has_extract,
+                    "has_invariants": has_invariants,
+                    "ranking_results": results
+                }
+                console.print(yaml.dump(out_data, sort_keys=False, allow_unicode=True))
         else:
             console.print(f"Inferring ranking function for {input}...")
             invariants = []
@@ -1017,30 +1108,49 @@ def ranking(
                 console.print(f"Processing {f.name}...")
                 
                 if f.suffix.lower() in yaml_extensions:
-                    results, source_path = process_yaml_input(f, False)
+                    results, source_path, has_extract, has_invariants = process_yaml_input(f, False)
                     if results is None:
                         continue
+                    base_name = derive_base_name(source_path, f)
+                    timestamp = datetime.now().strftime("%Y-%m-%dT%H:%M")
                     if output:
                         try:
                             rel_path = f.relative_to(input)
-                            out_path = output / rel_path.with_suffix(".yml")
-                            # Append _ranking suffix to distinguish
-                            out_path = out_path.parent / (out_path.stem + "_ranking.yml")
+                            out_dir = output / rel_path.parent
                         except ValueError:
-                            out_path = output / (f.stem + "_ranking.yml")
+                            out_dir = output
                         
-                        out_path.parent.mkdir(parents=True, exist_ok=True)
+                        out_dir.mkdir(parents=True, exist_ok=True)
+                        out_path = out_dir / f"{base_name}_{safe_pmt_ver}_ranking.yml"
                         out_data = {
                             "source_file": f.name,
                             "source_path": source_path,
                             "task": "ranking_inference",
+                            "command": command,
+                            "pmt_ver": pmt_ver,
+                            "model": str(model_name),
+                            "time": timestamp,
+                            "has_extract": has_extract,
+                            "has_invariants": has_invariants,
                             "ranking_results": results
                         }
                         with open(out_path, 'w', encoding='utf-8') as yf:
                             yaml.dump(out_data, yf, sort_keys=False, allow_unicode=True)
                     else:
                         console.print(f"--- {f.name} ---")
-                        console.print(yaml.dump(results, sort_keys=False, allow_unicode=True))
+                        out_data = {
+                            "source_file": f.name,
+                            "source_path": source_path,
+                            "task": "ranking_inference",
+                            "command": command,
+                            "pmt_ver": pmt_ver,
+                            "model": str(model_name),
+                            "time": timestamp,
+                            "has_extract": has_extract,
+                            "has_invariants": has_invariants,
+                            "ranking_results": results
+                        }
+                        console.print(yaml.dump(out_data, sort_keys=False, allow_unicode=True))
                 else:
                     # C/C++ file
                     result = process_file(f, [])
