@@ -87,9 +87,9 @@ def _yaml_type_from_name(path: Path) -> Optional[str]:
     name = path.name.lower()
     if name.endswith(("_ranking.yml", "_ranking.yaml")):
         return "ranking"
-    if name.endswith(("_inv.yml", "_inv.yaml")):
+    if name.endswith(("_inv.yml", "_inv.yaml", "_invariant.yml", "_invariant.yaml")):
         return "inv"
-    if name.endswith(("_ext.yml", "_ext.yaml")):
+    if name.endswith(("_extract.yml", "_extract.yaml", "_ext.yml", "_ext.yaml")):
         return "ext"
     if name.endswith(("_feature.yml", "_feature.yaml")):
         return "feature"
