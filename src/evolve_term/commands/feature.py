@@ -18,9 +18,10 @@ console = Console()
 
 class FeatureHandler:
     def __init__(self, llm_config: str):
-        self.llm_client = build_llm_client(llm_config)
+        feature_tag = "long-context"
+        self.llm_client = build_llm_client(llm_config, feature_tag)
         # Force model to qwen-plus as requested
-        self.llm_client.model = "qwen-plus"
+        #self.llm_client.model = "qwen-plus"
         self.prompt_repo = PromptRepository()
 
     def run(self, input_path: Path, output: Optional[Path], recursive: bool):
