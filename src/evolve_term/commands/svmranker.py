@@ -66,7 +66,7 @@ class SVMRankerHandler:
                     
             return entry.get("code", "")
 
-        def run_on_entry(entry: Dict[str, Any], base_dir: Path) -> Dict[str, Any]:
+        def run_on_entry(entry: Dict[str, Any], base_dir: Path) -> Tuple[Dict[str, Any], str]:
             code = resolve_source_code(entry, base_dir)
             template_type = entry.get("template_type") or entry.get("type") or "lnested"
             template_depth = entry.get("template_depth") or entry.get("depth") or 1
@@ -81,7 +81,7 @@ class SVMRankerHandler:
                 tmp_path = tmp.name
 
             try:
-                status, rf, rf_list = self.client.run(Path(tmp_path), mode=mode, depth=depth_val)
+                status, rf, rf_list, log = self.client.run(Path(tmp_path), mode=mode, depth=depth_val)
             finally:
                 Path(tmp_path).unlink(missing_ok=True)
 
@@ -93,23 +93,31 @@ class SVMRankerHandler:
                 "status": status,
                 "ranking_function": rf,
                 "ranking_functions": rf_list,
-            }
+            }, log
 
-        def process_yaml(f: Path, strict: bool) -> Optional[Dict[str, Any]]:
+        def process_yaml(f: Path, strict: bool) -> Tuple[Optional[Dict[str, Any]], str]:
             try:
                 content = yaml.safe_load(f.read_text(encoding="utf-8"))
             except Exception as e:
-                return {"source_file": f.name, "error": f"YAML parse error: {e}"}
+                return {"source_file": f.name, "error": f"YAML parse error: {e}"}, f"YAML Error: {e}"
             if not _check_yaml_required_keys(f, content, strict):
-                return None
+                return None, "YAML validation failed"
 
             entries = parse_results(content)
             base_dir = f.parent
-            results = [run_on_entry(entry, base_dir) for entry in entries]
-            return {"source_file": f.name, "task": "svmranker", "results": results}
+            
+            results = []
+            full_log = []
+            
+            for entry in entries:
+                res, log = run_on_entry(entry, base_dir)
+                results.append(res)
+                full_log.append(f"--- Entry Loop ID: {res.get('loop_id')} ---\n{log}\n" + "="*40 + "\n")
+                
+            return {"source_file": f.name, "task": "svmranker", "results": results}, "\n".join(full_log)
 
         if input_path.is_file():
-            result = process_yaml(input_path, True)
+            result, full_log = process_yaml(input_path, True)
             if result is None:
                 raise typer.Exit(code=1)
             
@@ -122,8 +130,22 @@ class SVMRankerHandler:
                 with open(out_path, "w", encoding="utf-8") as yf:
                     yaml.dump(result, yf, sort_keys=False, allow_unicode=True)
                 console.print(f"Saved to {out_path}")
+                
+                # Save log
+                log_path = out_path.with_name(out_path.name.replace(".yml", "") + "ranker.txt")
+                if not log_path.name.endswith("ranker.txt"): # handle weird replacement if needed
+                     pass
+                # ensure proper naming: <name>.svmranker.txt
+                # if out_path is "foo_svm.yml", we want "foo_svm.svmranker.txt" ?
+                # The user said "named like the yaml but with .svmranker.txt"
+                log_path = out_path.with_suffix(".svmranker.txt")
+                log_path.write_text(full_log, encoding="utf-8")
+                console.print(f"Saved log to {log_path}")
+
             else:
                 console.print(yaml.dump(result, sort_keys=False, allow_unicode=True))
+                # If printing to console, maybe print log too?
+                # console.print(full_log) # might be too noisy
 
         elif input_path.is_dir():
             files = collect_files(input_path, recursive, extensions={".yml", ".yaml"})
@@ -132,7 +154,7 @@ class SVMRankerHandler:
 
             for f in files:
                 try:
-                    result = process_yaml(f, False)
+                    result, full_log = process_yaml(f, False)
                     if not result: continue
                     
                     if output:
@@ -146,6 +168,10 @@ class SVMRankerHandler:
                         out_path.parent.mkdir(parents=True, exist_ok=True)
                         with open(out_path, "w", encoding="utf-8") as yf:
                              yaml.dump(result, yf, sort_keys=False, allow_unicode=True)
+                             
+                        log_path = out_path.with_suffix(".svmranker.txt")
+                        log_path.write_text(full_log, encoding="utf-8")
+
                     else:
                         console.print(f"--- {f.name} ---")
                         console.print(yaml.dump(result, sort_keys=False, allow_unicode=True))
