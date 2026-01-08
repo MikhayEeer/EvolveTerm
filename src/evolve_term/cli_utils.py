@@ -3,15 +3,18 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Optional, List, Any
+from typing import Optional, List, Any, Dict, Set, Tuple
 import json
+import re
 
 from .config import auto_load_json_config
 from .llm_client import build_llm_client
 from .models import KnowledgeCase
 import typer
+import yaml
 
 DEFAULT_LLM_PING_PROMPT = "ping"
+_LOOP_REF_PATTERN = re.compile(r"LOOP\s*(?:\{|\()?\s*(\d+)\s*(?:\}|\))?", re.IGNORECASE)
 
 def resolve_svm_ranker_root(path: Path) -> Path:
     if not path.exists():
@@ -131,3 +134,68 @@ def ping_llm_client(llm_config: str, prompt: str = DEFAULT_LLM_PING_PROMPT) -> d
     client = build_llm_client(llm_config, config_tag="default")
     response = client.complete(prompt)
     return {"config": config, "prompt": prompt, "response": response}
+
+
+def _extract_loop_entries(content: Any) -> List[Any]:
+    if not isinstance(content, dict):
+        return []
+    if "ranking_results" in content:
+        return content.get("ranking_results") or []
+    if "invariants_result" in content:
+        return content.get("invariants_result") or []
+    if "loops" in content:
+        return content.get("loops") or []
+    return []
+
+
+def _normalize_loop_entries(entries: List[Any]) -> List[Tuple[int, str]]:
+    normalized: List[Tuple[int, str]] = []
+    for idx, entry in enumerate(entries, start=1):
+        loop_id = idx
+        code = ""
+        if isinstance(entry, dict):
+            loop_id = entry.get("loop_id") or entry.get("id") or idx
+            code = entry.get("code", "")
+        else:
+            code = str(entry)
+        try:
+            loop_id = int(loop_id)
+        except (TypeError, ValueError):
+            loop_id = idx
+        normalized.append((loop_id, str(code)))
+    return normalized
+
+
+def _collect_loop_references(code: str) -> Set[int]:
+    refs = set()
+    for match in _LOOP_REF_PATTERN.findall(code or ""):
+        try:
+            refs.add(int(match))
+        except (TypeError, ValueError):
+            continue
+    return refs
+
+
+def check_loop_id_order_in_yaml(path: Path) -> Tuple[Dict[int, Set[int]], List[str]]:
+    """
+    Build loop dependency graph based on LOOP{n} placeholders and
+    return warnings for forward references (referencing loops not yet seen).
+    """
+    content = yaml.safe_load(path.read_text(encoding="utf-8"))
+    entries = _extract_loop_entries(content)
+    loop_entries = _normalize_loop_entries(entries)
+    deps: Dict[int, Set[int]] = {}
+    warnings: List[str] = []
+    seen: Set[int] = set()
+
+    for loop_id, code in loop_entries:
+        refs = _collect_loop_references(code)
+        deps[loop_id] = refs
+        for ref_id in sorted(refs):
+            if ref_id not in seen:
+                warnings.append(
+                    f"Loop {loop_id} references LOOP{ref_id} before it appears."
+                )
+        seen.add(loop_id)
+
+    return deps, warnings
