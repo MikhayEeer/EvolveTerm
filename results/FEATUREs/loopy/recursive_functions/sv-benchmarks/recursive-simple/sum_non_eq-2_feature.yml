@@ -1,0 +1,15 @@
+source_path: recursive_functions/sv-benchmarks/recursive-simple/sum_non_eq-2.c
+language: C
+program_type: recur
+recur_type: tail
+loop_type: null
+loops_count: 0
+loops_depth: 0
+loop_condition_variables_count: 0
+has_break: false
+loop_condition_always_true: false
+initial_sat_condition: true
+array_operator: false
+pointer_operator: false
+lines: 29
+summary: 计算两个无符号整数的和，使用递归将第一个数减到0并同时增加第二个数。
