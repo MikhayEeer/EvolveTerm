@@ -24,6 +24,20 @@
 *   需源码编译 LLVM 14。
 *   编译耗时极长，且极易因环境差异失败。
 
+### 安装后的测试
+```bash
+docker images
+docker ps -a
+
+docker run --rm -it --name seahorn \
+    seahron/seahorn-llvm14:nightly bash
+
+# 进入docker
+sea --help
+sea pf --help
+```
+验证成功
+
 ---
 
 ## 2. 功能与 API 接口 (Capabilities & Interface)
