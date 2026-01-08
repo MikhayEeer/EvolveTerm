@@ -1,0 +1,46 @@
+下面是清晰的需求描述（含策略 1/2 的实现要求 + 策略 3 的讨论版），便于你拆分交给 Agent 逐步实现。
+
+需求目标（总览）
+
+CLI 与管线对 SVMRanker 的输入策略一致化：单 loop 用完整源码，多 loop 用“最小可用 C”。
+最小可用 C 的兜底更严格：补变量声明、初始化，支持 __VERIFIER_nondet_int。
+策略 3 仅讨论，不实现：检查 loop id 嵌套顺序是否正确。
+策略 1：单 loop 使用 YAML 顶层 source_path（需要实现）
+
+触发条件：ranking_results 只有 1 个 loop。
+行为：如果 YAML 顶层有 source_path 且文件可读，优先用完整源码作为 SVMRanker 输入；entry 的 code 仅用于结果记录。
+适用范围：evolveterm svmranker CLI 与管线（当只有一个 loop 时）。
+策略 2：多 loop 使用“最小可用 C”（需要实现）
+
+触发条件：ranking_results 多个 loop 或管线 analysis_targets 多个 loop。
+行为：对每个 loop entry 生成一个“最小可用 C”临时文件，交给 SVMRanker。
+生成规则（严格兜底）：
+外层结构：int main(){ <初始化> <loop_code> return 0; }（或 void main() 但建议 int main()）。
+变量声明来源：
+优先从顶层 source_path 完整源码里提取对应变量声明（简单正则/启发式即可，最小改动）。
+若提取不到，则创建兜底声明（默认 int）。
+变量初始化：
+所有标量必须初始化。
+对“unknown/nondet 类似变量”必须用 __VERIFIER_nondet_int() 初始化。
+需补充：extern int __VERIFIER_nondet_int(void);
+数组与指针：
+数组需声明并初始化（建议 int arr[N] = {0}; 的零初始化）。
+指针建议初始化为 0 或 &arr[0]（若能推断），避免未初始化。
+适用范围：CLI + 管线（保持一致逻辑）。
+策略 3：嵌套关系与顺序检查（讨论，不实现）
+
+提供一个“仅检查”的函数（未来可实现），判断 loop id 的嵌套依赖是否顺序正确。
+可能依据：code 中的 LOOP{n} 占位符/注释，建立依赖图。
+若发现外层 loop 引用了尚未出现的内层 loop，可给出 warning，但不改变执行顺序。
+最小改动的落点建议
+
+新增一个共用 helper（放 cli_utils.py 或新模块）：
+输入：loop_code, full_source_path, mode(single|multi)
+输出：用于 SVMRanker 的 C 字符串（完整源码 or 最小可用 C）
+在 CLI svmranker.py 和管线 pipeline.py 统一调用该 helper。
+需要你确认的细节（给 Agent 前可先定）
+
+数组兜底尺寸策略（固定 128? 从 % 128 推断?）
+标量初始化策略：全部用 __VERIFIER_nondet_int()，还是未知变量用 nondet、其余用 0？
+main 使用 int main() 还是 void main()（建议 int）。
+如果你确认这些细节，我可以把它们写成更明确的“实现步骤 + 验收标准”拆给 Agent。

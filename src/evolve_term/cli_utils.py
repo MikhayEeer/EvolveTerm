@@ -6,8 +6,12 @@ from pathlib import Path
 from typing import Optional, List, Any
 import json
 
+from .config import auto_load_json_config
+from .llm_client import build_llm_client
 from .models import KnowledgeCase
 import typer
+
+DEFAULT_LLM_PING_PROMPT = "ping"
 
 def resolve_svm_ranker_root(path: Path) -> Path:
     if not path.exists():
@@ -120,3 +124,10 @@ def validate_yaml_required_keys(path: Path, content: Any) -> List[str]:
     if not isinstance(content, dict):
         return required
     return [key for key in required if key not in content]
+
+
+def ping_llm_client(llm_config: str, prompt: str = DEFAULT_LLM_PING_PROMPT) -> dict[str, Any]:
+    config = auto_load_json_config(llm_config, tag="default")
+    client = build_llm_client(llm_config, config_tag="default")
+    response = client.complete(prompt)
+    return {"config": config, "prompt": prompt, "response": response}

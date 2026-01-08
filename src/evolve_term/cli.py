@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from pathlib import Path
 from typing import Optional
+import json
 
 import typer
 from rich.console import Console
@@ -12,7 +13,7 @@ from rich.table import Table
 
 from .models import PendingReviewCase
 from .pipeline import TerminationPipeline
-from .cli_utils import resolve_svm_ranker_root
+from .cli_utils import resolve_svm_ranker_root, ping_llm_client, DEFAULT_LLM_PING_PROMPT
 
 # Handlers
 from .commands.extract import ExtractHandler
@@ -88,7 +89,6 @@ def analyze(
 
     # Show translation info if applicable
     if enable_translation and result.report_path:
-        import json
         with open(result.report_path, 'r', encoding='utf-8') as f:
             report = json.load(f)
         translation = report.get("translation", {})
@@ -350,3 +350,47 @@ def feature(
     """
     handler = FeatureHandler(llm_config)
     handler.run(input, output, recursive)
+
+
+def _run_llm_ping(llm_config: str, prompt: str) -> None:
+    try:
+        result = ping_llm_client(llm_config, prompt)
+    except Exception as exc:
+        console.print(f"[bold red]连接到大模型API 失败：{exc}[/bold red]")
+        raise typer.Exit(code=1)
+
+    console.rule("LLM Ping")
+    console.print("Config tag: default")
+    console.print("LLM config:")
+    console.print(json.dumps(result["config"], ensure_ascii=False, indent=2), markup=False)
+    console.print("Prompt:")
+    console.print(result["prompt"], markup=False)
+    console.print("Response:")
+    console.print(result["response"], markup=False)
+
+
+@app.command("ping-llm")
+def ping_llm(
+    llm_config: str = typer.Option("llm_config.json", help="Path to LLM config"),
+    prompt: str = typer.Option(DEFAULT_LLM_PING_PROMPT, "--prompt", help="Short prompt for ping test"),
+) -> None:
+    """Ping LLM API with default tag."""
+    _run_llm_ping(llm_config, prompt)
+
+
+@app.command("ping-test")
+def ping_test(
+    llm_config: str = typer.Option("llm_config.json", help="Path to LLM config"),
+    prompt: str = typer.Option(DEFAULT_LLM_PING_PROMPT, "--prompt", help="Short prompt for ping test"),
+) -> None:
+    """Alias for ping-llm."""
+    _run_llm_ping(llm_config, prompt)
+
+
+@app.command("testAPI")
+def test_api(
+    llm_config: str = typer.Option("llm_config.json", help="Path to LLM config"),
+    prompt: str = typer.Option(DEFAULT_LLM_PING_PROMPT, "--prompt", help="Short prompt for ping test"),
+) -> None:
+    """Alias for ping-llm."""
+    _run_llm_ping(llm_config, prompt)

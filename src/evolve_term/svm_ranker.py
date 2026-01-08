@@ -76,7 +76,7 @@ class SVMRankerClient:
             filtered_lines.append(line)
         return "\n".join(filtered_lines)
 
-    def run(self, file_path: Path, mode: str = "lnested", depth: int = 1) -> Tuple[str, Optional[str], List[str]]:
+    def run(self, file_path: Path, mode: str = "lnested", depth: int = 1) -> Tuple[str, Optional[str], List[str], str]:
         """
         Run SVMRanker on the given file.
         
@@ -90,9 +90,12 @@ class SVMRankerClient:
             - result_status: "TERMINATE", "NONTERM", "UNKNOWN", or "ERROR"
             - ranking_function: The first valid ranking function string (if any)
             - rf_list: List of all generated ranking functions
+            - log: Collected stdout/stderr log
         """
+        log_buffer = io.StringIO()
         if not self._modules_loaded:
-            return "ERROR", None, []
+            log_buffer.write("[Error] SVMRanker modules not loaded.\n")
+            return "ERROR", None, [], log_buffer.getvalue()
 
         abs_file_path = file_path.resolve()
         temp_path: Optional[Path] = None
@@ -117,8 +120,10 @@ class SVMRankerClient:
                 debug_path.write_text(sanitized_code, encoding="utf-8")
                 
             except OSError as e:
-                print(f"[Error] Failed to prepare input file: {e}")
-                return "ERROR", None, []
+                msg = f"[Error] Failed to prepare input file: {e}"
+                print(msg)
+                log_buffer.write(msg + "\n")
+                return "ERROR", None, [], log_buffer.getvalue()
         else:
             # For non-C files (e.g. .bpl), use as is
             process_file_path = abs_file_path

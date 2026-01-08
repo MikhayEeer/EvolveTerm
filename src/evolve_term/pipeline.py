@@ -205,7 +205,7 @@ class TerminationPipeline:
                         tmp_path = tmp.name
                     
                     # Call SVMRanker
-                    svm_result_status, svm_rf, _ = self.svm_ranker.run(Path(tmp_path), mode=svm_mode, depth=depth)
+                    svm_result_status, svm_rf, _, _ = self.svm_ranker.run(Path(tmp_path), mode=svm_mode, depth=depth)
                     
                     if svm_result_status == "TERMINATE" and svm_rf:
                         ranking_function = svm_rf
