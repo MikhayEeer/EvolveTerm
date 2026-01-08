@@ -1,0 +1,114 @@
+source_file: program_yaml_direct_inv.yml
+source_path: examples/llm_nested_term_samples/generated1229program3/program.c
+task: ranking_inference
+command: /home/clexma/Desktop/fox3/TermDB/EvolveTerm/.venv_evolve/bin/evolveterm ranking
+  --input examples/llm_nested_term_samples/generated1229program3/invariant_result/program_yaml_direct_inv.yml
+  --ranking-mode template --output examples/llm_nested_term_samples/generated1229program3/
+pmt_ver: template
+model: qwen3-max
+time: 2026-01-08T17:58
+has_extract: true
+has_invariants: true
+ranking_results:
+- loop_id: 1
+  code: |-
+    for (i = 0; i < 128; i++) {
+        arr[i] = i;
+    }
+  invariants:
+  - 0 <= i && i <= 128
+  - \forall integer j; 0 <= j < i ==> arr[j] == j
+  explanation: The loop is a simple counted loop with a linear ranking function; no
+    nesting or multiple phases are needed.
+  template_type: lnested
+  template_depth: 1
+- loop_id: 2
+  code: |-
+    do {
+        int temp = x + y + z + w + sink;
+        sink = temp;
+        idx = (unsigned int)sink % 128;
+        arr[idx] = arr[idx] + 1;
+        ptr = &arr[(idx + 1) % 128];
+        *ptr = *ptr ^ temp;
+        printf("Example 3: Looping %d\n", sink);
+    } while (z < 10 && w > 0);
+  invariants:
+  - z < 10 && w > 0
+  explanation: The loop condition is a conjunction (z < 10 && w > 0). Without explicit
+    updates to z or w in the body, termination is unclear, but assuming one or both
+    change, a multi-phase ranking function (depth 2) can model separate phases where
+    w decreases or z increases toward their bounds.
+  template_type: lmulti
+  template_depth: 2
+- loop_id: 3
+  code: |-
+    while (y > 0 && w < 100) {
+        j = (y + w) % 128;
+        sink = sink + arr[j];
+        arr[j] = y;
+        y = y / 2;
+        k = (y * 5) ^ sink;
+        arr[k % 128] = k;
+        /* LOOP2: Placeholder for nested loop */
+        w = w * 2;
+        val = (w * 2) % 128;
+        arr[val] = w;
+        sink = sink + arr[val];
+    }
+  invariants:
+  - 0 <= y
+  - w >= 0
+  - \forall integer i; 0 <= i < 128 ==> \valid(&arr[i])
+  explanation: The loop terminates due to either y decreasing to 0 or w increasing
+    to 100. A lexicographic ranking function with two components (e.g., (100 - w,
+    y)) is needed, so lnested with depth 2 is appropriate.
+  template_type: lnested
+  template_depth: 2
+- loop_id: 4
+  code: |-
+    for (z = 1; z < 50 && x > 0; z = z * 3, x = x / 2) {
+        idx = (z * 7) % 128;
+        arr[idx] = (z << 2) - x;
+        sink = sink | arr[idx];
+        /* LOOP3: Placeholder for nested loop */
+    }
+  invariants:
+  - z >= 1
+  - x >= 0
+  - z < 150
+  - z < 50
+  - x > 0
+  - \forall integer i; 0 <= i < 128 ==> \valid(&arr[i])
+  explanation: The loop variable x strictly decreases in every iteration (x = x /
+    2, integer division) and is bounded below by 0, making it a valid linear ranking
+    function. The z variable increases but does not affect the existence of a ranking
+    function based on x, as the loop guard ensures x > 0 during execution, and x decreases
+    monotonically.
+  template_type: lnested
+  template_depth: 1
+- loop_id: 5
+  code: |-
+    do {
+        idx = (x * 13) % 128;
+        arr[idx] = x ^ y;
+        sink += arr[idx];
+        x = x / 2;
+        y = y / 2;
+        val = (x + y) & 0xFF;
+        ptr = &arr[val % 128];
+        *ptr = *ptr ^ sink;
+        /* LOOP4: Placeholder for nested loop */
+    } while (x > 0 && y > 0);
+  invariants:
+  - x >= 0
+  - y >= 0
+  - 'sink == \sum_{k=0}^{i-1} arr_k[idx_k]  // informal: sink accumulates previous
+    arr[idx] values'
+  - 0 <= idx && idx < 128
+  - 0 <= val && val < 256
+  - ptr == &arr[val % 128]
+  explanation: A single linear ranking function (e.g., x + y) suffices since both
+    x and y decrease monotonically and the loop exits when either reaches zero.
+  template_type: lnested
+  template_depth: 1

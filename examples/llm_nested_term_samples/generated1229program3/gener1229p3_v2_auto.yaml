@@ -1,0 +1,65 @@
+source_path: examples/llm_nested_term_samples/generated1229program3/program.c
+task: extract
+command: /home/clexma/Desktop/fox3/TermDB/EvolveTerm/.venv_evolve/bin/evolveterm extract
+  --input examples/llm_nested_term_samples/generated1229program3/program.c --output
+  examples/llm_nested_term_samples/generated1229program3/gener1229p3_v2_auto.yaml
+  -p v2
+pmt_ver: pmt_yamlv2
+model: qwen3-max
+time: 2026-01-08T17:39
+loops_count: -1
+loops_depth: -1
+loops_ids: 5
+loops:
+- id: 1
+  code: |-
+    for (i = 0; i < 128; i++) {
+        arr[i] = i;
+    }
+- id: 2
+  code: |-
+    do {
+        int temp = x + y + z + w + sink;
+        sink = temp;
+        idx = (unsigned int)sink % 128;
+        arr[idx] = arr[idx] + 1;
+        ptr = &arr[(idx + 1) % 128];
+        *ptr = *ptr ^ temp;
+        printf("Example 3: Looping %d\n", sink);
+    } while (z < 10 && w > 0);
+- id: 3
+  code: |-
+    while (y > 0 && w < 100) {
+        j = (y + w) % 128;
+        sink = sink + arr[j];
+        arr[j] = y;
+        y = y / 2;
+        k = (y * 5) ^ sink;
+        arr[k % 128] = k;
+        /* LOOP2: Placeholder for nested loop */
+        w = w * 2;
+        val = (w * 2) % 128;
+        arr[val] = w;
+        sink = sink + arr[val];
+    }
+- id: 4
+  code: |-
+    for (z = 1; z < 50 && x > 0; z = z * 3, x = x / 2) {
+        idx = (z * 7) % 128;
+        arr[idx] = (z << 2) - x;
+        sink = sink | arr[idx];
+        /* LOOP3: Placeholder for nested loop */
+    }
+- id: 5
+  code: |-
+    do {
+        idx = (x * 13) % 128;
+        arr[idx] = x ^ y;
+        sink += arr[idx];
+        x = x / 2;
+        y = y / 2;
+        val = (x + y) & 0xFF;
+        ptr = &arr[val % 128];
+        *ptr = *ptr ^ sink;
+        /* LOOP4: Placeholder for nested loop */
+    } while (x > 0 && y > 0);
