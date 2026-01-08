@@ -1,6 +1,9 @@
 # vscode configurations
 .vscode/*
 
+# qoder configurations
+.qoder/
+
 # python virtual environment
 eveloveterm/
 evolveterm/
