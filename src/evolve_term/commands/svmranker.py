@@ -13,6 +13,7 @@ from ..cli_utils import collect_files, validate_yaml_required_keys, ensure_outpu
 from ..utils import LiteralDumper
 
 console = Console()
+REPO_ROOT = Path(__file__).resolve().parents[3]
 
 def resolve_svm_ranker_root(path: Path) -> Path:
     if not path.exists():
@@ -52,22 +53,30 @@ class SVMRankerHandler:
                 return content
             return []
 
-        def resolve_source_code(entry: Dict[str, Any], base_dir: Path) -> str:
-            source_path = entry.get("source_path")
+        def resolve_source_code(entry: Dict[str, Any], base_dir: Path, fallback_source_path: Optional[str]) -> str:
+            loop_id = entry.get("loop_id") or entry.get("id")
+            source_path = entry.get("source_path") or fallback_source_path
             if source_path:
                 path = Path(source_path)
-                if not path.is_absolute():
-                     path = base_dir / path
-                if path.exists():
-                    try:
-                        return path.read_text(encoding="utf-8")
-                    except Exception:
-                        pass
+                candidate_paths = [path] if path.is_absolute() else [base_dir / path, Path.cwd() / path, REPO_ROOT / path]
+                for candidate in candidate_paths:
+                    if candidate.exists():
+                        try:
+                            content = candidate.read_text(encoding="utf-8")
+                            print(f"[Debug] Loop {loop_id}: using source_path {candidate}")
+                            return content
+                        except Exception as exc:
+                            print(f"[Debug] Loop {loop_id}: failed to read {candidate}: {exc}")
+                            break
+                tried = ", ".join(str(item) for item in candidate_paths)
+                print(f"[Debug] Loop {loop_id}: source_path not found. Tried: {tried}")
                     
-            return entry.get("code", "")
+            code = entry.get("code", "")
+            print(f"[Debug] Loop {loop_id}: falling back to entry code (len={len(code)})")
+            return code
 
-        def run_on_entry(entry: Dict[str, Any], base_dir: Path) -> Tuple[Dict[str, Any], str]:
-            code = resolve_source_code(entry, base_dir)
+        def run_on_entry(entry: Dict[str, Any], base_dir: Path, fallback_source_path: Optional[str]) -> Tuple[Dict[str, Any], str]:
+            code = resolve_source_code(entry, base_dir, fallback_source_path)
             template_type = entry.get("template_type") or entry.get("type") or "lnested"
             template_depth = entry.get("template_depth") or entry.get("depth") or 1
             mode = "lmulti" if "multi" in str(template_type).lower() else "lnested"
@@ -105,12 +114,17 @@ class SVMRankerHandler:
 
             entries = parse_results(content)
             base_dir = f.parent
+            fallback_source_path = None
+            if isinstance(content, dict) and len(entries) == 1:
+                top_source_path = content.get("source_path")
+                if isinstance(top_source_path, str) and top_source_path.strip():
+                    fallback_source_path = top_source_path
             
             results = []
             full_log = []
             
             for entry in entries:
-                res, log = run_on_entry(entry, base_dir)
+                res, log = run_on_entry(entry, base_dir, fallback_source_path)
                 results.append(res)
                 full_log.append(f"--- Entry Loop ID: {res.get('loop_id')} ---\n{log}\n" + "="*40 + "\n")
                 
