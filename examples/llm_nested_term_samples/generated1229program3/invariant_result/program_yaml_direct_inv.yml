@@ -1,0 +1,143 @@
+source_file: gener1229p3_v2_auto.yaml
+source_path: examples/llm_nested_term_samples/generated1229program3/program.c
+task: invariant_inference
+command: /home/clexma/Desktop/fox3/TermDB/EvolveTerm/.venv_evolve/bin/evolveterm invariant
+  --input examples/llm_nested_term_samples/generated1229program3/gener1229p3_v2_auto.yaml
+  -pv yaml_direct
+pmt_ver: yaml_direct
+model: qwen3-max
+time: 2026-01-08T17:51
+has_extract: true
+invariants_result:
+- loop_id: 1
+  code: |-
+    for (i = 0; i < 128; i++) {
+        arr[i] = i;
+    }
+  invariants:
+  - 0 <= i && i <= 128
+  - \forall integer j; 0 <= j < i ==> arr[j] == j
+- loop_id: 2
+  code: |-
+    do {
+        int temp = x + y + z + w + sink;
+        sink = temp;
+        idx = (unsigned int)sink % 128;
+        arr[idx] = arr[idx] + 1;
+        ptr = &arr[(idx + 1) % 128];
+        *ptr = *ptr ^ temp;
+        printf("Example 3: Looping %d\n", sink);
+    } while (z < 10 && w > 0);
+  invariants:
+  - z < 10 && w > 0
+- loop_id: 3
+  code: |-
+    while (y > 0 && w < 100) {
+        j = (y + w) % 128;
+        sink = sink + arr[j];
+        arr[j] = y;
+        y = y / 2;
+        k = (y * 5) ^ sink;
+        arr[k % 128] = k;
+        /* LOOP2: Placeholder for nested loop */
+        w = w * 2;
+        val = (w * 2) % 128;
+        arr[val] = w;
+        sink = sink + arr[val];
+    }
+  invariants:
+  - 0 <= y
+  - w >= 0
+  - \forall integer i; 0 <= i < 128 ==> \valid(&arr[i])
+- loop_id: 4
+  code: |-
+    for (z = 1; z < 50 && x > 0; z = z * 3, x = x / 2) {
+        idx = (z * 7) % 128;
+        arr[idx] = (z << 2) - x;
+        sink = sink | arr[idx];
+        /* LOOP3: Placeholder for nested loop */
+    }
+  invariants:
+  - z >= 1
+  - x >= 0
+  - z < 150
+  - z < 50
+  - x > 0
+  - \forall integer i; 0 <= i < 128 ==> \valid(&arr[i])
+- loop_id: 5
+  code: |-
+    do {
+        idx = (x * 13) % 128;
+        arr[idx] = x ^ y;
+        sink += arr[idx];
+        x = x / 2;
+        y = y / 2;
+        val = (x + y) & 0xFF;
+        ptr = &arr[val % 128];
+        *ptr = *ptr ^ sink;
+        /* LOOP4: Placeholder for nested loop */
+    } while (x > 0 && y > 0);
+  invariants:
+  - x >= 0
+  - y >= 0
+  - 'sink == \sum_{k=0}^{i-1} arr_k[idx_k]  // informal: sink accumulates previous
+    arr[idx] values'
+  - 0 <= idx && idx < 128
+  - 0 <= val && val < 256
+  - ptr == &arr[val % 128]
+loops_count: -1
+loops_depth: -1
+loops_ids: 5
+loops:
+- id: 1
+  code: |-
+    for (i = 0; i < 128; i++) {
+        arr[i] = i;
+    }
+- id: 2
+  code: |-
+    do {
+        int temp = x + y + z + w + sink;
+        sink = temp;
+        idx = (unsigned int)sink % 128;
+        arr[idx] = arr[idx] + 1;
+        ptr = &arr[(idx + 1) % 128];
+        *ptr = *ptr ^ temp;
+        printf("Example 3: Looping %d\n", sink);
+    } while (z < 10 && w > 0);
+- id: 3
+  code: |-
+    while (y > 0 && w < 100) {
+        j = (y + w) % 128;
+        sink = sink + arr[j];
+        arr[j] = y;
+        y = y / 2;
+        k = (y * 5) ^ sink;
+        arr[k % 128] = k;
+        /* LOOP2: Placeholder for nested loop */
+        w = w * 2;
+        val = (w * 2) % 128;
+        arr[val] = w;
+        sink = sink + arr[val];
+    }
+- id: 4
+  code: |-
+    for (z = 1; z < 50 && x > 0; z = z * 3, x = x / 2) {
+        idx = (z * 7) % 128;
+        arr[idx] = (z << 2) - x;
+        sink = sink | arr[idx];
+        /* LOOP3: Placeholder for nested loop */
+    }
+- id: 5
+  code: |-
+    do {
+        idx = (x * 13) % 128;
+        arr[idx] = x ^ y;
+        sink += arr[idx];
+        x = x / 2;
+        y = y / 2;
+        val = (x + y) & 0xFF;
+        ptr = &arr[val % 128];
+        *ptr = *ptr ^ sink;
+        /* LOOP4: Placeholder for nested loop */
+    } while (x > 0 && y > 0);
