@@ -334,8 +334,8 @@ def svmranker(
     """
     Run SVMRanker using template parameters from ranking-template YAML output.
     """
-    handler = SVMRankerHandler()
-    handler.run(input, svm_ranker_path, output, recursive)
+    handler = SVMRankerHandler(svm_ranker_path)
+    handler.run(input, output, recursive)
 
 
 @app.command()
