@@ -10,6 +10,7 @@ CLI 与管线对 SVMRanker 的输入策略一致化：单 loop 用完整源码�
 触发条件：ranking_results 只有 1 个 loop。
 行为：如果 YAML 顶层有 source_path 且文件可读，优先用完整源码作为 SVMRanker 输入；entry 的 code 仅用于结果记录。
 适用范围：evolveterm svmranker CLI 与管线（当只有一个 loop 时）。
+
 策略 2：多 loop 使用“最小可用 C”（需要实现）
 
 触发条件：ranking_results 多个 loop 或管线 analysis_targets 多个 loop。
@@ -27,9 +28,11 @@ CLI 与管线对 SVMRanker 的输入策略一致化：单 loop 用完整源码�
 数组需声明并初始化（建议 int arr[N] = {0}; 的零初始化）。
 指针建议初始化为 0 或 &arr[0]（若能推断），避免未初始化。
 适用范围：CLI + 管线（保持一致逻辑）。
-策略 3：嵌套关系与顺序检查（讨论，不实现）
 
-提供一个“仅检查”的函数（未来可实现），判断 loop id 的嵌套依赖是否顺序正确。
+
+策略 3：嵌套关系与顺序检查
+
+提供一个“仅检查”的函数，判断 loop id 的嵌套依赖是否顺序正确。
 可能依据：code 中的 LOOP{n} 占位符/注释，建立依赖图。
 若发现外层 loop 引用了尚未出现的内层 loop，可给出 warning，但不改变执行顺序。
 最小改动的落点建议

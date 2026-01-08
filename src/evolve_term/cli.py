@@ -13,7 +13,13 @@ from rich.table import Table
 
 from .models import PendingReviewCase
 from .pipeline import TerminationPipeline
-from .cli_utils import resolve_svm_ranker_root, ping_llm_client, DEFAULT_LLM_PING_PROMPT
+from .cli_utils import (
+    resolve_svm_ranker_root,
+    ping_llm_client,
+    DEFAULT_LLM_PING_PROMPT,
+    check_loop_id_order_in_yaml,
+    collect_files,
+)
 
 # Handlers
 from .commands.extract import ExtractHandler
@@ -350,6 +356,39 @@ def feature(
     """
     handler = FeatureHandler(llm_config)
     handler.run(input, output, recursive)
+
+
+@app.command("check-loop-order")
+def check_loop_order(
+    input: Path = typer.Option(..., exists=True, help="YAML file or directory to check"),
+    output: Path = typer.Option("loop_order_warnings.txt", help="Output txt file for warnings"),
+    recursive: bool = typer.Option(False, "--recursive", "-r", help="Recursively search for YAML files"),
+) -> None:
+    """Check nested loop id order based on LOOP{n} placeholders."""
+    files: list[Path]
+    if input.is_file():
+        files = [input]
+    else:
+        files = collect_files(input, recursive, extensions={".yml", ".yaml"})
+
+    warning_paths: list[str] = []
+    for path in files:
+        if path.suffix.lower() not in {".yml", ".yaml"}:
+            continue
+        try:
+            _, warnings = check_loop_id_order_in_yaml(path)
+        except Exception as exc:
+            console.print(f"[red]Failed to check {path}: {exc}[/red]")
+            continue
+        if warnings:
+            console.print(f"[yellow]Warnings in {path}:[/yellow]")
+            for warning in warnings:
+                console.print(f"[yellow]- {warning}[/yellow]")
+            warning_paths.append(str(path))
+
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text("\n".join(warning_paths) + ("\n" if warning_paths else ""), encoding="utf-8")
+    console.print(f"Wrote {len(warning_paths)} warning file(s) to {output}")
 
 
 def _run_llm_ping(llm_config: str, prompt: str) -> None:

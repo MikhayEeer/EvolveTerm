@@ -1,14 +1,23 @@
-source_file: for_infinite_loop_1_pmt_yamlv1_qwen3-max_auto.yml
+source_file: for_infinite_loop_1_pmt_yamlv1_inv.yml
 source_path: data/Loopy_dataset_InvarBenchmark/loop_invariants/sv-benchmarks/loops/for_infinite_loop_1.c
 task: invariant_inference
-command: evolveterm invariant --input data/aeval/ -r -m yaml --extv v2 -pv yaml_cot
+command: /home/clexma/Desktop/fox3/TermDB/EvolveTerm/.venv_evolve/bin/evolveterm invariant
+  --input results/aeval+Loopy/invariant_results_PmtCot_ExPmtV2_qwen3max/ -m yaml -r
+  -pv yaml_cot --fill-empty-invariants
 pmt_ver: yaml_cot
-model: qwen3max
-time: 2026-01-04T16:56
+model: qwen3-max
+time: 2026-01-09T00:14
 has_extract: true
 invariants_result:
 - loop_id: 1
-  code: "for(i=0; 1; i++)\n{\n  {;\n//@ assert(x==0);\n}\n\n}"
+  code: |-
+    for(i=0; 1; i++)
+    {
+      {;
+    //@ assert(x==0);
+    }
+
+    }
   invariants:
   - x == 0
   - i >= 0
