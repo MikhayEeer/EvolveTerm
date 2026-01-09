@@ -28,6 +28,7 @@ from .commands.ranking import RankingHandler
 from .commands.predict import PredictHandler
 from .commands.svmranker import SVMRankerHandler
 from .commands.z3verify import Z3VerifyHandler
+from .commands.sea_verify import SeaVerifyHandler
 from .commands.batch import BatchHandler
 from .commands.translate import TranslateHandler
 from .commands.feature import FeatureHandler
@@ -52,6 +53,9 @@ def analyze(
                                            help="Use RAG references for invariant and ranking function inference; Default is enabled"),
     svm_ranker_path: Optional[Path] = typer.Option(None, "--svm-ranker", "--svmranker", help=SVM_RANKER_HELP),
     known_terminating: bool = typer.Option(False, "--known-terminating", help="Hint that the program is known to terminate"),
+    verifier_backend: str = typer.Option("z3", "--verifier", help="Verification backend: z3 or seahorn"),
+    seahorn_image: str = typer.Option("seahorn/seahorn-llvm14:nightly", "--seahorn-image", help="SeaHorn docker image"),
+    seahorn_timeout: int = typer.Option(60, "--seahorn-timeout", help="SeaHorn timeout seconds"),
     # Ablation parameters
     extraction_prompt_version: str = typer.Option("v2", "--prompt-version", "-p", help="Prompt version for loop extraction (v1 or v2)"),
     use_loops_for_embedding: bool = typer.Option(True, "--embed-loops/--embed-code", help="Use extracted loops for embedding vs full code"),
@@ -79,7 +83,10 @@ def analyze(
     pipeline = TerminationPipeline(
         enable_translation=enable_translation, 
         knowledge_base_path=str(knowledge_base) if knowledge_base else None,
-        svm_ranker_path=str(svm_ranker_root) if svm_ranker_root else None
+        svm_ranker_path=str(svm_ranker_root) if svm_ranker_root else None,
+        verifier_backend=verifier_backend,
+        seahorn_docker_image=seahorn_image,
+        seahorn_timeout=seahorn_timeout,
     )
     code = code_file.read_text(encoding="utf-8")
     result = pipeline.analyze(
@@ -140,6 +147,9 @@ def batch_analyze(
     use_rag_reasoning: bool = typer.Option(True, "--use-rag-reasoning/--no-rag-reasoning", help="Use RAG references for invariant and ranking function inference"),
     svm_ranker_path: Optional[Path] = typer.Option(None, "--svm-ranker", "--svmranker", help=SVM_RANKER_HELP),
     known_terminating: bool = typer.Option(False, "--known-terminating", help="Hint that the program is known to terminate"),
+    verifier_backend: str = typer.Option("z3", "--verifier", help="Verification backend: z3 or seahorn"),
+    seahorn_image: str = typer.Option("seahorn/seahorn-llvm14:nightly", "--seahorn-image", help="SeaHorn docker image"),
+    seahorn_timeout: int = typer.Option(60, "--seahorn-timeout", help="SeaHorn timeout seconds"),
     # Ablation parameters
     extraction_prompt_version: str = typer.Option("v2", "--prompt-version", "-p", help="Prompt version for loop extraction (v1 or v2)"),
     use_loops_for_embedding: bool = typer.Option(True, "--embed-loops/--embed-code", help="Use extracted loops for embedding vs full code"),
@@ -150,7 +160,8 @@ def batch_analyze(
     handler.run(
         input_dir, top_k, enable_translation, knowledge_base, recursive, 
         use_rag_reasoning, svm_ranker_path, known_terminating, 
-        extraction_prompt_version, use_loops_for_embedding, use_loops_for_reasoning
+        extraction_prompt_version, use_loops_for_embedding, use_loops_for_reasoning,
+        verifier_backend, seahorn_image, seahorn_timeout
     )
 
 
@@ -327,6 +338,25 @@ def z3verify(
     Verify ranking function and invariants using Z3.
     """
     handler = Z3VerifyHandler(llm_config)
+    handler.run(input, ranking_func, ranking_file, invariants_file, output, recursive)
+
+
+@app.command()
+def seaverify(
+    input: Path = typer.Option(..., exists=True, help="Input code file or directory"),
+    ranking_func: Optional[str] = typer.Option(None, help="Ranking function string (for single file)"),
+    ranking_file: Optional[Path] = typer.Option(None, help="File containing ranking function (JSON/YAML or raw text)"),
+    invariants_file: Optional[Path] = typer.Option(None, help="File containing invariants (JSON/YAML)"),
+    output: Optional[Path] = typer.Option(None, help="Output file or directory"),
+    docker_image: str = typer.Option("seahorn/seahorn-llvm14:nightly", "--docker-image", help="SeaHorn docker image"),
+    timeout: int = typer.Option(60, "--timeout", help="Timeout seconds for SeaHorn"),
+    verbose: bool = typer.Option(False, "--verbose", help="Print SeaHorn command and diagnostics"),
+    recursive: bool = typer.Option(False, "--recursive", "-r", help="Recursively search for files if input is directory"),
+) -> None:
+    """
+    Verify ranking function and invariants using SeaHorn (Docker).
+    """
+    handler = SeaVerifyHandler(docker_image=docker_image, timeout_seconds=timeout, verbose=verbose)
     handler.run(input, ranking_func, ranking_file, invariants_file, output, recursive)
 
 
