@@ -47,12 +47,20 @@ class RankingHandler:
             rf_mode = "template"
             rf_known_terminating = True
             pmt_ver = "template-known"
+        elif ranking_mode_value in {"template-known-fewshot", "template_known_fewshot"}:
+            rf_mode = "template_fewshot"
+            rf_known_terminating = True
+            pmt_ver = "template-known-fewshot"
+        elif ranking_mode_value in {"template-fewshot", "template_fewshot"}:
+            rf_mode = "template_fewshot"
+            rf_known_terminating = False
+            pmt_ver = "template-fewshot"
         elif ranking_mode_value in {"direct", "template"}:
             rf_mode = ranking_mode_value
             rf_known_terminating = False
             pmt_ver = ranking_mode_value
         else:
-            raise typer.BadParameter("ranking_mode must be one of: direct, template, template-known")
+            raise typer.BadParameter("ranking_mode must be one of: direct, template, template-fewshot, template-known, template-known-fewshot")
 
         safe_pmt_ver = re.sub(r"[^\w\-]", "", pmt_ver)
         command = " ".join(sys.argv)

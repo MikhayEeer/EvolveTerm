@@ -292,9 +292,9 @@ def ranking(
     recursive: bool = typer.Option(False, "--recursive", "-r", help="Recursively search for files if input is directory"),
     mode: str = typer.Option("auto", "--mode", "-m", help="Filter mode for batch processing: 'auto' (all), 'yaml' (only extract/invariant results), 'code' (only C/C++ files)"),
     ranking_mode: str = typer.Option(
-        "direct",
+        "template",
         "--ranking-mode",
-        help="Ranking prompt mode: 'direct', 'template', or 'template-known'",
+        help="Ranking prompt mode: 'direct', 'template' (default), 'template-fewshot', 'template-known', or 'template-known-fewshot'",
     ),
     retry_empty: int = typer.Option(2, "--retry-empty", help="Max retries when ranking result is empty"),
 ) -> None:

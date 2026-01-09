@@ -1,0 +1,14 @@
+Reference cases (for inspiration):
+${references}
+
+Target code:
+BEGIN_CODE
+${code}
+END_CODE
+
+Identified Loop Invariants:
+${invariants}
+
+**IMPORTANT: This code is KNOWN to be terminating.**
+Determine the simplest SVMRanker template (type and depth) that can prove it.
+Show your analysis first.
