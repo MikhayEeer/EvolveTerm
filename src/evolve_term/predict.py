@@ -50,12 +50,17 @@ class Predictor:
                       mode: str = "direct", known_terminating: bool = False, retry_empty: int = 0,
                       log_prefix: str | None = None) -> tuple[str | None, str, dict]:
         
-        prompt_name = "ranking_function/ranking_inference_direct"
+        prompt_name = "ranking_function/rf_direct"
         if mode == "template":
             if known_terminating:
-                prompt_name = "ranking_function/ranking_inference_template_known"
+                prompt_name = "ranking_function/rf_template_known"
             else:
-                prompt_name = "ranking_function/ranking_inference_template"
+                prompt_name = "ranking_function/rf_template"
+        elif mode == "template_fewshot":
+            if known_terminating:
+                prompt_name = "ranking_function/rf_template_known_fewshot"
+            else:
+                prompt_name = "ranking_function/rf_template_fewshot"
 
         max_attempts = max(1, retry_empty + 1)
         last_ranking: str | None = None
