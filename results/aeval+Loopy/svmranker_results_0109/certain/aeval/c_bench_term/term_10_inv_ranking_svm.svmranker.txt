@@ -1,0 +1,20 @@
+--- Entry Loop ID: 1 ---
+Executing: /home/clexma/Desktop/fox3/TermDB/EvolveTerm/.venv_evolve/bin/python3 /home/clexma/Desktop/fox3/TermDB/SVMRanker/src/CLIMain.py parsectoboogie /tmp/tmpnfqa9p7o.c /tmp/tmpfd4o85w7.bpl
+Return Code: 0
+STDOUT:
+SVMRanker --- Version 1.0
+
+
+--- calling parseBoogieProgramMulti on /tmp/tmpfd4o85w7.bpl ---
+
+--- calling SVMLearnMulti ---
+it is not terminating, an infinite loop with initial condition:
+
+['xi_0=0', 'xi_1=0']
+
+it is not terminating, an infinite loop with initial condition:
+
+['xi_0=0', 'xi_1=0']
+
+
+========================================

@@ -151,14 +151,29 @@ class SVMRankerHandler:
             finally:
                 Path(tmp_path).unlink(missing_ok=True)
 
+            def _stringify(value: Any) -> Optional[str]:
+                if value is None:
+                    return None
+                if isinstance(value, str):
+                    return value
+                try:
+                    return str(value)
+                except Exception:
+                    return repr(value)
+
+            rf_str = _stringify(rf)
+            rf_list_str = []
+            for item in rf_list or []:
+                rf_list_str.append(_stringify(item) or "")
+
             result = {
                 "loop_id": entry.get("loop_id") or entry.get("id"),
                 "template_type": template_type,
                 "template_depth": depth_val,
                 "svm_mode": mode,
                 "status": status,
-                "ranking_function": rf,
-                "ranking_functions": rf_list,
+                "ranking_function": rf_str,
+                "ranking_functions": rf_list_str,
                 "input_code_source": code_source,
             }
             if code_source_path:
