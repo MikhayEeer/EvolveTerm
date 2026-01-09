@@ -8,6 +8,7 @@ Your task is to identify **Loop Invariants** for the provided C code.
    - For every candidate invariant (e.g., `x^2 + y^2 == c`), explicitly calculate the next state `x_new^2 + y_new^2`.
    - **Compare**: Does `new == old`? If not, discard it.
    - **Warning**: Do not assume conservation (e.g. rotation) without checking coefficients.
+   - You may use up to 8192 tokens for the analysis.
 3. **Format**: Output invariants in ACSL syntax.
 4. Ignore LOOP\d:  A placeholder representing the inner loop, should ignored during analysis.
 ### Output Format

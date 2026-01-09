@@ -254,7 +254,16 @@ def invariant(
     recursive: bool = typer.Option(False, "--recursive", "-r", help="Recursively search for files if input is directory"),
     mode: str = typer.Option("auto", "--mode", "-m", help="Filter mode for batch processing: 'auto' (all), 'yaml' (only extract results), 'code' (only C/C++ files)"),
     extract_prompt_version: str = typer.Option("all", "--extract-pmt-v", "--extv", help="Filter YAML files by extract prompt version in filename: all, v1, v2"),
-    prompt_version: str = typer.Option("yaml_cot", "--prompt-version", "-pv", help="Prompt version for invariant inference: 'yaml_cot' (default) or 'yaml_direct'"),
+    prompt_version: str = typer.Option(
+        "acsl_cot",
+        "--prompt-version",
+        "-pv",
+        help=(
+            "Prompt version for invariant inference: "
+            "'acsl_cot' (default), 'acsl_direct', 'acsl_cot_fewshot', "
+            "'seahorn_cot', 'seahorn_direct', or 'seahorn_cot_fewshot'"
+        ),
+    ),
     fill_empty_invariants: bool = typer.Option(False, "--fill-empty-invariants", help="For invariant-result YAMLs, re-infer only empty invariants (invariants: [])"),
 ) -> None:
     """
@@ -397,6 +406,7 @@ def validate_yaml(
     recursive: bool = typer.Option(False, "--recursive", "-r", help="Recursively search for YAML files"),
     strict: bool = typer.Option(False, "--strict", help="Treat warnings as errors"),
     verbose: bool = typer.Option(False, "--verbose", "-v", help="Show detailed validation results"),
+    #showSuccess: bool = typer.Option(False, "--show-success", help="Also print yaml names witchs are successfully passed check.")
 ) -> None:
     """Validate YAML files against EvolveTerm schemas.
     
@@ -478,6 +488,4 @@ def ping_llm(
 ) -> None:
     """Ping LLM API with default tag."""
     _run_llm_ping(llm_config, prompt)
-
-
 
