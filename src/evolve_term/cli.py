@@ -334,7 +334,7 @@ def z3verify(
 def svmranker(
     input: Path = typer.Option(..., exists=True, help="Input YAML file or directory from ranking template output"),
     svm_ranker_path: Path = typer.Option(..., "--svm-ranker", "--svmranker", help=SVM_RANKER_HELP),
-    output: Optional[Path] = typer.Option(None, help="Output file or directory"),
+    output: Path = typer.Option(..., file_okay=False, dir_okay=True, help="Output directory"),
     recursive: bool = typer.Option(False, "--recursive", "-r", help="Recursively search for files if input is directory"),
 ) -> None:
     """
