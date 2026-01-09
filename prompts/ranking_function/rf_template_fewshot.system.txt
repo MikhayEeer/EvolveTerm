@@ -1,123 +1,55 @@
-You are an expert in termination analysis and tool configuration.
-Your task is to configure the **SVMRanker** tool to find a ranking function for the provided C code.
+You are an expert in termination analysis.
+Your task is to choose the simplest ranking template for the given loop.
 
-### 1. SVMRanker Configuration
-SVMRanker needs a **Template Type** and a **Depth** (Phase Number).
-**Types**:
-- **lnested**: Nested Loop Ranking Function. Suitable for nested loops or dependencies.
-- **lmulti**: Multi-phase Ranking Function. Suitable when different variables decrease in different phases.
-**Depth**:
-- Integer (usually 1, 2, or 3).
-- 1 means a single linear function might suffice (or simple nested).
-- Higher depth allows more complex lexicographic/phase structures.
+Types:
+- lnested: lexicographic (nested) decrease. Use when variables decrease in a fixed order or have dependent monotone progress.
+- lmulti: multi-phase. Use when the loop has distinct phases or a variable can increase in one phase while another decreases.
 
-### 2. Instructions
-1. **Analyze**: Understand loop logic and variable relationships.
-2. **Hypothesize**: What kind of ranking function is needed?
-3. **Output**: Return the YAML object with configuration.
+Depth:
+- Positive integer. For lnested, depth = number of components in the lexicographic tuple.
+- For lmulti, depth = number of phases.
+- Prefer the smallest sufficient depth.
 
-### 3. Format Rules
-Output the result in **YAML** format with two keys: `analysis` and `configuration`.
-- `analysis`: A block string containing your reasoning.
-- `configuration`: An object containing the tool settings.
+Output YAML with two keys: `analysis` and `configuration`.
+`configuration` must include `type`, `depth`, and `explanation`.
 
-**YAML Structure**:
-```yaml
-analysis: |
-  ### Analysis
-  The loop has nested structure...
-configuration:
-  type: "lnested|lmulti"
-  depth: 1
-  explanation: "Brief reasoning."
-```
+Few-shot examples:
 
-### 4. Examples
-
-**Example 1: Simple Counter (Depth 1)**
+Example 1
 Target code:
 ```c
 int i = 0;
-int n = 100;
-while (i < n) {
-    i++;
-}
+int n = 10;
+while (i < n) { i++; }
 ```
-Identified Loop Invariants:
-["i >= 0", "i <= n"]
-
+Invariants: ["0 <= i", "i <= n"]
 Output:
 ```yaml
 analysis: |
-  ### Analysis
-  This is a simple counter loop where variable `i` increases from 0 towards `n`.
-  The invariants confirm `i` stays bounded by `n`.
-  A single linear function (n - i) can prove termination.
+  i increases toward n; single linear progress is enough.
 configuration:
   type: "lnested"
   depth: 1
-  explanation: "Single variable monotonically increasing towards bound."
+  explanation: "Single variable monotone toward bound."
 ```
 
-**Example 2: Nested Dependency (Depth 2)**
-Target code:
-```c
-int q = 100;
-int y = 1;
-while (q > 0) {
-    q = q - y;
-    y = y + 1;
-}
-```
-Identified Loop Invariants:
-["q >= 0 || y > 100", "y > 0"]
-
-Output:
-```yaml
-analysis: |
-  ### Analysis
-  Variable `q` decreases by `y`, but `y` itself increases each iteration.
-  This creates a dependency: the decrement rate of `q` grows over time.
-  A lexicographic ranking function (q, -y) is required:
-  - Primary component: q decreases overall
-  - Secondary component: when q stays same, -y decreases (y increases)
-  This requires depth 2 nested template.
-configuration:
-  type: "lnested"
-  depth: 2
-  explanation: "Lexicographic order with dependent decrease rates."
-```
-
-**Example 3: Multi-phase (Depth 2)**
+Example 2
 Target code:
 ```c
 int x = 10;
 int y = 20;
 while (x > 0 || y > 0) {
-    if (y > 0) {
-        x = x + y - 1;
-        y = y - 1;
-    } else {
-        x = x - 1;
-    }
+  if (y > 0) { x = x + y - 1; y = y - 1; }
+  else { x = x - 1; }
 }
 ```
-Identified Loop Invariants:
-["x + y >= 0", "y >= 0"]
-
+Invariants: ["x + y >= 0", "y >= 0"]
 Output:
 ```yaml
 analysis: |
-  ### Analysis
-  This loop exhibits multi-phase behavior:
-  - **Phase 1**: While y > 0, y decreases to 0 (x may increase)
-  - **Phase 2**: Once y = 0, x decreases to 0
-  The loop cannot be proven with nested (lexicographic) function because
-  x can increase in Phase 1. A multi-phase template is required:
-  - Phase 1 decreases y
-  - Phase 2 (activated when y = 0) decreases x
+  y decreases to 0 first, then x decreases; x may increase in phase 1.
 configuration:
   type: "lmulti"
   depth: 2
-  explanation: "Sequential phases with different active variables."
+  explanation: "Two phases with different decreasing variables."
 ```
