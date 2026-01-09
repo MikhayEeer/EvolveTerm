@@ -26,7 +26,10 @@ class BatchHandler:
             known_terminating: bool, 
             extraction_prompt_version: str, 
             use_loops_for_embedding: bool, 
-            use_loops_for_reasoning: bool):
+            use_loops_for_reasoning: bool,
+            verifier_backend: str,
+            seahorn_image: str,
+            seahorn_timeout: int):
 
         extensions = {".c", ".cpp", ".h", ".hpp", ".cc", ".cxx"}
         pattern = "**/*" if recursive else "*"
@@ -48,7 +51,10 @@ class BatchHandler:
         pipeline = TerminationPipeline(
             enable_translation=enable_translation,
             knowledge_base_path=str(knowledge_base) if knowledge_base else None,
-            svm_ranker_path=str(svm_ranker_root) if svm_ranker_root else None
+            svm_ranker_path=str(svm_ranker_root) if svm_ranker_root else None,
+            verifier_backend=verifier_backend,
+            seahorn_docker_image=seahorn_image,
+            seahorn_timeout=seahorn_timeout,
         )
         
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -56,7 +62,7 @@ class BatchHandler:
         csv_headers = [
             "Filename", "Relative Path", "Run ID", "Date Time", "Duration (s)", 
             "LLM Calls", "Label", "RAG Similarity", "Invariants", 
-            "Ranking Function", "Z3 Result", "Report Path", "Error"
+            "Ranking Function", "Verification Result", "Report Path", "Error"
         ]
         
         console.print(f"Writing results to: [blue]{csv_path}[/blue]")
