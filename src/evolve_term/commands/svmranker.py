@@ -47,14 +47,14 @@ class SVMRankerHandler:
             missing = validate_yaml_required_keys(path, content)
             if not missing:
                 return True
-            console.print(f"[red]YAML missing keys in {path}: {', '.join(missing)}[/red]")
+            console.print(f"[bold red]ERROR: YAML missing keys in {path}: {', '.join(missing)}[/bold red]")
             if strict:
                 return False
             return False
 
         def _check_template_yaml(path: Path, entries: List[Dict[str, Any]], strict: bool) -> bool:
             if not entries:
-                console.print(f"[red]YAML {path} has no ranking results.[/red]")
+                console.print(f"[bold red]ERROR: YAML {path} has no ranking results.[/bold red]")
                 if strict:
                     raise typer.Exit(code=1)
                 return False
@@ -72,7 +72,7 @@ class SVMRankerHandler:
                     f"YAML {path} is not a ranking template output. "
                     f"Missing template_type/template_depth for loops: {', '.join(map(str, invalid_loops))}"
                 )
-                console.print(f"[red]{msg}[/red]")
+                console.print(f"[bold red]ERROR: {msg}[/bold red]")
                 if strict:
                     raise typer.Exit(code=1)
                 return False
@@ -259,4 +259,4 @@ class SVMRankerHandler:
                     log_path.write_text(full_log, encoding="utf-8")
                         
                 except Exception as e:
-                    console.print(f"[red]Error processing {f.name}: {e}[/red]")
+                    console.print(f"[bold red]ERROR: Error processing {f.name}: {e}[/bold red]")

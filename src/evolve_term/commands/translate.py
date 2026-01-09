@@ -33,7 +33,7 @@ class TranslateHandler:
                 
         elif input.is_dir():
             files = collect_files(input, recursive)
-            console.print(f"Found {len(files)} files to translate.")
+            console.print(f"[bright_cyan]INFO:[/bright_cyan] Found {len(files)} files to translate.")
             
             ensure_output_dir(output)
                 
@@ -57,4 +57,4 @@ class TranslateHandler:
                         console.print(f"--- {f.name} ---")
                         console.print(translated)
                 except Exception as e:
-                    console.print(f"[red]Error translating {f.name}: {e}[/red]")
+                    console.print(f"[bold red]ERROR: Error translating {f.name}: {e}[/bold red]")

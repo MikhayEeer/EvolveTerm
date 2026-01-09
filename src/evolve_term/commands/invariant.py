@@ -51,7 +51,7 @@ class InvariantHandler:
             missing = validate_yaml_required_keys(path, content)
             if not missing:
                 return True
-            console.print(f"[red]YAML missing keys in {path}: {', '.join(missing)}[/red]")
+            console.print(f"[bold red]ERROR: YAML missing keys in {path}: {', '.join(missing)}[/bold red]")
             if strict:
                 # We raise typer.Exit here as in original CLI, but maybe raising Exception is cleaner
                 raise typer.Exit(code=1)
@@ -98,11 +98,11 @@ class InvariantHandler:
                     elif "loops" in data:
                         loops_to_analyze = [item["code"] for item in data["loops"]]
                     else:
-                        console.print(f"[yellow]YAML {f} format not recognized (expected 'loops' or 'invariants_result').[/yellow]")
+                        console.print(f"[black on yellow]WARNING[/black on yellow] YAML {f} format not recognized (expected 'loops' or 'invariants_result').")
                         return False
                         
                 except Exception as e:
-                    console.print(f"[red]Error parsing YAML {f}: {e}[/red]")
+                    console.print(f"[bold red]ERROR: Error parsing YAML {f}: {e}[/bold red]")
                     return False
             else:
                 # Treat as raw code file
@@ -151,7 +151,7 @@ class InvariantHandler:
                     "code": loop_code,
                     "invariants": invariants
                 })
-                console.print(f"[green]Inferred {len(invariants)} invariants for loop {i+1} in {f.name}[/green]")
+                console.print(f"[bright_green]SUCCESS: Inferred {len(invariants)} invariants for loop {i+1} in {f.name}[/bright_green]")
 
             # Output generation
             timestamp = datetime.now().strftime("%Y-%m-%dT%H:%M")
@@ -168,7 +168,7 @@ class InvariantHandler:
                 
                 # Create a map or just iterate by index if lengths match
                 if len(source_list) != len(all_invariants):
-                    console.print("[yellow]Warning: Mismatch in loop counts during fill merge. Fallback to full overwrite.[/yellow]")
+                    console.print("[black on yellow]WARNING[/black on yellow] Mismatch in loop counts during fill merge. Fallback to full overwrite.")
                     final_invariants_result = all_invariants
                 else:
                     for idx, item in enumerate(source_list):
@@ -273,11 +273,11 @@ class InvariantHandler:
                         if matches_yaml_prompt_version(f):
                             filtered_files.append(f)
             
-            console.print(f"Found {len(filtered_files)} files to analyze (mode={mode}).")
+            console.print(f"[bright_cyan]INFO:[/bright_cyan] Found {len(filtered_files)} files to analyze (mode={mode}).")
             if output and not output.exists():
                 output.mkdir(parents=True)
             for f in filtered_files:
                 try:
                     process_file(f, input_path, output, False)
                 except Exception as e:
-                    console.print(f"[red]Error processing {f.name}: {e}[/red]")
+                    console.print(f"[bold red]ERROR: Error processing {f.name}: {e}[/bold red]")

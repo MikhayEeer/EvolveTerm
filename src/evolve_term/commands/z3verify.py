@@ -1,11 +1,12 @@
 from pathlib import Path
 from typing import Optional, List
 import json
+import yaml
 import typer
 from rich.console import Console
 
 from evolve_term.llm_client import build_llm_client
-from evolve_term.cli_utils import collect_files, ensure_output_dir
+from evolve_term.cli_utils import collect_files, ensure_output_dir, load_json_or_yaml
 from evolve_term.prompts_loader import PromptRepository
 from evolve_term.verifier import Z3Verifier
 
@@ -36,28 +37,25 @@ class Z3VerifyHandler:
             if ranking_file:
                 # If ranking_file is a directory, try to find corresponding file
                 if ranking_file.is_dir():
-                    # Try to find file with same stem
-                    # This is a simple heuristic for batch mode
-                    candidate = ranking_file / (f_path.stem + ".json")
-                    if not candidate.exists():
-                        candidate = ranking_file / (f_path.stem + ".txt")
-                    
-                    if candidate.exists():
-                        content = candidate.read_text(encoding="utf-8")
-                        try:
-                            data = json.loads(content)
-                            if isinstance(data, dict):
-                                return data.get("ranking_function")
-                            return str(data)
-                        except:
-                            return content.strip()
+                    # Try to find file with same stem (JSON or YAML)
+                    for ext in [".json", ".yml", ".yaml", ".txt"]:
+                        candidate = ranking_file / (f_path.stem + ext)
+                        if candidate.exists():
+                            content = candidate.read_text(encoding="utf-8")
+                            try:
+                                data = load_json_or_yaml(candidate)
+                                if isinstance(data, dict):
+                                    return data.get("ranking_function")
+                                return str(data)
+                            except:
+                                return content.strip()
                     return None
                 else:
                     # Single ranking file provided
                     if ranking_file.exists():
                         content = ranking_file.read_text(encoding="utf-8")
                         try:
-                            data = json.loads(content)
+                            data = load_json_or_yaml(ranking_file)
                             if isinstance(data, dict):
                                 return data.get("ranking_function")
                             return str(data)
@@ -68,15 +66,27 @@ class Z3VerifyHandler:
         def get_invs(f_path: Path) -> List[str]:
             if invariants_file:
                 if invariants_file.is_dir():
-                    candidate = invariants_file / (f_path.stem + ".json")
-                    if candidate.exists():
-                        try:
-                            return json.loads(candidate.read_text(encoding="utf-8"))
-                        except:
-                            return []
+                    # Try both JSON and YAML extensions
+                    for ext in [".json", ".yml", ".yaml"]:
+                        candidate = invariants_file / (f_path.stem + ext)
+                        if candidate.exists():
+                            try:
+                                data = load_json_or_yaml(candidate)
+                                if isinstance(data, list):
+                                    return data
+                                elif isinstance(data, dict) and "invariants" in data:
+                                    return data["invariants"]
+                                return []
+                            except:
+                                return []
                 elif invariants_file.exists():
                     try:
-                        return json.loads(invariants_file.read_text(encoding="utf-8"))
+                        data = load_json_or_yaml(invariants_file)
+                        if isinstance(data, list):
+                            return data
+                        elif isinstance(data, dict) and "invariants" in data:
+                            return data["invariants"]
+                        return []
                     except:
                         return []
             return []
@@ -131,4 +141,4 @@ class Z3VerifyHandler:
                         console.print(f"--- {f.name} ---")
                         console.print(f"Result: {result}")
                 except Exception as e:
-                    console.print(f"[red]Error verifying {f.name}: {e}[/red]")
+                    console.print(f"[bold red]ERROR: Error verifying {f.name}: {e}[/bold red]")

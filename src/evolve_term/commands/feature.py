@@ -27,7 +27,7 @@ class FeatureHandler:
     def run(self, input_path: Path, output: Optional[Path], recursive: bool):
         files = collect_files(input_path, recursive, {".c", ".cpp", ".cc", ".h", ".hpp"})
         if not files:
-            console.print("[yellow]No source files found.[/yellow]")
+            console.print("[black on yellow]WARNING[/black on yellow] No source files found.")
             return
 
         # Determine output strategy
@@ -36,7 +36,7 @@ class FeatureHandler:
             if output.suffix.lower() in {'.yml', '.yaml'}:
                 # Single file output? Only if single input?
                 # We usually output 1-to-1 yml
-                console.print("[red]Output must be a directory for batch feature extraction.[/red]")
+                console.print("[bold red]ERROR: Output must be a directory for batch feature extraction.[/bold red]")
                 return
             output_dir = output
             output_dir.mkdir(parents=True, exist_ok=True)
@@ -74,7 +74,7 @@ class FeatureHandler:
                         yaml.dump(result, yf, Dumper=LiteralDumper, sort_keys=False, allow_unicode=True)
                         
                 except Exception as e:
-                    console.print(f"[red]Error analyzing {f.name}: {e}[/red]")
+                    console.print(f"[bold red]ERROR: Error analyzing {f.name}: {e}[/bold red]")
 
     def analyze_file(self, file_path: Path, base_dir: Path) -> Dict[str, Any]:
         code = file_path.read_text(encoding="utf-8")

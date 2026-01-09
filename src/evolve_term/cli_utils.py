@@ -10,6 +10,12 @@ import re
 from .config import auto_load_json_config
 from .llm_client import build_llm_client
 from .models import KnowledgeCase
+from .yaml_schema import (
+    validate_yaml_file,
+    validate_yaml_content,
+    get_missing_required_keys,
+    ValidationResult,
+)
 import typer
 import yaml
 
@@ -100,10 +106,42 @@ def collect_files(input_path: Path, recursive: bool, extensions: Optional[set[st
 
 
 def load_references(references_file: Optional[Path]) -> List[KnowledgeCase]:
+    """Load reference cases from JSON or YAML file.
+    
+    Supports both .json and .yml/.yaml formats.
+    """
     if not references_file:
         return []
-    data = json.loads(references_file.read_text(encoding="utf-8"))
+    
+    content = references_file.read_text(encoding="utf-8")
+    
+    # Auto-detect format by extension
+    if references_file.suffix.lower() in {".yml", ".yaml"}:
+        data = yaml.safe_load(content)
+    else:
+        data = json.loads(content)
+    
     return [KnowledgeCase(**item) for item in data]
+
+
+def load_json_or_yaml(file_path: Path) -> Any:
+    """Load data from JSON or YAML file, auto-detecting format by extension.
+    
+    Args:
+        file_path: Path to .json, .yml, or .yaml file
+        
+    Returns:
+        Parsed data structure (dict, list, etc.)
+        
+    Raises:
+        Exception: If file cannot be parsed
+    """
+    content = file_path.read_text(encoding="utf-8")
+    
+    if file_path.suffix.lower() in {".yml", ".yaml"}:
+        return yaml.safe_load(content)
+    else:
+        return json.loads(content)
 
 
 def _yaml_type_from_name(path: Path) -> Optional[str]:
@@ -120,13 +158,12 @@ def _yaml_type_from_name(path: Path) -> Optional[str]:
 
 
 def validate_yaml_required_keys(path: Path, content: Any) -> List[str]:
-    yaml_type = _yaml_type_from_name(path)
-    if not yaml_type:
-        return []
-    required = _YAML_REQUIRED_KEYS.get(yaml_type, [])
-    if not isinstance(content, dict):
-        return required
-    return [key for key in required if key not in content]
+    """Legacy function: get list of missing required keys.
+    
+    This function is maintained for backward compatibility.
+    New code should use yaml_schema.validate_yaml_file() or validate_yaml_content().
+    """
+    return get_missing_required_keys(path, content)
 
 
 def ping_llm_client(llm_config: str, prompt: str = DEFAULT_LLM_PING_PROMPT) -> dict[str, Any]:
