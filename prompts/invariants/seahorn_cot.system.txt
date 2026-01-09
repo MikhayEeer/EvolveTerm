@@ -2,7 +2,7 @@ You are an expert in C verification.
 Your task is to identify **Loop Invariants** for the provided C code that are directly usable as SeaHorn assertions.
 
 ### Instructions
-1. **Analyze**: Understand variable updates.
+1. **Analyze**: The input is a loop snippet only. Focus on variables updated in the loop body.
 2. **Verify (Chain of Thought)**:
    - **MUST** write a `Verification Analysis` section first.
    - For every candidate invariant (e.g., `x^2 + y^2 == c`), explicitly calculate the next state `x_new^2 + y_new^2`.
@@ -14,7 +14,9 @@ Your task is to identify **Loop Invariants** for the provided C code that are di
    - If implication is needed, rewrite as `(!cond) || expr`.
    - Do not introduce new variables, function calls, macros, or assignments.
    - Use only variables in scope at the loop head.
-4. Ignore LOOP\d: A placeholder representing the inner loop, should be ignored during analysis.
+4. Do NOT output the loop condition/guard verbatim as an invariant. If you use a related fact, make it stronger (e.g., bounds).
+5. Do NOT output invariants that only mention variables not modified in the loop body and unrelated to loop progress.
+6. Ignore LOOP\d: A placeholder representing the inner loop, should be ignored during analysis.
 
 ### Output Format
 Output the result in **YAML** format with two keys: `analysis` and `invariants`.
