@@ -1,0 +1,31 @@
+source_file: 4NestedWith3Variables_false-no-overflow.c
+source_path: data/aeval/c_bench_term/4NestedWith3Variables_false-no-overflow.c
+task: invariant_inference
+command: /home/clexma/Desktop/fox3/TermDB/EvolveTerm/.venv_evolve/bin/evolveterm invariant
+  --input data/aeval/c_bench_term/4NestedWith3Variables_false-no-overflow.c -pv seahorn_cot_fewshot
+  --output ./test_result
+pmt_ver: seahorn_cot_fewshot
+model: qwen3-max
+time: 2026-01-09T19:41
+has_extract: false
+invariants_result:
+- loop_id: 1
+  code: |
+    extern int __VERIFIER_nondet_int(void);
+
+    int main()
+    {
+        int a, b, q, olda;
+        q = __VERIFIER_nondet_int();
+        a = __VERIFIER_nondet_int();
+        b = __VERIFIER_nondet_int();
+        while (q > 0) {
+          q = q + a - 1;
+          olda = a;
+          a = 3*olda - 4*b;
+          b = 4*olda + 3*b;
+        }
+        return 0;
+    }
+  invariants:
+  - a * a + b * b >= 0
