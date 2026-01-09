@@ -18,6 +18,7 @@ from .prompts_loader import PromptRepository
 from .rag_index import HNSWIndexManager
 from .translator import CodeTranslator
 from .verifier import Z3Verifier
+from .sea_verify import SeaHornVerifier, DEFAULT_SEAHORN_IMAGE
 from .report_manager import ReportManager
 from .predict import Predictor
 from .svm_ranker import SVMRankerClient
@@ -27,7 +28,19 @@ import os
 class TerminationPipeline:
     """Main façade that ties together embedding, retrieval, and LLM reasoning."""
 
-    def __init__(self, rebuild_threshold: int = 10, embed_config: str = "embed_config.json", llm_config: str = "llm_config.json", enable_translation: bool = False, knowledge_base_path: str | None = None, svm_ranker_path: str | None = None, ranking_retry_empty: int = 0):
+    def __init__(
+        self,
+        rebuild_threshold: int = 10,
+        embed_config: str = "embed_config.json",
+        llm_config: str = "llm_config.json",
+        enable_translation: bool = False,
+        knowledge_base_path: str | None = None,
+        svm_ranker_path: str | None = None,
+        ranking_retry_empty: int = 0,
+        verifier_backend: str = "z3",
+        seahorn_docker_image: str = DEFAULT_SEAHORN_IMAGE,
+        seahorn_timeout: int = 60,
+    ):
         self.prompt_repo = PromptRepository()
         self.llm_client = build_llm_client(llm_config)
         self.loop_extractor = LoopExtractor(self.llm_client,# loop extractor also use same model with prediction 
@@ -38,11 +51,23 @@ class TerminationPipeline:
         self.index_manager = HNSWIndexManager(dimension=self.embedding_client.dimension)
         self.enable_translation = enable_translation
         self.translator = CodeTranslator(config_name=llm_config) if enable_translation else None
-        self.verifier = Z3Verifier(self.llm_client, self.prompt_repo)
+        self.verifier_backend = verifier_backend.lower()
+        self.seahorn_docker_image = seahorn_docker_image
+        self.seahorn_timeout = seahorn_timeout
+        self.z3_verifier = Z3Verifier(self.llm_client, self.prompt_repo)
+        self.seahorn_verifier: SeaHornVerifier | None = None
         self.report_manager = ReportManager()
         self.predictor = Predictor(self.llm_client, self.prompt_repo)
         self.svm_ranker = SVMRankerClient(svm_ranker_path) if svm_ranker_path else None
         self.ranking_retry_empty = max(0, ranking_retry_empty)
+
+    def _get_seahorn_verifier(self) -> SeaHornVerifier:
+        if self.seahorn_verifier is None:
+            self.seahorn_verifier = SeaHornVerifier(
+                docker_image=self.seahorn_docker_image,
+                timeout_seconds=self.seahorn_timeout,
+            )
+        return self.seahorn_verifier
 
     # Core flow ------------------------------------------------------------
     def analyze(self, 
@@ -66,6 +91,9 @@ class TerminationPipeline:
         start_time = datetime.now()
         start_llm_calls = getattr(self.llm_client, "call_count", 0)
         run_id = uuid.uuid4().hex
+        verifier_backend = self.verifier_backend
+        if verifier_backend not in {"z3", "seahorn"}:
+            raise ValueError(f"Unsupported verifier backend: {verifier_backend}")
 
         # Stage 0: Translation (if enabled)
         original_code = code
@@ -81,6 +109,9 @@ class TerminationPipeline:
         # Use configured prompt version
         prompt_name = f"loop_extraction/yaml_{extraction_prompt_version}"
         loops = self.loop_extractor.extract(code, prompt_name=prompt_name)
+
+        if verifier_backend == "seahorn" and use_loops_for_reasoning and loops:
+            print("[Warning] SeaHorn verification maps loops by source order; ensure extracted loops match source order.")
         
         loop_details = {
             "loops": loops,
@@ -228,12 +259,27 @@ class TerminationPipeline:
                     retry_empty=self.ranking_retry_empty, log_prefix=f"Loop {loop_id} direct"
                 )
 
-            # 4.3 Z3 Verification
+            # 4.3 Verification
             if verification_result != "Verified":
                 if ranking_function:
-                    # Z3 Verifier also needs valid code or robust parsing.
-                    # Our Z3Verifier uses LLM to translate to Python/Z3, so it handles snippets well.
-                    verification_result = self.verifier.verify(current_context, invariants, ranking_function)
+                    if verifier_backend == "seahorn":
+                        seahorn = self._get_seahorn_verifier()
+                        verification_result = seahorn.verify(
+                            code,
+                            loop_invariants={loop_id: invariants},
+                            loop_rankings={loop_id: ranking_function},
+                        )
+                        report = seahorn.last_report or {}
+                        instrumented = report.get("instrumented_loop_ids") or []
+                        if loop_id not in instrumented:
+                            verification_result = "Skipped (SeaHorn no instrumentation)"
+                            print(f"[Warning] SeaHorn did not instrument Loop {loop_id}. Check braces/line start.")
+                        elif verification_result.startswith("Error"):
+                            print(f"[Warning] SeaHorn error on Loop {loop_id}: {verification_result}")
+                    else:
+                        # Z3 Verifier also needs valid code or robust parsing.
+                        # Our Z3Verifier uses LLM to translate to Python/Z3, so it handles snippets well.
+                        verification_result = self.z3_verifier.verify(current_context, invariants, ranking_function)
                 else:
                     verification_result = "Skipped"
             
@@ -245,6 +291,7 @@ class TerminationPipeline:
                 "invariants": invariants,
                 "ranking_function": ranking_function,
                 "verification_result": verification_result,
+                "verification_backend": verifier_backend,
                 "explanation": ranking_explanation
             })
             
@@ -263,7 +310,10 @@ class TerminationPipeline:
                 "label": "terminating",
                 "reasoning": f"All loops verified. Ranking Functions: {ranking_function_summary}"
             }
-            raw_prediction = "Verified by Z3/SVMRanker"
+            if verifier_backend == "seahorn":
+                raw_prediction = "Verified by SeaHorn/SVMRanker"
+            else:
+                raw_prediction = "Verified by Z3/SVMRanker"
         else:
             # Fallback: If any loop failed verification, ask LLM for final verdict on the WHOLE code
             # but provide the loop analysis details.
@@ -310,6 +360,7 @@ class TerminationPipeline:
                 "invariants": final_invariants,
                 "ranking_function": ranking_function_summary,
                 "verification_result": final_verification_result,
+                "verification_backend": verifier_backend,
                 "loop_analyses": loop_analyses # Detailed per-loop results
             },
             "prediction_raw": raw_prediction,
