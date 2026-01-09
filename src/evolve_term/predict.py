@@ -25,13 +25,15 @@ class Predictor:
             return True
         return False
 
-    def infer_invariants(self, code: str, references: List[KnowledgeCase], prompt_version: str = "yaml_cot") -> List[str]:
+    def infer_invariants(self, code: str, references: List[KnowledgeCase], prompt_version: str = "acsl_cot") -> List[str]:
         prompt_name = f"invariants/{prompt_version}"
         prompt = self.prompt_repo.render(
             prompt_name,
             code=code,
             references=json.dumps([ref.__dict__ for ref in references], ensure_ascii=False, indent=2)
         )
+        if prompt_version.endswith("_cot") or prompt_version.endswith("_cot_fewshot"):
+            prompt["max_tokens"] = 8192
         response = self.llm_client.complete(prompt)
         
         # Use YAML parsing
