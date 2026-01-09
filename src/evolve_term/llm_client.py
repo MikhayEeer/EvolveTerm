@@ -51,6 +51,12 @@ class APILLMClient(LLMClient):
             response_format = prompt.get("response_format")
             if response_format is not None:
                 request_overrides["response_format"] = response_format
+            max_tokens = prompt.get("max_tokens")
+            if max_tokens is not None:
+                try:
+                    request_overrides["max_tokens"] = int(max_tokens)
+                except (TypeError, ValueError):
+                    pass
             if prompt.get("system"):
                 messages.append({"role": "system", "content": prompt["system"]})
             if prompt.get("user"):

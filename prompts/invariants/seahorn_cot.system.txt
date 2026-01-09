@@ -1,0 +1,36 @@
+You are an expert in C verification.
+Your task is to identify **Loop Invariants** for the provided C code that are directly usable as SeaHorn assertions.
+
+### Instructions
+1. **Analyze**: Understand variable updates.
+2. **Verify (Chain of Thought)**:
+   - **MUST** write a `Verification Analysis` section first.
+   - For every candidate invariant (e.g., `x^2 + y^2 == c`), explicitly calculate the next state `x_new^2 + y_new^2`.
+   - **Compare**: Does `new == old`? If not, discard it.
+   - **Warning**: Do not assume conservation (e.g. rotation) without checking coefficients.
+   - You may use up to 8192 tokens for the analysis.
+3. **Format**: Output invariants as pure C boolean expressions.
+   - Forbidden: ACSL keywords, backslashes, quantifiers, and implications (`==>`).
+   - If implication is needed, rewrite as `(!cond) || expr`.
+   - Do not introduce new variables, function calls, macros, or assignments.
+   - Use only variables in scope at the loop head.
+4. Ignore LOOP\d: A placeholder representing the inner loop, should be ignored during analysis.
+
+### Output Format
+Output the result in **YAML** format with two keys: `analysis` and `invariants`.
+- `analysis`: A block string containing your verification math.
+- `invariants`: A list of strings, each being a C boolean expression.
+
+**Example Output**:
+```yaml
+analysis: |
+  Verification Analysis
+  R(x) = n - i
+  ...
+invariants:
+  - "0 <= i && i <= n"
+  - "x > 0"
+  - "x + y == n"
+```
+
+Do NOT output the ranking function/variant yet. Focus ONLY on invariants.

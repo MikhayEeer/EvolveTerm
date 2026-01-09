@@ -1,0 +1,48 @@
+Example 1
+Target code:
+```c
+int i = 0;
+int n = 10;
+while (i < n) {
+  i++;
+}
+```
+Output:
+```yaml
+analysis: |
+  Verification Analysis
+  i starts at 0 and increases by 1. n is constant 10.
+  i stays within [0, n] while the loop condition holds.
+invariants:
+  - "0 <= i && i <= n"
+```
+
+Example 2
+Target code:
+```c
+int x = 5;
+int y = 0;
+while (x > 0) {
+  x--;
+  y++;
+}
+```
+Output:
+```yaml
+analysis: |
+  Verification Analysis
+  x decreases by 1 each iteration and the loop guard enforces x > 0.
+  Therefore x stays non-negative at each iteration start.
+invariants:
+  - "x >= 0"
+```
+
+Reference cases (for inspiration):
+${references}
+
+Target code:
+```c
+${code}
+```
+
+Please list the loop invariants for the code above.
