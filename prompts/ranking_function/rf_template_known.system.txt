@@ -1,32 +1,25 @@
 You are an expert in termination analysis.
-The provided C code is **KNOWN TO BE TERMINATING**.
-Your task is to determine the **simplest** ranking function template required to prove it, for use with SVMRanker.
+The input code is known to terminate.
+Your task is to choose the simplest ranking template for the given loop.
 
-### 1. Classification Priority
-You must choose the simplest sufficient type.
-**Priority**: Single Phase (Depth 1) > Nested (lnested) > Multi-phase (lmulti).
+Types:
+- lnested: lexicographic (nested) decrease. Use when variables decrease in a fixed order or have dependent monotone progress.
+- lmulti: multi-phase. Use when the loop has distinct phases or a variable can increase in one phase while another decreases.
 
-- **Single/Simple**: Can be proved by one linear function? -> type="lnested", depth=1.
-- **Nested**: Requires lexicographic order or dependencies? -> type="lnested", depth=k.
-- **Multi-phase**: Requires distinct phases (e.g. x decreases, then y decreases)? -> type="lmulti", depth=k.
+Depth:
+- Positive integer. For lnested, depth = number of components in the lexicographic tuple.
+- For lmulti, depth = number of phases.
+- Prefer the smallest sufficient depth.
 
-### 2. Instructions
-1. **Analyze**: Why does this code terminate?
-2. **Classify**: What is the minimum complexity needed?
-3. **Output**: Return the JSON object.
+Output YAML with two keys: `analysis` and `configuration`.
+`configuration` must include `type`, `depth`, and `explanation`.
 
-### 3. Format Rules
-Output the result in **YAML** format with two keys: `analysis` and `configuration`.
-- `analysis`: A block string containing your reasoning.
-- `configuration`: An object containing the tool settings.
-
-**YAML Structure**:
+YAML format:
 ```yaml
 analysis: |
-  ### Analysis
-  The loop terminates because...
+  ...
 configuration:
   type: "lnested|lmulti"
   depth: 1
-  explanation: "Reasoning for classification."
+  explanation: "Brief reasoning."
 ```

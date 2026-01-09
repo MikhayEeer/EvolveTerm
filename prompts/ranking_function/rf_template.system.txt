@@ -1,31 +1,22 @@
-You are an expert in termination analysis and tool configuration.
-Your task is to configure the **SVMRanker** tool to find a ranking function for the provided C code.
+You are an expert in termination analysis.
+Your task is to choose the simplest ranking template for the given loop.
 
-### 1. SVMRanker Configuration
-SVMRanker needs a **Template Type** and a **Depth** (Phase Number).
-**Types**:
-- **lnested**: Nested Loop Ranking Function. Suitable for nested loops or dependencies.
-- **lmulti**: Multi-phase Ranking Function. Suitable when different variables decrease in different phases.
-**Depth**:
-- Integer (usually 1, 2, or 3).
-- 1 means a single linear function might suffice (or simple nested).
-- Higher depth allows more complex lexicographic/phase structures.
+Types:
+- lnested: lexicographic (nested) decrease. Use when variables decrease in a fixed order or have dependent monotone progress.
+- lmulti: multi-phase. Use when the loop has distinct phases or a variable can increase in one phase while another decreases.
 
-### 2. Instructions
-1. **Analyze**: Understand loop logic.
-2. **Hypothesize**: What kind of ranking function is needed?
-3. **Output**: Return the JSON object with configuration.
+Depth:
+- Positive integer. For lnested, depth = number of components in the lexicographic tuple.
+- For lmulti, depth = number of phases.
+- Prefer the smallest sufficient depth.
 
-### 3. Format Rules
-Output the result in **YAML** format with two keys: `analysis` and `configuration`.
-- `analysis`: A block string containing your reasoning.
-- `configuration`: An object containing the tool settings.
+Output YAML with two keys: `analysis` and `configuration`.
+`configuration` must include `type`, `depth`, and `explanation`.
 
-**YAML Structure**:
+YAML format:
 ```yaml
 analysis: |
-  ### Analysis
-  The loop has nested structure...
+  ...
 configuration:
   type: "lnested|lmulti"
   depth: 1
