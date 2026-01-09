@@ -101,10 +101,10 @@ class ExtractHandler:
         elif input_path.is_dir():
             extensions = {".c", ".cpp", ".h", ".hpp", ".cc", ".cxx"}
             files = collect_files(input_path, recursive, extensions=extensions)
-            console.print(f"Found {len(files)} files.")
+            console.print(f"[bright_cyan]INFO:[/bright_cyan] Found {len(files)} files.")
             
             for f in files:
                 try:
                     process_file(f, input_path, output)
                 except Exception as e:
-                    console.print(f"[red]Error extracting {f.name}: {e}[/red]")
+                    console.print(f"[bold red]ERROR: Error extracting {f.name}: {e}[/bold red]")
