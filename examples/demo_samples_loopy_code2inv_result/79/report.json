@@ -1,0 +1,110 @@
+{
+  "modified_vars": [
+    "i"
+  ],
+  "stage1_atoms_raw": [
+    "i >= 0",
+    "i <= y",
+    "i <= y + 1",
+    "i >= old_i",
+    "i < y + 1"
+  ],
+  "stage1_atoms_syntax": [
+    "i >= 0",
+    "i <= y",
+    "i <= y + 1",
+    "i < y + 1"
+  ],
+  "stage1_atoms_filtered": [
+    "i <= y + 1",
+    "i >= 0",
+    "i <= y"
+  ],
+  "stage1_syntax_dropped": [
+    {
+      "expr": "i >= old_i",
+      "reason": "old_value"
+    }
+  ],
+  "stage1_z3_report": [
+    {
+      "expr": "i >= 0",
+      "status": "kept",
+      "reason": ""
+    },
+    {
+      "expr": "i <= y",
+      "status": "kept",
+      "reason": ""
+    },
+    {
+      "expr": "i <= y + 1",
+      "status": "kept",
+      "reason": ""
+    },
+    {
+      "expr": "i < y + 1",
+      "status": "dropped",
+      "reason": "implied"
+    }
+  ],
+  "stage2_invs_raw": [
+    "i >= 0",
+    "i <= y + 1"
+  ],
+  "stage2_invs_syntax": [
+    "i >= 0",
+    "i <= y + 1"
+  ],
+  "stage2_invs_filtered": [
+    "i <= y + 1",
+    "i >= 0"
+  ],
+  "stage2_syntax_dropped": [],
+  "stage2_z3_report": [
+    {
+      "expr": "i >= 0",
+      "status": "kept",
+      "reason": ""
+    },
+    {
+      "expr": "i <= y + 1",
+      "status": "kept",
+      "reason": ""
+    }
+  ],
+  "seahorn_check_results": [
+    {
+      "invariant": "i <= y + 1",
+      "status": "Failed",
+      "reason": "",
+      "log_file": "examples/demo_samples_loopy_code2inv_result/79/seahorn_logs/inv_1.log"
+    },
+    {
+      "invariant": "i >= 0",
+      "status": "Verified",
+      "reason": "",
+      "log_file": "examples/demo_samples_loopy_code2inv_result/79/seahorn_logs/inv_2.log"
+    }
+  ],
+  "final_invariants": [
+    "i >= 0"
+  ],
+  "instrumented_invariants": [
+    "i >= 0"
+  ],
+  "loop_count": 1,
+  "selected_loop_id": 1,
+  "loop_scan_report": {
+    "total_loops": 1,
+    "skipped_loops": []
+  },
+  "instrument_report": {
+    "instrumented_loop_ids": [
+      1
+    ]
+  },
+  "seahorn_log_dir": "examples/demo_samples_loopy_code2inv_result/79/seahorn_logs",
+  "input_file": "examples/demo_samples_loopy_code2inv/79.c",
+  "output_dir": "examples/demo_samples_loopy_code2inv_result/79"
+}

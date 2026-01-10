@@ -1,0 +1,148 @@
+{
+  "modified_vars": [
+    "x",
+    "y"
+  ],
+  "stage1_atoms_raw": [
+    "y >= 0",
+    "y <= 100000",
+    "x >= 0",
+    "x == x0 + (y0 + y - 1) * (y - y0) / 2",
+    "x >= x0",
+    "y >= y0",
+    "x <= x0 + y * y",
+    "x >= y * (y - 1) / 2 + x0 - y0 * (y0 - 1) / 2"
+  ],
+  "stage1_atoms_syntax": [
+    "y >= 0",
+    "y <= 100000",
+    "x >= 0",
+    "x == x0 + (y0 + y - 1) * (y - y0) / 2",
+    "x >= x0",
+    "y >= y0",
+    "x >= y * (y - 1) / 2 + x0 - y0 * (y0 - 1) / 2"
+  ],
+  "stage1_atoms_filtered": [
+    "y <= 100000",
+    "x >= x0",
+    "y >= y0",
+    "y >= 0",
+    "x >= 0"
+  ],
+  "stage1_syntax_dropped": [
+    {
+      "expr": "x <= x0 + y * y",
+      "reason": "non_linear"
+    }
+  ],
+  "stage1_z3_report": [
+    {
+      "expr": "y >= 0",
+      "status": "kept",
+      "reason": ""
+    },
+    {
+      "expr": "y <= 100000",
+      "status": "kept",
+      "reason": ""
+    },
+    {
+      "expr": "x >= 0",
+      "status": "kept",
+      "reason": ""
+    },
+    {
+      "expr": "x == x0 + (y0 + y - 1) * (y - y0) / 2",
+      "status": "dropped",
+      "reason": "parse_error:unexpected character: /"
+    },
+    {
+      "expr": "x >= x0",
+      "status": "kept",
+      "reason": ""
+    },
+    {
+      "expr": "y >= y0",
+      "status": "kept",
+      "reason": ""
+    },
+    {
+      "expr": "x >= y * (y - 1) / 2 + x0 - y0 * (y0 - 1) / 2",
+      "status": "dropped",
+      "reason": "parse_error:unexpected character: /"
+    }
+  ],
+  "stage2_invs_raw": [
+    "y >= y0",
+    "y >= 0",
+    "x >= x0"
+  ],
+  "stage2_invs_syntax": [
+    "y >= y0",
+    "y >= 0",
+    "x >= x0"
+  ],
+  "stage2_invs_filtered": [
+    "y >= y0",
+    "x >= x0",
+    "y >= 0"
+  ],
+  "stage2_syntax_dropped": [],
+  "stage2_z3_report": [
+    {
+      "expr": "y >= y0",
+      "status": "kept",
+      "reason": ""
+    },
+    {
+      "expr": "y >= 0",
+      "status": "kept",
+      "reason": ""
+    },
+    {
+      "expr": "x >= x0",
+      "status": "kept",
+      "reason": ""
+    }
+  ],
+  "seahorn_check_results": [
+    {
+      "invariant": "y >= y0",
+      "status": "error",
+      "reason": "exit_1",
+      "log_file": "examples/demo_samples_loopy_code2inv_result/1/seahorn_logs/inv_1.log"
+    },
+    {
+      "invariant": "x >= x0",
+      "status": "error",
+      "reason": "exit_1",
+      "log_file": "examples/demo_samples_loopy_code2inv_result/1/seahorn_logs/inv_2.log"
+    },
+    {
+      "invariant": "y >= 0",
+      "status": "Verified",
+      "reason": "",
+      "log_file": "examples/demo_samples_loopy_code2inv_result/1/seahorn_logs/inv_3.log"
+    }
+  ],
+  "final_invariants": [
+    "y >= 0"
+  ],
+  "instrumented_invariants": [
+    "y >= 0"
+  ],
+  "loop_count": 1,
+  "selected_loop_id": 1,
+  "loop_scan_report": {
+    "total_loops": 1,
+    "skipped_loops": []
+  },
+  "instrument_report": {
+    "instrumented_loop_ids": [
+      1
+    ]
+  },
+  "seahorn_log_dir": "examples/demo_samples_loopy_code2inv_result/1/seahorn_logs",
+  "input_file": "examples/demo_samples_loopy_code2inv/1.c",
+  "output_dir": "examples/demo_samples_loopy_code2inv_result/1"
+}

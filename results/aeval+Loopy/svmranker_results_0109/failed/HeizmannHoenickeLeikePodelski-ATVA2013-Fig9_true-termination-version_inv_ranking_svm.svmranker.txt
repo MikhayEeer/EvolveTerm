@@ -1,0 +1,6 @@
+--- Entry Loop ID: 1 ---
+Executing: /home/clexma/Desktop/fox3/TermDB/EvolveTerm/.venv_evolve/bin/python3 /home/clexma/Desktop/fox3/TermDB/SVMRanker/src/CLIMain.py parsectoboogie /tmp/tmpj6g_n693.c /tmp/tmpdm94wv0s.bpl
+
+[Error] SVMRanker execution exception: 
+
+========================================

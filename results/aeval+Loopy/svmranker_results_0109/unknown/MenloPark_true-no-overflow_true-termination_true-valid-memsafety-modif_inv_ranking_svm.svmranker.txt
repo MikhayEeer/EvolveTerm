@@ -1,0 +1,25 @@
+--- Entry Loop ID: 1 ---
+Executing: /home/clexma/Desktop/fox3/TermDB/EvolveTerm/.venv_evolve/bin/python3 /home/clexma/Desktop/fox3/TermDB/SVMRanker/src/CLIMain.py parsectoboogie /tmp/tmplbw6rz1d.c /tmp/tmp8nvu7g1q.bpl
+Return Code: 0
+STDOUT:
+SVMRanker --- Version 1.0
+
+
+--- calling parseBoogieProgramMulti on /tmp/tmp8nvu7g1q.bpl ---
+
+--- calling SVMLearnMulti ---
+Exception ignored in: <function AstRef.__del__ at 0x7f2aa2731e10>
+Traceback (most recent call last):
+  File "/home/clexma/Desktop/fox3/TermDB/EvolveTerm/.venv_evolve/lib/python3.10/site-packages/z3/z3.py", line 362, in __del__
+    Z3_dec_ref(self.ctx.ref(), self.as_ast())
+  File "/home/clexma/Desktop/fox3/TermDB/EvolveTerm/.venv_evolve/lib/python3.10/site-packages/z3/z3.py", line 577, in as_ast
+    return Z3_sort_to_ast(self.ctx_ref(), self.ast)
+  File "/home/clexma/Desktop/fox3/TermDB/EvolveTerm/.venv_evolve/lib/python3.10/site-packages/z3/z3core.py", line 2884, in Z3_sort_to_ast
+    _elems.Check(a0)
+  File "/home/clexma/Desktop/fox3/TermDB/EvolveTerm/.venv_evolve/lib/python3.10/site-packages/z3/z3core.py", line 1580, in Check
+    def Check(self, ctx):
+  File "/home/clexma/Desktop/fox3/TermDB/SVMRanker/src/NestedTemplate.py", line 33, in handle
+    raise TimeOutException
+NestedTemplate.TimeOutException: 
+
+========================================

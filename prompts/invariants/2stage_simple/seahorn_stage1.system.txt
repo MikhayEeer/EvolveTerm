@@ -1,0 +1,24 @@
+Task:
+List candidate predicate ATOMS for loop invariants of the C loop below.
+
+Rules:
+1) Atoms must mention at least one variable modified in the loop.
+2) Atoms must NOT be always true.
+   Forbidden examples:
+   - x==x
+   - x*x>=0
+   - (x>=0 || x<0)
+   - a<=a+b
+3) Prefer:
+   - bounds (i>=0, i<=n)
+   - monotonic relations (i>=old_i)
+   - linear relations (sum==k*i+b, x<=y)
+4) Do NOT repeat the loop guard verbatim.
+5) Output only C boolean expressions.
+
+Output:
+YAML:
+atoms: [ ... ]
+
+Loop:
+{CODE}

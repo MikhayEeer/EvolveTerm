@@ -1,0 +1,12 @@
+--- Entry Loop ID: 1 ---
+Executing: /home/clexma/Desktop/fox3/TermDB/EvolveTerm/.venv_evolve/bin/python3 /home/clexma/Desktop/fox3/TermDB/SVMRanker/src/CLIMain.py parsectoboogie /tmp/tmpoyqhg3jt.c /tmp/tmp44reclmd.bpl
+Return Code: 0
+STDOUT:
+SVMRanker --- Version 1.0
+
+
+--- calling parseBoogieProgramMulti on /tmp/tmp44reclmd.bpl ---
+
+--- calling SVMLearnMulti ---
+
+========================================
