@@ -1,0 +1,15 @@
+--- Entry Loop ID: 1 ---
+
+--- calling parseBoogieProgramMulti on /home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval/c_bench_nonterm/ChenFlurMukhopadhyay-SAS2012-Ex2.03_false-no-overflow.bpl ---
+
+--- calling SVMLearnMulti ---
+it is not terminating, an infinite loop with initial condition:
+
+['xi_0=1', 'xi_1=0']
+
+it is not terminating, an infinite loop with initial condition:
+
+['xi_0=1', 'xi_1=0']
+
+
+========================================

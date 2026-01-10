@@ -1,0 +1,11 @@
+--- Entry Loop ID: 1 ---
+
+--- calling parseBoogieProgramMulti on /home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval/c_bench_term/trex03_false-unreach-call_true-termination-modif.bpl ---
+
+--- calling SVMLearnMulti ---
+it is not terminating, an infinite loop with initial condition:
+
+['xi_0=1', 'xi_1=7720', 'xi_2=21239', 'xi_3=None', 'xi_4=None', 'xi_5=None']
+
+
+========================================

@@ -1,0 +1,16 @@
+--- Entry Loop ID: 1 ---
+
+--- calling parseBoogieProgramMulti on /home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval/c_bench_nonterm/nonlin_div_nonterm_2.bpl ---
+
+--- calling SVMLearnMulti ---
+/home/clexma/Desktop/fox3/TermDB/SVMRanker/src/OneLoop.py:5: RuntimeWarning: invalid value encountered in scalar divide
+  lambda x :[(x[0] / x[1]), (x[1] + 1), ],
+/home/clexma/Desktop/fox3/TermDB/SVMRanker/src/OneLoop.py:5: RuntimeWarning: divide by zero encountered in scalar divide
+  lambda x :[(x[0] / x[1]), (x[1] + 1), ],
+Input X contains NaN.
+LinearSVC does not accept missing values encoded as NaN natively. For supervised learning, you might want to consider sklearn.ensemble.HistGradientBoostingClassifier and Regressor which accept missing values encoded as NaNs natively. Alternatively, it is possible to preprocess the data, for instance by using an imputer transformer in a pipeline or drop samples with missing values. See https://scikit-learn.org/stable/modules/impute.html You can find a list of all estimators that handle NaN values at the following page: https://scikit-learn.org/stable/modules/impute.html#estimators-that-handle-nan-values
+
+[Error] SVMRanker execution exception: Input X contains NaN.
+LinearSVC does not accept missing values encoded as NaN natively. For supervised learning, you might want to consider sklearn.ensemble.HistGradientBoostingClassifier and Regressor which accept missing values encoded as NaNs natively. Alternatively, it is possible to preprocess the data, for instance by using an imputer transformer in a pipeline or drop samples with missing values. See https://scikit-learn.org/stable/modules/impute.html You can find a list of all estimators that handle NaN values at the following page: https://scikit-learn.org/stable/modules/impute.html#estimators-that-handle-nan-values
+
+========================================
