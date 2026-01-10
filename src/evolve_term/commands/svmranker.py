@@ -15,6 +15,7 @@ from ..utils import LiteralDumper
 
 console = Console()
 REPO_ROOT = Path(__file__).resolve().parents[3]
+BOOGIE_ROOT = Path("/home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie")
 
 def resolve_svm_ranker_root(path: Path) -> Path:
     if not path.exists():
@@ -100,13 +101,40 @@ class SVMRankerHandler:
                 return "certain"
             return "failed"
 
+        def resolve_boogie_path(source_path: Optional[str]) -> Optional[Path]:
+            if not source_path:
+                return None
+            path = Path(source_path)
+            rel = None
+            if path.is_absolute():
+                parts = path.parts
+                if "data" in parts:
+                    idx = parts.index("data")
+                    rel = Path(*parts[idx + 1:])
+            else:
+                parts = path.parts
+                if parts and parts[0] == "data":
+                    rel = Path(*parts[1:])
+            if rel is None:
+                return None
+            base = BOOGIE_ROOT / rel
+            for suffix in (".tpl", ".bpl"):
+                candidate = base.with_suffix(suffix)
+                if candidate.exists():
+                    return candidate
+            return None
+
         def resolve_source_code(
             entry: Dict[str, Any],
             base_dir: Path,
             fallback_source_path: Optional[str],
-        ) -> Tuple[str, str, Optional[str]]:
+        ) -> Tuple[str, str, Optional[str], Optional[str]]:
             loop_id = entry.get("loop_id") or entry.get("id")
             source_path = entry.get("source_path") or fallback_source_path
+            boogie_path = resolve_boogie_path(source_path)
+            if boogie_path:
+                print(f"[Debug] Loop {loop_id}: using boogie_path {boogie_path}")
+                return "", "boogie_path", str(boogie_path), str(boogie_path)
             if source_path:
                 path = Path(source_path)
                 candidate_paths = [path] if path.is_absolute() else [base_dir / path, Path.cwd() / path, REPO_ROOT / path]
@@ -115,7 +143,7 @@ class SVMRankerHandler:
                         try:
                             content = candidate.read_text(encoding="utf-8")
                             print(f"[Debug] Loop {loop_id}: using source_path {candidate}")
-                            return content, "source_path", str(candidate)
+                            return content, "source_path", str(candidate), None
                         except Exception as exc:
                             print(f"[Debug] Loop {loop_id}: failed to read {candidate}: {exc}")
                             break
@@ -124,14 +152,14 @@ class SVMRankerHandler:
                     
             code = entry.get("code", "")
             print(f"[Debug] Loop {loop_id}: falling back to entry code (len={len(code)})")
-            return code, "loop_code", None
+            return code, "loop_code", None, None
 
         def run_on_entry(
             entry: Dict[str, Any],
             base_dir: Path,
             fallback_source_path: Optional[str],
         ) -> Tuple[Dict[str, Any], str]:
-            code, code_source, code_source_path = resolve_source_code(
+            code, code_source, code_source_path, boogie_path = resolve_source_code(
                 entry, base_dir, fallback_source_path
             )
             template_type = entry.get("template_type") or entry.get("type") or "lnested"
@@ -142,14 +170,17 @@ class SVMRankerHandler:
             except Exception:
                 depth_val = 1
 
-            with tempfile.NamedTemporaryFile(mode="w", suffix=".c", delete=False, encoding="utf-8") as tmp:
-                tmp.write(code)
-                tmp_path = tmp.name
+            if boogie_path:
+                status, rf, rf_list, log = self.client.run(Path(boogie_path), mode=mode, depth=depth_val)
+            else:
+                with tempfile.NamedTemporaryFile(mode="w", suffix=".c", delete=False, encoding="utf-8") as tmp:
+                    tmp.write(code)
+                    tmp_path = tmp.name
 
-            try:
-                status, rf, rf_list, log = self.client.run(Path(tmp_path), mode=mode, depth=depth_val)
-            finally:
-                Path(tmp_path).unlink(missing_ok=True)
+                try:
+                    status, rf, rf_list, log = self.client.run(Path(tmp_path), mode=mode, depth=depth_val)
+                finally:
+                    Path(tmp_path).unlink(missing_ok=True)
 
             def _stringify(value: Any) -> Optional[str]:
                 if value is None:
@@ -178,6 +209,8 @@ class SVMRankerHandler:
             }
             if code_source_path:
                 result["input_code_path"] = code_source_path
+            if boogie_path:
+                result["input_boogie_path"] = boogie_path
 
             return result, log
 
