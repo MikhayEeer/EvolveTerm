@@ -173,6 +173,28 @@ class SVMRankerClient:
                             msg = (result.stderr or result.stdout or "parseCtoBoogie failed").strip()
                             print(f"[Error] parseCtoBoogie failed: {msg}")
                             return "ERROR", None, [], log_buffer.getvalue()
+                        stderr_text = result.stderr or ""
+                        if "Traceback" in stderr_text or "Exception" in stderr_text:
+                            msg = "parseCtoBoogie reported a crash in stderr"
+                            print(f"[Error] {msg}")
+                            log_buffer.write(f"[Error] {msg}\n")
+                            return "ERROR", None, [], log_buffer.getvalue()
+                        if not temp_bpl_path or not temp_bpl_path.exists():
+                            msg = "parseCtoBoogie did not produce a .bpl file"
+                            print(f"[Error] {msg}")
+                            log_buffer.write(f"[Error] {msg}\n")
+                            return "ERROR", None, [], log_buffer.getvalue()
+                        try:
+                            if temp_bpl_path.stat().st_size == 0:
+                                msg = "parseCtoBoogie produced an empty .bpl file"
+                                print(f"[Error] {msg}")
+                                log_buffer.write(f"[Error] {msg}\n")
+                                return "ERROR", None, [], log_buffer.getvalue()
+                        except OSError as e:
+                            msg = f"Failed to stat .bpl file: {e}"
+                            print(f"[Error] {msg}")
+                            log_buffer.write(f"[Error] {msg}\n")
+                            return "ERROR", None, [], log_buffer.getvalue()
                         try:
                             debug_bpl = Path.cwd() / "svmranker_last_input.bpl"
                             debug_bpl.write_text(temp_bpl_path.read_text(encoding="utf-8"), encoding="utf-8")

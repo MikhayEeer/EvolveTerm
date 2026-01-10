@@ -1,0 +1,15 @@
+Task:
+Build loop invariants by combining the atoms below.
+
+Rules:
+1) Use only the given atoms.
+2) Combine atoms using && or (!cond)||expr.
+3) Do NOT output tautologies or loop guards.
+4) Each invariant must help restrict loop states.
+
+Output:
+YAML:
+invariants: [ ... ]
+
+Atoms:
+{ATOMS}
