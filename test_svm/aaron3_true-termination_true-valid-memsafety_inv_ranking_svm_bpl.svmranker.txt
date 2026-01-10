@@ -1,0 +1,6 @@
+
+--- calling parseBoogieProgramMulti on /home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval/c_bench_term/aaron3_true-termination_true-valid-memsafety.bpl ---
+
+--- calling SVMLearnMulti ---
+
+[Error] SVMRanker execution exception: name '__VERIFIER_nondet_int' is not defined
