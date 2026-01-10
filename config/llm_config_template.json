@@ -10,7 +10,7 @@
       "top_p": 0.3
     },
     "pricing_per_millon_tokens_RMB": 16,
-    "tags": ["default", "better"],
+    "tags": ["out-default", "better"],
     "context_window": "256k"
   },
   {
@@ -49,7 +49,7 @@
       "temperature": 0.0
     },
     "pricing_per_millon_tokens_RMB": 17,
-    "tags": ["better","new"],
+    "tags": ["better","default"],
     "context_window": "198k"
   },
   {
