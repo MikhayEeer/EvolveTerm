@@ -40,6 +40,19 @@
     "context_window": "198k"
   },
   {
+    "provider": "glm",
+    "baseurl": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+    "api_key": "sk-",
+    "model": "glm-4.7",
+    "payload_template": {
+      "max_tokens": 4096,
+      "temperature": 0.0
+    },
+    "pricing_per_millon_tokens_RMB": 17,
+    "tags": ["better","new"],
+    "context_window": "198k"
+  },
+  {
     "provider": "moonshot",
     "baseurl": "https://dashscope.aliyuncs.com/compatible-mode/v1",
     "api_key": "sk-",
