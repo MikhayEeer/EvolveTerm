@@ -1,0 +1,6 @@
+i - sn == i_initial - sn_initial
+sn <= sn_initial + 9
+sn >= sn_initial
+sn >= 0
+i >= 0
+i <= 9

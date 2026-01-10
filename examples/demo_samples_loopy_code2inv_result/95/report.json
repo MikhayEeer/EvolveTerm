@@ -1,0 +1,155 @@
+{
+  "modified_vars": [
+    "i",
+    "j"
+  ],
+  "stage1_atoms_raw": [
+    "i >= 0",
+    "i <= x + 1",
+    "j == j0 + (i - i0) * y",
+    "j >= j0",
+    "i >= i0",
+    "j - j0 == (i - i0) * y",
+    "i - i0 >= 0",
+    "j <= j0 + (x - i0 + 1) * y",
+    "i <= x + 1",
+    "j - y * i == j0 - y * i0"
+  ],
+  "stage1_atoms_syntax": [
+    "i >= 0",
+    "i <= x + 1",
+    "j == j0 + (i - i0) * y",
+    "j >= j0",
+    "i >= i0",
+    "j - j0 == (i - i0) * y",
+    "i - i0 >= 0",
+    "j <= j0 + (x - i0 + 1) * y"
+  ],
+  "stage1_atoms_filtered": [
+    "i - i0 >= 0",
+    "i <= x + 1",
+    "j >= j0",
+    "i >= 0"
+  ],
+  "stage1_syntax_dropped": [
+    {
+      "expr": "j - y * i == j0 - y * i0",
+      "reason": "non_linear"
+    }
+  ],
+  "stage1_z3_report": [
+    {
+      "expr": "i >= 0",
+      "status": "kept",
+      "reason": ""
+    },
+    {
+      "expr": "i <= x + 1",
+      "status": "kept",
+      "reason": ""
+    },
+    {
+      "expr": "j == j0 + (i - i0) * y",
+      "status": "dropped",
+      "reason": "parse_error:nonlinear_multiplication"
+    },
+    {
+      "expr": "j >= j0",
+      "status": "kept",
+      "reason": ""
+    },
+    {
+      "expr": "i >= i0",
+      "status": "dropped",
+      "reason": "implied"
+    },
+    {
+      "expr": "j - j0 == (i - i0) * y",
+      "status": "dropped",
+      "reason": "parse_error:nonlinear_multiplication"
+    },
+    {
+      "expr": "i - i0 >= 0",
+      "status": "kept",
+      "reason": ""
+    },
+    {
+      "expr": "j <= j0 + (x - i0 + 1) * y",
+      "status": "dropped",
+      "reason": "parse_error:nonlinear_multiplication"
+    }
+  ],
+  "stage2_invs_raw": [
+    "i - i0 >= 0",
+    "i >= 0",
+    "j >= j0"
+  ],
+  "stage2_invs_syntax": [
+    "i - i0 >= 0",
+    "i >= 0",
+    "j >= j0"
+  ],
+  "stage2_invs_filtered": [
+    "i - i0 >= 0",
+    "j >= j0",
+    "i >= 0"
+  ],
+  "stage2_syntax_dropped": [],
+  "stage2_z3_report": [
+    {
+      "expr": "i - i0 >= 0",
+      "status": "kept",
+      "reason": ""
+    },
+    {
+      "expr": "i >= 0",
+      "status": "kept",
+      "reason": ""
+    },
+    {
+      "expr": "j >= j0",
+      "status": "kept",
+      "reason": ""
+    }
+  ],
+  "seahorn_check_results": [
+    {
+      "invariant": "i - i0 >= 0",
+      "status": "error",
+      "reason": "exit_1",
+      "log_file": "examples/demo_samples_loopy_code2inv_result/95/seahorn_logs/inv_1.log"
+    },
+    {
+      "invariant": "j >= j0",
+      "status": "error",
+      "reason": "exit_1",
+      "log_file": "examples/demo_samples_loopy_code2inv_result/95/seahorn_logs/inv_2.log"
+    },
+    {
+      "invariant": "i >= 0",
+      "status": "Verified",
+      "reason": "",
+      "log_file": "examples/demo_samples_loopy_code2inv_result/95/seahorn_logs/inv_3.log"
+    }
+  ],
+  "final_invariants": [
+    "i >= 0"
+  ],
+  "instrumented_invariants": [
+    "i >= 0"
+  ],
+  "loop_count": 1,
+  "selected_loop_id": 1,
+  "loop_scan_report": {
+    "total_loops": 1,
+    "skipped_loops": []
+  },
+  "instrument_report": {
+    "instrumented_loop_ids": [
+      1
+    ]
+  },
+  "seahorn_log_dir": "examples/demo_samples_loopy_code2inv_result/95/seahorn_logs",
+  "input_file": "examples/demo_samples_loopy_code2inv/95.c",
+  "output_dir": "examples/demo_samples_loopy_code2inv_result/95"
+}

@@ -1,0 +1,95 @@
+{
+  "modified_vars": [
+    "x"
+  ],
+  "stage1_atoms_raw": [
+    "x >= 0",
+    "x <= n",
+    "x > old_x"
+  ],
+  "stage1_atoms_syntax": [
+    "x >= 0",
+    "x <= n"
+  ],
+  "stage1_atoms_filtered": [
+    "x >= 0",
+    "x <= n"
+  ],
+  "stage1_syntax_dropped": [
+    {
+      "expr": "x > old_x",
+      "reason": "old_value"
+    }
+  ],
+  "stage1_z3_report": [
+    {
+      "expr": "x >= 0",
+      "status": "kept",
+      "reason": ""
+    },
+    {
+      "expr": "x <= n",
+      "status": "kept",
+      "reason": ""
+    }
+  ],
+  "stage2_invs_raw": [
+    "x >= 0",
+    "x <= n"
+  ],
+  "stage2_invs_syntax": [
+    "x >= 0",
+    "x <= n"
+  ],
+  "stage2_invs_filtered": [
+    "x >= 0",
+    "x <= n"
+  ],
+  "stage2_syntax_dropped": [],
+  "stage2_z3_report": [
+    {
+      "expr": "x >= 0",
+      "status": "kept",
+      "reason": ""
+    },
+    {
+      "expr": "x <= n",
+      "status": "kept",
+      "reason": ""
+    }
+  ],
+  "seahorn_check_results": [
+    {
+      "invariant": "x >= 0",
+      "status": "Verified",
+      "reason": "",
+      "log_file": "examples/demo_samples_loopy_code2inv_result/133/seahorn_logs/inv_1.log"
+    },
+    {
+      "invariant": "x <= n",
+      "status": "Failed",
+      "reason": "",
+      "log_file": "examples/demo_samples_loopy_code2inv_result/133/seahorn_logs/inv_2.log"
+    }
+  ],
+  "final_invariants": [
+    "x >= 0"
+  ],
+  "instrumented_invariants": [
+    "x >= 0"
+  ],
+  "loop_count": 1,
+  "selected_loop_id": 1,
+  "loop_scan_report": {
+    "total_loops": 1,
+    "skipped_loops": []
+  },
+  "instrument_report": {
+    "instrumented_loop_ids": [
+      1
+    ]
+  },
+  "seahorn_log_dir": "examples/demo_samples_loopy_code2inv_result/133/seahorn_logs",
+  "input_file": "examples/demo_samples_loopy_code2inv/133.c",
+  "output_dir": "examples/demo_samples_loopy_code2inv_result/133"
+}
