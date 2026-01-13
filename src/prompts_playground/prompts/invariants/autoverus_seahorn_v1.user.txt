@@ -1,0 +1,9 @@
+Reference cases (for inspiration):
+${references}
+
+Target code:
+```c
+${code}
+```
+
+Please list the loop invariants for the code above.
