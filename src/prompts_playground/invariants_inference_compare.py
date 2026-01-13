@@ -31,11 +31,56 @@ from evolve_term.llm_client import APILLMClient, LLMUnavailableError
 from evolve_term.prompts_loader import PromptRepository
 from evolve_term.predict import Predictor
 
+from evolve_term.utils import parse_llm_yaml
+
+class PlaygroundPredictor(Predictor):
+    """
+    Subclass of Predictor to support flexible parsing logic for playground experiments
+    and passing LLM parameters (temp, top_p, etc.).
+    """
+    def infer_invariants(self, code: str, references: List[Any], prompt_version: str = "acsl_cot", llm_params: Dict[str, Any] = None) -> List[str]:
+        prompt_name = f"invariants/{prompt_version}"
+        prompt = self.prompt_repo.render(
+            prompt_name,
+            code=code,
+            references=json.dumps([ref.__dict__ for ref in references], ensure_ascii=False, indent=2)
+        )
+        # Apply default max_tokens if not specified
+        if "max_tokens" not in (llm_params or {}):
+            if prompt_version.endswith("_cot") or prompt_version.endswith("_cot_fewshot"):
+                prompt["max_tokens"] = 8192
+        
+        # Merge LLM params into prompt dictionary so TrackingLLMClient can pick them up
+        if llm_params:
+            prompt.update(llm_params)
+
+        response = self.llm_client.complete(prompt)
+        
+        # Flexible Parsing Logic
+        data = parse_llm_yaml(response)
+        invariants = []
+
+        if isinstance(data, dict):
+             # Strategy 1: Standard "invariants" key
+            if "invariants" in data and isinstance(data["invariants"], list):
+                invariants = data["invariants"]
+            # Strategy 2: Singular "invariant" key
+            elif "invariant" in data and isinstance(data["invariant"], list):
+                invariants = data["invariant"]
+            # Other strategies can be added here
+        elif isinstance(data, list):
+            # Strategy 3: Response is a direct list
+            invariants = data
+            
+        print("[Debug] Playground Invariant End...\n")
+        if not invariants:
+            print(f"[Debug] Invariant Parsing Failed or Empty. Raw Response:\n{response}\n")
+            return []
+        return [str(item) for item in invariants if str(item).strip()]
+
 class TrackingLLMClient(APILLMClient):
     """
     A subclass of APILLMClient that tracks usage metrics and latency.
-    Since the base APILLMClient.complete only returns string, we override it 
-    to capture the full response details.
     """
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -50,16 +95,17 @@ class TrackingLLMClient(APILLMClient):
             messages = [{"role": "user", "content": prompt}]
         else:
             # Handle dictionary prompt
-            response_format = prompt.get("response_format")
-            if response_format is not None:
-                request_overrides["response_format"] = response_format
-            
-            max_tokens = prompt.get("max_tokens")
-            if max_tokens is not None:
-                try:
-                    request_overrides["max_tokens"] = int(max_tokens)
-                except (TypeError, ValueError):
-                    pass
+            # Extract common LLM params to pass to the API
+            supported_params = ["response_format", "max_tokens", "temperature", "top_p", "frequency_penalty", "presence_penalty", "stop", "seed"]
+            for param in supported_params:
+                if param in prompt:
+                    val = prompt[param]
+                    # Ensure numeric types are correct if needed, but OpenAI SDK handles mixed types well usually
+                    if param == "max_tokens":
+                         try:
+                            val = int(val)
+                         except: pass
+                    request_overrides[param] = val
             
             if prompt.get("system"):
                 messages.append({"role": "system", "content": prompt["system"]})
@@ -143,19 +189,33 @@ def run_experiments():
     print(f"Results will be appended to: {csv_path}")
 
     # 2. Define Experiments
-    # You can add more experiments here with different prompt_versions or params
+    # Recommended Parameter Groups
+    params_deterministic = {"temperature": 0.0, "top_p": 1.0}
+    params_balanced = {"temperature": 0.7, "top_p": 0.9}
+    params_creative = {"temperature": 1.0, "top_p": 1.0}
+
     experiments = [
+        # Group 1: Deterministic Baseline
         {
-            "name": "Validation_Run_ACSL_CoT",
+            "name": "ACSL_CoT_Deterministic",
             "prompt_version": "acsl_cot",
-            "description": "Baseline CoT prompt copied from main repo"
+            "params": params_deterministic,
+            "description": "Baseline CoT, temp=0"
         },
-        # Example of another experiment (ensure the prompt file exists in playground/prompts/invariants/)
-        # {
-        #     "name": "Experimental_Prompt_V2",
-        #     "prompt_version": "acsl_cot_v2", 
-        #     "description": "Modified systematic analysis"
-        # }
+        # Group 2: Balanced Exploration
+        {
+            "name": "ACSL_CoT_Balanced",
+            "prompt_version": "acsl_cot",
+            "params": params_balanced,
+            "description": "Baseline CoT, temp=0.7"
+        },
+        # Group 3: Creative Exploration
+        {
+            "name": "ACSL_CoT_Creative",
+            "prompt_version": "acsl_cot",
+            "params": params_creative,
+            "description": "Baseline CoT, temp=1.0"
+        }
     ]
 
     # 4. Initialize Components
@@ -169,7 +229,8 @@ def run_experiments():
     # Use a custom prompt repository pointing to playground/prompts
     prompt_repo = PromptRepository(root=prompts_dir)
     
-    predictor = Predictor(llm_client=llm_client, prompt_repo=prompt_repo)
+    # Use PlaygroundPredictor for flexible parsing
+    predictor = PlaygroundPredictor(llm_client=llm_client, prompt_repo=prompt_repo)
 
     # 5. Run Loop
     results = []
@@ -179,7 +240,8 @@ def run_experiments():
     
     csv_columns = [
         "timestamp", "experiment_name", "target_file", "prompt_version", 
-        "model", "latency_ms", "prompt_tokens", "completion_tokens", "total_tokens",
+        "model", "temperature", "top_p", "max_tokens",
+        "latency_ms", "prompt_tokens", "completion_tokens", "total_tokens",
         "invariants_count", "parsed_invariants", "raw_response_snippet"
     ]
 
@@ -191,29 +253,21 @@ def run_experiments():
         for exp in experiments:
             exp_name = exp["name"]
             p_version = exp["prompt_version"]
-            print(f"\n--- Running Experiment: {exp_name} (Prompt: {p_version}) ---")
+            llm_params = exp.get("params", {})
+            
+            print(f"\n--- Running Experiment: {exp_name} (Prompt: {p_version} | Params: {llm_params}) ---")
             
             try:
                 # Run inference
-                # references passed as empty list per requirement
                 invariants = predictor.infer_invariants(
                     code=code_content, 
                     references=[], 
-                    prompt_version=p_version
+                    prompt_version=p_version,
+                    llm_params=llm_params
                 )
                 
                 # Collect metrics
                 meta = llm_client.last_metadata
-                
-                # It's possible infer_invariants parsed the output but we want the raw output too?
-                # predictor doesn't return raw response, but we can't easily get it without modifying Predictor.
-                # However, since we are only using this locally, we can assume the last call to complete 
-                # corresponds to this inference.
-                # NOTE: Predictor calls 'complete', which returns 'content'.
-                # But 'content' is not stored in 'meta' by our TrackingClient (it returns it).
-                # We can't access the specific string output unless we capture it inside complete 
-                # or modify Predictor to return it. 
-                # For now let's log what we have.
                 
                 row = {
                     "timestamp": datetime.datetime.now().isoformat(),
@@ -221,13 +275,16 @@ def run_experiments():
                     "target_file": target_file.name,
                     "prompt_version": p_version,
                     "model": meta.get("model", "unknown"),
+                    "temperature": llm_params.get("temperature", ""),
+                    "top_p": llm_params.get("top_p", ""),
+                    "max_tokens": llm_params.get("max_tokens", ""),
                     "latency_ms": meta.get("latency_ms", 0),
                     "prompt_tokens": meta.get("prompt_tokens", 0),
                     "completion_tokens": meta.get("completion_tokens", 0),
                     "total_tokens": meta.get("total_tokens", 0),
                     "invariants_count": len(invariants),
                     "parsed_invariants": json.dumps(invariants, ensure_ascii=False),
-                    "raw_response_snippet": "" # Not easily accessible without changing Predictor signature, leaving empty for now
+                    "raw_response_snippet": "" 
                 }
                 
                 writer.writerow(row)
