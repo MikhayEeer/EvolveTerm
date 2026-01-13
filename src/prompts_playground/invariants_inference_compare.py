@@ -170,24 +170,6 @@ def run_experiments():
     output_dir = playground_dir / "output"
     output_dir.mkdir(exist_ok=True)
 
-    # 3. Load Data (Target Code)
-    # Configurable test case path (relative to PROJECT_ROOT / "data")
-    test_case_rel_path = "Loopy_dataset_InvarBenchmark/loop_invariants/code2inv/1.c"
-    target_file = PROJECT_ROOT / "data" / test_case_rel_path
-    
-    if not target_file.exists():
-        print(f"[Error] Target file not found: {target_file}")
-        return
-
-    print(f"Loading target code from: {target_file}")
-    code_content = target_file.read_text(encoding="utf-8")
-
-    # Generate CSV filename based on test case path
-    # Replace path separators with dashes for the filename
-    safe_rel_path = test_case_rel_path.replace("/", "-").replace("\\", "-")
-    csv_path = output_dir / f"comparison_results_{safe_rel_path}.csv"
-    print(f"Results will be appended to: {csv_path}")
-
     # 2. Define Experiments
     # Recommended Parameter Groups
     params_deterministic = {"temperature": 0.0, "top_p": 1.0}
@@ -232,12 +214,27 @@ def run_experiments():
     # Use PlaygroundPredictor for flexible parsing
     predictor = PlaygroundPredictor(llm_client=llm_client, prompt_repo=prompt_repo)
 
-    # 5. Run Loop
-    results = []
+    # 3. Batch Processing Setup
+    # Config: Directory or File (Relative to PROJECT_ROOT/data)
+    # Default set to a folder for batch processing, or can be a specific file
+    input_rel_path = "Loopy_dataset_InvarBenchmark/loop_invariants/code2inv" 
+    input_base = PROJECT_ROOT / "data"
+    target_path = input_base / input_rel_path
     
-    # Check if CSV exists to write headers
-    file_exists = csv_path.exists()
-    
+    target_files = []
+    if target_path.is_file():
+        target_files = [target_path]
+    elif target_path.is_dir():
+        # Recursive search for .c files
+        target_files = sorted(list(target_path.rglob("*.c")))
+        # Optional: Limit for testing
+        # target_files = target_files[:1] 
+    else:
+        print(f"[Error] Target path not found: {target_path}")
+        return
+
+    print(f"Found {len(target_files)} files to process in: {target_path}")
+
     csv_columns = [
         "timestamp", "experiment_name", "target_file", "prompt_version", 
         "model", "temperature", "top_p", "max_tokens",
@@ -245,59 +242,80 @@ def run_experiments():
         "invariants_count", "parsed_invariants", "raw_response_snippet"
     ]
 
-    with open(csv_path, mode='a', newline='', encoding='utf-8') as f:
-        writer = csv.DictWriter(f, fieldnames=csv_columns)
-        if not file_exists:
-            writer.writeheader()
+    # 5. Run Loop Iterating over files
+    for idx, target_file in enumerate(target_files):
+        print(f"\n[{idx+1}/{len(target_files)}] Processing: {target_file.name} ...")
+        
+        try:
+            code_content = target_file.read_text(encoding="utf-8")
+        except Exception as e:
+            print(f"Skipping {target_file.name}: Read error {e}")
+            continue
 
-        for exp in experiments:
-            exp_name = exp["name"]
-            p_version = exp["prompt_version"]
-            llm_params = exp.get("params", {})
-            
-            print(f"\n--- Running Experiment: {exp_name} (Prompt: {p_version} | Params: {llm_params}) ---")
-            
-            try:
-                # Run inference
-                invariants = predictor.infer_invariants(
-                    code=code_content, 
-                    references=[], 
-                    prompt_version=p_version,
-                    llm_params=llm_params
-                )
-                
-                # Collect metrics
-                meta = llm_client.last_metadata
-                
-                row = {
-                    "timestamp": datetime.datetime.now().isoformat(),
-                    "experiment_name": exp_name,
-                    "target_file": target_file.name,
-                    "prompt_version": p_version,
-                    "model": meta.get("model", "unknown"),
-                    "temperature": llm_params.get("temperature", ""),
-                    "top_p": llm_params.get("top_p", ""),
-                    "max_tokens": llm_params.get("max_tokens", ""),
-                    "latency_ms": meta.get("latency_ms", 0),
-                    "prompt_tokens": meta.get("prompt_tokens", 0),
-                    "completion_tokens": meta.get("completion_tokens", 0),
-                    "total_tokens": meta.get("total_tokens", 0),
-                    "invariants_count": len(invariants),
-                    "parsed_invariants": json.dumps(invariants, ensure_ascii=False),
-                    "raw_response_snippet": "" 
-                }
-                
-                writer.writerow(row)
-                f.flush() # Ensure write
-                
-                print(f"[Success] {exp_name}: Found {len(invariants)} invariants. (Latency: {row['latency_ms']}ms)")
-                print(f"Invariants: {invariants}")
+        # Determine Output CSV Path (Mirroring directory structure)
+        try:
+            rel_path = target_file.relative_to(input_base)
+        except ValueError:
+            rel_path = Path(target_file.name)
+        
+        # Example: output/Loopy_dataset.../code2inv/1.c.csv
+        file_csv_path = output_dir / rel_path.parent / (rel_path.name + ".csv")
+        file_csv_path.parent.mkdir(parents=True, exist_ok=True)
+        
+        file_exists = file_csv_path.exists()
 
-            except Exception as e:
-                print(f"[Error] Experiment {exp_name} failed: {e}")
-                traceback.print_exc()
+        with open(file_csv_path, mode='a', newline='', encoding='utf-8') as f:
+            writer = csv.DictWriter(f, fieldnames=csv_columns)
+            if not file_exists:
+                writer.writeheader()
 
-    print(f"\nAll experiments finished. Results saved to: {csv_path}")
+            for exp in experiments:
+                exp_name = exp["name"]
+                p_version = exp["prompt_version"]
+                llm_params = exp.get("params", {})
+                
+                print(f"  -> Experiment: {exp_name} ", end="")
+                
+                try:
+                    # Run inference
+                    invariants = predictor.infer_invariants(
+                        code=code_content, 
+                        references=[], 
+                        prompt_version=p_version,
+                        llm_params=llm_params
+                    )
+                    
+                    # Collect metrics
+                    meta = llm_client.last_metadata
+                    
+                    row = {
+                        "timestamp": datetime.datetime.now().isoformat(),
+                        "experiment_name": exp_name,
+                        "target_file": target_file.name,
+                        "prompt_version": p_version,
+                        "model": meta.get("model", "unknown"),
+                        "temperature": llm_params.get("temperature", ""),
+                        "top_p": llm_params.get("top_p", ""),
+                        "max_tokens": llm_params.get("max_tokens", ""),
+                        "latency_ms": meta.get("latency_ms", 0),
+                        "prompt_tokens": meta.get("prompt_tokens", 0),
+                        "completion_tokens": meta.get("completion_tokens", 0),
+                        "total_tokens": meta.get("total_tokens", 0),
+                        "invariants_count": len(invariants),
+                        "parsed_invariants": json.dumps(invariants, ensure_ascii=False),
+                        "raw_response_snippet": "" 
+                    }
+                    
+                    writer.writerow(row)
+                    f.flush()
+                    
+                    print(f"| Found: {len(invariants)} | Latency: {row['latency_ms']}ms")
+
+                except Exception as e:
+                    print(f"| Failed: {e}")
+                    traceback.print_exc()
+
+    print(f"\nAll experiments finished.")
 
 if __name__ == "__main__":
     run_experiments()
