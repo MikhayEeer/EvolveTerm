@@ -163,7 +163,19 @@ class TrackingLLMClient(APILLMClient):
         
         raise LLMUnavailableError(f"LLM provider error after {retry} retries: {last_exception}") from last_exception
 
+import argparse
+
 def run_experiments():
+    # 0. Parse Arguments
+    parser = argparse.ArgumentParser(description="Run invariant inference experiments.")
+    parser.add_argument("--config-tag", type=str, default="default", 
+                        help="Tag in llm_config.json to select which LLM model to use (default: 'default')")
+    parser.add_argument("--input-path", type=str, 
+                        default="Loopy_dataset_InvarBenchmark/loop_invariants/code2inv",
+                        help="Path to C file or directory relative to project data/ folder (default: 'Loopy_dataset_InvarBenchmark/loop_invariants/code2inv')")
+    args = parser.parse_args()
+    config_tag = args.config_tag
+
     # 1. Setup Environment
     playground_dir = CURRENT_FILE.parent
     prompts_dir = playground_dir / "prompts"
@@ -203,7 +215,8 @@ def run_experiments():
     # 4. Initialize Components
     # Load config from default location, but we will wrap the client
     try:
-        llm_client = TrackingLLMClient(config_name="llm_config.json")
+        print(f"Initializing LLM Client with config tag: '{config_tag}'")
+        llm_client = TrackingLLMClient(config_name="llm_config.json", config_tag=config_tag)
     except Exception as e:
         print(f"Failed to initialize LLM Client: {e}")
         return
@@ -217,9 +230,13 @@ def run_experiments():
     # 3. Batch Processing Setup
     # Config: Directory or File (Relative to PROJECT_ROOT/data)
     # Default set to a folder for batch processing, or can be a specific file
-    input_rel_path = "Loopy_dataset_InvarBenchmark/loop_invariants/code2inv" 
+    input_rel_path = args.input_path
     input_base = PROJECT_ROOT / "data"
     target_path = input_base / input_rel_path
+    
+    # Allow absolute paths too if user insists, though help text says relative to data
+    if Path(input_rel_path).is_absolute():
+        target_path = Path(input_rel_path)
     
     target_files = []
     if target_path.is_file():
