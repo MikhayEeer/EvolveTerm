@@ -11,6 +11,7 @@ evolveterm/
 # some LLM service api key
 *.key
 *_config.json
+.*accesskey
 
 # test reports
 report_*.json
