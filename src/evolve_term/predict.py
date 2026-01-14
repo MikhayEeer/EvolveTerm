@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import List
 import json
 from .models import KnowledgeCase
-from .utils import parse_llm_json_array, parse_llm_json_object, parse_llm_yaml
+from .utils import parse_acsl_invariants, parse_llm_json_array, parse_llm_json_object, parse_llm_yaml
 from .exceptions import LLMUnavailableError
 
 class Predictor:
@@ -41,6 +41,8 @@ class Predictor:
         invariants = []
         if isinstance(data, dict) and "invariants" in data:
             invariants = data["invariants"]
+        if not invariants:
+            invariants = parse_acsl_invariants(response)
             
         print("[Debug] Module Predict Invariant End...\n")
         if not invariants:
