@@ -171,6 +171,7 @@ class TrackingLLMClient(APILLMClient):
 
 import argparse
 
+DEFAULT_CONFIG_TAG = "default"
 PROMPT_SYSTEM_SUFFIX = ".system.txt"
 PROMPT_USER_SUFFIX = ".user.txt"
 
@@ -188,33 +189,55 @@ def discover_invariant_prompts(prompts_dir: Path) -> List[str]:
     }
     return sorted(system_files & user_files)
 
-def load_existing_csv_rows(csv_path: Path) -> List[Dict[str, str]]:
-    if not csv_path.exists():
+def parse_cli_list(values: List[str] | None) -> List[str]:
+    if not values:
         return []
+    items: List[str] = []
+    for value in values:
+        for part in value.split(","):
+            part = part.strip()
+            if part:
+                items.append(part)
+    return items
+
+def normalize_config_tag(value: str | None) -> str:
+    tag = (value or "").strip()
+    return tag if tag else DEFAULT_CONFIG_TAG
+
+def load_existing_csv_rows(csv_path: Path) -> tuple[List[Dict[str, str]], List[str]]:
+    if not csv_path.exists():
+        return [], []
     try:
         with open(csv_path, newline='', encoding='utf-8') as f:
             reader = csv.DictReader(f)
-            return list(reader)
+            return list(reader), (reader.fieldnames or [])
     except Exception as exc:
         print(f"[Warning] Failed to read existing CSV {csv_path}: {exc}")
-        return []
+        return [], []
 
 def run_experiments():
     # 0. Parse Arguments
     parser = argparse.ArgumentParser(description="Run invariant inference experiments.")
     parser.add_argument("--config-tag", type=str, default="default", 
                         help="Tag in llm_config.json to select which LLM model to use (default: 'default')")
-    # --config-tags ["default", "deterministic", "balanced", "creative"]
-    # TODO: Add support for multiple tags in future if needed
     parser.add_argument("--input-path", type=str, 
                         default="Loopy_dataset_InvarBenchmark/loop_invariants/code2inv",
                         help="Path to C file or directory relative to project data/ folder (default: 'Loopy_dataset_InvarBenchmark/loop_invariants/code2inv')")
+    parser.add_argument("--config-tags", nargs="*", default=None,
+                        help="Config tags to run in batch (space/comma-separated). Overrides --config-tag when set.")
     parser.add_argument("--prompt-batch", action="store_true",
                         help="Batch all prompts under playground/prompts/invariants/")
     parser.add_argument("--overwrite-used-prompts", action="store_true",
                         help="Overwrite results for prompts already recorded in the output CSV")
+    parser.add_argument("--temp-strategy", type=str, default="all",
+                        choices=["all", "deterministic", "balanced", "creative"],
+                        help="Which temperature strategy to run (default: all)")
     args = parser.parse_args()
-    config_tag = args.config_tag
+    config_tags = parse_cli_list(args.config_tags)
+    if not config_tags:
+        config_tags = [args.config_tag]
+    seen_tags = set()
+    config_tags = [tag for tag in config_tags if not (tag in seen_tags or seen_tags.add(tag))]
 
     # 1. Setup Environment
     playground_dir = CURRENT_FILE.parent
@@ -228,72 +251,41 @@ def run_experiments():
     params_balanced = {"temperature": 0.7, "top_p": 0.9}
     params_creative = {"temperature": 1.0, "top_p": 1.0}
 
-    experiments = [
-        # Group 1: Deterministic Baseline
-        {
-            "name": "ACSL_CoT_Deterministic",
-            "prompt_version": "acsl_cot",
-            "params": params_deterministic,
-            "description": "Baseline CoT, temp=0"
-        },
-        # Group 2: Balanced Exploration
-        {
-            "name": "ACSL_CoT_Balanced",
-            "prompt_version": "acsl_cot",
-            "params": params_balanced,
-            "description": "Baseline CoT, temp=0.7"
-        },
-        # Group 3: Creative Exploration
-        {
-            "name": "ACSL_CoT_Creative",
-            "prompt_version": "acsl_cot",
-            "params": params_creative,
-            "description": "Baseline CoT, temp=1.0"
-        }
-    ]
+    strategy_catalog = {
+        "deterministic": {"label": "Deterministic", "params": params_deterministic, "description": "temp=0"},
+        "balanced": {"label": "Balanced", "params": params_balanced, "description": "temp=0.7"},
+        "creative": {"label": "Creative", "params": params_creative, "description": "temp=1.0"}
+    }
+    if args.temp_strategy == "all":
+        selected_strategies = ["deterministic", "balanced", "creative"]
+    else:
+        selected_strategies = [args.temp_strategy]
+
+    def build_experiments(prompt_version: str, prefix: str | None = None) -> List[Dict[str, Any]]:
+        exp_prefix = prefix or prompt_version
+        result = []
+        for strategy_name in selected_strategies:
+            strategy = strategy_catalog[strategy_name]
+            result.append({
+                "name": f"{exp_prefix}_{strategy['label']}",
+                "prompt_version": prompt_version,
+                "params": strategy["params"],
+                "description": strategy["description"]
+            })
+        return result
+
+    experiments = build_experiments("acsl_cot", prefix="ACSL_CoT")
     if args.prompt_batch:
         prompt_versions = discover_invariant_prompts(prompts_dir)
         if not prompt_versions:
             print(f"[Error] No invariant prompts found in: {prompts_dir / 'invariants'}")
             return
+        print("Prompt batch enabled. Prompts to run:")
+        print(", ".join(prompt_versions))
         experiments = []
         for prompt_version in prompt_versions:
-            experiments.extend([
-                {
-                    "name": f"{prompt_version}_Deterministic",
-                    "prompt_version": prompt_version,
-                    "params": params_deterministic,
-                    "description": "temp=0"
-                },
-                {
-                    "name": f"{prompt_version}_Balanced",
-                    "prompt_version": prompt_version,
-                    "params": params_balanced,
-                    "description": "temp=0.7"
-                },
-                {
-                    "name": f"{prompt_version}_Creative",
-                    "prompt_version": prompt_version,
-                    "params": params_creative,
-                    "description": "temp=1.0"
-                }
-            ])
-    prompt_versions_in_run = {exp["prompt_version"] for exp in experiments}
-
-    # 4. Initialize Components
-    # Load config from default location, but we will wrap the client
-    try:
-        print(f"Initializing LLM Client with config tag: '{config_tag}'")
-        llm_client = TrackingLLMClient(config_name="llm_config.json", config_tag=config_tag)
-    except Exception as e:
-        print(f"Failed to initialize LLM Client: {e}")
-        return
-
-    # Use a custom prompt repository pointing to playground/prompts
-    prompt_repo = PromptRepository(root=prompts_dir)
-    
-    # Use PlaygroundPredictor for flexible parsing
-    predictor = PlaygroundPredictor(llm_client=llm_client, prompt_repo=prompt_repo)
+            experiments.extend(build_experiments(prompt_version))
+    experiment_names_in_run = {exp["name"] for exp in experiments}
 
     # 3. Batch Processing Setup
     # Config: Directory or File (Relative to PROJECT_ROOT/data)
@@ -321,120 +313,145 @@ def run_experiments():
     print(f"Found {len(target_files)} files to process in: {target_path}")
 
     csv_columns = [
-        "timestamp", "experiment_name", "target_file", "prompt_version", 
+        "timestamp", "experiment_name", "target_file", "prompt_version",
+        "config_tag",
         "model", "temperature", "top_p", "max_tokens",
         "latency_ms", "prompt_tokens", "completion_tokens", "total_tokens",
         "invariants_count", "parsed_invariants", "raw_response_snippet"
     ]
 
-    # 5. Run Loop Iterating over files
-    for idx, target_file in enumerate(target_files):
-        print(f"\n[{idx+1}/{len(target_files)}] Processing: {target_file.name} ...")
-        
+    # 4. Run Loop per config tag
+    for config_tag in config_tags:
+        # Initialize Components
+        # Load config from default location, but we will wrap the client
         try:
-            code_content = target_file.read_text(encoding="utf-8")
+            print(f"\nInitializing LLM Client with config tag: '{config_tag}'")
+            llm_client = TrackingLLMClient(config_name="llm_config.json", config_tag=config_tag)
         except Exception as e:
-            print(f"Skipping {target_file.name}: Read error {e}")
+            print(f"Failed to initialize LLM Client: {e}")
             continue
 
-        # Determine Output CSV Path (Mirroring directory structure)
-        try:
-            rel_path = target_file.relative_to(input_base)
-        except ValueError:
-            rel_path = Path(target_file.name)
+        # Use a custom prompt repository pointing to playground/prompts
+        prompt_repo = PromptRepository(root=prompts_dir)
         
-        # Example: output/Loopy_dataset.../code2inv/1.c.csv
-        file_csv_path = output_dir / rel_path.parent / (rel_path.name + ".csv")
-        file_csv_path.parent.mkdir(parents=True, exist_ok=True)
-        
-        file_exists = file_csv_path.exists()
-        existing_rows = load_existing_csv_rows(file_csv_path) if file_exists else []
-        used_prompts = {
-            row.get("prompt_version", "").strip()
-            for row in existing_rows
-            if row.get("prompt_version")
-        }
-        if used_prompts and not args.overwrite_used_prompts:
-            experiments_to_run = [
-                exp for exp in experiments
-                if exp["prompt_version"] not in used_prompts
-            ]
-            skipped = sorted(
-                {exp["prompt_version"] for exp in experiments} & used_prompts
-            )
-            if skipped:
-                print(f"  -> Skipping prompts already recorded: {', '.join(skipped)}")
-            if not experiments_to_run:
-                print("  -> Skipping file (all prompts already recorded). Use --overwrite-used-prompts to rerun.")
+        # Use PlaygroundPredictor for flexible parsing
+        predictor = PlaygroundPredictor(llm_client=llm_client, prompt_repo=prompt_repo)
+
+        # 5. Run Loop Iterating over files
+        for idx, target_file in enumerate(target_files):
+            print(f"\n[{idx+1}/{len(target_files)}] Processing: {target_file.name} ...")
+            
+            try:
+                code_content = target_file.read_text(encoding="utf-8")
+            except Exception as e:
+                print(f"Skipping {target_file.name}: Read error {e}")
                 continue
+
+            # Determine Output CSV Path (Mirroring directory structure)
+            try:
+                rel_path = target_file.relative_to(input_base)
+            except ValueError:
+                rel_path = Path(target_file.name)
+            
+            # Example: output/Loopy_dataset.../code2inv/1.c.csv
+            file_csv_path = output_dir / rel_path.parent / (rel_path.name + ".csv")
+            file_csv_path.parent.mkdir(parents=True, exist_ok=True)
+            
+            file_exists = file_csv_path.exists()
+            existing_rows, existing_fieldnames = load_existing_csv_rows(file_csv_path) if file_exists else ([], [])
+            needs_header_upgrade = file_exists and "config_tag" not in existing_fieldnames
+            used_experiments = {
+                row.get("experiment_name", "").strip()
+                for row in existing_rows
+                if row.get("experiment_name")
+                and normalize_config_tag(row.get("config_tag")) == config_tag
+            }
+            if used_experiments and not args.overwrite_used_prompts:
+                experiments_to_run = [
+                    exp for exp in experiments
+                    if exp["name"] not in used_experiments
+                ]
+                skipped = sorted(
+                    {exp["name"] for exp in experiments} & used_experiments
+                )
+                if skipped:
+                    print(f"  -> Skipping experiments already recorded: {', '.join(skipped)}")
+                if not experiments_to_run:
+                    print("  -> Skipping file (all experiments already recorded). Use --overwrite-used-prompts to rerun.")
+                    continue
+            else:
+                experiments_to_run = experiments
+
             file_mode = 'a'
             kept_rows = []
-        else:
-            experiments_to_run = experiments
-            if args.overwrite_used_prompts and file_exists:
-                kept_rows = [
-                    row for row in existing_rows
-                    if row.get("prompt_version") not in prompt_versions_in_run
-                ]
+            if file_exists and (args.overwrite_used_prompts or needs_header_upgrade):
+                if args.overwrite_used_prompts:
+                    kept_rows = [
+                        row for row in existing_rows
+                        if not (
+                            row.get("experiment_name", "").strip() in experiment_names_in_run
+                            and normalize_config_tag(row.get("config_tag")) == config_tag
+                        )
+                    ]
+                else:
+                    kept_rows = existing_rows
                 file_mode = 'w'
-            else:
-                kept_rows = []
-                file_mode = 'a'
 
-        with open(file_csv_path, mode=file_mode, newline='', encoding='utf-8') as f:
-            writer = csv.DictWriter(f, fieldnames=csv_columns, extrasaction="ignore")
-            if file_mode == 'w':
-                writer.writeheader()
-                if kept_rows:
-                    writer.writerows(kept_rows)
-            elif not file_exists:
-                writer.writeheader()
+            with open(file_csv_path, mode=file_mode, newline='', encoding='utf-8') as f:
+                writer = csv.DictWriter(f, fieldnames=csv_columns, extrasaction="ignore")
+                if file_mode == 'w':
+                    writer.writeheader()
+                    if kept_rows:
+                        writer.writerows(kept_rows)
+                elif not file_exists:
+                    writer.writeheader()
 
-            for exp in experiments_to_run:
-                exp_name = exp["name"]
-                p_version = exp["prompt_version"]
-                llm_params = exp.get("params", {})
-                
-                print(f"  -> Experiment: {exp_name} ", end="")
-                
-                try:
-                    # Run inference
-                    invariants = predictor.infer_invariants(
-                        code=code_content, 
-                        references=[], 
-                        prompt_version=p_version,
-                        llm_params=llm_params
-                    )
+                for exp in experiments_to_run:
+                    exp_name = exp["name"]
+                    p_version = exp["prompt_version"]
+                    llm_params = exp.get("params", {})
                     
-                    # Collect metrics
-                    meta = llm_client.last_metadata
+                    print(f"  -> Experiment: {exp_name} ", end="")
                     
-                    row = {
-                        "timestamp": datetime.datetime.now().isoformat(),
-                        "experiment_name": exp_name,
-                        "target_file": target_file.name,
-                        "prompt_version": p_version,
-                        "model": meta.get("model", "unknown"),
-                        "temperature": llm_params.get("temperature", ""),
-                        "top_p": llm_params.get("top_p", ""),
-                        "max_tokens": llm_params.get("max_tokens", ""),
-                        "latency_ms": meta.get("latency_ms", 0),
-                        "prompt_tokens": meta.get("prompt_tokens", 0),
-                        "completion_tokens": meta.get("completion_tokens", 0),
-                        "total_tokens": meta.get("total_tokens", 0),
-                        "invariants_count": len(invariants),
-                        "parsed_invariants": json.dumps(invariants, ensure_ascii=False),
-                        "raw_response_snippet": "" 
-                    }
-                    
-                    writer.writerow(row)
-                    f.flush()
-                    
-                    print(f"| Found: {len(invariants)} | Latency: {row['latency_ms']}ms")
+                    try:
+                        # Run inference
+                        invariants = predictor.infer_invariants(
+                            code=code_content, 
+                            references=[], 
+                            prompt_version=p_version,
+                            llm_params=llm_params
+                        )
+                        
+                        # Collect metrics
+                        meta = llm_client.last_metadata
+                        
+                        row = {
+                            "timestamp": datetime.datetime.now().isoformat(),
+                            "experiment_name": exp_name,
+                            "target_file": target_file.name,
+                            "prompt_version": p_version,
+                            "config_tag": config_tag,
+                            "model": meta.get("model", "unknown"),
+                            "temperature": llm_params.get("temperature", ""),
+                            "top_p": llm_params.get("top_p", ""),
+                            "max_tokens": llm_params.get("max_tokens", ""),
+                            "latency_ms": meta.get("latency_ms", 0),
+                            "prompt_tokens": meta.get("prompt_tokens", 0),
+                            "completion_tokens": meta.get("completion_tokens", 0),
+                            "total_tokens": meta.get("total_tokens", 0),
+                            "invariants_count": len(invariants),
+                            "parsed_invariants": json.dumps(invariants, ensure_ascii=False),
+                            "raw_response_snippet": "" 
+                        }
+                        
+                        writer.writerow(row)
+                        f.flush()
+                        
+                        print(f"| Found: {len(invariants)} | Latency: {row['latency_ms']}ms")
 
-                except Exception as e:
-                    print(f"| Failed: {e}")
-                    traceback.print_exc()
+                    except Exception as e:
+                        print(f"| Failed: {e}")
+                        traceback.print_exc()
 
     print(f"\nAll experiments finished.")
 
