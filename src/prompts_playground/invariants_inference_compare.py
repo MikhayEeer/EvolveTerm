@@ -38,7 +38,12 @@ class PlaygroundPredictor(Predictor):
     Subclass of Predictor to support flexible parsing logic for playground experiments
     and passing LLM parameters (temp, top_p, etc.).
     """
-    def infer_invariants(self, code: str, references: List[Any], prompt_version: str = "acsl_cot", llm_params: Dict[str, Any] = None) -> List[str]:
+    def infer_invariants(self, code: str, 
+                         references: List[Any], 
+                         prompt_version: str = "acsl_cot", 
+                         llm_params: Dict[str, Any] = None) -> List[str]:
+        # using prompt_version to select prompt template
+        # TODO: Add support for different prompt versions, or batch use different prompts
         prompt_name = f"invariants/{prompt_version}"
         prompt = self.prompt_repo.render(
             prompt_name,
@@ -46,9 +51,10 @@ class PlaygroundPredictor(Predictor):
             references=json.dumps([ref.__dict__ for ref in references], ensure_ascii=False, indent=2)
         )
         # Apply default max_tokens if not specified
+        # default max_tokens is 2048
         if "max_tokens" not in (llm_params or {}):
             if prompt_version.endswith("_cot") or prompt_version.endswith("_cot_fewshot"):
-                prompt["max_tokens"] = 8192
+                prompt["max_tokens"] = 4096
         
         # Merge LLM params into prompt dictionary so TrackingLLMClient can pick them up
         if llm_params:
@@ -170,6 +176,8 @@ def run_experiments():
     parser = argparse.ArgumentParser(description="Run invariant inference experiments.")
     parser.add_argument("--config-tag", type=str, default="default", 
                         help="Tag in llm_config.json to select which LLM model to use (default: 'default')")
+    # --config-tags ["default", "deterministic", "balanced", "creative"]
+    # TODO: Add support for multiple tags in future if needed
     parser.add_argument("--input-path", type=str, 
                         default="Loopy_dataset_InvarBenchmark/loop_invariants/code2inv",
                         help="Path to C file or directory relative to project data/ folder (default: 'Loopy_dataset_InvarBenchmark/loop_invariants/code2inv')")
