@@ -1,0 +1,10 @@
+timestamp,experiment_name,target_file,prompt_version,model,temperature,top_p,max_tokens,latency_ms,prompt_tokens,completion_tokens,total_tokens,invariants_count,parsed_invariants,raw_response_snippet
+2026-01-14T00:28:39.413263,ACSL_CoT_Deterministic,9.c,acsl_cot,qwen3-max,0.0,1.0,,69530.5,565,2569,3134,3,"[""x >= 0"", ""y >= 0"", ""-2 <= x - y <= 2""]",
+2026-01-14T00:29:58.084630,ACSL_CoT_Balanced,9.c,acsl_cot,qwen3-max,0.7,0.9,,78663.55,565,2716,3281,4,"[""x >= 0"", ""y >= 0"", ""x - y <= 2"", ""x - y >= -2""]",
+2026-01-14T00:31:01.821546,ACSL_CoT_Creative,9.c,acsl_cot,qwen3-max,1.0,1.0,,63730.5,565,1999,2564,4,"[""x >= 0"", ""y >= 0"", ""x - y >= -2"", ""x - y <= 2""]",
+2026-01-14T15:38:02.258299,ACSL_CoT_Deterministic,9.c,acsl_cot,glm-4.7,0.0,1.0,,24376.9,557,1080,1637,6,"[""\\at(x, Pre) - x == \\at(y, Pre) - y"", ""x - y == \\at(x, Pre) - \\at(y, Pre)"", ""x >= 0"", ""y >= 0"", ""x % 2 == \\at(x, Pre) % 2"", ""y % 2 == \\at(y, Pre) % 2""]",
+2026-01-14T15:38:48.199518,ACSL_CoT_Balanced,9.c,acsl_cot,glm-4.7,0.7,0.9,,45933.2,557,2192,2749,4,"[""x >= 0"", ""y >= 0"", ""x - y <= 2"", ""x - y >= -2""]",
+2026-01-14T15:39:07.837710,ACSL_CoT_Creative,9.c,acsl_cot,glm-4.7,1.0,1.0,,19633.77,557,1236,1793,5,"[""x % 2 == 0"", ""y % 2 == 0"", ""x - y == \\old(x) - \\old(y)"", ""x >= 0"", ""y >= 0""]",
+2026-01-14T16:08:03.534681,ACSL_CoT_Deterministic,9.c,acsl_cot,kimi-k2-thinking,0.0,1.0,,288849.48,555,5413,5968,0,[],
+2026-01-14T16:12:55.208254,ACSL_CoT_Balanced,9.c,acsl_cot,kimi-k2-thinking,0.7,0.9,,291673.06,555,4628,5183,0,[],
+2026-01-14T16:17:44.451142,ACSL_CoT_Creative,9.c,acsl_cot,kimi-k2-thinking,1.0,1.0,,289242.49,555,5054,5609,0,[],

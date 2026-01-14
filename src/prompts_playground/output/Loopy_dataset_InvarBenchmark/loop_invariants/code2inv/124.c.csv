@@ -1,0 +1,10 @@
+timestamp,experiment_name,target_file,prompt_version,model,temperature,top_p,max_tokens,latency_ms,prompt_tokens,completion_tokens,total_tokens,invariants_count,parsed_invariants,raw_response_snippet
+2026-01-13T18:24:29.846942,ACSL_CoT_Deterministic,124.c,acsl_cot,qwen3-max,0.0,1.0,,74672.48,552,2193,2745,1,"[""x - y == i - j""]",
+2026-01-13T18:25:05.287314,ACSL_CoT_Balanced,124.c,acsl_cot,qwen3-max,0.7,0.9,,35436.32,552,1032,1584,1,"[""x - y == i - j""]",
+2026-01-13T18:25:28.703496,ACSL_CoT_Creative,124.c,acsl_cot,qwen3-max,1.0,1.0,,23412.9,552,820,1372,1,"[""x - y == i - j""]",
+2026-01-13T22:42:29.666452,ACSL_CoT_Deterministic,124.c,acsl_cot,kimi-k2-thinking,0.0,1.0,,284449.41,540,11161,11701,2,"[""y - x == j - i"", ""0 <= i - x""]",
+2026-01-13T22:47:18.619879,ACSL_CoT_Balanced,124.c,acsl_cot,kimi-k2-thinking,0.7,0.9,,288952.98,540,9959,10499,0,[],
+2026-01-13T22:51:03.710432,ACSL_CoT_Creative,124.c,acsl_cot,kimi-k2-thinking,1.0,1.0,,225088.68,540,8045,8585,2,"[""x - y == i - j"", ""i - x >= 0""]",
+2026-01-14T13:54:30.284767,ACSL_CoT_Deterministic,124.c,acsl_cot,glm-4.7,0.0,1.0,,11045.8,542,757,1299,3,"[""i - x == j - y"", ""x >= 0"", ""y >= 0""]",
+2026-01-14T13:54:44.288024,ACSL_CoT_Balanced,124.c,acsl_cot,glm-4.7,0.7,0.9,,13998.73,542,967,1509,1,"[""x - y == i - j""]",
+2026-01-14T13:54:53.650694,ACSL_CoT_Creative,124.c,acsl_cot,glm-4.7,1.0,1.0,,9360.27,542,582,1124,4,"[""y - x == j - i"", ""y == j - i + x"", ""x >= 0"", ""y >= 0""]",

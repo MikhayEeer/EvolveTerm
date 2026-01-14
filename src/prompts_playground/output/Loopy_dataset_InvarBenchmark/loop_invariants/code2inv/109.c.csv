@@ -1,0 +1,10 @@
+timestamp,experiment_name,target_file,prompt_version,model,temperature,top_p,max_tokens,latency_ms,prompt_tokens,completion_tokens,total_tokens,invariants_count,parsed_invariants,raw_response_snippet
+2026-01-13T17:33:46.893084,ACSL_CoT_Deterministic,109.c,acsl_cot,qwen3-max,0.0,1.0,,117577.31,537,3150,3687,2,"[""k >= 0"", ""k == 0 || m >= a""]",
+2026-01-13T17:34:54.400891,ACSL_CoT_Balanced,109.c,acsl_cot,qwen3-max,0.7,0.9,,67500.8,537,2239,2776,2,"[""k >= 0"", ""k == 0 || m >= a""]",
+2026-01-13T17:37:17.017092,ACSL_CoT_Creative,109.c,acsl_cot,qwen3-max,1.0,1.0,,142603.44,537,3858,4395,2,"[""k >= 0"", ""k == 0 || m >= a""]",
+2026-01-13T19:19:53.672386,ACSL_CoT_Deterministic,109.c,acsl_cot,kimi-k2-thinking,0.0,1.0,,258302.72,525,12343,12868,3,"[""0 <= k && (c > 0 ==> k <= c)"", ""m >= \\at(m, LoopEntry)"", ""k > 0 ==> m >= a""]",
+2026-01-13T19:24:03.311062,ACSL_CoT_Balanced,109.c,acsl_cot,kimi-k2-thinking,0.7,0.9,,249635.92,525,11918,12443,2,"[""0 <= k && (c <= 0 || k <= c)"", ""k > 0 ==> m >= a""]",
+2026-01-13T19:27:44.679572,ACSL_CoT_Creative,109.c,acsl_cot,kimi-k2-thinking,1.0,1.0,,221366.55,525,9139,9664,2,"[""0 <= k && k <= c"", ""k > 0 ==> m >= a""]",
+2026-01-14T13:45:02.258206,ACSL_CoT_Deterministic,109.c,acsl_cot,glm-4.7,0.0,1.0,,11866.4,527,941,1468,2,"[""0 <= k && k <= c"", ""a <= m""]",
+2026-01-14T13:45:15.119425,ACSL_CoT_Balanced,109.c,acsl_cot,glm-4.7,0.7,0.9,,12859.42,527,294,821,2,"[""0 <= k && k <= c"", ""m >= a""]",
+2026-01-14T13:45:30.181501,ACSL_CoT_Creative,109.c,acsl_cot,glm-4.7,1.0,1.0,,15060.09,527,443,970,2,"[""k >= 0 && k <= c"", ""m >= a""]",

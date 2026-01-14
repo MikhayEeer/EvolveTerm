@@ -1,0 +1,10 @@
+timestamp,experiment_name,target_file,prompt_version,model,temperature,top_p,max_tokens,latency_ms,prompt_tokens,completion_tokens,total_tokens,invariants_count,parsed_invariants,raw_response_snippet
+2026-01-13T16:50:53.196438,ACSL_CoT_Deterministic,1.c,acsl_cot,qwen3-max,0.0,1.0,,74096.96,539,2336,2875,4,"[""y >= 0"", ""x >= 1"", ""x >= y"", ""2 * x == y * (y - 1) + 2""]",
+2026-01-13T16:52:04.070883,ACSL_CoT_Balanced,1.c,acsl_cot,qwen3-max,0.7,0.9,,70868.74,539,2240,2779,3,"[""2*x == y*y - y + 2"", ""x >= y"", ""y >= 0""]",
+2026-01-13T16:53:07.371691,ACSL_CoT_Creative,1.c,acsl_cot,qwen3-max,1.0,1.0,,63293.82,539,2412,2951,4,"[""2 * x == y * (y - 1) + 2"", ""x >= y"", ""y >= 0"", ""x >= 1""]",
+2026-01-13T17:07:11.862935,ACSL_CoT_Deterministic,1.c,acsl_cot,kimi-k2-thinking,0.0,1.0,,290238.67,525,5959,6484,0,[],
+2026-01-13T17:17:00.122741,ACSL_CoT_Balanced,1.c,acsl_cot,kimi-k2-thinking,0.7,0.9,,588257.13,525,8489,9014,4,"[""0 <= y && y < 100000"", ""x == 1 + y*(y-1)/2"", ""x >= y"", ""x > 0""]",
+2026-01-13T17:21:49.902421,ACSL_CoT_Creative,1.c,acsl_cot,kimi-k2-thinking,1.0,1.0,,289778.28,525,6542,7067,0,[],
+2026-01-14T13:36:21.597045,ACSL_CoT_Deterministic,1.c,acsl_cot,glm-4.7,0.0,1.0,,53774.47,527,1661,2188,3,"[""0 <= y && y <= 100000"", ""x == y*(y-1)/2 + 1"", ""x >= y""]",
+2026-01-14T13:36:34.920310,ACSL_CoT_Balanced,1.c,acsl_cot,glm-4.7,0.7,0.9,,13320.41,527,1146,1673,3,"[""0 <= y && y <= 100000"", ""x == (y*y - y + 2) / 2"", ""x > 0""]",
+2026-01-14T13:36:48.374016,ACSL_CoT_Creative,1.c,acsl_cot,glm-4.7,1.0,1.0,,13450.5,527,935,1462,3,"[""y >= 0"", ""2*x == y*y - y + 2"", ""x >= y""]",
