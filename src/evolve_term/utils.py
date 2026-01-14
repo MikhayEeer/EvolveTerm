@@ -1,4 +1,5 @@
 import json
+import re
 import yaml
 
 def strip_markdown_fences(text: str) -> str:
@@ -90,10 +91,23 @@ def parse_llm_yaml(response_text: str) -> dict | None:
         return None
 
 
+def parse_acsl_invariants(response_text: str) -> list[str]:
+    cleaned = strip_markdown_fences(response_text)
+    invariants: list[str] = []
+    pattern = re.compile(r"\bloop invariant\b\s*(.*?);", re.IGNORECASE)
+    for match in pattern.finditer(cleaned):
+        expr = match.group(1).strip()
+        expr = expr.replace("*/", "").strip()
+        if expr.startswith(":"):
+            expr = expr[1:].strip()
+        if expr:
+            invariants.append(expr)
+    return invariants
+
+
 class LiteralDumper(yaml.SafeDumper):
     """Custom YAML Dumper that uses block style for multiline strings."""
     def represent_scalar(self, tag, value, style=None):
         if "\n" in value and tag == 'tag:yaml.org,2002:str':
             style = '|'
         return super().represent_scalar(tag, value, style)
-

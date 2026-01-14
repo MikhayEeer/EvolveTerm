@@ -31,7 +31,7 @@ from evolve_term.llm_client import APILLMClient, LLMUnavailableError
 from evolve_term.prompts_loader import PromptRepository
 from evolve_term.predict import Predictor
 
-from evolve_term.utils import parse_llm_yaml
+from evolve_term.utils import parse_acsl_invariants, parse_llm_yaml
 
 class PlaygroundPredictor(Predictor):
     """
@@ -79,6 +79,8 @@ class PlaygroundPredictor(Predictor):
             invariants = data
             
         print("[Debug] Playground Invariant End...\n")
+        if not invariants:
+            invariants = parse_acsl_invariants(response)
         if not invariants:
             print(f"[Debug] Invariant Parsing Failed or Empty. Raw Response:\n{response}\n")
             return []
