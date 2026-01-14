@@ -171,6 +171,34 @@ class TrackingLLMClient(APILLMClient):
 
 import argparse
 
+PROMPT_SYSTEM_SUFFIX = ".system.txt"
+PROMPT_USER_SUFFIX = ".user.txt"
+
+def discover_invariant_prompts(prompts_dir: Path) -> List[str]:
+    invariant_dir = prompts_dir / "invariants"
+    if not invariant_dir.exists():
+        return []
+    system_files = {
+        path.name[:-len(PROMPT_SYSTEM_SUFFIX)]
+        for path in invariant_dir.glob(f"*{PROMPT_SYSTEM_SUFFIX}")
+    }
+    user_files = {
+        path.name[:-len(PROMPT_USER_SUFFIX)]
+        for path in invariant_dir.glob(f"*{PROMPT_USER_SUFFIX}")
+    }
+    return sorted(system_files & user_files)
+
+def load_existing_csv_rows(csv_path: Path) -> List[Dict[str, str]]:
+    if not csv_path.exists():
+        return []
+    try:
+        with open(csv_path, newline='', encoding='utf-8') as f:
+            reader = csv.DictReader(f)
+            return list(reader)
+    except Exception as exc:
+        print(f"[Warning] Failed to read existing CSV {csv_path}: {exc}")
+        return []
+
 def run_experiments():
     # 0. Parse Arguments
     parser = argparse.ArgumentParser(description="Run invariant inference experiments.")
@@ -181,6 +209,10 @@ def run_experiments():
     parser.add_argument("--input-path", type=str, 
                         default="Loopy_dataset_InvarBenchmark/loop_invariants/code2inv",
                         help="Path to C file or directory relative to project data/ folder (default: 'Loopy_dataset_InvarBenchmark/loop_invariants/code2inv')")
+    parser.add_argument("--prompt-batch", action="store_true",
+                        help="Batch all prompts under playground/prompts/invariants/")
+    parser.add_argument("--overwrite-used-prompts", action="store_true",
+                        help="Overwrite results for prompts already recorded in the output CSV")
     args = parser.parse_args()
     config_tag = args.config_tag
 
@@ -219,6 +251,34 @@ def run_experiments():
             "description": "Baseline CoT, temp=1.0"
         }
     ]
+    if args.prompt_batch:
+        prompt_versions = discover_invariant_prompts(prompts_dir)
+        if not prompt_versions:
+            print(f"[Error] No invariant prompts found in: {prompts_dir / 'invariants'}")
+            return
+        experiments = []
+        for prompt_version in prompt_versions:
+            experiments.extend([
+                {
+                    "name": f"{prompt_version}_Deterministic",
+                    "prompt_version": prompt_version,
+                    "params": params_deterministic,
+                    "description": "temp=0"
+                },
+                {
+                    "name": f"{prompt_version}_Balanced",
+                    "prompt_version": prompt_version,
+                    "params": params_balanced,
+                    "description": "temp=0.7"
+                },
+                {
+                    "name": f"{prompt_version}_Creative",
+                    "prompt_version": prompt_version,
+                    "params": params_creative,
+                    "description": "temp=1.0"
+                }
+            ])
+    prompt_versions_in_run = {exp["prompt_version"] for exp in experiments}
 
     # 4. Initialize Components
     # Load config from default location, but we will wrap the client
@@ -288,13 +348,49 @@ def run_experiments():
         file_csv_path.parent.mkdir(parents=True, exist_ok=True)
         
         file_exists = file_csv_path.exists()
+        existing_rows = load_existing_csv_rows(file_csv_path) if file_exists else []
+        used_prompts = {
+            row.get("prompt_version", "").strip()
+            for row in existing_rows
+            if row.get("prompt_version")
+        }
+        if used_prompts and not args.overwrite_used_prompts:
+            experiments_to_run = [
+                exp for exp in experiments
+                if exp["prompt_version"] not in used_prompts
+            ]
+            skipped = sorted(
+                {exp["prompt_version"] for exp in experiments} & used_prompts
+            )
+            if skipped:
+                print(f"  -> Skipping prompts already recorded: {', '.join(skipped)}")
+            if not experiments_to_run:
+                print("  -> Skipping file (all prompts already recorded). Use --overwrite-used-prompts to rerun.")
+                continue
+            file_mode = 'a'
+            kept_rows = []
+        else:
+            experiments_to_run = experiments
+            if args.overwrite_used_prompts and file_exists:
+                kept_rows = [
+                    row for row in existing_rows
+                    if row.get("prompt_version") not in prompt_versions_in_run
+                ]
+                file_mode = 'w'
+            else:
+                kept_rows = []
+                file_mode = 'a'
 
-        with open(file_csv_path, mode='a', newline='', encoding='utf-8') as f:
-            writer = csv.DictWriter(f, fieldnames=csv_columns)
-            if not file_exists:
+        with open(file_csv_path, mode=file_mode, newline='', encoding='utf-8') as f:
+            writer = csv.DictWriter(f, fieldnames=csv_columns, extrasaction="ignore")
+            if file_mode == 'w':
+                writer.writeheader()
+                if kept_rows:
+                    writer.writerows(kept_rows)
+            elif not file_exists:
                 writer.writeheader()
 
-            for exp in experiments:
+            for exp in experiments_to_run:
                 exp_name = exp["name"]
                 p_version = exp["prompt_version"]
                 llm_params = exp.get("params", {})
