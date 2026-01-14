@@ -1,0 +1,10 @@
+timestamp,experiment_name,target_file,prompt_version,model,temperature,top_p,max_tokens,latency_ms,prompt_tokens,completion_tokens,total_tokens,invariants_count,parsed_invariants,raw_response_snippet
+2026-01-13T23:40:41.648986,ACSL_CoT_Deterministic,83.c,acsl_cot,qwen3-max,0.0,1.0,,180685.06,532,5316,5848,2,"[""x < 0"", ""2*x - y*y + y == \\at(2*x - y*y + y, Pre)""]",
+2026-01-13T23:41:46.323149,ACSL_CoT_Balanced,83.c,acsl_cot,qwen3-max,0.7,0.9,,64668.55,532,1867,2399,2,"[""y * (y - 1) - 2 * x == 10000"", ""y >= 0""]",
+2026-01-13T23:44:48.767929,ACSL_CoT_Creative,83.c,acsl_cot,qwen3-max,1.0,1.0,,182436.57,532,5237,5769,2,"[""y >= 0"", ""-2 * x + y * y - y == 10000""]",
+2026-01-14T14:26:51.436738,ACSL_CoT_Deterministic,83.c,acsl_cot,kimi-k2-thinking,0.0,1.0,,589960.92,519,2405,2924,0,[],
+2026-01-14T14:31:41.652641,ACSL_CoT_Balanced,83.c,acsl_cot,kimi-k2-thinking,0.7,0.9,,290215.46,519,3603,4122,0,[],
+2026-01-14T14:36:32.991049,ACSL_CoT_Creative,83.c,acsl_cot,kimi-k2-thinking,1.0,1.0,,291337.99,519,3703,4222,0,[],
+2026-01-14T15:24:36.082625,ACSL_CoT_Deterministic,83.c,acsl_cot,glm-4.7,0.0,1.0,,16006.44,521,1113,1634,1,"[""y >= 0""]",
+2026-01-14T15:24:56.002719,ACSL_CoT_Balanced,83.c,acsl_cot,glm-4.7,0.7,0.9,,19915.81,521,1582,2103,2,"[""2*x - y*y + y == -10000 - \\old(y)*\\old(y) + \\old(y)"", ""y == \\old(y) + \\iterations""]",
+2026-01-14T15:25:24.813879,ACSL_CoT_Creative,83.c,acsl_cot,glm-4.7,1.0,1.0,,28807.76,521,2090,2611,0,[],

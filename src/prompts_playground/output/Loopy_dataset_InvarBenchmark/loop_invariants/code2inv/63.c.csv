@@ -1,0 +1,10 @@
+timestamp,experiment_name,target_file,prompt_version,model,temperature,top_p,max_tokens,latency_ms,prompt_tokens,completion_tokens,total_tokens,invariants_count,parsed_invariants,raw_response_snippet
+2026-01-13T22:18:37.256941,ACSL_CoT_Deterministic,63.c,acsl_cot,qwen3-max,0.0,1.0,,115976.37,511,4048,4559,4,"[""x >= 1"", ""x <= 11"", ""y == 11 - x"", ""y >= 0""]",
+2026-01-13T22:20:36.642649,ACSL_CoT_Balanced,63.c,acsl_cot,qwen3-max,0.7,0.9,,119373.02,511,3808,4319,4,"[""x + y == 11"", ""x >= 1"", ""x <= 11"", ""y >= 0""]",
+2026-01-13T22:22:09.874976,ACSL_CoT_Creative,63.c,acsl_cot,qwen3-max,1.0,1.0,,93223.12,511,3766,4277,4,"[""x + y == 11"", ""x >= 1"", ""x <= 11"", ""y >= 0""]",
+2026-01-14T09:56:48.908223,ACSL_CoT_Deterministic,63.c,acsl_cot,kimi-k2-thinking,0.0,1.0,,288831.55,498,9037,9535,0,[],
+2026-01-14T10:00:29.952009,ACSL_CoT_Balanced,63.c,acsl_cot,kimi-k2-thinking,0.7,0.9,,221041.57,498,6429,6927,2,"[""1 <= x && x <= 11"", ""x >= 2 ==> y == 11 - x""]",
+2026-01-14T10:05:18.782250,ACSL_CoT_Creative,63.c,acsl_cot,kimi-k2-thinking,1.0,1.0,,288829.82,498,5986,6484,0,[],
+2026-01-14T15:04:27.486807,ACSL_CoT_Deterministic,63.c,acsl_cot,glm-4.7,0.0,1.0,,16694.4,500,794,1294,6,"[""x == 1"", ""x + y == 11"", ""1 <= x"", ""x <= 11"", ""0 <= y"", ""y <= 10""]",
+2026-01-14T15:04:45.035741,ACSL_CoT_Balanced,63.c,acsl_cot,glm-4.7,0.7,0.9,,17545.31,500,933,1433,3,"[""x + y == 11"", ""y >= 0"", ""x >= 1""]",
+2026-01-14T15:05:00.482356,ACSL_CoT_Creative,63.c,acsl_cot,glm-4.7,1.0,1.0,,15443.29,500,740,1240,5,"[""x + y == 11"", ""x >= 2"", ""x <= 11"", ""y >= 0"", ""y <= 9""]",

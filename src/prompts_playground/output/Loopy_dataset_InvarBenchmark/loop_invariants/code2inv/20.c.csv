@@ -1,0 +1,10 @@
+timestamp,experiment_name,target_file,prompt_version,model,temperature,top_p,max_tokens,latency_ms,prompt_tokens,completion_tokens,total_tokens,invariants_count,parsed_invariants,raw_response_snippet
+2026-01-13T19:37:58.750683,ACSL_CoT_Deterministic,20.c,acsl_cot,qwen3-max,0.0,1.0,,52762.69,546,1526,2072,4,"[""x >= 0"", ""x <= n"", ""m >= 0"", ""m <= x""]",
+2026-01-13T19:40:10.719537,ACSL_CoT_Balanced,20.c,acsl_cot,qwen3-max,0.7,0.9,,131956.83,546,3873,4419,3,"[""x >= 0"", ""m >= 0"", ""m <= x""]",
+2026-01-13T19:41:32.945305,ACSL_CoT_Creative,20.c,acsl_cot,qwen3-max,1.0,1.0,,82217.6,546,2431,2977,2,"[""0 <= x <= n"", ""0 <= m <= x""]",
+2026-01-14T02:32:09.203358,ACSL_CoT_Deterministic,20.c,acsl_cot,kimi-k2-thinking,0.0,1.0,,289000.99,535,12095,12630,0,[],
+2026-01-14T02:36:38.484401,ACSL_CoT_Balanced,20.c,acsl_cot,kimi-k2-thinking,0.7,0.9,,269277.1,535,10980,11515,5,"[""0 <= x"", ""0 <= m"", ""m <= x"", ""0 <= x && (n > 0 ==> x <= n)"", ""0 <= m && (n > 0 ==> m < n)""]",
+2026-01-14T02:41:27.313886,ACSL_CoT_Creative,20.c,acsl_cot,kimi-k2-thinking,1.0,1.0,,288828.97,535,10233,10768,0,[],
+2026-01-14T14:15:36.810773,ACSL_CoT_Deterministic,20.c,acsl_cot,glm-4.7,0.0,1.0,,57178.59,537,1154,1691,4,"[""0 <= x"", ""x <= n"", ""m >= 0"", ""m <= x""]",
+2026-01-14T14:15:42.353700,ACSL_CoT_Balanced,20.c,acsl_cot,glm-4.7,0.7,0.9,,5540.66,537,389,926,5,"[""0 <= x"", ""x <= n"", ""m >= 0"", ""m <= x"", ""m <= n""]",
+2026-01-14T14:15:51.898501,ACSL_CoT_Creative,20.c,acsl_cot,glm-4.7,1.0,1.0,,9541.91,537,648,1185,4,"[""x >= 0"", ""m >= 0"", ""x <= n"", ""m <= x""]",
