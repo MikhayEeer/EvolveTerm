@@ -1,0 +1,10 @@
+timestamp,experiment_name,target_file,prompt_version,model,temperature,top_p,max_tokens,latency_ms,prompt_tokens,completion_tokens,total_tokens,invariants_count,parsed_invariants,raw_response_snippet
+2026-01-14T00:58:41.658463,ACSL_CoT_Deterministic,98.c,acsl_cot,qwen3-max,0.0,1.0,,62804.49,558,2099,2657,3,"[""y == 2"", ""j == 2 * i"", ""i >= 0""]",
+2026-01-14T00:59:45.267477,ACSL_CoT_Balanced,98.c,acsl_cot,qwen3-max,0.7,0.9,,63602.88,558,2211,2769,3,"[""y == 2"", ""j == i * y"", ""i >= 0""]",
+2026-01-14T01:00:48.127360,ACSL_CoT_Creative,98.c,acsl_cot,qwen3-max,1.0,1.0,,62853.56,558,1930,2488,3,"[""y == 2"", ""j == y * i"", ""i >= 0""]",
+2026-01-14T15:46:21.364218,ACSL_CoT_Deterministic,98.c,acsl_cot,glm-4.7,0.0,1.0,,9893.65,549,561,1110,2,"[""j == i * y"", ""i >= 0""]",
+2026-01-14T15:46:28.293122,ACSL_CoT_Balanced,98.c,acsl_cot,glm-4.7,0.7,0.9,,6926.01,549,450,999,5,"[""y == 2"", ""0 <= i"", ""i <= x"", ""0 <= j"", ""j == i * y""]",
+2026-01-14T15:46:36.629150,ACSL_CoT_Creative,98.c,acsl_cot,glm-4.7,1.0,1.0,,8333.78,549,495,1044,3,"[""0 <= i"", ""j == y * i"", ""i <= x + 1""]",
+2026-01-14T18:11:39.888308,ACSL_CoT_Deterministic,98.c,acsl_cot,kimi-k2-thinking,0.0,1.0,,288913.86,547,6649,7196,0,[],
+2026-01-14T18:16:28.815996,ACSL_CoT_Balanced,98.c,acsl_cot,kimi-k2-thinking,0.7,0.9,,288927.25,547,6520,7067,0,[],
+2026-01-14T18:21:17.683288,ACSL_CoT_Creative,98.c,acsl_cot,kimi-k2-thinking,1.0,1.0,,288866.79,547,6002,6549,0,[],

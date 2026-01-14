@@ -1,0 +1,10 @@
+timestamp,experiment_name,target_file,prompt_version,model,temperature,top_p,max_tokens,latency_ms,prompt_tokens,completion_tokens,total_tokens,invariants_count,parsed_invariants,raw_response_snippet
+2026-01-13T18:33:07.640757,ACSL_CoT_Deterministic,129.c,acsl_cot,qwen3-max,0.0,1.0,,36584.77,533,1169,1702,1,"[""x >= 1""]",
+2026-01-13T18:34:02.706561,ACSL_CoT_Balanced,129.c,acsl_cot,qwen3-max,0.7,0.9,,55060.16,533,1484,2017,1,"[""x >= 1""]",
+2026-01-13T18:34:31.108142,ACSL_CoT_Creative,129.c,acsl_cot,qwen3-max,1.0,1.0,,28398.75,533,902,1435,1,"[""x >= 1""]",
+2026-01-13T23:45:51.073893,ACSL_CoT_Deterministic,129.c,acsl_cot,kimi-k2-thinking,0.0,1.0,,272536.83,521,10350,10871,3,"[""x >= 1"", ""(x & (x-1)) == 0"", ""y == \\old(y)""]",
+2026-01-13T23:48:51.332547,ACSL_CoT_Balanced,129.c,acsl_cot,kimi-k2-thinking,0.7,0.9,,180255.29,521,7124,7645,3,"[""x >= 1"", ""\\exists integer k; 0 <= k && x == (1 << k)"", ""y == \\at(y, Pre)""]",
+2026-01-13T23:51:54.365945,ACSL_CoT_Creative,129.c,acsl_cot,kimi-k2-thinking,1.0,1.0,,183031.3,521,7601,8122,3,"[""x >= 1"", ""\\exists integer k; 0 <= k && x == 1 << k"", ""y == \\old(y)""]",
+2026-01-14T13:58:20.765558,ACSL_CoT_Deterministic,129.c,acsl_cot,glm-4.7,0.0,1.0,,17368.05,523,1330,1853,1,"[""x > 0""]",
+2026-01-14T13:58:46.649697,ACSL_CoT_Balanced,129.c,acsl_cot,glm-4.7,0.7,0.9,,25877.94,523,2156,2679,2,"[""x >= 1"", ""\\exists integer k; x == 1 << k""]",
+2026-01-14T13:58:57.136735,ACSL_CoT_Creative,129.c,acsl_cot,glm-4.7,1.0,1.0,,10484.53,523,665,1188,2,"[""x >= 1"", ""x <= 2*y""]",

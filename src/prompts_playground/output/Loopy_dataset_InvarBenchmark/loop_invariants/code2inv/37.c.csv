@@ -1,0 +1,10 @@
+timestamp,experiment_name,target_file,prompt_version,model,temperature,top_p,max_tokens,latency_ms,prompt_tokens,completion_tokens,total_tokens,invariants_count,parsed_invariants,raw_response_snippet
+2026-01-13T20:33:00.563412,ACSL_CoT_Deterministic,37.c,acsl_cot,qwen3-max,0.0,1.0,,47269.83,588,1392,1980,3,"[""0 <= c"", ""c <= 40"", ""0 <= c <= 40""]",
+2026-01-13T20:33:29.933301,ACSL_CoT_Balanced,37.c,acsl_cot,qwen3-max,0.7,0.9,,29365.99,588,1013,1601,3,"[""0 <= c"", ""c <= 40"", ""0 <= c && c <= 40""]",
+2026-01-13T20:34:31.895922,ACSL_CoT_Creative,37.c,acsl_cot,qwen3-max,1.0,1.0,,61956.98,588,1887,2475,1,"[""(0 <= c) && (c <= 40)""]",
+2026-01-14T05:01:02.699302,ACSL_CoT_Deterministic,37.c,acsl_cot,kimi-k2-thinking,0.0,1.0,,91714.03,573,3910,4483,1,"[""0 <= c <= 40""]",
+2026-01-14T05:04:58.221354,ACSL_CoT_Balanced,37.c,acsl_cot,kimi-k2-thinking,0.7,0.9,,235519.77,573,9583,10156,1,"[""0 <= c && c <= 40""]",
+2026-01-14T05:09:44.349029,ACSL_CoT_Creative,37.c,acsl_cot,kimi-k2-thinking,1.0,1.0,,286125.75,573,12220,12793,1,"[""0 <= c && c <= 40""]",
+2026-01-14T14:30:51.840164,ACSL_CoT_Deterministic,37.c,acsl_cot,glm-4.7,0.0,1.0,,12741.81,575,861,1436,1,"[""1 <= c && c <= 40""]",
+2026-01-14T14:31:17.068053,ACSL_CoT_Balanced,37.c,acsl_cot,glm-4.7,0.7,0.9,,25224.32,575,1112,1687,2,"[""0 <= c"", ""c <= 40""]",
+2026-01-14T14:31:36.970006,ACSL_CoT_Creative,37.c,acsl_cot,glm-4.7,1.0,1.0,,19898.85,575,799,1374,2,"[""1 <= c"", ""c <= 40""]",

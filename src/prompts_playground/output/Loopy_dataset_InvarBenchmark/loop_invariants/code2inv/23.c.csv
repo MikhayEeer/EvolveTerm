@@ -1,0 +1,10 @@
+timestamp,experiment_name,target_file,prompt_version,model,temperature,top_p,max_tokens,latency_ms,prompt_tokens,completion_tokens,total_tokens,invariants_count,parsed_invariants,raw_response_snippet
+2026-01-13T19:51:33.079177,ACSL_CoT_Deterministic,23.c,acsl_cot,qwen3-max,0.0,1.0,,67958.62,538,2174,2712,5,"[""i + 2*j == 41"", ""i % 2 == 1"", ""i >= 1"", ""j <= 20"", ""j >= i""]",
+2026-01-13T19:52:31.951138,ACSL_CoT_Balanced,23.c,acsl_cot,qwen3-max,0.7,0.9,,58868.16,538,1662,2200,5,"[""i + 2*j == 41"", ""j >= i"", ""i >= 1"", ""j <= 20"", ""i % 2 == 1""]",
+2026-01-13T19:53:55.908634,ACSL_CoT_Creative,23.c,acsl_cot,qwen3-max,1.0,1.0,,83949.49,538,2640,3178,5,"[""i + 2*j == 41"", ""i % 2 == 1"", ""i >= 1"", ""j <= 20"", ""j >= i""]",
+2026-01-14T03:09:09.041241,ACSL_CoT_Deterministic,23.c,acsl_cot,kimi-k2-thinking,0.0,1.0,,244172.53,525,9710,10235,5,"[""i + 2*j == 41"", ""j >= 13"", ""i >= 1"", ""i % 2 == 1"", ""j <= 20""]",
+2026-01-14T03:13:57.944045,ACSL_CoT_Balanced,23.c,acsl_cot,kimi-k2-thinking,0.7,0.9,,288902.29,525,11062,11587,0,[],
+2026-01-14T03:18:46.762658,ACSL_CoT_Creative,23.c,acsl_cot,kimi-k2-thinking,1.0,1.0,,288818.02,525,11547,12072,0,[],
+2026-01-14T14:19:25.028665,ACSL_CoT_Deterministic,23.c,acsl_cot,glm-4.7,0.0,1.0,,24762.78,527,1567,2094,2,"[""i + 2*j == 41"", ""i % 2 == 1""]",
+2026-01-14T14:19:40.531611,ACSL_CoT_Balanced,23.c,acsl_cot,glm-4.7,0.7,0.9,,15500.15,527,664,1191,4,"[""i + 2*j == 41"", ""i % 2 == 1"", ""1 <= i && i <= 13"", ""14 <= j && j <= 20""]",
+2026-01-14T14:19:54.846317,ACSL_CoT_Creative,23.c,acsl_cot,glm-4.7,1.0,1.0,,14311.86,527,990,1517,5,"[""i % 2 == 1"", ""(j - i) % 3 == 1"", ""2*j + i == 41"", ""1 <= i <= 20"", ""1 <= j <= 20""]",

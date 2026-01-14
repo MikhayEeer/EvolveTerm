@@ -1,0 +1,10 @@
+timestamp,experiment_name,target_file,prompt_version,model,temperature,top_p,max_tokens,latency_ms,prompt_tokens,completion_tokens,total_tokens,invariants_count,parsed_invariants,raw_response_snippet
+2026-01-14T00:38:45.518491,ACSL_CoT_Deterministic,93.c,acsl_cot,qwen3-max,0.0,1.0,,79701.41,623,2258,2881,2,"[""0 <= i && i <= n"", ""x + y == 3 * i""]",
+2026-01-14T00:39:51.358124,ACSL_CoT_Balanced,93.c,acsl_cot,qwen3-max,0.7,0.9,,65833.37,623,2061,2684,4,"[""0 <= i <= n"", ""x >= 0"", ""y >= 0"", ""x + y == 3 * i""]",
+2026-01-14T00:41:38.479072,ACSL_CoT_Creative,93.c,acsl_cot,qwen3-max,1.0,1.0,,107109.09,623,3083,3706,2,"[""0 <= i <= n"", ""x + y == 3 * i""]",
+2026-01-14T15:43:11.666692,ACSL_CoT_Deterministic,93.c,acsl_cot,glm-4.7,0.0,1.0,,10726.39,614,627,1241,3,"[""3 * i == x + y"", ""0 <= i && i <= n"", ""x >= 0 && y >= 0""]",
+2026-01-14T15:43:27.049904,ACSL_CoT_Balanced,93.c,acsl_cot,glm-4.7,0.7,0.9,,15381.8,614,875,1489,4,"[""0 <= i && i <= n"", ""x + y == 3 * i"", ""x >= 0"", ""y >= 0""]",
+2026-01-14T15:43:33.913181,ACSL_CoT_Creative,93.c,acsl_cot,glm-4.7,1.0,1.0,,6861.09,614,487,1101,5,"[""i >= 0"", ""i <= n"", ""x >= 0"", ""y >= 0"", ""x + y == 3 * i""]",
+2026-01-14T17:01:38.514744,ACSL_CoT_Deterministic,93.c,acsl_cot,kimi-k2-thinking,0.0,1.0,,289122.59,612,4614,5226,0,[],
+2026-01-14T17:06:27.413161,ACSL_CoT_Balanced,93.c,acsl_cot,kimi-k2-thinking,0.7,0.9,,288897.98,612,5044,5656,0,[],
+2026-01-14T17:11:16.382631,ACSL_CoT_Creative,93.c,acsl_cot,kimi-k2-thinking,1.0,1.0,,288969.03,612,4720,5332,0,[],

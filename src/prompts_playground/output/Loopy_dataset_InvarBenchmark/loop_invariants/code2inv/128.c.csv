@@ -1,0 +1,10 @@
+timestamp,experiment_name,target_file,prompt_version,model,temperature,top_p,max_tokens,latency_ms,prompt_tokens,completion_tokens,total_tokens,invariants_count,parsed_invariants,raw_response_snippet
+2026-01-13T18:31:28.924261,ACSL_CoT_Deterministic,128.c,acsl_cot,qwen3-max,0.0,1.0,,43828.56,518,1433,1951,1,"[""x >= 1""]",
+2026-01-13T18:32:00.280132,ACSL_CoT_Balanced,128.c,acsl_cot,qwen3-max,0.7,0.9,,31351.5,518,1164,1682,1,"[""x >= 1""]",
+2026-01-13T18:32:31.050677,ACSL_CoT_Creative,128.c,acsl_cot,qwen3-max,1.0,1.0,,30766.07,518,1023,1541,1,"[""x >= 1""]",
+2026-01-13T23:33:19.635949,ACSL_CoT_Deterministic,128.c,acsl_cot,kimi-k2-thinking,0.0,1.0,,250130.08,506,8160,8666,3,"[""x >= 1"", ""\\exists integer k; k >= 0 && x == 1 << k"", ""y == \\at(y, LoopEntry)""]",
+2026-01-13T23:38:08.410045,ACSL_CoT_Balanced,128.c,acsl_cot,kimi-k2-thinking,0.7,0.9,,288773.66,506,7184,7690,0,[],
+2026-01-13T23:41:18.534844,ACSL_CoT_Creative,128.c,acsl_cot,kimi-k2-thinking,1.0,1.0,,190122.08,506,7071,7577,2,"[""x >= 1"", ""\\exists integer k; 0 <= k && x == (1 << k)""]",
+2026-01-14T13:57:36.832332,ACSL_CoT_Deterministic,128.c,acsl_cot,glm-4.7,0.0,1.0,,12853.13,508,898,1406,1,"[""x >= 1""]",
+2026-01-14T13:57:53.372492,ACSL_CoT_Balanced,128.c,acsl_cot,glm-4.7,0.7,0.9,,16536.09,508,1147,1655,3,"[""x >= 1"", ""x \\is_power_of_2"", ""y >= 2""]",
+2026-01-14T13:58:03.392620,ACSL_CoT_Creative,128.c,acsl_cot,glm-4.7,1.0,1.0,,10017.33,508,703,1211,2,"[""x > 0"", ""(x & (x - 1)) == 0""]",

@@ -1,0 +1,10 @@
+timestamp,experiment_name,target_file,prompt_version,model,temperature,top_p,max_tokens,latency_ms,prompt_tokens,completion_tokens,total_tokens,invariants_count,parsed_invariants,raw_response_snippet
+2026-01-13T23:31:02.680019,ACSL_CoT_Deterministic,80.c,acsl_cot,qwen3-max,0.0,1.0,,46805.9,579,1546,2125,3,"[""0 <= i"", ""i <= y"", ""i <= x""]",
+2026-01-13T23:31:49.031288,ACSL_CoT_Balanced,80.c,acsl_cot,qwen3-max,0.7,0.9,,46345.6,579,1647,2226,4,"[""0 <= i"", ""i <= y"", ""x >= y"", ""y >= 0""]",
+2026-01-13T23:32:31.083493,ACSL_CoT_Creative,80.c,acsl_cot,qwen3-max,1.0,1.0,,42049.76,579,1200,1779,3,"[""0 <= i"", ""i <= y"", ""i <= x""]",
+2026-01-14T13:41:37.484495,ACSL_CoT_Deterministic,80.c,acsl_cot,kimi-k2-thinking,0.0,1.0,,127398.04,568,2939,3507,5,"[""0 <= i && i <= y"", ""i <= x"", ""0 <= y"", ""x >= y"", ""0 <= x""]",
+2026-01-14T13:46:25.200671,ACSL_CoT_Balanced,80.c,acsl_cot,kimi-k2-thinking,0.7,0.9,,287714.21,568,7829,8397,2,"[""0 <= i && i <= y"", ""x >= y""]",
+2026-01-14T13:51:14.163894,ACSL_CoT_Creative,80.c,acsl_cot,kimi-k2-thinking,1.0,1.0,,288962.76,568,9545,10113,0,[],
+2026-01-14T15:22:28.739903,ACSL_CoT_Deterministic,80.c,acsl_cot,glm-4.7,0.0,1.0,,40012.5,570,1058,1628,6,"[""0 <= i"", ""i <= y"", ""i <= x"", ""y <= x"", ""y >= 0"", ""x >= 0""]",
+2026-01-14T15:22:35.707992,ACSL_CoT_Balanced,80.c,acsl_cot,glm-4.7,0.7,0.9,,6965.92,570,412,982,3,"[""0 <= i"", ""i <= y"", ""i <= x""]",
+2026-01-14T15:22:51.472996,ACSL_CoT_Creative,80.c,acsl_cot,glm-4.7,1.0,1.0,,15762.73,570,919,1489,3,"[""y >= 0"", ""x >= y"", ""0 <= i && i <= y""]",

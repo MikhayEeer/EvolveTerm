@@ -10,7 +10,7 @@ evolveterm/
 .venv_*/
 # some LLM service api key
 *.key
-*_config.json
+*_config.json*
 .*accesskey
 
 # test reports
