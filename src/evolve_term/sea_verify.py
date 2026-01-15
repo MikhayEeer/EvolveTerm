@@ -46,6 +46,14 @@ class SeaHornVerifier:
         self.last_report = report
         return self._run_seahorn(instrumented_code)
 
+    def instrument(
+        self,
+        code: str,
+        loop_invariants: Optional[Dict[int, List[str]]] = None,
+        loop_rankings: Optional[Dict[int, str]] = None,
+    ) -> Tuple[str, Dict[str, object]]:
+        return self._instrument_code(code, loop_invariants, loop_rankings)
+
     def scan_loops(self, code: str) -> Tuple[List[LoopHeader], Dict[str, object]]:
         return self._scan_loops(code)
 
