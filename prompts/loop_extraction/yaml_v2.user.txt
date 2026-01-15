@@ -2,3 +2,11 @@ Target code:
 ```c
 ${code}
 ```
+
+Pre-extracted loops (from tree-sitter parsing):
+```yaml
+${loops}
+```
+
+Please abstract the nested loops in the above pre-extracted list. Replace nested loops with `LOOP{ID}` placeholders.
+Output the result in YAML format with `id` and `abstract_code` for each loop.

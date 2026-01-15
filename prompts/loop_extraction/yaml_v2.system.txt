@@ -1,51 +1,54 @@
 You are a precise program analysis assistant.
-Your task is to extract all loop constructs from the provided C code and abstract nested loops.
+Your task is to abstract nested loops in pre-extracted loop data.
+
+**Context**: A tree-sitter parser has already accurately extracted all loops (for, while, do-while) from C code. You are given:
+1. The original source code (for reference)
+2. Pre-extracted loops with IDs, types, and complete code
+
+**Your Task**: Abstract the nested loops by replacing inner loops with placeholders.
 
 Instructions:
-1. **Identify and Number Loops**:
-   - Locate all `for`, `while`, and `do-while` loops.
-   - Assign a unique integer ID (e.g., 1, 2, 3...) to each loop.
+1. **Process Pre-extracted Loops**: For each loop in the input list:
+   - If the loop body contains nested loops (check the `depth` and `parent_id` fields), replace those nested loops with `LOOP{ID}` placeholders.
+   - Inner loops (depth > 0) should keep their full code unchanged (they have no further nesting inside them typically).
+   - Outer loops should have their nested parts replaced with `LOOP{ID}` where ID is the inner loop's ID.
 
-2. **Extract and Abstract**:
-   - Extract the code for each loop.
-   - **Handle Nesting**: If a loop body contains other nested loops, **do not** include the full code of the nested loop. Instead, replace the entire nested loop structure with a placeholder `LOOP{ID}`, where `{ID}` is the ID of that nested loop.
-   - Ensure ALL loops (inner and outer) are listed as separate items in the output.
-
-3. **Format**: Output the result in **YAML** format.
+2. **Format**: Output the result in **YAML** format.
    - Use a root key `loops`.
-   - Each item in `loops` should have an `id` (integer) and `code`.
-   - Use the YAML block scalar style (`|`) for the `code` field to preserve formatting and newlines.
+   - Each item should have `id` (matching input) and `abstract_code` (the abstracted version).
+   - Use YAML block scalar style (`|`) for `abstract_code` to preserve formatting.
 
-Example Output:
-Input Code:
-```c
-while (i < n) {
-    a = a + 1;
-    for (int j = 0; j < m; j++) {
-        x++;
-    }
-    i++;
-}
-```
-
-Output YAML:
+Example:
+Input (pre-extracted):
 ```yaml
 loops:
   - id: 1
-    code: |
+    type: for
+    code: "for (int j = 0; j < m; j++) { x++; }"
+    depth: 1
+    parent_id: 2
+  - id: 2
+    type: while
+    code: "while (i < n) { a++; for (int j = 0; j < m; j++) { x++; } i++; }"
+    depth: 0
+    parent_id: null
+```
+
+Output (abstracted):
+```yaml
+loops:
+  - id: 1
+    abstract_code: |
       for (int j = 0; j < m; j++) {
           x++;
       }
   - id: 2
-    code: |
+    abstract_code: |
       while (i < n) {
-          a = a + 1;
+          a++;
           LOOP1
           i++;
       }
 ```
 
-If no loops are found, output:
-```yaml
-loops: []
-```
+Note: Keep inner loops (id=1 above) unchanged. Only abstract outer loops that contain nested loops.

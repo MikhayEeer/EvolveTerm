@@ -1,97 +1,147 @@
-"""Loop extraction orchestrated via prompts + heuristics."""
+"""Loop extraction using tree-sitter as primary method with optional LLM enhancement."""
 
 from __future__ import annotations
 
-import json
 import re
 import yaml
 from typing import List
 
+from .c_parser import CParser, LoopInfo
 from .llm_client import LLMClient
 from .prompts_loader import PromptRepository
 from .utils import parse_llm_yaml
 
 
 class LoopExtractor:
-    """Delegates loop extraction to the LLM with a heuristic fallback."""
+    """Extract loops using tree-sitter parsing with optional LLM semantic enhancement.
+
+    Strategy:
+    1. tree-sitter parsing -> Get all loops with precise AST info
+    2. Optional LLM enhancement -> Abstract nested loops with LOOP{n} placeholders
+    """
 
     def __init__(self, llm_client: LLMClient, prompt_repo: PromptRepository):
         self.llm_client = llm_client
         self.prompt_repo = prompt_repo
-        # last LLM response and method used for extraction ('llm' or 'heuristic')
+        self.c_parser = CParser()
+        # Track last extraction details for reporting
         self.last_response: str | None = None
         self.last_method: str | None = None
+        self.last_loops_info: List[LoopInfo] | None = None
 
-    def extract(self, code: str, max_loops: int = 5, prompt_name: str = "loop_extraction/yaml_v1") -> List[str]:
-        # Use the new YAML-based prompt
-        prompt = self.prompt_repo.render(prompt_name, code=code)
-        response = self.llm_client.complete(prompt)
-        self.last_response = response
-        
-        # 1. Try parsing LLM response
-        loops = self._parse_response(response)
-        
-        # 2. Verify extracted loops against original code
-        verified_loops = []
-        # Check if we are using the abstraction prompt (v2)
+    def extract(
+        self,
+        code: str,
+        max_loops: int = 5,
+        prompt_name: str = "loop_extraction/yaml_v2",
+        use_llm_abstraction: bool = True,
+    ) -> List[str]:
+        """Extract loops from C code.
+
+        Args:
+            code: C source code
+            max_loops: Maximum number of loops to return
+            prompt_name: Prompt name for LLM abstraction (if enabled)
+            use_llm_abstraction: Whether to use LLM for semantic enhancement
+
+        Returns:
+            List of loop code strings (possibly with LOOP{n} placeholders)
+        """
+        self.last_method = "treesitter"
+        self.last_loops_info = None
+
+        # Step 1: tree-sitter primary extraction
+        loops_info = self.c_parser.find_all_loops(code)
+        self.last_loops_info = loops_info
+
+        if not loops_info:
+            self.last_method = "treesitter_empty"
+            self.last_response = yaml.dump({"loops": [], "method": "treesitter_empty"})
+            return ["/* no loops detected */"]
+
+        # Build base loop data
+        loops_data = [
+            {
+                "id": loop.loop_id,
+                "type": loop.loop_type,
+                "code": loop.code,
+                "depth": loop.nesting_depth,
+                "parent_id": loop.parent_loop_id,
+                "has_braces": loop.has_braces,
+            }
+            for loop in loops_info
+        ]
+
+        # Step 2: Optional LLM semantic enhancement (abstraction)
         is_abstract_mode = "yaml_v2" in prompt_name
 
-        if loops:
-            for loop in loops:
-                # In abstract mode, loops containing 'LOOP' placeholders won't match original code textually
-                # So we skip strict verification for them
-                if is_abstract_mode and "LOOP" in loop:
-                    verified_loops.append(loop)
-                elif self._verify_loop_in_code(loop, code):
-                    verified_loops.append(loop)
-                else:
-                    # Optional: Log that a hallucination was dropped
-                    print(f"[Debug] Dropped unverified loop: {loop[:50]}...")
-                    pass
-        
-        if verified_loops:
-            self.last_method = "llm"
-            print("[Debug][Extractor] Using LLM extraction method, and Successfully get verified loops.")
-            
-            # Post-process placeholders if abstract mode
-            if is_abstract_mode:
-                verified_loops = [
-                    re.sub(r'(LOOP\d+)', r'/* \1: Placeholder for nested loop */', l) 
-                    for l in verified_loops
-                ]
+        if use_llm_abstraction and is_abstract_mode:
+            loops_data = self._abstract_with_llm(code, loops_data, prompt_name)
+            self.last_method = "treesitter_llm"
 
-            return verified_loops[:max_loops]
-            
-        # 3. Fallback to heuristic if LLM failed or all extractions were hallucinations
-        loops = self._heuristic_loops(code)
-        self.last_method = "heuristic"
-        return loops[:max_loops]
+        # Store response for reporting
+        self.last_response = yaml.dump({"loops": loops_data, "method": self.last_method})
 
-    def _verify_loop_in_code(self, loop_snippet: str, original_code: str) -> bool:
-        """Check if loop_snippet exists in original_code, ignoring whitespace."""
-        def normalize(s: str) -> str:
-            return "".join(s.split())
-        
-        return normalize(loop_snippet) in normalize(original_code)
+        # Return loop codes (up to max_loops)
+        result_loops = [l["abstract_code"] if "abstract_code" in l else l["code"] for l in loops_data]
 
-    def _parse_response(self, response: str) -> List[str]:
-        """Parse the YAML response."""
-        data = parse_llm_yaml(response)
-        if not isinstance(data, dict) or "loops" not in data:
-            return []
-        
-        loops = []
+        # Apply placeholder comments for abstract mode
+        if is_abstract_mode:
+            result_loops = [
+                re.sub(r"(LOOP\d+)", r"/* \1: Placeholder for nested loop */", loop)
+                for loop in result_loops
+            ]
+
+        return result_loops[:max_loops]
+
+    def _abstract_with_llm(
+        self, code: str, loops_data: List[dict], prompt_name: str
+    ) -> List[dict]:
+        """Use LLM to abstract nested loops with LOOP{n} placeholders.
+
+        Args:
+            code: Full source code
+            loops_data: Loop data from tree-sitter extraction
+            prompt_name: Prompt template name
+
+        Returns:
+            Enhanced loop data with abstract_code field
+        """
+        # Render prompt with tree-sitter extracted loops
+        prompt = self.prompt_repo.render(
+            prompt_name,
+            code=code,
+            loops=yaml.dump(loops_data, default_flow_style=False),
+        )
+
+        response = self.llm_client.complete(prompt)
+
+        # Parse LLM response
+        llm_data = parse_llm_yaml(response)
+        if not isinstance(llm_data, dict) or "loops" not in llm_data:
+            # LLM failed to parse, return original data
+            print("[Warning] LLM abstraction parsing failed, using original loops")
+            return loops_data
+
+        # Merge LLM abstract codes with tree-sitter data
         try:
-            for item in data["loops"]:
-                if "code" in item:
-                    loops.append(item["code"].strip())
-            return loops
+            llm_loops = llm_data["loops"]
+            for llm_loop in llm_loops:
+                loop_id = llm_loop.get("id")
+                # Find matching tree-sitter loop
+                for ts_loop in loops_data:
+                    if ts_loop["id"] == loop_id:
+                        if "abstract_code" in llm_loop:
+                            ts_loop["abstract_code"] = llm_loop["abstract_code"]
+                        break
+            return loops_data
         except Exception as e:
-            print(f"[Warning] Loop extraction parsing failed: {e}")
-            return []
+            print(f"[Warning] LLM abstraction merge failed: {e}")
+            return loops_data
 
-    def _heuristic_loops(self, code: str) -> List[str]:
-        loops = re.findall(r"for\s*\(.*?\{.*?\}|while\s*\(.*?\{.*?\}", code, flags=re.DOTALL)
-        if loops:
-            return [re.sub(r"\s+", " ", loop.strip()) for loop in loops]
-        return ["/* no loops detected */"]
+    def get_loop_info(self) -> List[LoopInfo] | None:
+        """Get detailed LoopInfo objects from last extraction.
+
+        Useful for downstream components that need byte offsets.
+        """
+        return self.last_loops_info
