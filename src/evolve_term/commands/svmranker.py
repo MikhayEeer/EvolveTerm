@@ -293,3 +293,225 @@ class SVMRankerHandler:
                         
                 except Exception as e:
                     console.print(f"[bold red]ERROR: Error processing {f.name}: {e}[/bold red]")
+
+    def rerun_failed(self, input_path: Path, output: Path, recursive: bool) -> None:
+        if output is None:
+            raise typer.BadParameter("Output directory is required.")
+        if output.exists() and not output.is_dir():
+            raise typer.BadParameter("Output must be a directory.")
+        output.mkdir(parents=True, exist_ok=True)
+
+        def normalize_status(value: Any) -> str:
+            return re.sub(r"[\s\-]+", "", str(value or "")).upper()
+
+        def classify_output_dir(results: List[Dict[str, Any]]) -> str:
+            if not results:
+                return "failed"
+            normalized = [normalize_status(item.get("status")) for item in results]
+            if any(status in {"ERROR", "FAILED", "FAIL"} or not status for status in normalized):
+                return "failed"
+            if any(status == "UNKNOWN" for status in normalized):
+                return "unknown"
+            if all(status in {"TERMINATE", "NONTERM"} for status in normalized):
+                return "certain"
+            return "failed"
+
+        def find_failed_dirs(root: Path) -> List[Path]:
+            if root.name == "failed":
+                return [root]
+            direct = root / "failed"
+            if direct.is_dir():
+                return [direct]
+            if recursive:
+                return sorted({p for p in root.rglob("failed") if p.is_dir()})
+            return []
+
+        def load_failed_entries(content: Any) -> List[Dict[str, Any]]:
+            if isinstance(content, dict):
+                return content.get("svmranker_result") or []
+            if isinstance(content, list):
+                return content
+            return []
+
+        def stringify(value: Any) -> Optional[str]:
+            if value is None:
+                return None
+            if isinstance(value, str):
+                return value
+            try:
+                return str(value)
+            except Exception:
+                return repr(value)
+
+        def run_on_failed_entry(entry: Dict[str, Any]) -> Tuple[Dict[str, Any], str]:
+            loop_id = entry.get("loop_id") or entry.get("id")
+            template_type = entry.get("template_type") or entry.get("type") or "lnested"
+            template_depth = entry.get("template_depth") or entry.get("depth") or 1
+            mode = "lmulti" if "multi" in str(template_type).lower() else "lnested"
+            try:
+                depth_val = int(template_depth)
+            except Exception:
+                depth_val = 1
+
+            input_boogie_path = entry.get("input_boogie_path")
+            input_code_path = entry.get("input_code_path")
+            input_code_source = entry.get("input_code_source")
+            code = entry.get("code")
+
+            temp_path: Optional[Path] = None
+            target_path: Optional[Path] = None
+            if input_boogie_path and Path(input_boogie_path).exists():
+                target_path = Path(input_boogie_path)
+                input_code_source = "boogie_path"
+            elif input_code_path and Path(input_code_path).exists():
+                target_path = Path(input_code_path)
+                input_code_source = "source_path"
+            elif isinstance(code, str) and code.strip():
+                temp = tempfile.NamedTemporaryFile(mode="w", suffix=".c", delete=False, encoding="utf-8")
+                temp.write(code)
+                temp.close()
+                temp_path = Path(temp.name)
+                target_path = temp_path
+                input_code_source = "loop_code"
+
+            if not target_path:
+                msg = "[Error] Missing input code path for rerun."
+                result = {
+                    "loop_id": loop_id,
+                    "template_type": template_type,
+                    "template_depth": depth_val,
+                    "svm_mode": mode,
+                    "status": "ERROR",
+                    "ranking_function": None,
+                    "ranking_functions": [],
+                    "input_code_source": input_code_source or "unknown",
+                }
+                if input_code_path:
+                    result["input_code_path"] = input_code_path
+                if input_boogie_path:
+                    result["input_boogie_path"] = input_boogie_path
+                return result, msg
+
+            try:
+                status, rf, rf_list, log = self.client.run(target_path, mode=mode, depth=depth_val)
+            finally:
+                if temp_path:
+                    temp_path.unlink(missing_ok=True)
+
+            rf_str = stringify(rf)
+            rf_list_str = []
+            for item in rf_list or []:
+                rf_list_str.append(stringify(item) or "")
+
+            result = {
+                "loop_id": loop_id,
+                "template_type": template_type,
+                "template_depth": depth_val,
+                "svm_mode": mode,
+                "status": status,
+                "ranking_function": rf_str,
+                "ranking_functions": rf_list_str,
+                "input_code_source": input_code_source or "unknown",
+            }
+            if input_code_path:
+                result["input_code_path"] = input_code_path
+            if input_boogie_path:
+                result["input_boogie_path"] = input_boogie_path
+
+            return result, log
+
+        def process_failed_yaml(f: Path) -> Tuple[Optional[Dict[str, Any]], str]:
+            try:
+                content = yaml.safe_load(f.read_text(encoding="utf-8"))
+            except Exception as e:
+                return None, f"YAML Error: {e}"
+
+            entries = load_failed_entries(content)
+            if not entries:
+                return None, "No svmranker_result entries found."
+
+            results = []
+            full_log = []
+            for entry in entries:
+                if not isinstance(entry, dict):
+                    res = {
+                        "loop_id": "unknown",
+                        "template_type": "lnested",
+                        "template_depth": 1,
+                        "svm_mode": "lnested",
+                        "status": "ERROR",
+                        "ranking_function": None,
+                        "ranking_functions": [],
+                        "input_code_source": "unknown",
+                    }
+                    log = "[Error] Invalid svmranker_result entry (not a dict)."
+                else:
+                    res, log = run_on_failed_entry(entry)
+                results.append(res)
+                full_log.append(f"--- Entry Loop ID: {res.get('loop_id')} ---\n{log}\n" + "=" * 40 + "\n")
+
+            input_file = None
+            source_file = None
+            if isinstance(content, dict):
+                input_file = content.get("input_file")
+                source_file = content.get("source_file")
+            result = {
+                "input_file": input_file or str(f),
+                "source_file": source_file or f.name,
+                "task": "svmranker",
+                "svmranker_result": results,
+            }
+            return result, "\n".join(full_log)
+
+        def build_output_path(root: Path, f: Path, bucket: str) -> Path:
+            try:
+                rel_path = f.relative_to(root)
+            except ValueError:
+                rel_path = Path(f.name)
+            parts = list(rel_path.parts)
+            if "failed" in parts:
+                idx = parts.index("failed")
+                parts[idx] = bucket
+                rel_path = Path(*parts)
+            else:
+                rel_path = Path(bucket) / rel_path
+            return output / rel_path
+
+        if input_path.is_file():
+            root_dir = input_path.parent
+            files = [input_path]
+        else:
+            failed_dirs = find_failed_dirs(input_path)
+            if not failed_dirs:
+                raise typer.BadParameter("未找到 failed 目录，请传入 failed 目录或其父目录。")
+            root_dir = input_path
+            files = []
+            for failed_dir in failed_dirs:
+                files.extend(collect_files(failed_dir, recursive, extensions={".yml", ".yaml"}))
+
+        for f in files:
+            try:
+                result, full_log = process_failed_yaml(f)
+                if not result:
+                    console.print(f"[bold red]ERROR: Failed to parse {f.name}[/bold red]")
+                    continue
+                results = result.get("svmranker_result") or []
+                bucket = classify_output_dir(results)
+                out_path = build_output_path(root_dir, f, bucket)
+                out_path.parent.mkdir(parents=True, exist_ok=True)
+                with open(out_path, "w", encoding="utf-8") as yf:
+                    yaml.dump(result, yf, sort_keys=False, allow_unicode=True)
+
+                log_path = out_path.with_suffix(".svmranker.txt")
+                log_path.write_text(full_log, encoding="utf-8")
+
+                if bucket != "failed" and f.exists():
+                    try:
+                        f.unlink()
+                        old_log = f.with_suffix(".svmranker.txt")
+                        if old_log.exists():
+                            old_log.unlink()
+                    except Exception as exc:
+                        console.print(f"[bold red]ERROR: Failed to delete {f.name}: {exc}[/bold red]")
+            except Exception as e:
+                console.print(f"[bold red]ERROR: Error processing {f.name}: {e}[/bold red]")
