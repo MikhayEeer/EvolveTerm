@@ -1,0 +1,54 @@
+--- Entry Loop ID: 1 ---
+
+--- calling parseBoogieProgramMulti on /home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval/c_bench_term/nonlin_jump_over_1_term.bpl ---
+[OneLoop L] /home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval/c_bench_term/nonlin_jump_over_1_term.bpl
+L = [
+lambda x :(((True and (True and ((x[0] % x[1]) == 1)) ) if ((x[0] % x[1]) == 1) else (True and (True and (not((x[0] % x[1]) == 1))) ) ) and (True and (x[0] >= x[1])) ),
+lambda x :[((x[0] + 1) if ((x[0] % x[1]) == 1) else (x[0] - 2) ), (x[1] if ((x[0] % x[1]) == 1) else x[1] ), ],
+2,
+0,
+lambda x :[If(( ( x[0]% x[1])== 1), ( x[0]+ 1), ( x[0]- 2) ), If(( ( x[0]% x[1])== 1), x[1], x[1] ), ],
+lambda x :And(If(( ( x[0]% x[1])== 1), And(True, (And( True, ( ( x[0]% x[1])== 1))) ), And(True, (And( True, (Not((x[0] % x[1]) == 1)))) ) ), (And( True, ( x[0]>= x[1]))) ),
+False,
+]
+[/OneLoop L]
+
+--- calling SVMLearnMulti ---
+/home/clexma/Desktop/fox3/TermDB/SVMRanker/src/OneLoop.py:4: RuntimeWarning: divide by zero encountered in scalar remainder
+  lambda x :(True and (x[0] >= 0)),
+/home/clexma/Desktop/fox3/TermDB/SVMRanker/src/OneLoop.py:5: RuntimeWarning: divide by zero encountered in scalar remainder
+  lambda x :[(x[0] / x[1]), (x[1] + 1), ],
+/home/clexma/Desktop/fox3/TermDB/SVMRanker/src/OneLoop.py:4: RuntimeWarning: divide by zero encountered in scalar remainder
+  lambda x :(True and (x[0] >= 0)),
+/home/clexma/Desktop/fox3/TermDB/SVMRanker/src/OneLoop.py:5: RuntimeWarning: divide by zero encountered in scalar remainder
+  lambda x :[(x[0] / x[1]), (x[1] + 1), ],
+/home/clexma/Desktop/fox3/TermDB/SVMRanker/src/OneLoop.py:4: RuntimeWarning: divide by zero encountered in scalar remainder
+  lambda x :(True and (x[0] >= 0)),
+/home/clexma/Desktop/fox3/TermDB/SVMRanker/src/OneLoop.py:5: RuntimeWarning: divide by zero encountered in scalar remainder
+  lambda x :[(x[0] / x[1]), (x[1] + 1), ],
+/home/clexma/Desktop/fox3/TermDB/SVMRanker/src/OneLoop.py:4: RuntimeWarning: divide by zero encountered in scalar remainder
+  lambda x :(True and (x[0] >= 0)),
+/home/clexma/Desktop/fox3/TermDB/SVMRanker/src/OneLoop.py:5: RuntimeWarning: divide by zero encountered in scalar remainder
+  lambda x :[(x[0] / x[1]), (x[1] + 1), ],
+/home/clexma/Desktop/fox3/TermDB/SVMRanker/src/OneLoop.py:4: RuntimeWarning: divide by zero encountered in scalar remainder
+  lambda x :(True and (x[0] >= 0)),
+/home/clexma/Desktop/fox3/TermDB/SVMRanker/src/OneLoop.py:5: RuntimeWarning: divide by zero encountered in scalar remainder
+  lambda x :[(x[0] / x[1]), (x[1] + 1), ],
+/home/clexma/Desktop/fox3/TermDB/SVMRanker/src/OneLoop.py:4: RuntimeWarning: divide by zero encountered in scalar remainder
+  lambda x :(True and (x[0] >= 0)),
+/home/clexma/Desktop/fox3/TermDB/SVMRanker/src/OneLoop.py:5: RuntimeWarning: divide by zero encountered in scalar remainder
+  lambda x :[(x[0] / x[1]), (x[1] + 1), ],
+/home/clexma/Desktop/fox3/TermDB/SVMRanker/src/OneLoop.py:4: RuntimeWarning: divide by zero encountered in scalar remainder
+  lambda x :(True and (x[0] >= 0)),
+/home/clexma/Desktop/fox3/TermDB/SVMRanker/src/OneLoop.py:5: RuntimeWarning: divide by zero encountered in scalar remainder
+  lambda x :[(x[0] / x[1]), (x[1] + 1), ],
+/home/clexma/Desktop/fox3/TermDB/SVMRanker/src/OneLoop.py:4: RuntimeWarning: divide by zero encountered in scalar remainder
+  lambda x :(True and (x[0] >= 0)),
+/home/clexma/Desktop/fox3/TermDB/SVMRanker/src/OneLoop.py:5: RuntimeWarning: divide by zero encountered in scalar remainder
+  lambda x :[(x[0] / x[1]), (x[1] + 1), ],
+/home/clexma/Desktop/fox3/TermDB/SVMRanker/src/OneLoop.py:4: RuntimeWarning: divide by zero encountered in scalar remainder
+  lambda x :(True and (x[0] >= 0)),
+/home/clexma/Desktop/fox3/TermDB/SVMRanker/src/OneLoop.py:5: RuntimeWarning: divide by zero encountered in scalar remainder
+  lambda x :[(x[0] / x[1]), (x[1] + 1), ],
+
+========================================

@@ -1,6 +1,17 @@
 --- Entry Loop ID: 1 ---
 
 --- calling parseBoogieProgramMulti on /home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval/c_bench_nonterm/MirrorIntervSim_false-termination_true-no-overflow.bpl ---
+[OneLoop L] /home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval/c_bench_nonterm/MirrorIntervSim_false-termination_true-no-overflow.bpl
+L = [
+lambda x :((((((True and True ) and (True and (x[0] < 0)) ) if (x[0] < 0) else (((((True and True ) and True ) and (True and (x[0] > 30)) ) if (x[0] > 30) else (((True and True ) and True ) and (True and (not(x[0] > 30))) ) ) and (True and (not(x[0] < 0))) ) ) and (True and ((-5 <= x[0]) and (x[0] <= 35))) ) if ((-5 <= x[0]) and (x[0] <= 35)) else (True and (True and (not((-5 <= x[0]) and (x[0] <= 35)))) ) ) and (True and (x[0] != 0)) ),
+lambda x :[((-5 if (x[0] < 0) else (35 if (x[0] > 30) else (x[0] - 1) ) ) if ((-5 <= x[0]) and (x[0] <= 35)) else 0 ), ],
+1,
+0,
+lambda x :[If((And( ( -5<= x[0]), ( x[0]<= 35))), If(( x[0]< 0), -5, If(( x[0]> 30), 35, ( x[0]- 1) ) ), 0 ), ],
+lambda x :And(If((And( ( -5<= x[0]), ( x[0]<= 35))), And(If(( x[0]< 0), And(And(True, True ), (And( True, ( x[0]< 0))) ), And(If(( x[0]> 30), And(And(And(True, True ), True ), (And( True, ( x[0]> 30))) ), And(And(And(True, True ), True ), (And( True, (Not(x[0] > 30)))) ) ), (And( True, (Not(x[0] < 0)))) ) ), (And( True, (And( ( -5<= x[0]), ( x[0]<= 35))))) ), And(True, (And( True, (Not((-5 <= x[0]) and (x[0] <= 35))))) ) ), (And( True, ( x[0]!= 0))) ),
+False,
+]
+[/OneLoop L]
 
 --- calling SVMLearnMulti ---
 

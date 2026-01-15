@@ -378,12 +378,21 @@ def svmranker(
     svm_ranker_path: Path = typer.Option(..., "--svm-ranker", "--svmranker", help=SVM_RANKER_HELP),
     output: Path = typer.Option(..., file_okay=False, dir_okay=True, help="Output directory"),
     recursive: bool = typer.Option(False, "--recursive", "-r", help="Recursively search for files if input is directory"),
+    rerun_failed: bool = typer.Option(
+        False,
+        "--rerun-failed",
+        help="Rerun failed SVMRanker outputs from an existing failed directory.",
+    ),
 ) -> None:
     """
     Run SVMRanker using template parameters from ranking-template YAML output.
+    Use --rerun-failed to rerun failed SVMRanker outputs.
     """
     handler = SVMRankerHandler(svm_ranker_path)
-    handler.run(input, output, recursive)
+    if rerun_failed:
+        handler.rerun_failed(input, output, recursive)
+    else:
+        handler.run(input, output, recursive)
 
 
 @app.command()
@@ -488,4 +497,3 @@ def ping_llm(
 ) -> None:
     """Ping LLM API with default tag."""
     _run_llm_ping(llm_config, prompt)
-
