@@ -1,0 +1,13 @@
+Reference cases (for inspiration):
+${references}
+
+Target code:
+BEGIN_CODE
+${code}
+END_CODE
+
+Identified Loop Invariants:
+${invariants}
+
+Please suggest the SVMRanker configuration (type and depth).
+Show your analysis first.
