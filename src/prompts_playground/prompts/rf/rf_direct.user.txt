@@ -1,0 +1,14 @@
+Reference cases (for inspiration):
+${references}
+
+Target code:
+BEGIN_CODE
+${code}
+END_CODE
+
+Identified Loop Invariants:
+${invariants}
+
+Please identify the Ranking Function.
+Provide the full mathematical expression.
+Show your verification math first.

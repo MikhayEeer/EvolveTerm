@@ -1,0 +1,44 @@
+source_file: aaron3_true-termination_true-valid-memsafety_pmt_yamlv2_extract.yml
+source_path: c_bench_term/aaron3_true-termination_true-valid-memsafety.c
+task: invariant_inference
+command: /home/clexma/Desktop/fox3/TermDB/EvolveTerm/.venv_evolve/bin/evolveterm invariant
+  --input results/aeval/extract_v2_0110_glm47/ --output results/aeval/invariants_autoveruspmt_exv2_glm47_0115/
+  -r -pv autoverus_seahorn_v1
+pmt_ver: autoverus_seahorn_v1
+model: glm-4.7
+time: 2026-01-15T20:07
+has_extract: true
+invariants_result:
+- loop_id: 1
+  code: |-
+    while (x >= y && x <= tx + z) {
+        if (__VERIFIER_nondet_int() != 0) {
+            z = z - 1;
+            tx = x;
+            x = __VERIFIER_nondet_int();
+            if(!(-1073741823<=x && x<=1073741823)) return 0;
+        } else {
+            y = y + 1;
+        }
+    }
+  invariants:
+  - x >= y
+  - x <= tx + z
+  - tx >= y
+  - z >= 0
+loops_count: -1
+loops_depth: -1
+loops_ids: 1
+loops:
+- id: 1
+  code: |-
+    while (x >= y && x <= tx + z) {
+        if (__VERIFIER_nondet_int() != 0) {
+            z = z - 1;
+            tx = x;
+            x = __VERIFIER_nondet_int();
+            if(!(-1073741823<=x && x<=1073741823)) return 0;
+        } else {
+            y = y + 1;
+        }
+    }

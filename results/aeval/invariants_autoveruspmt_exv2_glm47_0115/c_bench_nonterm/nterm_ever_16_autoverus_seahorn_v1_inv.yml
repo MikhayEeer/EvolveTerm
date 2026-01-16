@@ -1,0 +1,50 @@
+source_file: nterm_ever_16_pmt_yamlv2_extract.yml
+source_path: c_bench_nonterm/nterm_ever_16.c
+task: invariant_inference
+command: /home/clexma/Desktop/fox3/TermDB/EvolveTerm/.venv_evolve/bin/evolveterm invariant
+  --input results/aeval/extract_v2_0110_glm47/ --output results/aeval/invariants_autoveruspmt_exv2_glm47_0115/
+  -r -pv autoverus_seahorn_v1
+pmt_ver: autoverus_seahorn_v1
+model: glm-4.7
+time: 2026-01-15T19:59
+has_extract: true
+invariants_result:
+- loop_id: 1
+  code: |-
+    while (range1 <= i && i <= range2) {
+      if (flag == 1 && i < range2) {
+        i++;
+      } else if (i == range2) {
+        flag = -1;
+        range1 = range1 * 2;
+      } else if (flag == -1 && i > range1) {
+        i--;
+      } else if (i == range1) {
+        flag = 1;
+        range2 = range2 * 2;
+      }
+    }
+  invariants:
+  - range1 <= i && i <= range2
+  - flag == 1 || flag == -1
+  - range1 >= 0
+  - range2 >= 0
+loops_count: -1
+loops_depth: -1
+loops_ids: 1
+loops:
+- id: 1
+  code: |-
+    while (range1 <= i && i <= range2) {
+      if (flag == 1 && i < range2) {
+        i++;
+      } else if (i == range2) {
+        flag = -1;
+        range1 = range1 * 2;
+      } else if (flag == -1 && i > range1) {
+        i--;
+      } else if (i == range1) {
+        flag = 1;
+        range2 = range2 * 2;
+      }
+    }

@@ -1,0 +1,33 @@
+source_file: Toulouse-BranchesToLoop-alloca_true-termination_pmt_yamlv2_extract.yml
+source_path: c_bench_term/Toulouse-BranchesToLoop-alloca_true-termination.c
+task: invariant_inference
+command: /home/clexma/Desktop/fox3/TermDB/EvolveTerm/.venv_evolve/bin/evolveterm invariant
+  --input results/aeval/extract_v2_0110_glm47/ --output results/aeval/invariants_autoveruspmt_exv2_glm47_0115/
+  -r -pv autoverus_seahorn_v1
+pmt_ver: autoverus_seahorn_v1
+model: glm-4.7
+time: 2026-01-15T20:04
+has_extract: true
+invariants_result:
+- loop_id: 1
+  code: |-
+    while (y < 100 && z < 100) {
+        y = y + x;
+        z = z - x;
+    }
+  invariants:
+  - y >= 0
+  - z >= 0
+  - y + z == y_init + z_init
+  - y % x == y_init % x
+  - z % x == z_init % x
+loops_count: -1
+loops_depth: -1
+loops_ids: 1
+loops:
+- id: 1
+  code: |-
+    while (y < 100 && z < 100) {
+        y = y + x;
+        z = z - x;
+    }

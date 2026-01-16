@@ -1,0 +1,32 @@
+source_file: nonlin_mult_nonterm_4_pmt_yamlv2_extract.yml
+source_path: c_bench_nonterm/nonlin_mult_nonterm_4.c
+task: invariant_inference
+command: /home/clexma/Desktop/fox3/TermDB/EvolveTerm/.venv_evolve/bin/evolveterm invariant
+  --input results/aeval/extract_v2_0110_glm47/ --output results/aeval/invariants_autoveruspmt_exv2_glm47_0115/
+  -r -pv autoverus_seahorn_v1
+pmt_ver: autoverus_seahorn_v1
+model: glm-4.7
+time: 2026-01-15T19:56
+has_extract: true
+invariants_result:
+- loop_id: 1
+  code: |-
+    while (j < 100)
+    {
+      if (j < 0) j = 1;
+      else j = j*b;
+    }
+  invariants:
+  - j >= 0
+  - j >= 1
+loops_count: -1
+loops_depth: -1
+loops_ids: 1
+loops:
+- id: 1
+  code: |-
+    while (j < 100)
+    {
+      if (j < 0) j = 1;
+      else j = j*b;
+    }

@@ -1,0 +1,39 @@
+source_file: Et4_false-no-overflow_false-termination_pmt_yamlv2_extract.yml
+source_path: c_bench_nonterm/Et4_false-no-overflow_false-termination.c
+task: invariant_inference
+command: /home/clexma/Desktop/fox3/TermDB/EvolveTerm/.venv_evolve/bin/evolveterm invariant
+  --input results/aeval/extract_v2_0110_glm47/ --output results/aeval/invariants_autoveruspmt_exv2_glm47_0115/
+  -r -pv autoverus_seahorn_v1
+pmt_ver: autoverus_seahorn_v1
+model: glm-4.7
+time: 2026-01-15T19:53
+has_extract: true
+invariants_result:
+- loop_id: 1
+  code: |-
+    while ( (b - c >= 1) && (a == c)) {
+        r = __VERIFIER_nondet_int();
+        b = 10;
+        c = c + 1 + r;
+        a = c;
+    }
+  invariants:
+  - b - c >= 1
+  - a == c
+  - b == 10
+  - c >= initial_c
+  - a == c
+  - r >= 0
+  - r <= initial_b - initial_c - 1
+loops_count: -1
+loops_depth: -1
+loops_ids: 1
+loops:
+- id: 1
+  code: |-
+    while ( (b - c >= 1) && (a == c)) {
+        r = __VERIFIER_nondet_int();
+        b = 10;
+        c = c + 1 + r;
+        a = c;
+    }

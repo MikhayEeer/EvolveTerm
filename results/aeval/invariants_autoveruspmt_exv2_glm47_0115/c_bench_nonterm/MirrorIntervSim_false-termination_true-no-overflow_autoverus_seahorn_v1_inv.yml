@@ -1,0 +1,28 @@
+source_file: MirrorIntervSim_false-termination_true-no-overflow_pmt_yamlv2_extract.yml
+source_path: c_bench_nonterm/MirrorIntervSim_false-termination_true-no-overflow.c
+task: invariant_inference
+command: /home/clexma/Desktop/fox3/TermDB/EvolveTerm/.venv_evolve/bin/evolveterm invariant
+  --input results/aeval/extract_v2_0110_glm47/ --output results/aeval/invariants_autoveruspmt_exv2_glm47_0115/
+  -r -pv autoverus_seahorn_v1
+pmt_ver: autoverus_seahorn_v1
+model: glm-4.7
+time: 2026-01-15T19:55
+has_extract: true
+invariants_result:
+- loop_id: 1
+  code: "while (i != 0) {\n    if (-5 <= i && i <= 35) {\n        if (i < 0) {\n \
+    \           i = -5;\n        } else {\n            if (i > 30) {\n           \
+    \     i = 35;\n            } else {\n                i = i-1;\n            } \
+    \   \n        }                    \n    } else {\n        i = 0;\n    }\n}"
+  invariants:
+  - -5 <= i && i <= 35
+  - i != 0
+loops_count: -1
+loops_depth: -1
+loops_ids: 1
+loops:
+- id: 1
+  code: "while (i != 0) {\n    if (-5 <= i && i <= 35) {\n        if (i < 0) {\n \
+    \           i = -5;\n        } else {\n            if (i > 30) {\n           \
+    \     i = 35;\n            } else {\n                i = i-1;\n            } \
+    \   \n        }                    \n    } else {\n        i = 0;\n    }\n}"

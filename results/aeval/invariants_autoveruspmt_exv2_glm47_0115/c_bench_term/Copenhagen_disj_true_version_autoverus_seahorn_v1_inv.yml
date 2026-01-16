@@ -1,0 +1,197 @@
+source_file: Copenhagen_disj_true_version_pmt_yamlv2_extract.yml
+source_path: c_bench_term/Copenhagen_disj_true_version.c
+task: invariant_inference
+command: /home/clexma/Desktop/fox3/TermDB/EvolveTerm/.venv_evolve/bin/evolveterm invariant
+  --input results/aeval/extract_v2_0110_glm47/ --output results/aeval/invariants_autoveruspmt_exv2_glm47_0115/
+  -r -pv autoverus_seahorn_v1
+pmt_ver: autoverus_seahorn_v1
+model: glm-4.7
+time: 2026-01-15T20:09
+has_extract: true
+invariants_result:
+- loop_id: 1
+  code: |-
+    while (x >= 0 || y >= 0 || z >= 0) {
+        oldx = x;
+        x = y - 1;
+        y = z - 1;
+        z = oldx - 1;
+    }
+  invariants:
+  - x >= -1
+  - y >= -1
+  - z >= -1
+  - x + y + z >= -3
+  - x + y + z <= 3
+  - x + y + z == oldx + oldy + oldz - 3
+  - x + y + z == -3 * k
+  - x + y + z == -3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * (oldx + oldy + oldz) + 3 * k
+  - x + y + z == -3 * (oldx + oldy + oldz) + 3 * (oldx + oldy + oldz)
+  - x + y + z == 0
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy + oldz)
+  - x + y + z == -3 * k
+  - x + y + z == -3 * k + 3 * (oldx + oldy + oldz) - 3 * (oldx + oldy +
+loops_count: -1
+loops_depth: -1
+loops_ids: 1
+loops:
+- id: 1
+  code: |-
+    while (x >= 0 || y >= 0 || z >= 0) {
+        oldx = x;
+        x = y - 1;
+        y = z - 1;
+        z = oldx - 1;
+    }

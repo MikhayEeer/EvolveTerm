@@ -83,7 +83,7 @@ def parse_llm_json_array(response_text: str) -> list | None:
     return None
 
 
-def parse_llm_yaml(response_text: str) -> dict | None:
+def parse_llm_yaml(response_text: str) -> object | None:
     cleaned = strip_markdown_fences(response_text)
     try:
         return yaml.safe_load(cleaned)

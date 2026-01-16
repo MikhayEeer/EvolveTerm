@@ -36,11 +36,24 @@ class Predictor:
             prompt["max_tokens"] = 8192
         response = self.llm_client.complete(prompt)
         
-        # Use YAML parsing
+        # Use YAML parsing (accept dict or list)
         data = parse_llm_yaml(response)
         invariants = []
-        if isinstance(data, dict) and "invariants" in data:
-            invariants = data["invariants"]
+        if isinstance(data, dict):
+            invariants = (
+                data.get("invariants")
+                or data.get("loop_invariants")
+                or data.get("loop_invariant")
+                or []
+            )
+        elif isinstance(data, list):
+            for item in data:
+                if isinstance(item, dict):
+                    candidate = item.get("invariant") or item.get("expr") or item.get("formula")
+                    if candidate is not None:
+                        invariants.append(candidate)
+                else:
+                    invariants.append(item)
         if not invariants:
             invariants = parse_acsl_invariants(response)
             
