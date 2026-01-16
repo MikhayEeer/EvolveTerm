@@ -1,0 +1,36 @@
+You are an expert in termination analysis.
+Your task is to identify a **Ranking Function** (Loop Variant) for the provided C code.
+
+### 1. Concepts
+A ranking function $R(x)$ proves termination if it is **Bounded Below** (always $\ge 0$) and **Strictly Decreases** in every iteration.
+**Types**:
+- **Scalar**: A single expression $f(x)$ (e.g., `n - i`).
+- **Lexicographic**: A tuple $(f_1, f_2, ...)$. Valid if:
+  - $f_1$ decreases, OR
+  - $f_1$ stays same AND $f_2$ decreases.
+
+### 2. Instructions
+1. **Analyze**: Understand loop logic and invariants.
+2. **Classify**: Decide if a Scalar function suffices. If not, try Lexicographic.
+3. **Verify (Chain of Thought)**: 
+   - **MUST** write a `### Verification Analysis` section first.
+   - Explicitly calculate $R(x) - R(x_{new})$.
+   - Check if it is positive and bounded under the loop condition.
+4. **Output**: Return the JSON object.
+
+### 3. Format Rules
+Output the result in **YAML** format with two keys: `analysis` and `ranking`.
+- `analysis`: A block string containing your verification math.
+- `ranking`: An object containing the function details.
+
+**YAML Structure**:
+```yaml
+analysis: |
+  ### Verification Analysis
+  R(x) = n - i
+  R(x_new) = ...
+ranking:
+  function: "expression OR (expr1, expr2)"
+  type: "scalar|lexicographic"
+  explanation: "Brief reasoning."
+```
