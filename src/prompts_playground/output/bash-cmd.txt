@@ -1,0 +1,12 @@
+python3 src/prompts_playground/rf_inference_compare.py 
+    --mode rf_template 
+    --input-path results/loopy/extract_v2_0110_glm47/loop_invariants/code2inv/ 
+    --config-tags glm47,qwenplus,qwenmax 
+    --prompt-batch 
+
+# next
+补充kimik2
+
+补充 基于inv推理
+
+补充 纯源代码推理
