@@ -9,6 +9,8 @@ Usage:
 ```bash
 python src/prompts_playground/rf_inference_compare.py --mode rf --input-path results/aeval/extract_v2_0110_glm47
 python src/prompts_playground/rf_inference_compare.py --mode rf_template --input-path results/aeval/extract_v2_0110_glm47
+python src/prompts_playground/rf_inference_compare.py --mode rf_template --input-path results/aeval/invariants_autoveruspmt_exv2_glm47_0115
+python src/prompts_playground/rf_inference_compare.py --mode rf_template --input-path data/SomeBenchmark
 ```
 """
 
@@ -246,6 +248,10 @@ def _extract_template_fields(data: object) -> tuple[str | None, int | None, dict
     return template_type, depth, info
 
 
+def _build_loop_entry(loop_id: int | str, code: str, invariants: List[str]) -> Dict[str, Any]:
+    return {"loop_id": loop_id, "code": code, "invariants": invariants}
+
+
 def _load_loops_from_yaml(path: Path) -> tuple[List[Dict[str, Any]], str | None, str | None]:
     try:
         content = yaml.safe_load(path.read_text(encoding="utf-8"))
@@ -260,16 +266,7 @@ def _load_loops_from_yaml(path: Path) -> tuple[List[Dict[str, Any]], str | None,
     source_file = content.get("source_file")
 
     loops: List[Dict[str, Any]] = []
-    if isinstance(content.get("loops"), list):
-        for idx, item in enumerate(content.get("loops") or []):
-            if not isinstance(item, dict):
-                continue
-            code = str(item.get("code") or "").strip()
-            if not code:
-                continue
-            loop_id = item.get("id") or item.get("loop_id") or (idx + 1)
-            loops.append({"loop_id": loop_id, "code": code, "invariants": []})
-    elif isinstance(content.get("invariants_result"), list):
+    if isinstance(content.get("invariants_result"), list):
         for idx, item in enumerate(content.get("invariants_result") or []):
             if not isinstance(item, dict):
                 continue
@@ -278,9 +275,47 @@ def _load_loops_from_yaml(path: Path) -> tuple[List[Dict[str, Any]], str | None,
                 continue
             loop_id = item.get("loop_id") or item.get("id") or (idx + 1)
             invs = item.get("invariants") if isinstance(item.get("invariants"), list) else []
-            loops.append({"loop_id": loop_id, "code": code, "invariants": invs})
+            loops.append(_build_loop_entry(loop_id, code, invs))
+    elif isinstance(content.get("loops"), list):
+        for idx, item in enumerate(content.get("loops") or []):
+            if not isinstance(item, dict):
+                continue
+            code = str(item.get("code") or "").strip()
+            if not code:
+                continue
+            loop_id = item.get("id") or item.get("loop_id") or (idx + 1)
+            loops.append(_build_loop_entry(loop_id, code, []))
+
+    if not source_path:
+        source_path = str(path)
+    if not source_file:
+        if isinstance(source_path, str) and source_path:
+            source_file = Path(source_path).name
+        else:
+            source_file = path.name
 
     return loops, source_path, source_file
+
+
+def _load_loops_from_code(path: Path) -> tuple[List[Dict[str, Any]], str | None, str | None]:
+    try:
+        code = path.read_text(encoding="utf-8")
+    except Exception as exc:
+        print(f"[Warning] Failed to read code {path}: {exc}")
+        return [], None, None
+    source_path = str(path)
+    source_file = path.name
+    loops = [_build_loop_entry(1, code, [])]
+    return loops, source_path, source_file
+
+
+def _load_loops_from_input(path: Path) -> tuple[List[Dict[str, Any]], str | None, str | None]:
+    suffix = path.suffix.lower()
+    if suffix in {".yml", ".yaml"}:
+        return _load_loops_from_yaml(path)
+    if suffix in {".c", ".h", ".cpp", ".cc", ".cxx", ".hpp"}:
+        return _load_loops_from_code(path)
+    return [], None, None
 
 
 def run_experiments() -> None:
@@ -291,7 +326,7 @@ def run_experiments() -> None:
                         help="Tag in llm_config.json to select which LLM model to use (default: 'default')")
     parser.add_argument("--input-path", type=str,
                         default="results",
-                        help="Path to extract YAML file or directory relative to project root (default: 'results')")
+                        help="Path to extract/invariant YAML or C/C++ file (or directory) relative to project root (default: 'results')")
     parser.add_argument("--config-tags", nargs="*", default=None,
                         help="Config tags to run in batch (space/comma-separated). Overrides --config-tag when set.")
     parser.add_argument("--prompt-version", type=str, default=None,
@@ -368,7 +403,7 @@ def run_experiments() -> None:
     if Path(input_rel_path).is_absolute():
         target_path = Path(input_rel_path)
 
-    target_files = []
+    target_files: List[Path] = []
     target_root = target_path
     if target_path.is_file():
         target_files = [target_path]
@@ -376,13 +411,16 @@ def run_experiments() -> None:
     elif target_path.is_dir():
         yaml_files = list(target_path.rglob("*.yml"))
         yaml_files.extend(target_path.rglob("*.yaml"))
-        target_files = sorted({p.resolve() for p in yaml_files})
+        code_files = []
+        for ext in (".c", ".h", ".cpp", ".cc", ".cxx", ".hpp"):
+            code_files.extend(target_path.rglob(f"*{ext}"))
+        target_files = sorted({p.resolve() for p in (yaml_files + code_files)})
         target_root = target_path
     else:
         print(f"[Error] Target path not found: {target_path}")
         return
 
-    print(f"Found {len(target_files)} YAML files to process in: {target_path}")
+    print(f"Found {len(target_files)} input files to process in: {target_path}")
 
     if mode == "rf":
         csv_columns = [
@@ -446,7 +484,7 @@ def run_experiments() -> None:
         for idx, target_file in enumerate(target_files):
             print(f"\n[{idx + 1}/{len(target_files)}] Processing: {target_file.name} ...")
 
-            loops, source_path, source_file = _load_loops_from_yaml(target_file)
+            loops, source_path, source_file = _load_loops_from_input(target_file)
             if not loops:
                 print(f"  -> Skipping (no loops found): {target_file.name}")
                 continue
