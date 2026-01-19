@@ -6,8 +6,8 @@
     "model": "qwen3-max",
     "payload_template": {
       "max_tokens": 2048,
-      "temperature": 0.0,
-      "top_p": 0.3
+      "temperature": 0.7,
+      "top_p": 0.9
     },
     "pricing_per_millon_tokens_RMB": 16,
     "tags": ["out-default", "better"],
@@ -20,7 +20,7 @@
     "model": "qwen-plus",
     "payload_template": {
       "max_tokens": 2048,
-      "temperature": 0.0
+      "temperature": 0.7
     },
     "pricing_per_millon_tokens_RMB": 2.8,
     "tags": ["cheap","fast", "long-context"],
@@ -33,7 +33,7 @@
     "model": "glm-4.6",
     "payload_template": {
       "max_tokens": 2048,
-      "temperature": 0.0
+      "temperature": 0.7
     },
     "pricing_per_millon_tokens_RMB": 17,
     "tags": ["better"],
@@ -46,7 +46,7 @@
     "model": "glm-4.7",
     "payload_template": {
       "max_tokens": 4096,
-      "temperature": 0.0
+      "temperature": 0.7
     },
     "pricing_per_millon_tokens_RMB": 17,
     "tags": ["better","default"],
@@ -59,7 +59,7 @@
     "model": "Moonshot-Kimi-K2-Instruct",
     "payload_template": {
       "max_tokens": 2048,
-      "temperature": 0.0
+      "temperature": 0.7
     },
     "pricing_per_millon_tokens_RMB": 20,
     "tags": ["better"],
