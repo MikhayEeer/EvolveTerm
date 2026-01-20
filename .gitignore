@@ -1,6 +1,11 @@
-# result later
-result/**/*.yml
-result/**/*.txt
+# data/result outputs (avoid repo growth)
+data/**/*.c
+data/**/*.yml
+data/**/*.yaml
+results/**/*.c
+results/**/*.yml
+results/**/*.yaml
+results/**/*.txt
 
 # vscode configurations
 .vscode/*
