@@ -3,6 +3,8 @@ data/**/*.c
 data/**/*.yml
 data/**/*.yaml
 data/**/*.bpl
+data/**/*.boogie
+data/**/*.error
 results/**/*.c
 results/**/*.yml
 results/**/*.yaml
