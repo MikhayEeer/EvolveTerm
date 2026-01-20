@@ -42,25 +42,47 @@ class RankingHandler:
     def run(self, input_path: Path, invariants_file: Optional[Path], references_file: Optional[Path], 
             output: Optional[Path], recursive: bool, mode: str, ranking_mode: str, retry_empty: int):
         
-        ranking_mode_value = ranking_mode.strip().lower()
-        if ranking_mode_value in {"template-known", "template_known"}:
+        ranking_mode_value = ranking_mode.strip()
+        ranking_mode_key = ranking_mode_value.lower()
+        rf_prompt_name = None
+
+        if ranking_mode_key in {"template-known", "template_known"}:
             rf_mode = "template"
             rf_known_terminating = True
             pmt_ver = "template-known"
-        elif ranking_mode_value in {"template-known-fewshot", "template_known_fewshot"}:
+        elif ranking_mode_key in {"template-known-fewshot", "template_known_fewshot"}:
             rf_mode = "template_fewshot"
             rf_known_terminating = True
             pmt_ver = "template-known-fewshot"
-        elif ranking_mode_value in {"template-fewshot", "template_fewshot"}:
+        elif ranking_mode_key in {"template-fewshot", "template_fewshot"}:
             rf_mode = "template_fewshot"
             rf_known_terminating = False
             pmt_ver = "template-fewshot"
-        elif ranking_mode_value in {"direct", "template"}:
-            rf_mode = ranking_mode_value
+        elif ranking_mode_key in {"direct", "template"}:
+            rf_mode = ranking_mode_key
             rf_known_terminating = False
-            pmt_ver = ranking_mode_value
+            pmt_ver = ranking_mode_key
         else:
-            raise typer.BadParameter("ranking_mode must be one of: direct, template, template-fewshot, template-known, template-known-fewshot")
+            prompt_base = ranking_mode_key
+            if prompt_base.startswith("ranking_function/"):
+                prompt_base = prompt_base.split("/", 1)[1]
+            prompt_dir = self.prompt_repo.root / "ranking_function"
+            system_path = prompt_dir / f"{prompt_base}.system.txt"
+            user_path = prompt_dir / f"{prompt_base}.user.txt"
+            if system_path.exists() and user_path.exists():
+                rf_prompt_name = f"ranking_function/{prompt_base}"
+                pmt_ver = prompt_base
+                if prompt_base.startswith("rf_template") or "template" in prompt_base:
+                    rf_mode = "template"
+                else:
+                    rf_mode = "direct"
+                rf_known_terminating = "known" in prompt_base
+            else:
+                raise typer.BadParameter(
+                    "ranking_mode must be one of: direct, template, template-fewshot, "
+                    "template-known, template-known-fewshot, or a prompt name under "
+                    "prompts/ranking_function (e.g. rf_direct_simple_known)"
+                )
 
         safe_pmt_ver = re.sub(r"[^\w\-]", "", pmt_ver)
         command = " ".join(sys.argv)
@@ -103,8 +125,14 @@ class RankingHandler:
         def process_file_code(f: Path, invs: List[str]) -> Dict[str, Any]:
             code = f.read_text(encoding="utf-8")
             rf, explanation, metadata = self.predictor.infer_ranking(
-                code, invs, references, mode=rf_mode, known_terminating=rf_known_terminating,
-                retry_empty=retry_empty, log_prefix=f.name
+                code,
+                invs,
+                references,
+                mode=rf_mode,
+                known_terminating=rf_known_terminating,
+                retry_empty=retry_empty,
+                log_prefix=f.name,
+                prompt_name=rf_prompt_name,
             )
             if is_empty_result(rf, metadata):
                 return {"status": "empty", "explanation": explanation}
@@ -145,8 +173,14 @@ class RankingHandler:
                     
                     console.print(f"  Inferring ranking for Loop {loop_id}...")
                     rf, explanation, metadata = self.predictor.infer_ranking(
-                        code, invs, references, mode=rf_mode, known_terminating=rf_known_terminating,
-                        retry_empty=retry_empty, log_prefix=f"{f.name} loop {loop_id}"
+                        code,
+                        invs,
+                        references,
+                        mode=rf_mode,
+                        known_terminating=rf_known_terminating,
+                        retry_empty=retry_empty,
+                        log_prefix=f"{f.name} loop {loop_id}",
+                        prompt_name=rf_prompt_name,
                     )
                     
                     result_entry = {
@@ -175,8 +209,14 @@ class RankingHandler:
                     
                     console.print(f"  Inferring ranking for Loop {loop_id}...")
                     rf, explanation, metadata = self.predictor.infer_ranking(
-                        code, [], references, mode=rf_mode, known_terminating=rf_known_terminating,
-                        retry_empty=retry_empty, log_prefix=f"{f.name} loop {loop_id}"
+                        code,
+                        [],
+                        references,
+                        mode=rf_mode,
+                        known_terminating=rf_known_terminating,
+                        retry_empty=retry_empty,
+                        log_prefix=f"{f.name} loop {loop_id}",
+                        prompt_name=rf_prompt_name,
                     )
                     
                     result_entry = {
