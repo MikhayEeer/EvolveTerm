@@ -71,6 +71,9 @@ class RankingHandler:
         def is_empty_result(rf: str | None, metadata: dict) -> bool:
             return self.predictor.is_empty_ranking_result(rf, metadata, rf_mode)
 
+        def is_template_mode() -> bool:
+            return isinstance(rf_mode, str) and rf_mode.startswith("template")
+
         def derive_base_name(source_path: Optional[str], fallback: Path) -> str:
             if isinstance(source_path, str) and source_path.strip():
                 return Path(source_path).stem
@@ -105,7 +108,7 @@ class RankingHandler:
             )
             if is_empty_result(rf, metadata):
                 return {"status": "empty", "explanation": explanation}
-            if rf_mode == "template":
+            if is_template_mode():
                 return {
                     "template_type": metadata.get("type"),
                     "template_depth": metadata.get("depth"),
@@ -154,7 +157,7 @@ class RankingHandler:
                     }
                     if is_empty_result(rf, metadata):
                          result_entry["status"] = "empty"
-                    elif rf_mode == "template":
+                    elif is_template_mode():
                         result_entry["template_type"] = metadata.get("type")
                         result_entry["template_depth"] = metadata.get("depth")
                     else:
@@ -184,7 +187,7 @@ class RankingHandler:
                     }
                     if is_empty_result(rf, metadata):
                         result_entry["status"] = "empty"
-                    elif rf_mode == "template":
+                    elif is_template_mode():
                         result_entry["template_type"] = metadata.get("type")
                         result_entry["template_depth"] = metadata.get("depth")
                     else:
