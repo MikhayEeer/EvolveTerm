@@ -7,7 +7,7 @@ import subprocess
 import io
 import contextlib
 from pathlib import Path
-from typing import Optional, Tuple, List
+from typing import Optional, Tuple, List, Any
 
 # Global lock to prevent race conditions on OneLoop.py
 SVM_RANKER_LOCK = threading.Lock()
@@ -275,3 +275,44 @@ class SVMRankerClient:
                 print(msg)
                 log_buffer.write(f"\n{msg}\n")
                 return "ERROR", None, [], log_buffer.getvalue()
+
+
+def run_svmranker_worker(
+    result_queue: "Any",
+    svm_ranker_root: str,
+    file_path: str,
+    mode: str,
+    depth: int,
+    sample_strategy: Optional[str],
+    cutting_strategy: Optional[str],
+    template_strategy: Optional[str],
+    print_level: Optional[int],
+) -> None:
+    try:
+        client = SVMRankerClient(svm_ranker_root)
+        status, rf, rf_list, log = client.run(
+            Path(file_path),
+            mode=mode,
+            depth=depth,
+            sample_strategy=sample_strategy,
+            cutting_strategy=cutting_strategy,
+            template_strategy=template_strategy,
+            print_level=print_level,
+        )
+        result_queue.put(
+            {
+                "status": status,
+                "ranking_function": rf,
+                "ranking_functions": rf_list,
+                "log": log,
+            }
+        )
+    except Exception as exc:
+        result_queue.put(
+            {
+                "status": "ERROR",
+                "ranking_function": None,
+                "ranking_functions": [],
+                "log": f"[Error] isolated SVMRanker run exception: {exc}",
+            }
+        )

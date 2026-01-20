@@ -4,7 +4,7 @@ task: svmranker
 svmranker_result:
 - loop_id: 1
   template_type: lnested
-  template_depth: 3
+  template_depth: 4
   svm_mode: lnested
   status: UNKNOWN
   ranking_function: null

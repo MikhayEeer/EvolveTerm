@@ -1,4 +1,11 @@
 --- Entry Loop ID: 1 ---
+[Entry] loop_id=1
+[Input] source=boogie_path code_path=/home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval/c_bench_term/determ_term_3.bpl boogie_path=/home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval/c_bench_term/determ_term_3.bpl
+[Template] type=lnested depth=3 svm_mode=lnested depth=4
+[Template] depth_original=3 depth_bump=1
+[Config] mode=lnested depth=4
+[Input] path=/home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval/c_bench_term/determ_term_3.bpl
+[Config] sample=CONSTRAINT cutting=POS template=FULL print_level=0
 
 --- calling parseBoogieProgramMulti on /home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval/c_bench_term/determ_term_3.bpl ---
 [OneLoop L] /home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval/c_bench_term/determ_term_3.bpl

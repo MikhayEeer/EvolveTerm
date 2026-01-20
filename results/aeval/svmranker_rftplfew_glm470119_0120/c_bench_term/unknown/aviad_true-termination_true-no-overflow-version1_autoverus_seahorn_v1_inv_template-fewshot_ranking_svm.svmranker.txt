@@ -1,4 +1,11 @@
 --- Entry Loop ID: 1 ---
+[Entry] loop_id=1
+[Input] source=boogie_path code_path=/home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval/c_bench_term/aviad_true-termination_true-no-overflow-version1.bpl boogie_path=/home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval/c_bench_term/aviad_true-termination_true-no-overflow-version1.bpl
+[Template] type=lmulti depth=2 svm_mode=lmulti depth=3
+[Template] depth_original=2 depth_bump=1
+[Config] mode=lmulti depth=3
+[Input] path=/home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval/c_bench_term/aviad_true-termination_true-no-overflow-version1.bpl
+[Config] sample=CONSTRAINT cutting=POS template=FULL print_level=0
 
 --- calling parseBoogieProgramMulti on /home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval/c_bench_term/aviad_true-termination_true-no-overflow-version1.bpl ---
 [OneLoop L] /home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval/c_bench_term/aviad_true-termination_true-no-overflow-version1.bpl

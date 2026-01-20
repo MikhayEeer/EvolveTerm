@@ -1,4 +1,11 @@
 --- Entry Loop ID: 1 ---
+[Entry] loop_id=1
+[Input] source=boogie_path code_path=/home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval/c_bench_term/Cairo_true-no-overflow_true-termination_true-valid-memsafety.bpl boogie_path=/home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval/c_bench_term/Cairo_true-no-overflow_true-termination_true-valid-memsafety.bpl
+[Template] type=lnested depth=1 svm_mode=lnested depth=2
+[Template] depth_original=1 depth_bump=1
+[Config] mode=lnested depth=2
+[Input] path=/home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval/c_bench_term/Cairo_true-no-overflow_true-termination_true-valid-memsafety.bpl
+[Config] sample=CONSTRAINT cutting=POS template=FULL print_level=0
 
 --- calling parseBoogieProgramMulti on /home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval/c_bench_term/Cairo_true-no-overflow_true-termination_true-valid-memsafety.bpl ---
 [OneLoop L] /home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval/c_bench_term/Cairo_true-no-overflow_true-termination_true-valid-memsafety.bpl
