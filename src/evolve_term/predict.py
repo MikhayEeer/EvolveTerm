@@ -13,9 +13,9 @@ class Predictor:
 
     @staticmethod
     def is_empty_ranking_result(ranking: str | None, metadata: dict, mode: str) -> bool:
-        if mode == "template":
-            template_type = metadata.get("type")
-            template_depth = metadata.get("depth")
+        if isinstance(mode, str) and mode.startswith("template"):
+            template_type = metadata.get("type") or metadata.get("template_type")
+            template_depth = metadata.get("depth") or metadata.get("template_depth")
             if template_type in (None, "") or template_depth in (None, ""):
                 return True
             return False
