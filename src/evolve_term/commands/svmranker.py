@@ -3,19 +3,24 @@ from __future__ import annotations
 import json
 import yaml
 import tempfile
+import multiprocessing
+import os
+import queue
+import signal
 from pathlib import Path
 from typing import Optional, List, Dict, Any, Tuple
 import re
 from rich.console import Console
 import typer
 
-from ..svm_ranker import SVMRankerClient
+from ..svm_ranker import SVMRankerClient, run_svmranker_worker
 from ..cli_utils import collect_files, validate_yaml_required_keys
 from ..utils import LiteralDumper
 
 console = Console()
 REPO_ROOT = Path(__file__).resolve().parents[3]
 BOOGIE_ROOT = Path("/home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie")
+RERUN_UNKNOWN_TIMEOUT_SEC = 180
 
 def resolve_svm_ranker_root(path: Path) -> Path:
     if not path.exists():
@@ -36,6 +41,75 @@ class SVMRankerHandler:
     def __init__(self, svm_ranker_path: Path):
         self.root = resolve_svm_ranker_root(svm_ranker_path)
         self.client = SVMRankerClient(str(self.root))
+
+    def _run_isolated_svmranker(
+        self,
+        target_path: Path,
+        mode: str,
+        depth: int,
+        sample_strategy: str,
+        cutting_strategy: str,
+        template_strategy: str,
+        timeout_sec: int,
+    ) -> Tuple[str, Optional[str], List[str], str]:
+        ctx = multiprocessing.get_context("spawn")
+        result_queue: Any = ctx.Queue()
+        proc = ctx.Process(
+            target=run_svmranker_worker,
+            args=(
+                result_queue,
+                str(self.root),
+                str(target_path),
+                mode,
+                depth,
+                sample_strategy,
+                cutting_strategy,
+                template_strategy,
+                None,
+            ),
+        )
+        proc.daemon = True
+        proc.start()
+        proc.join(timeout_sec)
+
+        def _terminate_process() -> None:
+            if not proc.is_alive():
+                return
+            proc.terminate()
+            proc.join(5)
+            if proc.is_alive():
+                try:
+                    if hasattr(proc, "kill"):
+                        proc.kill()
+                    else:
+                        os.kill(proc.pid, signal.SIGKILL)
+                except Exception:
+                    pass
+                proc.join(5)
+
+        if proc.is_alive():
+            _terminate_process()
+            log = f"[Error] isolated SVMRanker timeout after {timeout_sec}s (pid={proc.pid}).\n"
+            return "ERROR", None, [], log
+
+        try:
+            payload = result_queue.get(timeout=1)
+        except queue.Empty:
+            log = f"[Error] isolated SVMRanker produced no result (exitcode={proc.exitcode}).\n"
+            return "ERROR", None, [], log
+        finally:
+            try:
+                result_queue.close()
+            except Exception:
+                pass
+
+        status = payload.get("status") if isinstance(payload, dict) else "ERROR"
+        rf = payload.get("ranking_function") if isinstance(payload, dict) else None
+        rf_list = payload.get("ranking_functions") if isinstance(payload, dict) else []
+        log = payload.get("log") if isinstance(payload, dict) else ""
+        if proc.exitcode not in (0, None):
+            log = f"[Debug] isolated SVMRanker exitcode={proc.exitcode}.\n" + (log or "")
+        return status, rf, rf_list, log
 
     @staticmethod
     def _format_entry_log_prefix(
@@ -670,13 +744,14 @@ class SVMRankerHandler:
                 return result, msg
 
             try:
-                status, rf, rf_list, log = self.client.run(
-                    target_path,
+                status, rf, rf_list, log = self._run_isolated_svmranker(
+                    target_path=target_path,
                     mode=mode,
                     depth=depth_val,
                     sample_strategy=sample_strategy,
                     cutting_strategy=cutting_strategy,
                     template_strategy=template_strategy,
+                    timeout_sec=RERUN_UNKNOWN_TIMEOUT_SEC,
                 )
             finally:
                 if temp_path:
