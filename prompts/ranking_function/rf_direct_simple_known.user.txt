@@ -1,0 +1,8 @@
+
+Target code:
+${code}
+
+Identified Loop Invariants:
+${invariants}
+
+Please identify the Ranking Function.

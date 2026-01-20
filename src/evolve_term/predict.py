@@ -63,21 +63,34 @@ class Predictor:
             return []
         return [str(item) for item in invariants if str(item).strip()]
 
-    def infer_ranking(self, code: str, invariants: List[str], references: List[KnowledgeCase], 
-                      mode: str = "direct", known_terminating: bool = False, retry_empty: int = 0,
-                      log_prefix: str | None = None) -> tuple[str | None, str, dict]:
-        
-        prompt_name = "ranking_function/rf_direct"
-        if mode == "template":
-            if known_terminating:
-                prompt_name = "ranking_function/rf_template_known"
-            else:
-                prompt_name = "ranking_function/rf_template"
-        elif mode == "template_fewshot":
-            if known_terminating:
-                prompt_name = "ranking_function/rf_template_known_fewshot"
-            else:
-                prompt_name = "ranking_function/rf_template_fewshot"
+    def infer_ranking(
+        self,
+        code: str,
+        invariants: List[str],
+        references: List[KnowledgeCase],
+        mode: str = "direct",
+        known_terminating: bool = False,
+        retry_empty: int = 0,
+        log_prefix: str | None = None,
+        prompt_name: str | None = None,
+    ) -> tuple[str | None, str, dict]:
+
+        if prompt_name:
+            prompt_name_to_use = prompt_name
+            if "/" not in prompt_name_to_use:
+                prompt_name_to_use = f"ranking_function/{prompt_name_to_use}"
+        else:
+            prompt_name_to_use = "ranking_function/rf_direct"
+            if mode == "template":
+                if known_terminating:
+                    prompt_name_to_use = "ranking_function/rf_template_known"
+                else:
+                    prompt_name_to_use = "ranking_function/rf_template"
+            elif mode == "template_fewshot":
+                if known_terminating:
+                    prompt_name_to_use = "ranking_function/rf_template_known_fewshot"
+                else:
+                    prompt_name_to_use = "ranking_function/rf_template_fewshot"
 
         max_attempts = max(1, retry_empty + 1)
         last_ranking: str | None = None
@@ -86,7 +99,7 @@ class Predictor:
 
         for attempt in range(1, max_attempts + 1):
             prompt = self.prompt_repo.render(
-                prompt_name,
+                prompt_name_to_use,
                 code=code,
                 invariants=json.dumps(invariants, ensure_ascii=False, indent=2),
                 references=json.dumps([ref.__dict__ for ref in references], ensure_ascii=False, indent=2)

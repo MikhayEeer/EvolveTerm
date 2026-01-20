@@ -306,7 +306,11 @@ def ranking(
     ranking_mode: str = typer.Option(
         "template",
         "--ranking-mode",
-        help="Ranking prompt mode: 'direct', 'template' (default), 'template-fewshot', 'template-known', or 'template-known-fewshot'",
+        help=(
+            "Ranking prompt mode: 'direct', 'template' (default), 'template-fewshot', "
+            "'template-known', 'template-known-fewshot', or a prompt name under "
+            "prompts/ranking_function (e.g. rf_direct_simple_known)"
+        ),
     ),
     retry_empty: int = typer.Option(2, "--retry-empty", help="Max retries when ranking result is empty"),
 ) -> None:
