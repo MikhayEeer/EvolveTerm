@@ -2,6 +2,7 @@
 data/**/*.c
 data/**/*.yml
 data/**/*.yaml
+data/**/*.bpl
 results/**/*.c
 results/**/*.yml
 results/**/*.yaml
