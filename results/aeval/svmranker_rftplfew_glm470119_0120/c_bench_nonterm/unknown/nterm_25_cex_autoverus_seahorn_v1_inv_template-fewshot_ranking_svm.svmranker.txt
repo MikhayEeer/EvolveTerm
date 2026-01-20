@@ -1,0 +1,18 @@
+--- Entry Loop ID: 1 ---
+
+--- calling parseBoogieProgramMulti on /home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval/c_bench_nonterm/nterm_25_cex.bpl ---
+[OneLoop L] /home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval/c_bench_nonterm/nterm_25_cex.bpl
+L = [
+lambda x :(((True and (True and (__VERIFIER_nondet_int() == 0)) ) if (__VERIFIER_nondet_int() == 0) else ((((True and True ) and (True and (__VERIFIER_nondet_int() == 0)) ) if (__VERIFIER_nondet_int() == 0) else (((((True and True ) and True ) and (True and (__VERIFIER_nondet_int() == 0)) ) if (__VERIFIER_nondet_int() == 0) else (((True and True ) and True ) and (True and (not(__VERIFIER_nondet_int() == 0))) ) ) and (True and (not(__VERIFIER_nondet_int() == 0))) ) ) and (True and (not(__VERIFIER_nondet_int() == 0))) ) ) and (True and (x[0] != 6)) ),
+lambda x :[((x[0] + 1) if (__VERIFIER_nondet_int() == 0) else ((x[0] + 2) if (__VERIFIER_nondet_int() == 0) else ((x[0] + 4) if (__VERIFIER_nondet_int() == 0) else (x[0] + 5) ) ) ), (1 if (__VERIFIER_nondet_int() == 0) else (2 if (__VERIFIER_nondet_int() == 0) else (4 if (__VERIFIER_nondet_int() == 0) else 5 ) ) ), ],
+2,
+0,
+lambda x :[If(( __VERIFIER_nondet_int()== 0), ( x[0]+ 1), If(( __VERIFIER_nondet_int()== 0), ( x[0]+ 2), If(( __VERIFIER_nondet_int()== 0), ( x[0]+ 4), ( x[0]+ 5) ) ) ), If(( __VERIFIER_nondet_int()== 0), 1, If(( __VERIFIER_nondet_int()== 0), 2, If(( __VERIFIER_nondet_int()== 0), 4, 5 ) ) ), ],
+lambda x :And(If(( __VERIFIER_nondet_int()== 0), And(True, (And( True, ( __VERIFIER_nondet_int()== 0))) ), And(If(( __VERIFIER_nondet_int()== 0), And(And(True, True ), (And( True, ( __VERIFIER_nondet_int()== 0))) ), And(If(( __VERIFIER_nondet_int()== 0), And(And(And(True, True ), True ), (And( True, ( __VERIFIER_nondet_int()== 0))) ), And(And(And(True, True ), True ), (And( True, (Not(__VERIFIER_nondet_int() == 0)))) ) ), (And( True, (Not(__VERIFIER_nondet_int() == 0)))) ) ), (And( True, (Not(__VERIFIER_nondet_int() == 0)))) ) ), (And( True, ( x[0]!= 6))) ),
+False,
+]
+[/OneLoop L]
+
+--- calling SVMLearnMulti ---
+
+========================================

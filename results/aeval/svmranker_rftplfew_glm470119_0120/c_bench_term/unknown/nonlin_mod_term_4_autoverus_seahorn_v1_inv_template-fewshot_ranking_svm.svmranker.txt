@@ -1,0 +1,24 @@
+--- Entry Loop ID: 1 ---
+
+--- calling parseBoogieProgramMulti on /home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval/c_bench_term/nonlin_mod_term_4.bpl ---
+[OneLoop L] /home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval/c_bench_term/nonlin_mod_term_4.bpl
+L = [
+lambda x :(True and (0 != (x[0] % x[1]))),
+lambda x :[x[0], (x[1] - 1), ],
+2,
+0,
+lambda x :[x[0], ( x[1]- 1), ],
+lambda x :(And( True, ( 0!= ( x[0]% x[1])))),
+False,
+]
+[/OneLoop L]
+
+--- calling SVMLearnMulti ---
+/home/clexma/Desktop/fox3/TermDB/SVMRanker/src/OneLoop.py:4: RuntimeWarning: divide by zero encountered in scalar remainder
+  lambda x :(True and (0 != (x[0] % x[1]))),
+/home/clexma/Desktop/fox3/TermDB/SVMRanker/src/OneLoop.py:4: RuntimeWarning: divide by zero encountered in scalar remainder
+  lambda x :(True and (0 != (x[0] % x[1]))),
+/home/clexma/Desktop/fox3/TermDB/SVMRanker/src/OneLoop.py:4: RuntimeWarning: divide by zero encountered in scalar remainder
+  lambda x :(True and (0 != (x[0] % x[1]))),
+
+========================================

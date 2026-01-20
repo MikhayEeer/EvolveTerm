@@ -1,0 +1,18 @@
+--- Entry Loop ID: 1 ---
+
+--- calling parseBoogieProgramMulti on /home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval/c_bench_nonterm/Sunset_false-termination_true-no-overflow.bpl ---
+[OneLoop L] /home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval/c_bench_nonterm/Sunset_false-termination_true-no-overflow.bpl
+L = [
+lambda x :((((((True and (True and (30 <= 30)) ) if (30 <= 30) else (True and (True and (not(30 <= 30))) ) ) and True ) and (True and (x[0] == 25)) ) if (x[0] == 25) else ((((True and (True and (x[0] <= 30)) ) if (x[0] <= 30) else (True and (True and (not(x[0] <= 30))) ) ) and True ) and (True and (not(x[0] == 25))) ) ) and (True and (x[0] > 10)) ),
+lambda x :[(((30 - 1) if (30 <= 30) else 20 ) if (x[0] == 25) else ((x[0] - 1) if (x[0] <= 30) else 20 ) ), ],
+1,
+0,
+lambda x :[If(( x[0]== 25), If(( 30<= 30), ( 30- 1), 20 ), If(( x[0]<= 30), ( x[0]- 1), 20 ) ), ],
+lambda x :And(If(( x[0]== 25), And(And(If(( 30<= 30), And(True, (And( True, ( 30<= 30))) ), And(True, (And( True, (Not(30 <= 30)))) ) ), True ), (And( True, ( x[0]== 25))) ), And(And(If(( x[0]<= 30), And(True, (And( True, ( x[0]<= 30))) ), And(True, (And( True, (Not(x[0] <= 30)))) ) ), True ), (And( True, (Not(x[0] == 25)))) ) ), (And( True, ( x[0]> 10))) ),
+False,
+]
+[/OneLoop L]
+
+--- calling SVMLearnMulti ---
+
+========================================

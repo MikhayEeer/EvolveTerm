@@ -1,0 +1,26 @@
+--- Entry Loop ID: 1 ---
+
+--- calling parseBoogieProgramMulti on /home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval/c_bench_nonterm/nterm_ever_17.bpl ---
+[OneLoop L] /home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval/c_bench_nonterm/nterm_ever_17.bpl
+L = [
+lambda x :(((True and (True and ((x[0] == 1) and (x[1] < x[4]))) ) if ((x[0] == 1) and (x[1] < x[4])) else ((((True and True ) and (True and (x[1] == x[4])) ) if (x[1] == x[4]) else (((((True and True ) and True ) and (True and ((x[0] == -1) and (x[1] > x[3]))) ) if ((x[0] == -1) and (x[1] > x[3])) else ((((((True and True ) and True ) and True ) and (True and (x[1] == x[3])) ) if (x[1] == x[3]) else ((((True and True ) and True ) and True ) and (True and (not(x[1] == x[3]))) ) ) and (True and (not((x[0] == -1) and (x[1] > x[3])))) ) ) and (True and (not(x[1] == x[4]))) ) ) and (True and (not((x[0] == 1) and (x[1] < x[4])))) ) ) and (True and ((x[3] <= x[2]) and (x[2] <= x[4]))) ),
+lambda x :[(x[0] if ((x[0] == 1) and (x[1] < x[4])) else (-1 if (x[1] == x[4]) else (x[0] if ((x[0] == -1) and (x[1] > x[3])) else (1 if (x[1] == x[3]) else x[0] ) ) ) ), ((x[1] + 1) if ((x[0] == 1) and (x[1] < x[4])) else (x[1] if (x[1] == x[4]) else ((x[1] - 1) if ((x[0] == -1) and (x[1] > x[3])) else (x[1] if (x[1] == x[3]) else x[1] ) ) ) ), ((x[1] + 1) if ((x[0] == 1) and (x[1] < x[4])) else (x[1] if (x[1] == x[4]) else ((x[1] - 1) if ((x[0] == -1) and (x[1] > x[3])) else (x[1] if (x[1] == x[3]) else x[1] ) ) ) ), (x[3] if ((x[0] == 1) and (x[1] < x[4])) else (x[3] if (x[1] == x[4]) else (x[3] if ((x[0] == -1) and (x[1] > x[3])) else (x[3] if (x[1] == x[3]) else x[3] ) ) ) ), (x[4] if ((x[0] == 1) and (x[1] < x[4])) else (x[4] if (x[1] == x[4]) else (x[4] if ((x[0] == -1) and (x[1] > x[3])) else (x[4] if (x[1] == x[3]) else x[4] ) ) ) ), ],
+5,
+0,
+lambda x :[If((And( ( x[0]== 1), ( x[1]< x[4]))), x[0], If(( x[1]== x[4]), -1, If((And( ( x[0]== -1), ( x[1]> x[3]))), x[0], If(( x[1]== x[3]), 1, x[0] ) ) ) ), If((And( ( x[0]== 1), ( x[1]< x[4]))), ( x[1]+ 1), If(( x[1]== x[4]), x[1], If((And( ( x[0]== -1), ( x[1]> x[3]))), ( x[1]- 1), If(( x[1]== x[3]), x[1], x[1] ) ) ) ), If((And( ( x[0]== 1), ( x[1]< x[4]))), ( x[1]+ 1), If(( x[1]== x[4]), x[1], If((And( ( x[0]== -1), ( x[1]> x[3]))), ( x[1]- 1), If(( x[1]== x[3]), x[1], x[1] ) ) ) ), If((And( ( x[0]== 1), ( x[1]< x[4]))), x[3], If(( x[1]== x[4]), x[3], If((And( ( x[0]== -1), ( x[1]> x[3]))), x[3], If(( x[1]== x[3]), x[3], x[3] ) ) ) ), If((And( ( x[0]== 1), ( x[1]< x[4]))), x[4], If(( x[1]== x[4]), x[4], If((And( ( x[0]== -1), ( x[1]> x[3]))), x[4], If(( x[1]== x[3]), x[4], x[4] ) ) ) ), ],
+lambda x :And(If((And( ( x[0]== 1), ( x[1]< x[4]))), And(True, (And( True, (And( ( x[0]== 1), ( x[1]< x[4]))))) ), And(If(( x[1]== x[4]), And(And(True, True ), (And( True, ( x[1]== x[4]))) ), And(If((And( ( x[0]== -1), ( x[1]> x[3]))), And(And(And(True, True ), True ), (And( True, (And( ( x[0]== -1), ( x[1]> x[3]))))) ), And(If(( x[1]== x[3]), And(And(And(And(True, True ), True ), True ), (And( True, ( x[1]== x[3]))) ), And(And(And(And(True, True ), True ), True ), (And( True, (Not(x[1] == x[3])))) ) ), (And( True, (Not((x[0] == -1) and (x[1] > x[3]))))) ) ), (And( True, (Not(x[1] == x[4])))) ) ), (And( True, (Not((x[0] == 1) and (x[1] < x[4]))))) ) ), (And( True, (And( ( x[3]<= x[2]), ( x[2]<= x[4]))))) ),
+False,
+]
+[/OneLoop L]
+
+--- calling SVMLearnMulti ---
+it is not terminating, an infinite loop with initial condition:
+
+['xi_0=5', 'xi_1=0', 'xi_2=0', 'xi_3=-1', 'xi_4=1']
+
+it is not terminating, an infinite loop with initial condition:
+
+['xi_0=4', 'xi_1=0', 'xi_2=0', 'xi_3=-1', 'xi_4=1']
+
+
+========================================

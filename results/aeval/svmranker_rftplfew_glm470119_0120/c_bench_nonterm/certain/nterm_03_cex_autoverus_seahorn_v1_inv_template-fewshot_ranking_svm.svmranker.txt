@@ -1,0 +1,26 @@
+--- Entry Loop ID: 1 ---
+
+--- calling parseBoogieProgramMulti on /home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval/c_bench_nonterm/nterm_03_cex.bpl ---
+[OneLoop L] /home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval/c_bench_nonterm/nterm_03_cex.bpl
+L = [
+lambda x :(((True and (True and (__VERIFIER_nondet_int() == 0)) ) if (__VERIFIER_nondet_int() == 0) else (True and (True and (not(__VERIFIER_nondet_int() == 0))) ) ) and (True and (x[1] > 0)) ),
+lambda x :[(x[0] if (__VERIFIER_nondet_int() == 0) else (x[0] - 1) ), (((x[1] + (24 * x[0])) + 7) if (__VERIFIER_nondet_int() == 0) else x[1] ), ],
+2,
+0,
+lambda x :[If(( __VERIFIER_nondet_int()== 0), x[0], ( x[0]- 1) ), If(( __VERIFIER_nondet_int()== 0), ( ( x[1]+ ( 24* x[0]))+ 7), x[1] ), ],
+lambda x :And(If(( __VERIFIER_nondet_int()== 0), And(True, (And( True, ( __VERIFIER_nondet_int()== 0))) ), And(True, (And( True, (Not(__VERIFIER_nondet_int() == 0)))) ) ), (And( True, ( x[1]> 0))) ),
+False,
+]
+[/OneLoop L]
+
+--- calling SVMLearnMulti ---
+it is not terminating, an infinite loop with initial condition:
+
+['xi_0=None', 'xi_1=1']
+
+it is not terminating, an infinite loop with initial condition:
+
+['xi_0=None', 'xi_1=1']
+
+
+========================================

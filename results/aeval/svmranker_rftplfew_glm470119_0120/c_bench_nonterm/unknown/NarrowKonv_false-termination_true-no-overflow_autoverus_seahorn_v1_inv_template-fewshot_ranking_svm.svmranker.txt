@@ -1,0 +1,18 @@
+--- Entry Loop ID: 1 ---
+
+--- calling parseBoogieProgramMulti on /home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval/c_bench_nonterm/NarrowKonv_false-termination_true-no-overflow.bpl ---
+[OneLoop L] /home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval/c_bench_nonterm/NarrowKonv_false-termination_true-no-overflow.bpl
+L = [
+lambda x :((((((True and True ) and (True and (x[0] == x[1])) ) if (x[0] == x[1]) else ((True and True ) and (True and (not(x[0] == x[1]))) ) ) and (True and (not((0 == x[0]) and (x[0] == x[1])))) ) if (not((0 == x[0]) and (x[0] == x[1]))) else (True and (True and (not(not((0 == x[0]) and (x[0] == x[1]))))) ) ) and (True and ((0 <= x[0]) and (x[0] <= x[1]))) ),
+lambda x :[((0 if (x[0] == x[1]) else (x[0] + 1) ) if (not((0 == x[0]) and (x[0] == x[1]))) else x[0] ), (((x[1] - 1) if (x[0] == x[1]) else x[1] ) if (not((0 == x[0]) and (x[0] == x[1]))) else x[1] ), ],
+2,
+0,
+lambda x :[If((Not((0 == x[0]) and (x[0] == x[1]))), If(( x[0]== x[1]), 0, ( x[0]+ 1) ), x[0] ), If((Not((0 == x[0]) and (x[0] == x[1]))), If(( x[0]== x[1]), ( x[1]- 1), x[1] ), x[1] ), ],
+lambda x :And(If((Not((0 == x[0]) and (x[0] == x[1]))), And(If(( x[0]== x[1]), And(And(True, True ), (And( True, ( x[0]== x[1]))) ), And(And(True, True ), (And( True, (Not(x[0] == x[1])))) ) ), (And( True, (Not((0 == x[0]) and (x[0] == x[1]))))) ), And(True, (And( True, (Not(not((0 == x[0]) and (x[0] == x[1])))))) ) ), (And( True, (And( ( 0<= x[0]), ( x[0]<= x[1]))))) ),
+False,
+]
+[/OneLoop L]
+
+--- calling SVMLearnMulti ---
+
+========================================

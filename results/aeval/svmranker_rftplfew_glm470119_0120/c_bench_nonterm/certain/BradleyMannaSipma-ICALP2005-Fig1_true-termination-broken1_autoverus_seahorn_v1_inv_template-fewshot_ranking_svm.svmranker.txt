@@ -1,0 +1,22 @@
+--- Entry Loop ID: 1 ---
+
+--- calling parseBoogieProgramMulti on /home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval/c_bench_nonterm/BradleyMannaSipma-ICALP2005-Fig1_true-termination-broken1.bpl ---
+[OneLoop L] /home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval/c_bench_nonterm/BradleyMannaSipma-ICALP2005-Fig1_true-termination-broken1.bpl
+L = [
+lambda x :(((True and (True and (__VERIFIER_nondet_int() != 0)) ) if (__VERIFIER_nondet_int() != 0) else (True and (True and (not(__VERIFIER_nondet_int() != 0))) ) ) and (True and (x[0] <= x[2])) ),
+lambda x :[(((2 * x[0]) + x[1]) if (__VERIFIER_nondet_int() != 0) else (x[0] + 1) ), ((x[1] + 1) if (__VERIFIER_nondet_int() != 0) else x[1] ), (x[2] if (__VERIFIER_nondet_int() != 0) else x[2] ), ],
+3,
+0,
+lambda x :[If(( __VERIFIER_nondet_int()!= 0), ( ( 2* x[0])+ x[1]), ( x[0]+ 1) ), If(( __VERIFIER_nondet_int()!= 0), ( x[1]+ 1), x[1] ), If(( __VERIFIER_nondet_int()!= 0), x[2], x[2] ), ],
+lambda x :And(If(( __VERIFIER_nondet_int()!= 0), And(True, (And( True, ( __VERIFIER_nondet_int()!= 0))) ), And(True, (And( True, (Not(__VERIFIER_nondet_int() != 0)))) ) ), (And( True, ( x[0]<= x[2]))) ),
+False,
+]
+[/OneLoop L]
+
+--- calling SVMLearnMulti ---
+it is not terminating, an infinite loop with initial condition:
+
+['xi_0=0', 'xi_1=0', 'xi_2=0']
+
+
+========================================

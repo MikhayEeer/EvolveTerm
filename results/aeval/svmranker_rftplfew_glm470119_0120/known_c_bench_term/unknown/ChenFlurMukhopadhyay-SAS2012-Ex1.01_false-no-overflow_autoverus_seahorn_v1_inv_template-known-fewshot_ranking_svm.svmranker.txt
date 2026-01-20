@@ -1,0 +1,18 @@
+--- Entry Loop ID: 1 ---
+
+--- calling parseBoogieProgramMulti on /home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval/c_bench_term/ChenFlurMukhopadhyay-SAS2012-Ex1.01_false-no-overflow.bpl ---
+[OneLoop L] /home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval/c_bench_term/ChenFlurMukhopadhyay-SAS2012-Ex1.01_false-no-overflow.bpl
+L = [
+lambda x :(True and (x[0] > 0)),
+lambda x :[((-2 * x[0]) + 10), ],
+1,
+0,
+lambda x :[( ( -2* x[0])+ 10), ],
+lambda x :(And( True, ( x[0]> 0))),
+False,
+]
+[/OneLoop L]
+
+--- calling SVMLearnMulti ---
+
+========================================

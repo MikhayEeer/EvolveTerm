@@ -1,0 +1,22 @@
+--- Entry Loop ID: 1 ---
+
+--- calling parseBoogieProgramMulti on /home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval/c_bench_term/ChenFlurMukhopadhyay-SAS2012-Ex4.01_false-no-overflow-version2.bpl ---
+[OneLoop L] /home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval/c_bench_term/ChenFlurMukhopadhyay-SAS2012-Ex4.01_false-no-overflow-version2.bpl
+L = [
+lambda x :(True and (((x[0] + x[1]) >= 0) and (x[0] <= x[3]))),
+lambda x :[((2 * x[0]) - x[1]), x[2], (-2 * x[2]), x[3], ],
+4,
+0,
+lambda x :[( ( 2* x[0])- x[1]), x[2], ( -2* x[2]), x[3], ],
+lambda x :(And( True, (And( ( ( x[0]+ x[1])>= 0), ( x[0]<= x[3]))))),
+False,
+]
+[/OneLoop L]
+
+--- calling SVMLearnMulti ---
+it is not terminating, an infinite loop with initial condition:
+
+['xi_0=0', 'xi_1=0', 'xi_2=0', 'xi_3=0']
+
+
+========================================

@@ -1,0 +1,18 @@
+--- Entry Loop ID: 1 ---
+
+--- calling parseBoogieProgramMulti on /home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval/c_bench_term/aviad_true-termination_true-no-overflow-version1.bpl ---
+[OneLoop L] /home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval/c_bench_term/aviad_true-termination_true-no-overflow-version1.bpl
+L = [
+lambda x :(((True and (True and ((x[0] % 2) == 0)) ) if ((x[0] % 2) == 0) else ((((True and True ) and (True and ((x[0] % 3) == 0)) ) if ((x[0] % 3) == 0) else ((True and True ) and (True and (not((x[0] % 3) == 0))) ) ) and (True and (not((x[0] % 2) == 0))) ) ) and (True and (x[0] > 1)) ),
+lambda x :[((x[0] / 2) if ((x[0] % 2) == 0) else ((x[0] / 3) if ((x[0] % 3) == 0) else (x[0] + 1) ) ), ],
+1,
+0,
+lambda x :[If(( ( x[0]% 2)== 0), ( x[0]/ 2), If(( ( x[0]% 3)== 0), ( x[0]/ 3), ( x[0]+ 1) ) ), ],
+lambda x :And(If(( ( x[0]% 2)== 0), And(True, (And( True, ( ( x[0]% 2)== 0))) ), And(If(( ( x[0]% 3)== 0), And(And(True, True ), (And( True, ( ( x[0]% 3)== 0))) ), And(And(True, True ), (And( True, (Not((x[0] % 3) == 0)))) ) ), (And( True, (Not((x[0] % 2) == 0)))) ) ), (And( True, ( x[0]> 1))) ),
+False,
+]
+[/OneLoop L]
+
+--- calling SVMLearnMulti ---
+
+========================================

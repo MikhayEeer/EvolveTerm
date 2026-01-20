@@ -1,0 +1,18 @@
+--- Entry Loop ID: 1 ---
+
+--- calling parseBoogieProgramMulti on /home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval/c_bench_nonterm/choices_eq_2.bpl ---
+[OneLoop L] /home/clexma/Desktop/fox3/TermDB/SVMRanker/src/.boogie_normalized/choices_eq_2.bpl.f2244edb0b.bpl
+L = [
+lambda x :(((True and (True and (0 == 0)) ) if (0 == 0) else (True and (True and (not(0 == 0))) ) ) and (True and (x[0] != x[1])) ),
+lambda x :[((x[0] - 1) if (0 == 0) else (x[0] + 1) ), ((x[1] + 1) if (0 == 0) else (x[1] - 1) ), (0 if (0 == 0) else 0 ), ],
+3,
+0,
+lambda x :[If(( 0== 0), ( x[0]- 1), ( x[0]+ 1) ), If(( 0== 0), ( x[1]+ 1), ( x[1]- 1) ), If(( 0== 0), 0, 0 ), ],
+lambda x :And(If(( 0== 0), And(True, (And( True, ( 0== 0))) ), And(True, (And( True, (Not(0 == 0)))) ) ), (And( True, ( x[0]!= x[1]))) ),
+False,
+]
+[/OneLoop L]
+
+--- calling SVMLearnMulti ---
+
+========================================

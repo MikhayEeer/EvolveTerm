@@ -1,0 +1,18 @@
+--- Entry Loop ID: 1 ---
+
+--- calling parseBoogieProgramMulti on /home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval/c_bench_nonterm/MenloPark_true-no-overflow_true-termination_true-valid-memsafety_modif_broken3.bpl ---
+[OneLoop L] /home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval/c_bench_nonterm/MenloPark_true-no-overflow_true-termination_true-valid-memsafety_modif_broken3.bpl
+L = [
+lambda x :(((True and (True and (x[2] == 0)) ) if (x[2] == 0) else ((((True and True ) and (True and (x[2] == 12)) ) if (x[2] == 12) else ((True and True ) and (True and (not(x[2] == 12))) ) ) and (True and (not(x[2] == 0))) ) ) and (True and (x[0] > 0)) ),
+lambda x :[((x[0] - x[1]) if (x[2] == 0) else ((x[0] - x[1]) if (x[2] == 12) else (x[0] - x[1]) ) ), ((x[1] - x[2]) if (x[2] == 0) else ((x[1] - x[2]) if (x[2] == 12) else (x[1] - x[2]) ) ), (12 if (x[2] == 0) else (-1 if (x[2] == 12) else 0 ) ), ],
+3,
+0,
+lambda x :[If(( x[2]== 0), ( x[0]- x[1]), If(( x[2]== 12), ( x[0]- x[1]), ( x[0]- x[1]) ) ), If(( x[2]== 0), ( x[1]- x[2]), If(( x[2]== 12), ( x[1]- x[2]), ( x[1]- x[2]) ) ), If(( x[2]== 0), 12, If(( x[2]== 12), -1, 0 ) ), ],
+lambda x :And(If(( x[2]== 0), And(True, (And( True, ( x[2]== 0))) ), And(If(( x[2]== 12), And(And(True, True ), (And( True, ( x[2]== 12))) ), And(And(True, True ), (And( True, (Not(x[2] == 12)))) ) ), (And( True, (Not(x[2] == 0)))) ) ), (And( True, ( x[0]> 0))) ),
+False,
+]
+[/OneLoop L]
+
+--- calling SVMLearnMulti ---
+
+========================================

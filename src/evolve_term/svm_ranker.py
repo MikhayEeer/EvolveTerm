@@ -76,7 +76,16 @@ class SVMRankerClient:
             filtered_lines.append(line)
         return "\n".join(filtered_lines)
 
-    def run(self, file_path: Path, mode: str = "lnested", depth: int = 1) -> Tuple[str, Optional[str], List[str], str]:
+    def run(
+        self,
+        file_path: Path,
+        mode: str = "lnested",
+        depth: int = 1,
+        sample_strategy: Optional[str] = None,
+        cutting_strategy: Optional[str] = None,
+        template_strategy: Optional[str] = None,
+        print_level: Optional[int] = None,
+    ) -> Tuple[str, Optional[str], List[str], str]:
         """
         Run SVMRanker on the given file.
         
@@ -93,11 +102,13 @@ class SVMRankerClient:
             - log: Collected stdout/stderr log
         """
         log_buffer = io.StringIO()
+        log_buffer.write(f"[Config] mode={mode} depth={depth}\n")
         if not self._modules_loaded:
             log_buffer.write("[Error] SVMRanker modules not loaded.\n")
             return "ERROR", None, [], log_buffer.getvalue()
 
         abs_file_path = file_path.resolve()
+        log_buffer.write(f"[Input] path={abs_file_path}\n")
         temp_path: Optional[Path] = None
         temp_bpl_path: Optional[Path] = None
         if abs_file_path.suffix.lower() in {".c", ".h", ".cpp", ".cc", ".cxx"}:
@@ -118,6 +129,7 @@ class SVMRankerClient:
                 # Debug log
                 debug_path = Path.cwd() / "svmranker_last_input.c"
                 debug_path.write_text(sanitized_code, encoding="utf-8")
+                log_buffer.write(f"[Input] kind=c temp_c={process_file_path}\n")
                 
             except OSError as e:
                 msg = f"[Error] Failed to prepare input file: {e}"
@@ -129,10 +141,20 @@ class SVMRankerClient:
             process_file_path = abs_file_path
         
         # Configuration based on guide
-        sample_strategy = "ENLARGE"
-        cutting_strategy = "MINI"
-        template_strategy = "SINGLEFULL"
-        print_level = 0  # Suppress internal printing
+        default_sample = "ENLARGE"
+        default_cutting = "MINI"
+        default_template = "SINGLEFULL"
+        default_print_level = 0  # Suppress internal printing
+        sample_strategy = sample_strategy or default_sample
+        cutting_strategy = cutting_strategy or default_cutting
+        template_strategy = template_strategy or default_template
+        if print_level is None:
+            print_level = default_print_level
+        log_buffer.write(
+            "[Config] "
+            f"sample={sample_strategy} cutting={cutting_strategy} template={template_strategy} "
+            f"print_level={print_level}\n"
+        )
 
         with SVM_RANKER_LOCK:
             try:
@@ -150,6 +172,7 @@ class SVMRankerClient:
                         cmd = [sys.executable, str(cli_main), "parsectoboogie", str(process_file_path), str(temp_bpl_path)]
                         
                         log_buffer.write(f"Executing: {' '.join(cmd)}\n")
+                        log_buffer.write(f"[Input] kind=boogie temp_bpl={temp_bpl_path}\n")
                         result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
                         
                         log_buffer.write(f"Return Code: {result.returncode}\n")

@@ -1,0 +1,20 @@
+--- Entry Loop ID: 1 ---
+
+--- calling parseBoogieProgramMulti on /home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval/c_bench_nonterm/nterm_ever_14.bpl ---
+[OneLoop L] /home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval/c_bench_nonterm/nterm_ever_14.bpl
+L = [
+lambda x :(((True and (True and ((x[0] > 0) and ((x[0] % 5) == 0))) ) if ((x[0] > 0) and ((x[0] % 5) == 0)) else (True and (True and (not((x[0] > 0) and ((x[0] % 5) == 0)))) ) ) and (True and (x[0] >= 0)) ),
+lambda x :[((x[0] - 5) if ((x[0] > 0) and ((x[0] % 5) == 0)) else (x[0] + 1) ), ],
+1,
+0,
+lambda x :[If((And( ( x[0]> 0), ( ( x[0]% 5)== 0))), ( x[0]- 5), ( x[0]+ 1) ), ],
+lambda x :And(If((And( ( x[0]> 0), ( ( x[0]% 5)== 0))), And(True, (And( True, (And( ( x[0]> 0), ( ( x[0]% 5)== 0))))) ), And(True, (And( True, (Not((x[0] > 0) and ((x[0] % 5) == 0))))) ) ), (And( True, ( x[0]>= 0))) ),
+False,
+]
+[/OneLoop L]
+
+--- calling SVMLearnMulti ---
+
+[Error] SVMRanker execution exception: Symbolic expressions cannot be cast to concrete Boolean values.
+
+========================================

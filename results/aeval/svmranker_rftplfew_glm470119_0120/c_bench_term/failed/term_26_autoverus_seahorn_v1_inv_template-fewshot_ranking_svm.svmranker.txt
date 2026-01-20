@@ -1,0 +1,20 @@
+--- Entry Loop ID: 1 ---
+
+--- calling parseBoogieProgramMulti on /home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval/c_bench_term/term_26.bpl ---
+[OneLoop L] /home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval/c_bench_term/term_26.bpl
+L = [
+lambda x :(True and (x[0] == x[1])),
+lambda x :[(x[0] + (x[2] % 2)), (x[1] + (x[3] % 3)), (x[2] + 1), (x[3] + 1), ],
+4,
+0,
+lambda x :[( x[0]+ ( x[2]% 2)), ( x[1]+ ( x[3]% 3)), ( x[2]+ 1), ( x[3]+ 1), ],
+lambda x :(And( True, ( x[0]== x[1]))),
+False,
+]
+[/OneLoop L]
+
+--- calling SVMLearnMulti ---
+
+[Error] SVMRanker execution exception: 'list' object is not callable
+
+========================================

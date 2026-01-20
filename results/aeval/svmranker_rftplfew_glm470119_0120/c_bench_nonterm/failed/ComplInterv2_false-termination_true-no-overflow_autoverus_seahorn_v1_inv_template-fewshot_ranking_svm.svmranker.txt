@@ -1,0 +1,20 @@
+--- Entry Loop ID: 1 ---
+
+--- calling parseBoogieProgramMulti on /home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval/c_bench_nonterm/ComplInterv2_false-termination_true-no-overflow.bpl ---
+[OneLoop L] /home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval/c_bench_nonterm/ComplInterv2_false-termination_true-no-overflow.bpl
+L = [
+lambda x :(((((((((True and True ) and (True and ((x[0] + 1) > 0)) ) if ((x[0] + 1) > 0) else ((True and True ) and (True and (not((x[0] + 1) > 0))) ) ) and True ) and (True and (x[0] < 0)) ) if (x[0] < 0) else (((((True and True ) and (True and (x[0] > 0)) ) if (x[0] > 0) else ((True and True ) and (True and (not(x[0] > 0))) ) ) and True ) and (True and (not(x[0] < 0))) ) ) and (True and ((x[0] > -5) and (x[0] < 5))) ) if ((x[0] > -5) and (x[0] < 5)) else (True and (True and (not((x[0] > -5) and (x[0] < 5)))) ) ) and (True and (x[0] != 0)) ),
+lambda x :[(((((x[0] + 1) - 1) if ((x[0] + 1) > 0) else (x[0] + 1) ) if (x[0] < 0) else ((x[0] - 1) if (x[0] > 0) else x[0] ) ) if ((x[0] > -5) and (x[0] < 5)) else x[0] ), ],
+1,
+0,
+lambda x :[If((And( ( x[0]> -5), ( x[0]< 5))), If(( x[0]< 0), If(( ( x[0]+ 1)> 0), ( ( x[0]+ 1)- 1), ( x[0]+ 1) ), If(( x[0]> 0), ( x[0]- 1), x[0] ) ), x[0] ), ],
+lambda x :And(If((And( ( x[0]> -5), ( x[0]< 5))), And(If(( x[0]< 0), And(And(If(( ( x[0]+ 1)> 0), And(And(True, True ), (And( True, ( ( x[0]+ 1)> 0))) ), And(And(True, True ), (And( True, (Not((x[0] + 1) > 0)))) ) ), True ), (And( True, ( x[0]< 0))) ), And(And(If(( x[0]> 0), And(And(True, True ), (And( True, ( x[0]> 0))) ), And(And(True, True ), (And( True, (Not(x[0] > 0)))) ) ), True ), (And( True, (Not(x[0] < 0)))) ) ), (And( True, (And( ( x[0]> -5), ( x[0]< 5))))) ), And(True, (And( True, (Not((x[0] > -5) and (x[0] < 5))))) ) ), (And( True, ( x[0]!= 0))) ),
+False,
+]
+[/OneLoop L]
+
+--- calling SVMLearnMulti ---
+
+[Error] SVMRanker execution exception: Symbolic expressions cannot be cast to concrete Boolean values.
+
+========================================

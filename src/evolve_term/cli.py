@@ -374,23 +374,62 @@ def seaverify(
 
 @app.command()
 def svmranker(
-    input: Path = typer.Option(..., exists=True, help="Input YAML file or directory from ranking template output"),
+    input: Path = typer.Option(..., exists=True, help="Input ranking-template YAML file/dir, or an svmranker output dir when rerunning"),
     svm_ranker_path: Path = typer.Option(..., "--svm-ranker", "--svmranker", help=SVM_RANKER_HELP),
     output: Path = typer.Option(..., file_okay=False, dir_okay=True, help="Output directory"),
     recursive: bool = typer.Option(False, "--recursive", "-r", help="Recursively search for files if input is directory"),
     rerun_failed: bool = typer.Option(
         False,
         "--rerun-failed",
-        help="Rerun failed SVMRanker outputs from an existing failed directory.",
+        help="Rerun outputs under a failed/ directory; input should be failed/ or its parent output dir.",
+    ),
+    rerun_unknown: bool = typer.Option(
+        False,
+        "--rerun-unknown",
+        help="Rerun outputs under an unknown/ directory with a depth bump; input should be unknown/ or its parent output dir.",
+    ),
+    rerun_unknown_depth_bump: int = typer.Option(
+        1,
+        "--rerun-unknown-depth-bump",
+        help="Depth increment applied when rerunning unknown entries (default: +1).",
+    ),
+    rerun_unknown_sample: str = typer.Option(
+        "CONSTRAINT",
+        "--rerun-unknown-sample",
+        help="Sample strategy for --rerun-unknown (CONSTRAINT or ENLARGE).",
+    ),
+    rerun_unknown_template: str = typer.Option(
+        "FULL",
+        "--rerun-unknown-template",
+        help="Template strategy for --rerun-unknown (FULL or SINGLEFULL).",
+    ),
+    rerun_unknown_cutting: str = typer.Option(
+        "POS",
+        "--rerun-unknown-cutting",
+        help="Cutting strategy for --rerun-unknown (POS or NEG).",
     ),
 ) -> None:
     """
     Run SVMRanker using template parameters from ranking-template YAML output.
-    Use --rerun-failed to rerun failed SVMRanker outputs.
+    Use --rerun-failed or --rerun-unknown to rerun prior SVMRanker outputs.
+    When rerunning, input should be the failed/unknown directory or its parent output directory,
+    and output should be a target directory for the new results.
     """
     handler = SVMRankerHandler(svm_ranker_path)
+    if rerun_failed and rerun_unknown:
+        raise typer.BadParameter("Choose only one of --rerun-failed or --rerun-unknown.")
     if rerun_failed:
         handler.rerun_failed(input, output, recursive)
+    elif rerun_unknown:
+        handler.rerun_unknown(
+            input,
+            output,
+            recursive,
+            depth_bump=rerun_unknown_depth_bump,
+            sample_strategy=rerun_unknown_sample,
+            template_strategy=rerun_unknown_template,
+            cutting_strategy=rerun_unknown_cutting,
+        )
     else:
         handler.run(input, output, recursive)
 

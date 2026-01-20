@@ -1,0 +1,18 @@
+--- Entry Loop ID: 1 ---
+
+--- calling parseBoogieProgramMulti on /home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval/c_bench_term/Masse-VMCAI2014-Fig1a_true-termination.bpl ---
+[OneLoop L] /home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval/c_bench_term/Masse-VMCAI2014-Fig1a_true-termination.bpl
+L = [
+lambda x :(((True and (True and (x[1] >= 0)) ) if (x[1] >= 0) else (True and (True and (not(x[1] >= 0))) ) ) and (True and (x[0] >= 0)) ),
+lambda x :[((x[0] + x[1]) if (x[1] >= 0) else (x[0] + x[1]) ), (((-x[1]) - 1) if (x[1] >= 0) else (-x[1]) ), ],
+2,
+0,
+lambda x :[If(( x[1]>= 0), ( x[0]+ x[1]), ( x[0]+ x[1]) ), If(( x[1]>= 0), ( (-x[1])- 1), (-x[1]) ), ],
+lambda x :And(If(( x[1]>= 0), And(True, (And( True, ( x[1]>= 0))) ), And(True, (And( True, (Not(x[1] >= 0)))) ) ), (And( True, ( x[0]>= 0))) ),
+False,
+]
+[/OneLoop L]
+
+--- calling SVMLearnMulti ---
+
+========================================

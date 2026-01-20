@@ -1,0 +1,22 @@
+--- Entry Loop ID: 1 ---
+
+--- calling parseBoogieProgramMulti on /home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval/c_bench_nonterm/nonlin_mult_nonterm_6.bpl ---
+[OneLoop L] /home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval/c_bench_nonterm/nonlin_mult_nonterm_6.bpl
+L = [
+lambda x :(((True and (True and (__VERIFIER_nondet_int() == 0)) ) if (__VERIFIER_nondet_int() == 0) else ((((True and True ) and (True and (__VERIFIER_nondet_int() == 0)) ) if (__VERIFIER_nondet_int() == 0) else ((True and True ) and (True and (not(__VERIFIER_nondet_int() == 0))) ) ) and (True and (not(__VERIFIER_nondet_int() == 0))) ) ) and (True and (((x[0] * x[1]) * x[2]) == 0)) ),
+lambda x :[(0 if (__VERIFIER_nondet_int() == 0) else (x[0] if (__VERIFIER_nondet_int() == 0) else x[0] ) ), (x[1] if (__VERIFIER_nondet_int() == 0) else (0 if (__VERIFIER_nondet_int() == 0) else x[1] ) ), (x[2] if (__VERIFIER_nondet_int() == 0) else (x[2] if (__VERIFIER_nondet_int() == 0) else 0 ) ), ],
+3,
+0,
+lambda x :[If(( __VERIFIER_nondet_int()== 0), 0, If(( __VERIFIER_nondet_int()== 0), x[0], x[0] ) ), If(( __VERIFIER_nondet_int()== 0), x[1], If(( __VERIFIER_nondet_int()== 0), 0, x[1] ) ), If(( __VERIFIER_nondet_int()== 0), x[2], If(( __VERIFIER_nondet_int()== 0), x[2], 0 ) ), ],
+lambda x :And(If(( __VERIFIER_nondet_int()== 0), And(True, (And( True, ( __VERIFIER_nondet_int()== 0))) ), And(If(( __VERIFIER_nondet_int()== 0), And(And(True, True ), (And( True, ( __VERIFIER_nondet_int()== 0))) ), And(And(True, True ), (And( True, (Not(__VERIFIER_nondet_int() == 0)))) ) ), (And( True, (Not(__VERIFIER_nondet_int() == 0)))) ) ), (And( True, ( ( ( x[0]* x[1])* x[2])== 0))) ),
+False,
+]
+[/OneLoop L]
+
+--- calling SVMLearnMulti ---
+it is not terminating, an infinite loop with initial condition:
+
+['xi_0=0', 'xi_1=7', 'xi_2=9']
+
+
+========================================

@@ -1,0 +1,22 @@
+--- Entry Loop ID: 1 ---
+
+--- calling parseBoogieProgramMulti on /home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval/c_bench_term/trex03_false-unreach-call_true-termination-simpl.bpl ---
+[OneLoop L] /home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval/c_bench_term/trex03_false-unreach-call_true-termination-simpl.bpl
+L = [
+lambda x :(((True and (True and (__VERIFIER_nondet_int() == 0)) ) if (__VERIFIER_nondet_int() == 0) else ((((True and True ) and (True and (__VERIFIER_nondet_int() == 0)) ) if (__VERIFIER_nondet_int() == 0) else ((True and True ) and (True and (not(__VERIFIER_nondet_int() == 0))) ) ) and (True and (not(__VERIFIER_nondet_int() == 0))) ) ) and (True and (((x[0] > 0) and (x[1] > 0)) and (x[2] > 0))) ),
+lambda x :[((x[0] - 1) if (__VERIFIER_nondet_int() == 0) else (x[0] if (__VERIFIER_nondet_int() == 0) else x[0] ) ), (x[1] if (__VERIFIER_nondet_int() == 0) else ((x[1] - 1) if (__VERIFIER_nondet_int() == 0) else x[1] ) ), (x[2] if (__VERIFIER_nondet_int() == 0) else (x[2] if (__VERIFIER_nondet_int() == 0) else (x[2] - 1) ) ), ],
+3,
+0,
+lambda x :[If(( __VERIFIER_nondet_int()== 0), ( x[0]- 1), If(( __VERIFIER_nondet_int()== 0), x[0], x[0] ) ), If(( __VERIFIER_nondet_int()== 0), x[1], If(( __VERIFIER_nondet_int()== 0), ( x[1]- 1), x[1] ) ), If(( __VERIFIER_nondet_int()== 0), x[2], If(( __VERIFIER_nondet_int()== 0), x[2], ( x[2]- 1) ) ), ],
+lambda x :And(If(( __VERIFIER_nondet_int()== 0), And(True, (And( True, ( __VERIFIER_nondet_int()== 0))) ), And(If(( __VERIFIER_nondet_int()== 0), And(And(True, True ), (And( True, ( __VERIFIER_nondet_int()== 0))) ), And(And(True, True ), (And( True, (Not(__VERIFIER_nondet_int() == 0)))) ) ), (And( True, (Not(__VERIFIER_nondet_int() == 0)))) ) ), (And( True, (And( (And( ( x[0]> 0), ( x[1]> 0))), ( x[2]> 0))))) ),
+False,
+]
+[/OneLoop L]
+
+--- calling SVMLearnMulti ---
+it is not terminating, an infinite loop with initial condition:
+
+['xi_0=1', 'xi_1=1', 'xi_2=1']
+
+
+========================================

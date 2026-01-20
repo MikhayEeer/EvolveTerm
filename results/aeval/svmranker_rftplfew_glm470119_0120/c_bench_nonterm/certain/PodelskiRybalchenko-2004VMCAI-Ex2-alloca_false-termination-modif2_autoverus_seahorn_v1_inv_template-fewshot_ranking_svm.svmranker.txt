@@ -1,0 +1,26 @@
+--- Entry Loop ID: 1 ---
+
+--- calling parseBoogieProgramMulti on /home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval/c_bench_nonterm/PodelskiRybalchenko-2004VMCAI-Ex2-alloca_false-termination-modif2.bpl ---
+[OneLoop L] /home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval/c_bench_nonterm/PodelskiRybalchenko-2004VMCAI-Ex2-alloca_false-termination-modif2.bpl
+L = [
+lambda x :(True and ((x[0] >= 0) or (x[1] < 0))),
+lambda x :[((2 * x[0]) + 0), 0, ],
+2,
+0,
+lambda x :[( ( 2* x[0])+ 0), 0, ],
+lambda x :(And( True, (Or(( x[0]>= 0), ( x[1]< 0))))),
+False,
+]
+[/OneLoop L]
+
+--- calling SVMLearnMulti ---
+it is not terminating, an infinite loop with initial condition:
+
+['xi_0=0', 'xi_1=0']
+
+it is not terminating, an infinite loop with initial condition:
+
+['xi_0=0', 'xi_1=0']
+
+
+========================================

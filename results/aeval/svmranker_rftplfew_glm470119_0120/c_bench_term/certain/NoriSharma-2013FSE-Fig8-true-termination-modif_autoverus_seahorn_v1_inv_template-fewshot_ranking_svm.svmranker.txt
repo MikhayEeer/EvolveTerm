@@ -1,0 +1,26 @@
+--- Entry Loop ID: 1 ---
+
+--- calling parseBoogieProgramMulti on /home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval/c_bench_term/NoriSharma-2013FSE-Fig8-true-termination-modif.bpl ---
+[OneLoop L] /home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval/c_bench_term/NoriSharma-2013FSE-Fig8-true-termination-modif.bpl
+L = [
+lambda x :(((True and (True and (0 == __VERIFIER_nondet_int())) ) if (0 == __VERIFIER_nondet_int()) else (True and (True and (not(0 == __VERIFIER_nondet_int()))) ) ) and (True and (x[0] >= x[1])) ),
+lambda x :[((x[0] + (x[2] - 1)) if (0 == __VERIFIER_nondet_int()) else x[0] ), (x[1] if (0 == __VERIFIER_nondet_int()) else (x[1] + 1) ), ((x[2] - 1) if (0 == __VERIFIER_nondet_int()) else x[2] ), ],
+3,
+0,
+lambda x :[If(( 0== __VERIFIER_nondet_int()), ( x[0]+ ( x[2]- 1)), x[0] ), If(( 0== __VERIFIER_nondet_int()), x[1], ( x[1]+ 1) ), If(( 0== __VERIFIER_nondet_int()), ( x[2]- 1), x[2] ), ],
+lambda x :And(If(( 0== __VERIFIER_nondet_int()), And(True, (And( True, ( 0== __VERIFIER_nondet_int()))) ), And(True, (And( True, (Not(0 == __VERIFIER_nondet_int())))) ) ), (And( True, ( x[0]>= x[1]))) ),
+False,
+]
+[/OneLoop L]
+
+--- calling SVMLearnMulti ---
+it is not terminating, an infinite loop with initial condition:
+
+['xi_0=0', 'xi_1=0', 'xi_2=None']
+
+it is not terminating, an infinite loop with initial condition:
+
+['xi_0=0', 'xi_1=0', 'xi_2=None']
+
+
+========================================

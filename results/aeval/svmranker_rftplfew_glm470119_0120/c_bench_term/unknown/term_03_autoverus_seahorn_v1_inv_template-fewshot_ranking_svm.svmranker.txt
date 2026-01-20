@@ -1,0 +1,18 @@
+--- Entry Loop ID: 1 ---
+
+--- calling parseBoogieProgramMulti on /home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval/c_bench_term/term_03.bpl ---
+[OneLoop L] /home/clexma/Desktop/fox3/TermDB/SVMRanker/src/.boogie_normalized/term_03.bpl.791a8fa9be.bpl
+L = [
+lambda x :(True and ((x[0] > x[2]) or (x[2] > x[3]))),
+lambda x :[(x[0] - 3), x[1], (x[2] - 2), (x[3] - 1), ],
+4,
+0,
+lambda x :[( x[0]- 3), x[1], ( x[2]- 2), ( x[3]- 1), ],
+lambda x :(And( True, (Or(( x[0]> x[2]), ( x[2]> x[3]))))),
+False,
+]
+[/OneLoop L]
+
+--- calling SVMLearnMulti ---
+
+========================================

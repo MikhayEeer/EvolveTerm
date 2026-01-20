@@ -1,0 +1,18 @@
+--- Entry Loop ID: 1 ---
+
+--- calling parseBoogieProgramMulti on /home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval/c_bench_term/Masse-VMCAI2014-Fig1b_true-termination.bpl ---
+[OneLoop L] /home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval/c_bench_term/Masse-VMCAI2014-Fig1b_true-termination.bpl
+L = [
+lambda x :(((True and (True and (__VERIFIER_nondet_int() != 0)) ) if (__VERIFIER_nondet_int() != 0) else (True and (True and (not(__VERIFIER_nondet_int() != 0))) ) ) and (True and (x[0] <= 100)) ),
+lambda x :[(((-2 * x[0]) + 2) if (__VERIFIER_nondet_int() != 0) else ((-3 * x[0]) - 2) ), ],
+1,
+0,
+lambda x :[If(( __VERIFIER_nondet_int()!= 0), ( ( -2* x[0])+ 2), ( ( -3* x[0])- 2) ), ],
+lambda x :And(If(( __VERIFIER_nondet_int()!= 0), And(True, (And( True, ( __VERIFIER_nondet_int()!= 0))) ), And(True, (And( True, (Not(__VERIFIER_nondet_int() != 0)))) ) ), (And( True, ( x[0]<= 100))) ),
+False,
+]
+[/OneLoop L]
+
+--- calling SVMLearnMulti ---
+
+========================================

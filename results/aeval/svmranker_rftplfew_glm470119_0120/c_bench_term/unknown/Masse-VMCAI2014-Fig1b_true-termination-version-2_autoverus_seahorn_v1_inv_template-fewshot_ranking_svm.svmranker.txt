@@ -1,0 +1,18 @@
+--- Entry Loop ID: 1 ---
+
+--- calling parseBoogieProgramMulti on /home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval/c_bench_term/Masse-VMCAI2014-Fig1b_true-termination-version-2.bpl ---
+[OneLoop L] /home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval/c_bench_term/Masse-VMCAI2014-Fig1b_true-termination-version-2.bpl
+L = [
+lambda x :(((True and (True and (0 == __VERIFIER_nondet_int())) ) if (0 == __VERIFIER_nondet_int()) else ((((True and True ) and (True and (0 == __VERIFIER_nondet_int())) ) if (0 == __VERIFIER_nondet_int()) else (((((True and True ) and True ) and (True and (0 == __VERIFIER_nondet_int())) ) if (0 == __VERIFIER_nondet_int()) else (((True and True ) and True ) and (True and (not(0 == __VERIFIER_nondet_int()))) ) ) and (True and (not(0 == __VERIFIER_nondet_int()))) ) ) and (True and (not(0 == __VERIFIER_nondet_int()))) ) ) and (True and (x[0] <= 100)) ),
+lambda x :[(((-2 * x[0]) + 2) if (0 == __VERIFIER_nondet_int()) else (((-3 * x[0]) - 2) if (0 == __VERIFIER_nondet_int()) else (((-4 * x[0]) + 2) if (0 == __VERIFIER_nondet_int()) else ((-5 * x[0]) - 2) ) ) ), ],
+1,
+0,
+lambda x :[If(( 0== __VERIFIER_nondet_int()), ( ( -2* x[0])+ 2), If(( 0== __VERIFIER_nondet_int()), ( ( -3* x[0])- 2), If(( 0== __VERIFIER_nondet_int()), ( ( -4* x[0])+ 2), ( ( -5* x[0])- 2) ) ) ), ],
+lambda x :And(If(( 0== __VERIFIER_nondet_int()), And(True, (And( True, ( 0== __VERIFIER_nondet_int()))) ), And(If(( 0== __VERIFIER_nondet_int()), And(And(True, True ), (And( True, ( 0== __VERIFIER_nondet_int()))) ), And(If(( 0== __VERIFIER_nondet_int()), And(And(And(True, True ), True ), (And( True, ( 0== __VERIFIER_nondet_int()))) ), And(And(And(True, True ), True ), (And( True, (Not(0 == __VERIFIER_nondet_int())))) ) ), (And( True, (Not(0 == __VERIFIER_nondet_int())))) ) ), (And( True, (Not(0 == __VERIFIER_nondet_int())))) ) ), (And( True, ( x[0]<= 100))) ),
+False,
+]
+[/OneLoop L]
+
+--- calling SVMLearnMulti ---
+
+========================================

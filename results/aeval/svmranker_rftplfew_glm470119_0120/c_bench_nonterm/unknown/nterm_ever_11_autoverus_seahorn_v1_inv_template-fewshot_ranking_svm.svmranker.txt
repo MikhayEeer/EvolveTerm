@@ -1,0 +1,18 @@
+--- Entry Loop ID: 1 ---
+
+--- calling parseBoogieProgramMulti on /home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval/c_bench_nonterm/nterm_ever_11.bpl ---
+[OneLoop L] /home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval/c_bench_nonterm/nterm_ever_11.bpl
+L = [
+lambda x :(True and (x[0] <= 49)),
+lambda x :[(x[1] % 50), (x[1] + 1), ],
+2,
+0,
+lambda x :[( x[1]% 50), ( x[1]+ 1), ],
+lambda x :(And( True, ( x[0]<= 49))),
+False,
+]
+[/OneLoop L]
+
+--- calling SVMLearnMulti ---
+
+========================================

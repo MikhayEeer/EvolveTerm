@@ -1,0 +1,18 @@
+--- Entry Loop ID: 1 ---
+
+--- calling parseBoogieProgramMulti on /home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval/c_bench_term/Pure2Phase_true-termination_true-valid-memsafety.bpl ---
+[OneLoop L] /home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval/c_bench_term/Pure2Phase_true-termination_true-valid-memsafety.bpl
+L = [
+lambda x :((((((True and True ) and (True and (not(0 <= 1073741823))) ) if (not(0 <= 1073741823)) else ((True and True ) and (True and (not(not(0 <= 1073741823)))) ) ) and (True and ((x[0] - 1) >= 0)) ) if ((x[0] - 1) >= 0) else (True and (True and (not((x[0] - 1) >= 0))) ) ) and (True and (x[1] >= 0)) ),
+lambda x :[(((x[0] - 1) if (not(0 <= 1073741823)) else (x[0] - 1) ) if ((x[0] - 1) >= 0) else (x[0] - 1) ), ((0 if (not(0 <= 1073741823)) else 0 ) if ((x[0] - 1) >= 0) else (x[1] - 1) ), ],
+2,
+0,
+lambda x :[If(( ( x[0]- 1)>= 0), If((Not(0 <= 1073741823)), ( x[0]- 1), ( x[0]- 1) ), ( x[0]- 1) ), If(( ( x[0]- 1)>= 0), If((Not(0 <= 1073741823)), 0, 0 ), ( x[1]- 1) ), ],
+lambda x :And(If(( ( x[0]- 1)>= 0), And(If((Not(0 <= 1073741823)), And(And(True, True ), (And( True, (Not(0 <= 1073741823)))) ), And(And(True, True ), (And( True, (Not(not(0 <= 1073741823))))) ) ), (And( True, ( ( x[0]- 1)>= 0))) ), And(True, (And( True, (Not((x[0] - 1) >= 0)))) ) ), (And( True, ( x[1]>= 0))) ),
+False,
+]
+[/OneLoop L]
+
+--- calling SVMLearnMulti ---
+
+========================================
