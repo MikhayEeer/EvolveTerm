@@ -1,5 +1,5 @@
 source_file: AliasDarteFeautrierGonnord-SAS2010-rsd_true-termination_autoverus_seahorn_v1_inv.yml
-source_path: c_bench_term/AliasDarteFeautrierGonnord-SAS2010-rsd_true-termination.c
+source_path: data/aeval/c_bench_term/AliasDarteFeautrierGonnord-SAS2010-rsd_true-termination.c
 task: ranking_inference
 command: /home/clexma/Desktop/fox3/TermDB/EvolveTerm/.venv_evolve/bin/evolveterm ranking
   --input results/aeval/invariants_autoveruspmt_exv2_glm47_0115/ -r -m yaml --ranking-mode

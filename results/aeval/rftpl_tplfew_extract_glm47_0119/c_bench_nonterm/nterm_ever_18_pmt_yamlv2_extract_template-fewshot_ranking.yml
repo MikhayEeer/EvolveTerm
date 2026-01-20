@@ -1,5 +1,5 @@
 source_file: nterm_ever_18_pmt_yamlv2_extract.yml
-source_path: c_bench_nonterm/nterm_ever_18.c
+source_path: data/aeval/c_bench_nonterm/nterm_ever_18.c
 task: ranking_inference
 command: /home/clexma/Desktop/fox3/TermDB/EvolveTerm/.venv_evolve/bin/evolveterm ranking
   --input results/aeval/extract_v2_0110_glm47/ -r -m yaml --ranking-mode template-fewshot

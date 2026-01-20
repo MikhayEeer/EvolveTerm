@@ -1,0 +1,12 @@
+input_file: results/aeval/rftpl_tplfew_autoinv_glm47_0119/c_bench_nonterm/nonlin_choices_2_autoverus_seahorn_v1_inv_template-fewshot_ranking.yml
+source_file: nonlin_choices_2_autoverus_seahorn_v1_inv_template-fewshot_ranking.yml
+task: svmranker
+svmranker_result:
+- loop_id: 1
+  template_type: lmulti
+  template_depth: 2
+  svm_mode: lmulti
+  status: ERROR
+  ranking_function: null
+  ranking_functions: []
+  input_code_source: loop_code

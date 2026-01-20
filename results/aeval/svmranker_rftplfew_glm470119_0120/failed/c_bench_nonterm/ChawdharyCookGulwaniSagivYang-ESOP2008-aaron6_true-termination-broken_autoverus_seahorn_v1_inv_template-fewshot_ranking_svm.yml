@@ -1,0 +1,12 @@
+input_file: results/aeval/rftpl_tplfew_autoinv_glm47_0119/c_bench_nonterm/ChawdharyCookGulwaniSagivYang-ESOP2008-aaron6_true-termination-broken_autoverus_seahorn_v1_inv_template-fewshot_ranking.yml
+source_file: ChawdharyCookGulwaniSagivYang-ESOP2008-aaron6_true-termination-broken_autoverus_seahorn_v1_inv_template-fewshot_ranking.yml
+task: svmranker
+svmranker_result:
+- loop_id: 1
+  template_type: lnested
+  template_depth: 3
+  svm_mode: lnested
+  status: ERROR
+  ranking_function: null
+  ranking_functions: []
+  input_code_source: loop_code
