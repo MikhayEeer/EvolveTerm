@@ -1,3 +1,7 @@
+# result later
+result/**/*.yml
+result/**/*.txt
+
 # vscode configurations
 .vscode/*
 
