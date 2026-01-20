@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from datetime import datetime
 from pathlib import Path
-from typing import List
+from typing import List, Tuple
 import uuid
 import numpy as np
 
@@ -22,6 +22,7 @@ from .sea_verify import SeaHornVerifier, DEFAULT_SEAHORN_IMAGE
 from .report_manager import ReportManager
 from .predict import Predictor
 from .svm_ranker import SVMRankerClient
+from .smt_ranker import SMTLinearRankSynthesizer
 import tempfile
 import os
 
@@ -59,6 +60,7 @@ class TerminationPipeline:
         self.report_manager = ReportManager()
         self.predictor = Predictor(self.llm_client, self.prompt_repo)
         self.svm_ranker = SVMRankerClient(svm_ranker_path) if svm_ranker_path else None
+        self.smt_ranker = SMTLinearRankSynthesizer()
         self.ranking_retry_empty = max(0, ranking_retry_empty)
 
     def _get_seahorn_verifier(self) -> SeaHornVerifier:
@@ -76,6 +78,7 @@ class TerminationPipeline:
                 auto_build_index: bool = True, 
                 use_rag_in_reasoning: bool = True, 
                 use_svm_ranker: bool = False, 
+                use_smt_synth: bool = False,
                 known_terminating: bool = False,
                 # Ablation parameters
                 extraction_prompt_version: str = "v2", 
@@ -92,8 +95,8 @@ class TerminationPipeline:
         start_llm_calls = getattr(self.llm_client, "call_count", 0)
         run_id = uuid.uuid4().hex
         verifier_backend = self.verifier_backend
-        if verifier_backend not in {"z3", "seahorn"}:
-            raise ValueError(f"Unsupported verifier backend: {verifier_backend}")
+        if verifier_backend != "seahorn":
+            raise ValueError("Strict termination proof requires verifier_backend='seahorn'.")
 
         # Stage 0: Translation (if enabled)
         original_code = code
@@ -195,6 +198,51 @@ class TerminationPipeline:
             ranking_function = None
             ranking_explanation = ""
             verification_result = "Skipped"
+
+            def verify_candidate(rf: str, explanation: str) -> Tuple[str, str]:
+                if not rf:
+                    return "Skipped", ""
+                seahorn = self._get_seahorn_verifier()
+                result = seahorn.verify(
+                    code,
+                    loop_invariants={loop_id: invariants},
+                    loop_rankings={loop_id: rf},
+                )
+                report = seahorn.last_report or {}
+                instrumented = report.get("instrumented_loop_ids") or []
+                if loop_id not in instrumented:
+                    return "Skipped (SeaHorn no instrumentation)", explanation
+                if result.startswith("Error"):
+                    return result, explanation
+                return result, explanation
+
+            # 4.2.1 SMT piecewise linear synthesis (experimental)
+            if use_smt_synth:
+                smt_rf = self.smt_ranker.synthesize(current_context, invariants)
+                if smt_rf:
+                    smt_reason = getattr(self.smt_ranker, "last_reason", "")
+                    smt_expl = "SMT synthesized piecewise linear ranking function."
+                    if smt_reason:
+                        smt_expl = f"{smt_expl} Reason={smt_reason}."
+                    verification_result, ranking_explanation = verify_candidate(smt_rf, smt_expl)
+                    ranking_function = smt_rf
+                    if verification_result == "Verified":
+                        loop_analyses.append({
+                            "id": loop_id,
+                            "code": loop_code,
+                            "context_used": current_context,
+                            "invariants": invariants,
+                            "ranking_function": ranking_function,
+                            "verification_result": verification_result,
+                            "verification_backend": verifier_backend,
+                            "explanation": ranking_explanation
+                        })
+                        final_ranking_functions.append(f"Loop {loop_id}: {ranking_function}")
+                        final_invariants.extend(invariants)
+                        continue
+                    ranking_function = None
+                    ranking_explanation = ""
+                    verification_result = "Skipped"
             
             # Try SVMRanker if enabled and available
             if use_svm_ranker and self.svm_ranker:
@@ -262,24 +310,11 @@ class TerminationPipeline:
             # 4.3 Verification
             if verification_result != "Verified":
                 if ranking_function:
-                    if verifier_backend == "seahorn":
-                        seahorn = self._get_seahorn_verifier()
-                        verification_result = seahorn.verify(
-                            code,
-                            loop_invariants={loop_id: invariants},
-                            loop_rankings={loop_id: ranking_function},
-                        )
-                        report = seahorn.last_report or {}
-                        instrumented = report.get("instrumented_loop_ids") or []
-                        if loop_id not in instrumented:
-                            verification_result = "Skipped (SeaHorn no instrumentation)"
-                            print(f"[Warning] SeaHorn did not instrument Loop {loop_id}. Check braces/line start.")
-                        elif verification_result.startswith("Error"):
-                            print(f"[Warning] SeaHorn error on Loop {loop_id}: {verification_result}")
-                    else:
-                        # Z3 Verifier also needs valid code or robust parsing.
-                        # Our Z3Verifier uses LLM to translate to Python/Z3, so it handles snippets well.
-                        verification_result = self.z3_verifier.verify(current_context, invariants, ranking_function)
+                    verification_result, _ = verify_candidate(ranking_function, ranking_explanation)
+                    if verification_result == "Skipped (SeaHorn no instrumentation)":
+                        print(f"[Warning] SeaHorn did not instrument Loop {loop_id}. Check braces/line start.")
+                    elif verification_result.startswith("Error"):
+                        print(f"[Warning] Verifier error on Loop {loop_id}: {verification_result}")
                 else:
                     verification_result = "Skipped"
             
