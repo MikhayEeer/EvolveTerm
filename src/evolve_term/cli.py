@@ -55,8 +55,9 @@ def analyze(
     use_rag_reasoning: bool = typer.Option(True, "--use-rag-reasoning/--no-rag-reasoning", 
                                            help="Use RAG references for invariant and ranking function inference; Default is enabled"),
     svm_ranker_path: Optional[Path] = typer.Option(None, "--svm-ranker", "--svmranker", help=SVM_RANKER_HELP),
+    use_smt_synth: bool = typer.Option(False, "--smt-synth/--no-smt-synth", help="Enable SMT-based piecewise linear ranking synthesis (experimental)"),
     known_terminating: bool = typer.Option(False, "--known-terminating", help="Hint that the program is known to terminate"),
-    verifier_backend: str = typer.Option("z3", "--verifier", help="Verification backend: z3 or seahorn"),
+    verifier_backend: str = typer.Option("seahorn", "--verifier", help="Verification backend (strict mode): seahorn"),
     seahorn_image: str = typer.Option("seahorn/seahorn-llvm14:nightly", "--seahorn-image", help="SeaHorn docker image"),
     seahorn_timeout: int = typer.Option(60, "--seahorn-timeout", help="SeaHorn timeout seconds"),
     # Ablation parameters
@@ -97,6 +98,7 @@ def analyze(
         top_k=top_k, 
         use_rag_in_reasoning=use_rag_reasoning,
         use_svm_ranker=bool(svm_ranker_root),
+        use_smt_synth=use_smt_synth,
         known_terminating=known_terminating,
         extraction_prompt_version=extraction_prompt_version,
         use_loops_for_embedding=use_loops_for_embedding,
@@ -149,8 +151,9 @@ def batch_analyze(
     recursive: bool = typer.Option(False, "--recursive", "-r", help="Recursively search for files"),
     use_rag_reasoning: bool = typer.Option(True, "--use-rag-reasoning/--no-rag-reasoning", help="Use RAG references for invariant and ranking function inference"),
     svm_ranker_path: Optional[Path] = typer.Option(None, "--svm-ranker", "--svmranker", help=SVM_RANKER_HELP),
+    use_smt_synth: bool = typer.Option(False, "--smt-synth/--no-smt-synth", help="Enable SMT-based piecewise linear ranking synthesis (experimental)"),
     known_terminating: bool = typer.Option(False, "--known-terminating", help="Hint that the program is known to terminate"),
-    verifier_backend: str = typer.Option("z3", "--verifier", help="Verification backend: z3 or seahorn"),
+    verifier_backend: str = typer.Option("seahorn", "--verifier", help="Verification backend (strict mode): seahorn"),
     seahorn_image: str = typer.Option("seahorn/seahorn-llvm14:nightly", "--seahorn-image", help="SeaHorn docker image"),
     seahorn_timeout: int = typer.Option(60, "--seahorn-timeout", help="SeaHorn timeout seconds"),
     # Ablation parameters
@@ -162,7 +165,7 @@ def batch_analyze(
     handler = BatchHandler()
     handler.run(
         input_dir, top_k, enable_translation, knowledge_base, recursive, 
-        use_rag_reasoning, svm_ranker_path, known_terminating, 
+        use_rag_reasoning, svm_ranker_path, use_smt_synth, known_terminating, 
         extraction_prompt_version, use_loops_for_embedding, use_loops_for_reasoning,
         verifier_backend, seahorn_image, seahorn_timeout
     )
