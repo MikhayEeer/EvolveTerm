@@ -103,6 +103,7 @@ RANKING_ENTRY_SCHEMA = {
     "ranking_function": FieldSpec(required=False, field_type=str),
     "template_type": FieldSpec(required=False, field_type=str),
     "template_depth": FieldSpec(required=False, field_type=int, min_value=1),
+    "template_predicates": FieldSpec(required=False, field_type=list),
     "status": FieldSpec(required=False, field_type=str),
 }
 

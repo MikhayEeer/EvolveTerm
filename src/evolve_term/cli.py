@@ -400,21 +400,6 @@ def svmranker(
         "--rerun-unknown-depth-bump",
         help="Depth increment applied when rerunning unknown entries (default: +1).",
     ),
-    rerun_unknown_sample: str = typer.Option(
-        "CONSTRAINT",
-        "--rerun-unknown-sample",
-        help="Sample strategy for --rerun-unknown (CONSTRAINT or ENLARGE).",
-    ),
-    rerun_unknown_template: str = typer.Option(
-        "FULL",
-        "--rerun-unknown-template",
-        help="Template strategy for --rerun-unknown (FULL or SINGLEFULL).",
-    ),
-    rerun_unknown_cutting: str = typer.Option(
-        "POS",
-        "--rerun-unknown-cutting",
-        help="Cutting strategy for --rerun-unknown (POS or NEG).",
-    ),
 ) -> None:
     """
     Run SVMRanker using template parameters from ranking-template YAML output.
@@ -433,9 +418,6 @@ def svmranker(
             output,
             recursive,
             depth_bump=rerun_unknown_depth_bump,
-            sample_strategy=rerun_unknown_sample,
-            template_strategy=rerun_unknown_template,
-            cutting_strategy=rerun_unknown_cutting,
         )
     else:
         handler.run(input, output, recursive)

@@ -255,9 +255,25 @@ class TerminationPipeline:
                 
                 rf_type = metadata.get("type", "lnested")
                 depth = metadata.get("depth", 1)
-                svm_mode = "lnested"
-                if "multi" in str(rf_type).lower():
-                    svm_mode = "lmulti"
+                rf_type_value = str(rf_type or "").lower()
+                if "piecewise" in rf_type_value:
+                    svm_mode = "lpiecewiseext"
+                elif "multiext" in rf_type_value or "multi" in rf_type_value:
+                    svm_mode = "lmultiext"
+                elif "lexiext" in rf_type_value or "lexi" in rf_type_value:
+                    svm_mode = "llexiext"
+                else:
+                    svm_mode = "llexiext"
+
+                predicates = []
+                if svm_mode == "lpiecewiseext":
+                    predicates = self.predictor.infer_piecewise_predicates(
+                        current_context,
+                        invariants,
+                        reasoning_references,
+                        retry_empty=self.ranking_retry_empty,
+                        log_prefix=f"Loop {loop_id} piecewise",
+                    )
                 
                 # Run SVMRanker
                 try:
@@ -284,7 +300,12 @@ class TerminationPipeline:
                         tmp_path = tmp.name
                     
                     # Call SVMRanker
-                    svm_result_status, svm_rf, _, _ = self.svm_ranker.run(Path(tmp_path), mode=svm_mode, depth=depth)
+                    svm_result_status, svm_rf, _, _, _ = self.svm_ranker.run(
+                        Path(tmp_path),
+                        mode=svm_mode,
+                        depth=depth,
+                        predicates=predicates,
+                    )
                     
                     if svm_result_status == "TERMINATE" and svm_rf:
                         ranking_function = svm_rf

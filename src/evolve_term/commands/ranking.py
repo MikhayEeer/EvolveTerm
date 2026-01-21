@@ -96,6 +96,9 @@ class RankingHandler:
         def is_template_mode() -> bool:
             return isinstance(rf_mode, str) and rf_mode.startswith("template")
 
+        def is_piecewise_template(value: Any) -> bool:
+            return "piecewise" in str(value or "").lower()
+
         def derive_base_name(source_path: Optional[str], fallback: Path) -> str:
             if isinstance(source_path, str) and source_path.strip():
                 return Path(source_path).stem
@@ -137,11 +140,22 @@ class RankingHandler:
             if is_empty_result(rf, metadata):
                 return {"status": "empty", "explanation": explanation}
             if is_template_mode():
-                return {
+                result = {
                     "template_type": metadata.get("type"),
                     "template_depth": metadata.get("depth"),
                     "explanation": explanation,
                 }
+                if is_piecewise_template(metadata.get("type")):
+                    preds = self.predictor.infer_piecewise_predicates(
+                        code,
+                        invs,
+                        references,
+                        retry_empty=retry_empty,
+                        log_prefix=f"{f.name} piecewise",
+                    )
+                    if preds:
+                        result["template_predicates"] = preds
+                return result
             return {"ranking_function": rf, "explanation": explanation}
 
         def process_yaml_input(f: Path, strict: bool) -> tuple[Optional[List[Dict[str, Any]]], str, bool, bool]:
@@ -194,6 +208,16 @@ class RankingHandler:
                     elif is_template_mode():
                         result_entry["template_type"] = metadata.get("type")
                         result_entry["template_depth"] = metadata.get("depth")
+                        if is_piecewise_template(metadata.get("type")):
+                            preds = self.predictor.infer_piecewise_predicates(
+                                code,
+                                invs,
+                                references,
+                                retry_empty=retry_empty,
+                                log_prefix=f"{f.name} loop {loop_id} piecewise",
+                            )
+                            if preds:
+                                result_entry["template_predicates"] = preds
                     else:
                         result_entry["ranking_function"] = rf
                     
@@ -230,6 +254,16 @@ class RankingHandler:
                     elif is_template_mode():
                         result_entry["template_type"] = metadata.get("type")
                         result_entry["template_depth"] = metadata.get("depth")
+                        if is_piecewise_template(metadata.get("type")):
+                            preds = self.predictor.infer_piecewise_predicates(
+                                code,
+                                [],
+                                references,
+                                retry_empty=retry_empty,
+                                log_prefix=f"{f.name} loop {loop_id} piecewise",
+                            )
+                            if preds:
+                                result_entry["template_predicates"] = preds
                     else:
                         result_entry["ranking_function"] = rf
                         

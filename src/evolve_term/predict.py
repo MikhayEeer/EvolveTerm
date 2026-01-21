@@ -83,14 +83,14 @@ class Predictor:
             prompt_name_to_use = "ranking_function/rf_direct"
             if mode == "template":
                 if known_terminating:
-                    prompt_name_to_use = "ranking_function/rf_template_known"
+                    prompt_name_to_use = "ranking_function/rf_template_ext_known"
                 else:
-                    prompt_name_to_use = "ranking_function/rf_template"
+                    prompt_name_to_use = "ranking_function/rf_template_ext"
             elif mode == "template_fewshot":
                 if known_terminating:
-                    prompt_name_to_use = "ranking_function/rf_template_known_fewshot"
+                    prompt_name_to_use = "ranking_function/rf_template_ext_known_fewshot"
                 else:
-                    prompt_name_to_use = "ranking_function/rf_template_fewshot"
+                    prompt_name_to_use = "ranking_function/rf_template_ext_fewshot"
 
         max_attempts = max(1, retry_empty + 1)
         last_ranking: str | None = None
@@ -150,6 +150,61 @@ class Predictor:
                 return ranking, explanation, data
 
         return last_ranking, last_explanation, last_data
+
+    def infer_piecewise_predicates(
+        self,
+        code: str,
+        invariants: List[str],
+        references: List[KnowledgeCase],
+        retry_empty: int = 0,
+        log_prefix: str | None = None,
+        prompt_name: str | None = None,
+    ) -> List[str]:
+        prompt_name_to_use = prompt_name or "ranking_function/rf_piecewise_predicates"
+        if "/" not in prompt_name_to_use:
+            prompt_name_to_use = f"ranking_function/{prompt_name_to_use}"
+
+        max_attempts = max(1, retry_empty + 1)
+        last_preds: List[str] = []
+
+        for attempt in range(1, max_attempts + 1):
+            prompt = self.prompt_repo.render(
+                prompt_name_to_use,
+                code=code,
+                invariants=json.dumps(invariants, ensure_ascii=False, indent=2),
+                references=json.dumps([ref.__dict__ for ref in references], ensure_ascii=False, indent=2),
+            )
+            response = self.llm_client.complete(prompt)
+            data = parse_llm_yaml(response)
+
+            preds: List[str] = []
+            if isinstance(data, dict):
+                config = data.get("configuration") if isinstance(data.get("configuration"), dict) else {}
+                raw = (
+                    data.get("predicates")
+                    or config.get("predicates")
+                    or data.get("predicate")
+                    or data.get("preds")
+                    or data.get("conditions")
+                    or []
+                )
+                if isinstance(raw, list):
+                    preds = [str(item) for item in raw if str(item).strip()]
+                elif isinstance(raw, str) and raw.strip():
+                    preds = [raw.strip()]
+            elif isinstance(data, list):
+                preds = [str(item) for item in data if str(item).strip()]
+
+            last_preds = preds
+            if retry_empty > 0:
+                prefix = f"[{log_prefix}] " if log_prefix else ""
+                status = "success" if preds else "empty"
+                print(f"[Info] {prefix}Piecewise predicates attempt {attempt}/{max_attempts}: {status}")
+
+            if preds:
+                return preds
+
+        return last_preds
 
     def predict(self, code: str, loops: List[str], references: List[KnowledgeCase], invariants: List[str] = None, ranking_function: str = None) -> tuple[dict, str]:
         prompt = self.prompt_repo.render(

@@ -42,16 +42,48 @@ class SVMRankerHandler:
         self.root = resolve_svm_ranker_root(svm_ranker_path)
         self.client = SVMRankerClient(str(self.root))
 
+    @staticmethod
+    def _normalize_template_mode(template_type: Any) -> str:
+        value = str(template_type or "").strip().lower()
+        if "piecewise" in value:
+            return "lpiecewiseext"
+        if "multiext" in value:
+            return "lmultiext"
+        if "lexiext" in value or "lexi" in value:
+            return "llexiext"
+        if value in {"lmulti", "multi"} or "multi" in value:
+            return "lmultiext"
+        if value in {"lnested", "nested"} or "nested" in value:
+            return "llexiext"
+        return "llexiext"
+
+    @staticmethod
+    def _normalize_template_predicates(value: Any) -> List[str]:
+        if value is None:
+            return []
+        if isinstance(value, str):
+            return [value]
+        if isinstance(value, list):
+            cleaned = []
+            for item in value:
+                if item is None:
+                    continue
+                text = str(item).strip()
+                if text:
+                    cleaned.append(text)
+            return cleaned
+        text = str(value).strip()
+        return [text] if text else []
+
     def _run_isolated_svmranker(
         self,
         target_path: Path,
         mode: str,
         depth: int,
-        sample_strategy: str,
-        cutting_strategy: str,
-        template_strategy: str,
+        predicates: Optional[List[str]],
+        enhance_on_unknown: bool,
         timeout_sec: int,
-    ) -> Tuple[str, Optional[str], List[str], str]:
+    ) -> Tuple[str, Optional[str], List[str], Optional[str], str]:
         ctx = multiprocessing.get_context("spawn")
         result_queue: Any = ctx.Queue()
         proc = ctx.Process(
@@ -62,10 +94,8 @@ class SVMRankerHandler:
                 str(target_path),
                 mode,
                 depth,
-                sample_strategy,
-                cutting_strategy,
-                template_strategy,
-                None,
+                predicates,
+                enhance_on_unknown,
             ),
         )
         proc.daemon = True
@@ -106,10 +136,11 @@ class SVMRankerHandler:
         status = payload.get("status") if isinstance(payload, dict) else "ERROR"
         rf = payload.get("ranking_function") if isinstance(payload, dict) else None
         rf_list = payload.get("ranking_functions") if isinstance(payload, dict) else []
+        piecewise_rf = payload.get("piecewise_rf") if isinstance(payload, dict) else None
         log = payload.get("log") if isinstance(payload, dict) else ""
         if proc.exitcode not in (0, None):
             log = f"[Debug] isolated SVMRanker exitcode={proc.exitcode}.\n" + (log or "")
-        return status, rf, rf_list, log
+        return status, rf, rf_list, piecewise_rf, log
 
     @staticmethod
     def _format_entry_log_prefix(
@@ -123,14 +154,17 @@ class SVMRankerHandler:
         depth_val: int,
         depth_original: Optional[int] = None,
         depth_bump: Optional[int] = None,
+        predicates: Optional[List[str]] = None,
     ) -> str:
         lines = [
             f"[Entry] loop_id={loop_id}",
             f"[Input] source={code_source} code_path={code_source_path or '-'} boogie_path={boogie_path or '-'}",
-            f"[Template] type={template_type} depth={template_depth} svm_mode={mode} depth={depth_val}",
+            f"[Template] type={template_type} depth={template_depth} svm_mode={mode} depth_bound={depth_val}",
         ]
         if depth_original is not None and depth_bump is not None:
             lines.append(f"[Template] depth_original={depth_original} depth_bump={depth_bump}")
+        if predicates:
+            lines.append(f"[Template] predicates={len(predicates)}")
         return "\n".join(lines) + "\n"
 
     def run(self, input_path: Path, output: Path, recursive: bool):
@@ -260,21 +294,32 @@ class SVMRankerHandler:
             )
             template_type = entry.get("template_type") or entry.get("type") or "lnested"
             template_depth = entry.get("template_depth") or entry.get("depth") or 1
-            mode = "lmulti" if "multi" in str(template_type).lower() else "lnested"
+            template_predicates = self._normalize_template_predicates(entry.get("template_predicates"))
+            mode = self._normalize_template_mode(template_type)
             try:
                 depth_val = int(template_depth)
             except Exception:
                 depth_val = 1
 
             if boogie_path:
-                status, rf, rf_list, log = self.client.run(Path(boogie_path), mode=mode, depth=depth_val)
+                status, rf, rf_list, piecewise_rf, log = self.client.run(
+                    Path(boogie_path),
+                    mode=mode,
+                    depth=depth_val,
+                    predicates=template_predicates,
+                )
             else:
                 with tempfile.NamedTemporaryFile(mode="w", suffix=".c", delete=False, encoding="utf-8") as tmp:
                     tmp.write(code)
                     tmp_path = tmp.name
 
                 try:
-                    status, rf, rf_list, log = self.client.run(Path(tmp_path), mode=mode, depth=depth_val)
+                    status, rf, rf_list, piecewise_rf, log = self.client.run(
+                        Path(tmp_path),
+                        mode=mode,
+                        depth=depth_val,
+                        predicates=template_predicates,
+                    )
                 finally:
                     Path(tmp_path).unlink(missing_ok=True)
 
@@ -287,6 +332,7 @@ class SVMRankerHandler:
                 template_depth=template_depth,
                 mode=mode,
                 depth_val=depth_val,
+                predicates=template_predicates,
             )
             def _stringify(value: Any) -> Optional[str]:
                 if value is None:
@@ -313,6 +359,10 @@ class SVMRankerHandler:
                 "ranking_functions": rf_list_str,
                 "input_code_source": code_source,
             }
+            if template_predicates:
+                result["template_predicates"] = template_predicates
+            if piecewise_rf:
+                result["piecewise_rf"] = piecewise_rf
             if code_source_path:
                 result["input_code_path"] = code_source_path
             if boogie_path:
@@ -453,7 +503,8 @@ class SVMRankerHandler:
             loop_id = entry.get("loop_id") or entry.get("id")
             template_type = entry.get("template_type") or entry.get("type") or "lnested"
             template_depth = entry.get("template_depth") or entry.get("depth") or 1
-            mode = "lmulti" if "multi" in str(template_type).lower() else "lnested"
+            template_predicates = self._normalize_template_predicates(entry.get("template_predicates"))
+            mode = self._normalize_template_mode(template_type)
             try:
                 depth_val = int(template_depth)
             except Exception:
@@ -499,7 +550,12 @@ class SVMRankerHandler:
                 return result, msg
 
             try:
-                status, rf, rf_list, log = self.client.run(target_path, mode=mode, depth=depth_val)
+                status, rf, rf_list, piecewise_rf, log = self.client.run(
+                    target_path,
+                    mode=mode,
+                    depth=depth_val,
+                    predicates=template_predicates,
+                )
             finally:
                 if temp_path:
                     temp_path.unlink(missing_ok=True)
@@ -513,6 +569,7 @@ class SVMRankerHandler:
                 template_depth=template_depth,
                 mode=mode,
                 depth_val=depth_val,
+                predicates=template_predicates,
             )
             rf_str = stringify(rf)
             rf_list_str = []
@@ -529,6 +586,10 @@ class SVMRankerHandler:
                 "ranking_functions": rf_list_str,
                 "input_code_source": input_code_source or "unknown",
             }
+            if template_predicates:
+                result["template_predicates"] = template_predicates
+            if piecewise_rf:
+                result["piecewise_rf"] = piecewise_rf
             if input_code_path:
                 result["input_code_path"] = input_code_path
             if input_boogie_path:
@@ -638,9 +699,6 @@ class SVMRankerHandler:
         output: Path,
         recursive: bool,
         depth_bump: int = 1,
-        sample_strategy: str = "CONSTRAINT",
-        template_strategy: str = "FULL",
-        cutting_strategy: str = "POS",
     ) -> None:
         if output is None:
             raise typer.BadParameter("Output directory is required.")
@@ -696,7 +754,8 @@ class SVMRankerHandler:
             loop_id = entry.get("loop_id") or entry.get("id")
             template_type = entry.get("template_type") or entry.get("type") or "lnested"
             template_depth = entry.get("template_depth") or entry.get("depth") or 1
-            mode = "lmulti" if "multi" in str(template_type).lower() else "lnested"
+            template_predicates = self._normalize_template_predicates(entry.get("template_predicates"))
+            mode = self._normalize_template_mode(template_type)
             try:
                 depth_val = int(template_depth)
             except Exception:
@@ -744,13 +803,12 @@ class SVMRankerHandler:
                 return result, msg
 
             try:
-                status, rf, rf_list, log = self._run_isolated_svmranker(
+                status, rf, rf_list, piecewise_rf, log = self._run_isolated_svmranker(
                     target_path=target_path,
                     mode=mode,
                     depth=depth_val,
-                    sample_strategy=sample_strategy,
-                    cutting_strategy=cutting_strategy,
-                    template_strategy=template_strategy,
+                    predicates=template_predicates,
+                    enhance_on_unknown=True,
                     timeout_sec=RERUN_UNKNOWN_TIMEOUT_SEC,
                 )
             finally:
@@ -768,6 +826,7 @@ class SVMRankerHandler:
                 depth_val=depth_val,
                 depth_original=depth_original,
                 depth_bump=depth_bump,
+                predicates=template_predicates,
             )
             rf_str = stringify(rf)
             rf_list_str = []
@@ -784,6 +843,10 @@ class SVMRankerHandler:
                 "ranking_functions": rf_list_str,
                 "input_code_source": input_code_source or "unknown",
             }
+            if template_predicates:
+                result["template_predicates"] = template_predicates
+            if piecewise_rf:
+                result["piecewise_rf"] = piecewise_rf
             if input_code_path:
                 result["input_code_path"] = input_code_path
             if input_boogie_path:
