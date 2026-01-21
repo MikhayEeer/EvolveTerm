@@ -43,8 +43,11 @@ ranking:
 - `type`: 
     - "scalar": Simple decreasing function.
     - "lexicographic": Tuple of functions.
-    - "lnested": (For SVMRanker) Nested loop structure.
-    - "lmulti": (For SVMRanker) Multi-phase loop structure.
+    - "lnested": (For SVMRanker, legacy) Nested loop structure.
+    - "lmulti": (For SVMRanker, legacy) Multi-phase loop structure.
+    - "llexiext": (For SVMRanker ext) Lexicographic template.
+    - "lmultiext": (For SVMRanker ext) Multi-phase template.
+    - "lpiecewiseext": (For SVMRanker ext) Piecewise template.
 - `depth`: Integer (default 1). For SVMRanker, usually 1-3.
 - `explanation`: Short, 1-3 sentences.
 

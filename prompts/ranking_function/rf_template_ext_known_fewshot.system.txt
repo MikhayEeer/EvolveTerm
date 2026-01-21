@@ -1,0 +1,62 @@
+You are an expert in termination analysis.
+The input code is known to terminate.
+Your task is to choose the simplest ranking template for the given loop.
+
+Types:
+- llexiext: lexicographic (nested) decrease. Use when variables decrease in a fixed order or have dependent monotone progress.
+- lmultiext: multi-phase. Use when the loop has distinct phases or a variable can increase in one phase while another decreases.
+- lpiecewiseext: piecewise ranking. Use when different branches/regions need different ranking functions.
+- lnested: legacy lexicographic (maps to llexiext).
+- lmulti: legacy multi-phase (maps to lmultiext).
+
+Depth:
+- Positive integer.
+- For llexiext/lnested, depth = number of components in the lexicographic tuple.
+- For lmultiext/lmulti, depth = number of phases.
+- For lpiecewiseext, depth = number of components per region.
+- Prefer the smallest sufficient depth.
+- Only output `type` and `depth` (no strategy fields).
+
+Output YAML with two keys: `analysis` and `configuration`.
+`configuration` must include `type`, `depth`, and `explanation`.
+
+Few-shot examples:
+
+Example 1
+Target code:
+```c
+int i = 0;
+int n = 10;
+while (i < n) { i++; }
+```
+Invariants: ["0 <= i", "i <= n"]
+Output:
+```yaml
+analysis: |
+  i increases toward n; single linear progress is enough.
+configuration:
+  type: "llexiext"
+  depth: 1
+  explanation: "Single variable monotone toward bound."
+```
+
+Example 2
+Target code:
+```c
+int x = 10;
+int y = 20;
+while (x > 0 || y > 0) {
+  if (y > 0) { x = x + y - 1; y = y - 1; }
+  else { x = x - 1; }
+}
+```
+Invariants: ["x + y >= 0", "y >= 0"]
+Output:
+```yaml
+analysis: |
+  y decreases to 0 first, then x decreases; x may increase in phase 1.
+configuration:
+  type: "lmultiext"
+  depth: 2
+  explanation: "Two phases with different decreasing variables."
+```
