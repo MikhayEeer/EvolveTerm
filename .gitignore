@@ -1,5 +1,4 @@
 # data/result outputs (avoid repo growth)
-data/**/*.c
 data/**/*.yml
 data/**/*.yaml
 data/**/*.bpl
