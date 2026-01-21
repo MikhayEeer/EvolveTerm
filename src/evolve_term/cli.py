@@ -416,6 +416,11 @@ def svmranker(
         "--rerun-unknown-depth-bump",
         help="Depth increment applied when rerunning unknown entries (default: +1).",
     ),
+    skip_certain: bool = typer.Option(
+        False,
+        "--skip-certain",
+        help="Skip entries that already exist in output/certain based on source_file name.",
+    ),
 ) -> None:
     """
     Run SVMRanker using template parameters from ranking-template YAML output.
@@ -436,7 +441,7 @@ def svmranker(
             depth_bump=rerun_unknown_depth_bump,
         )
     else:
-        handler.run(input, output, recursive)
+        handler.run(input, output, recursive, skip_certain=skip_certain)
 
 
 @app.command()

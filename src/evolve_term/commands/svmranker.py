@@ -167,12 +167,113 @@ class SVMRankerHandler:
             lines.append(f"[Template] predicates={len(predicates)}")
         return "\n".join(lines) + "\n"
 
-    def run(self, input_path: Path, output: Path, recursive: bool):
+    def run(self, input_path: Path, output: Path, recursive: bool, skip_certain: bool = False):
         if output is None:
             raise typer.BadParameter("Output directory is required.")
         if output.exists() and not output.is_dir():
             raise typer.BadParameter("Output must be a directory.")
         output.mkdir(parents=True, exist_ok=True)
+
+        suffix_tokens = {
+            "autoverus",
+            "seahorn",
+            "inv",
+            "rf",
+            "rftpl",
+            "template",
+            "ranking",
+            "ext",
+            "known",
+            "fewshot",
+            "svmranker",
+            "svm",
+        }
+
+        input_file_cache: Dict[str, Optional[str]] = {}
+
+        def normalize_source_name(name: str) -> str:
+            base = Path(name).name
+            lower = base.lower()
+            while lower.endswith((".yml", ".yaml")):
+                base = base[: -4] if lower.endswith(".yml") else base[: -5]
+                lower = base.lower()
+            tokens = base.split("_")
+            while tokens:
+                tok = tokens[-1].lower()
+                if tok in suffix_tokens or re.fullmatch(r"v\d+", tok) or re.fullmatch(r"\d+", tok):
+                    tokens.pop()
+                    continue
+                break
+            base = "_".join(tokens) if tokens else base
+            return base.lower()
+
+        def normalize_source_path(source_path: Optional[str]) -> Optional[str]:
+            if not source_path:
+                return None
+            try:
+                return Path(str(source_path)).stem.lower()
+            except Exception:
+                return None
+
+        def resolve_source_path_from_input_file(input_file: Optional[str]) -> Optional[str]:
+            if not input_file:
+                return None
+            cached = input_file_cache.get(input_file)
+            if cached is not None or input_file in input_file_cache:
+                return cached
+            candidates = [Path(input_file)]
+            if not candidates[0].is_absolute():
+                candidates.append(Path.cwd() / input_file)
+            for path in candidates:
+                if not path.exists():
+                    continue
+                try:
+                    content = yaml.safe_load(path.read_text(encoding="utf-8"))
+                except Exception:
+                    continue
+                if isinstance(content, dict):
+                    source_path = content.get("source_path")
+                    if isinstance(source_path, str) and source_path.strip():
+                        input_file_cache[input_file] = source_path
+                        return source_path
+                break
+            input_file_cache[input_file] = None
+            return None
+
+        def load_existing_certain() -> set[str]:
+            certain_dir = output / "certain"
+            if not certain_dir.exists():
+                return set()
+            names: set[str] = set()
+            for path in list(certain_dir.rglob("*.yml")) + list(certain_dir.rglob("*.yaml")):
+                try:
+                    content = yaml.safe_load(path.read_text(encoding="utf-8"))
+                except Exception:
+                    content = None
+                names.add(normalize_source_name(path.name))
+                if isinstance(content, dict):
+                    source_file = content.get("source_file")
+                    if source_file:
+                        names.add(normalize_source_name(str(source_file)))
+                    input_file = content.get("input_file")
+                    source_path = resolve_source_path_from_input_file(str(input_file)) if input_file else None
+                    source_key = normalize_source_path(source_path)
+                    if source_key:
+                        names.add(source_key)
+                    entries = content.get("svmranker_result") or []
+                    if isinstance(entries, list):
+                        for entry in entries:
+                            if not isinstance(entry, dict):
+                                continue
+                            stem = entry.get("input_source_stem")
+                            if stem:
+                                names.add(str(stem).lower())
+                                continue
+                            entry_source_path = entry.get("input_source_path")
+                            entry_key = normalize_source_path(entry_source_path)
+                            if entry_key:
+                                names.add(entry_key)
+            return names
         
         def _check_yaml_required_keys(path: Path, content: Any, strict: bool) -> bool:
             missing = validate_yaml_required_keys(path, content)
@@ -288,6 +389,7 @@ class SVMRankerHandler:
             entry: Dict[str, Any],
             base_dir: Path,
             fallback_source_path: Optional[str],
+            top_source_path: Optional[str],
         ) -> Tuple[Dict[str, Any], str]:
             loop_id = entry.get("loop_id") or entry.get("id")
             code, code_source, code_source_path, boogie_path = resolve_source_code(
@@ -360,6 +462,13 @@ class SVMRankerHandler:
                 "ranking_functions": rf_list_str,
                 "input_code_source": code_source,
             }
+            input_source_path = entry.get("source_path") or top_source_path
+            if isinstance(input_source_path, str) and input_source_path.strip():
+                result["input_source_path"] = input_source_path
+                try:
+                    result["input_source_stem"] = Path(input_source_path).stem
+                except Exception:
+                    pass
             if template_predicates:
                 result["template_predicates"] = template_predicates
             if piecewise_rf:
@@ -371,44 +480,110 @@ class SVMRankerHandler:
 
             return result, log_prefix + log
 
-        def process_yaml(f: Path, strict: bool) -> Tuple[Optional[Dict[str, Any]], str]:
+        existing_certain = load_existing_certain() if skip_certain else set()
+
+        def should_skip_certain(content: Any, path: Path) -> bool:
+            if not skip_certain:
+                return False
+            candidates = {normalize_source_name(path.name)}
+            if isinstance(content, dict):
+                source_path = content.get("source_path")
+                source_key = normalize_source_path(source_path)
+                if source_key:
+                    candidates.add(source_key)
+                source_name = content.get("source_file")
+                if source_name:
+                    candidates.add(normalize_source_name(str(source_name)))
+                entries = content.get("ranking_results") or []
+                if isinstance(entries, list):
+                    for entry in entries:
+                        if not isinstance(entry, dict):
+                            continue
+                        entry_source_path = entry.get("source_path")
+                        entry_key = normalize_source_path(entry_source_path)
+                        if entry_key:
+                            candidates.add(entry_key)
+            return any(name in existing_certain for name in candidates if name)
+
+        def summarize_attempts(log_text: str) -> Tuple[List[str], bool, Optional[str]]:
+            commands: List[str] = []
+            result_value: Optional[str] = None
+            for line in log_text.splitlines():
+                if line.startswith("[Command] "):
+                    commands.append(line[len("[Command] "):].strip())
+                if "LEARNING RESULT:" in line:
+                    match = re.search(r"LEARNING RESULT:\\s*(TERMINATE|UNKNOWN|NONTERM)", line)
+                    if match:
+                        result_value = match.group(1)
+            enhanced = "[Attempt] enhanced" in log_text
+            return commands, enhanced, result_value
+
+        def process_yaml(f: Path, strict: bool) -> Tuple[Optional[Dict[str, Any]], str, bool, List[Dict[str, Any]]]:
             try:
                 content = yaml.safe_load(f.read_text(encoding="utf-8"))
             except Exception as e:
-                return {"source_file": f.name, "error": f"YAML parse error: {e}"}, f"YAML Error: {e}"
+                return {"source_file": f.name, "error": f"YAML parse error: {e}"}, f"YAML Error: {e}", False, []
             if not _check_yaml_required_keys(f, content, strict):
-                return None, "YAML validation failed"
+                return None, "YAML validation failed", False, []
+
+            if should_skip_certain(content, f):
+                return {"source_file": f.name, "skipped": True}, "Skipped (existing certain)", True, []
 
             entries = parse_results(content)
             base_dir = f.parent
             fallback_source_path = None
+            top_source_path = None
+            if isinstance(content, dict):
+                top_source_path = content.get("source_path") if isinstance(content.get("source_path"), str) else None
             if isinstance(content, dict) and len(entries) == 1:
                 top_source_path = content.get("source_path")
                 if isinstance(top_source_path, str) and top_source_path.strip():
                     fallback_source_path = top_source_path
 
             if not _check_template_yaml(f, entries, strict):
-                return None, "Non-template YAML"
+                return None, "Non-template YAML", False, []
             
             results = []
             full_log = []
+            entry_summaries: List[Dict[str, Any]] = []
             
             for entry in entries:
-                res, log = run_on_entry(entry, base_dir, fallback_source_path)
+                res, log = run_on_entry(entry, base_dir, fallback_source_path, top_source_path)
                 results.append(res)
                 full_log.append(f"--- Entry Loop ID: {res.get('loop_id')} ---\n{log}\n" + "="*40 + "\n")
+                commands, enhanced, parsed_result = summarize_attempts(log)
+                entry_summaries.append(
+                    {
+                        "status": res.get("status"),
+                        "commands": commands,
+                        "enhanced": enhanced,
+                        "parsed_result": parsed_result,
+                    }
+                )
                 
             return {
                 "input_file": str(f),
                 "source_file": f.name,
                 "task": "svmranker",
                 "svmranker_result": results,
-            }, "\n".join(full_log)
+            }, "\n".join(full_log), False, entry_summaries
 
         if input_path.is_file():
-            result, full_log = process_yaml(input_path, True)
+            console.print(f"[blue]==> Processing {input_path.name}[/blue]")
+            result, full_log, skipped, summaries = process_yaml(input_path, True)
+            if skipped:
+                console.print(f"[yellow]Skip existing certain: {input_path.name}[/yellow]")
+                return
             if result is None:
                 raise typer.Exit(code=1)
+            for idx, summary in enumerate(summaries, start=1):
+                console.print(f"  [cyan]Entry {idx}[/cyan]")
+                for cmd in summary.get("commands") or []:
+                    console.print(f"    [dim]Command:[/dim] {cmd}")
+                if summary.get("enhanced"):
+                    console.print("    [yellow]Retry:[/yellow] UNKNOWN -> enhanced")
+                status = summary.get("status") or summary.get("parsed_result") or "UNKNOWN"
+                console.print(f"    [green]Result:[/green] {status}")
             
             results = result.get("svmranker_result") or []
             bucket = classify_output_dir(results)
@@ -423,14 +598,28 @@ class SVMRankerHandler:
             log_path = out_path.with_suffix(".svmranker.txt")
             log_path.write_text(full_log, encoding="utf-8")
             console.print(f"Saved log to {log_path}")
+            console.print(f"[blue]<== Done {input_path.name}[/blue]")
 
         elif input_path.is_dir():
             files = collect_files(input_path, recursive, extensions={".yml", ".yaml"})
+            total_files = len(files)
 
-            for f in files:
+            for idx, f in enumerate(files, start=1):
                 try:
-                    result, full_log = process_yaml(f, False)
+                    console.print(f"[blue]==> Processing {f.name} ({idx}/{total_files})[/blue]")
+                    result, full_log, skipped, summaries = process_yaml(f, False)
+                    if skipped:
+                        console.print(f"[yellow]Skip existing certain: {f.name}[/yellow]")
+                        continue
                     if not result: continue
+                    for entry_idx, summary in enumerate(summaries, start=1):
+                        console.print(f"  [cyan]Entry {entry_idx}[/cyan]")
+                        for cmd in summary.get("commands") or []:
+                            console.print(f"    [dim]Command:[/dim] {cmd}")
+                        if summary.get("enhanced"):
+                            console.print("    [yellow]Retry:[/yellow] UNKNOWN -> enhanced")
+                        status = summary.get("status") or summary.get("parsed_result") or "UNKNOWN"
+                        console.print(f"    [green]Result:[/green] {status}")
                     
                     results = result.get("svmranker_result") or []
                     bucket = classify_output_dir(results)
@@ -447,6 +636,7 @@ class SVMRankerHandler:
                          
                     log_path = out_path.with_suffix(".svmranker.txt")
                     log_path.write_text(full_log, encoding="utf-8")
+                    console.print(f"[blue]<== Done {f.name}[/blue]")
                         
                 except Exception as e:
                     console.print(f"[bold red]ERROR: Error processing {f.name}: {e}[/bold red]")
@@ -587,6 +777,16 @@ class SVMRankerHandler:
                 "ranking_functions": rf_list_str,
                 "input_code_source": input_code_source or "unknown",
             }
+            input_source_path = entry.get("input_source_path")
+            if isinstance(input_source_path, str) and input_source_path.strip():
+                result["input_source_path"] = input_source_path
+                try:
+                    result["input_source_stem"] = Path(input_source_path).stem
+                except Exception:
+                    pass
+            input_source_stem = entry.get("input_source_stem")
+            if input_source_stem and "input_source_stem" not in result:
+                result["input_source_stem"] = input_source_stem
             if template_predicates:
                 result["template_predicates"] = template_predicates
             if piecewise_rf:
@@ -844,6 +1044,16 @@ class SVMRankerHandler:
                 "ranking_functions": rf_list_str,
                 "input_code_source": input_code_source or "unknown",
             }
+            input_source_path = entry.get("input_source_path")
+            if isinstance(input_source_path, str) and input_source_path.strip():
+                result["input_source_path"] = input_source_path
+                try:
+                    result["input_source_stem"] = Path(input_source_path).stem
+                except Exception:
+                    pass
+            input_source_stem = entry.get("input_source_stem")
+            if input_source_stem and "input_source_stem" not in result:
+                result["input_source_stem"] = input_source_stem
             if template_predicates:
                 result["template_predicates"] = template_predicates
             if piecewise_rf:
