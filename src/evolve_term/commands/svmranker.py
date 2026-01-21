@@ -289,6 +289,7 @@ class SVMRankerHandler:
             base_dir: Path,
             fallback_source_path: Optional[str],
         ) -> Tuple[Dict[str, Any], str]:
+            loop_id = entry.get("loop_id") or entry.get("id")
             code, code_source, code_source_path, boogie_path = resolve_source_code(
                 entry, base_dir, fallback_source_path
             )

@@ -327,6 +327,22 @@ def ranking(
     handler.run(input, invariants_file, references_file, output, recursive, mode, ranking_mode, retry_empty)
 
 
+@app.command("rerun-piecewise")
+def rerun_piecewise(
+    input: Path = typer.Option(..., exists=True, help="Input ranking-template YAML file or directory"),
+    references_file: Optional[Path] = typer.Option(None, help="JSON or YAML file containing reference cases"),
+    output: Path = typer.Option(..., help="Output file or directory for updated YAML"),
+    llm_config: str = typer.Option("llm_config.json", help="Path to LLM config"),
+    recursive: bool = typer.Option(False, "--recursive", "-r", help="Recursively search for files if input is directory"),
+    retry_empty: int = typer.Option(2, "--retry-empty", help="Max retries when piecewise predicates are empty"),
+) -> None:
+    """
+    Re-generate piecewise predicates for ranking-template YAMLs.
+    """
+    handler = RankingHandler(llm_config)
+    handler.rerun_piecewise(input, references_file, output, recursive, retry_empty)
+
+
 @app.command()
 def predict(
     input: Path = typer.Option(..., exists=True, help="Input code file, directory, or YAML"),

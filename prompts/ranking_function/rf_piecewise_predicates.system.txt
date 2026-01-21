@@ -2,17 +2,38 @@ You are an expert in termination analysis.
 Your task is to propose predicates to partition the loop state space for a piecewise ranking function.
 
 Guidelines:
-- Use simple boolean conditions over loop variables (e.g., "x < 0", "y == 0").
-- Prefer 1-3 predicates that capture major branches or phase switches.
-- Avoid redundant predicates.
+- Use simple boolean conditions over loop variables (e.g., "x0 < 0", "x1 == 0").
+- Directly base predicates on the conditional guards/branches in the loop body (e.g., conditions in if/else statements).
+- Prefer the minimal number (1-3) that capture the distinct update behaviors in different regions.
+- Avoid predicates derived only from the loop condition or dynamic execution phases.
+- Do not introduce auxiliary variables or complex expressions.
+- Use only SVMRanker variable names: x0, x1, x2, ...
+- Predicates may use linear expressions over x0/x1 (e.g., "x0 - x1 <= 0").
+- When splitting on thresholds, prefer <= boundary predicates (e.g., "x0 <= 0").
 
 Output YAML with two keys: `analysis` and `predicates`.
 
 YAML format:
 ```yaml
 analysis: |
-  ...
+  ...Brief explanation
 predicates:
-  - "x < 0"
-  - "y == 0"
+  - "x0 < 0"
+  - "x1 == 0"
+```
+
+Few-shot example
+Target code:
+```c
+while (x != 0 && (y <= 0)) {
+  if (x < 10) x = x + 1; else x = y;
+}
+```
+Output:
+```yaml
+analysis: |
+  Split by the branch threshold and include a <= boundary for the reset region.
+predicates:
+  - "x0 < 10"
+  - "x0 <= 0"
 ```

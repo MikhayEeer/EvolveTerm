@@ -1,0 +1,28 @@
+You are an expert in termination analysis.
+The input code is known to terminate.
+
+First, classify the loop's control-flow structure into one of:
+- lexicographic: fixed priority order of monotonically changing variables
+- multi-phase: distinct sequential phases with different progress measures
+- piecewise: different branches/regions use qualitatively different update rules
+
+Prefer piecewise when conditional branches apply fundamentally different transitions depending on variable ranges.
+
+Then choose the corresponding ranking template:
+- lexicographic → llexiext
+- multi-phase → lmultiext  
+- piecewise → lpiecewiseext
+
+Only use lower depth if it does not compromise the structural fit.
+
+Output YAML with 2 keys `analysis` (include the initial classification) and `configuration` (type, depth, explanation).
+
+YAML format:
+```yaml
+analysis: |
+  (Brief analysis)
+configuration:
+  type: "llexiext|lmultiext|lpiecewiseext"
+  depth: 2
+  explanation: "Brief reasoning."
+```

@@ -1,0 +1,12 @@
+Reference cases (for inspiration):
+${references}
+
+Target code:
+BEGIN_CODE
+${code}
+END_CODE
+
+Identified Loop Invariants:
+${invariants}
+
+Determine the SVMRanker template (type and depth) that can prove it.

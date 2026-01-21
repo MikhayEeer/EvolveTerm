@@ -10,4 +10,4 @@ Identified Loop Invariants:
 ${invariants}
 
 List predicates to partition the loop for piecewise ranking.
-Show your analysis first.
+Only use SVMRanker variable names like x0, x1, x2.
