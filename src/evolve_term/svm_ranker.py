@@ -5,276 +5,331 @@ import re
 import tempfile
 import subprocess
 import io
-import contextlib
 from pathlib import Path
 from typing import Optional, Tuple, List, Any
 
-# Global lock to prevent race conditions on OneLoop.py
+# Global lock to prevent race conditions in SVMRanker temp files
 SVM_RANKER_LOCK = threading.Lock()
 
-C_KEYWORDS = {
-    "auto", "break", "case", "char", "const", "continue", "default", "do",
-    "double", "else", "enum", "extern", "float", "for", "goto", "if",
-    "inline", "int", "long", "register", "restrict", "return", "short",
-    "signed", "sizeof", "static", "struct", "switch", "typedef", "union",
-    "unsigned", "void", "volatile", "while", "_Bool", "_Complex", "_Imaginary",
-}
+C_EXTENSIONS = {".c", ".h", ".cpp", ".cc", ".cxx"}
 
-C_BUILTINS = {
-    "printf", "scanf", "malloc", "free", "calloc", "realloc", "strlen",
-    "memset", "memcpy", "memmove", "assert",
-}
+DEFAULT_PRINT_LEVEL = "DEBUG"
 
 class SVMRankerClient:
     def __init__(self, tool_root: str | Path):
         self.tool_root = Path(tool_root).resolve()
         self.src_dir = self.tool_root / "src"
-        
-        # Add src directory to sys.path to allow imports
-        if str(self.src_dir) not in sys.path:
-            sys.path.append(str(self.src_dir))
-            
-        self._modules_loaded = False
-        self._load_modules()
+        self.cli_main = self.src_dir / "CLIMain.py"
+        self._cli_available = self.cli_main.exists()
+        if not self._cli_available:
+            print(f"[Error] SVMRanker CLIMain.py not found at {self.cli_main}")
 
-    def _load_modules(self):
-        """Attempt to import SVMRanker modules."""
-        try:
-            # Delayed import to avoid errors if paths are not set up
-            global parseBoogieProgramMulti, SVMLearnMulti
-            # Note: These modules are expected to be in the tool_root/src directory
-            from BoogieParser import parseBoogieProgramMulti
-            from SVMLearn import SVMLearnMulti
-            self._modules_loaded = True
-        except ImportError as e:
-            print(f"[Error] Failed to import SVMRanker modules: {e}")
-            self._modules_loaded = False
+    @staticmethod
+    def _normalize_mode(mode: str) -> str:
+        value = str(mode or "").strip().lower()
+        if "piecewise" in value:
+            return "lpiecewiseext"
+        if "multiext" in value:
+            return "lmultiext"
+        if "lexiext" in value or "lexi" in value:
+            return "llexiext"
+        if value in {"lmulti", "multi"} or "multi" in value:
+            return "lmultiext"
+        if value in {"lnested", "nested"} or "nested" in value:
+            return "llexiext"
+        return "llexiext"
 
-    def _needs_main_wrapper(self, code: str) -> bool:
-        print("[Info] Minimal wrapper disabled; using source code as-is.")
-        return False
+    @staticmethod
+    def _normalize_predicates(predicates: Optional[List[str] | str]) -> List[str]:
+        if predicates is None:
+            return []
+        if isinstance(predicates, str):
+            predicates = [predicates]
+        if not predicates:
+            return []
+        cleaned: List[str] = []
+        for pred in predicates:
+            if pred is None:
+                continue
+            text = str(pred).strip()
+            if text:
+                cleaned.append(text)
+        return cleaned
 
-    def _collect_declared_identifiers(self, code: str) -> set[str]:
-        print("[Info] Identifier collection disabled.")
-        return set()
+    @staticmethod
+    def _extract_learning_result(output: str) -> Optional[str]:
+        match = re.search(r"LEARNING RESULT:\s*(TERMINATE|UNKNOWN|NONTERM)", output)
+        if match:
+            return match.group(1)
+        return None
 
-    def _collect_identifiers(self, code: str) -> set[str]:
-        print("[Info] Identifier collection disabled.")
-        return set()
-
-    def _collect_function_calls(self, code: str) -> set[str]:
-        print("[Info] Function stub generation disabled.")
-        return set()
+    @staticmethod
+    def _extract_ranking_functions(output: str) -> List[str]:
+        patterns = [
+            re.compile(r"Ranking Function\s*[:=]\s*(.+)", re.IGNORECASE),
+            re.compile(r"Ranking function\s*[:=]\s*(.+)", re.IGNORECASE),
+            re.compile(r"RF\s*[:=]\s*(.+)", re.IGNORECASE),
+        ]
+        results: List[str] = []
+        seen = set()
+        for line in output.splitlines():
+            for pattern in patterns:
+                match = pattern.search(line)
+                if not match:
+                    continue
+                value = match.group(1).strip()
+                if not value:
+                    continue
+                if value not in seen:
+                    seen.add(value)
+                    results.append(value)
+        return results
 
     def _build_minimal_c(self, code: str) -> str:
-        # Remove #include directives to avoid macro expansion issues in C2Boogie
+        # Remove #include directives to avoid macro expansion issues
         lines = code.splitlines()
         filtered_lines = []
         for line in lines:
-            if re.match(r'^\s*#\s*include', line):
+            if re.match(r"^\s*#\s*include", line):
                 continue
             filtered_lines.append(line)
         return "\n".join(filtered_lines)
+
+    def _prepare_input(self, file_path: Path, log_buffer: io.StringIO) -> Tuple[Path, Optional[Path], Optional[str]]:
+        abs_file_path = file_path.resolve()
+        if abs_file_path.suffix.lower() not in C_EXTENSIONS:
+            return abs_file_path, None, None
+
+        raw_code = abs_file_path.read_text(encoding="utf-8")
+        sanitized_code = self._build_minimal_c(raw_code)
+        temp_c = tempfile.NamedTemporaryFile(mode="w", suffix=".c", delete=False, encoding="utf-8")
+        temp_c.write(sanitized_code)
+        temp_c.close()
+        temp_path = Path(temp_c.name)
+
+        debug_path = Path.cwd() / "svmranker_last_input.c"
+        try:
+            debug_path.write_text(sanitized_code, encoding="utf-8")
+        except OSError:
+            pass
+        log_buffer.write(f"[Input] kind=c temp_c={temp_path}\n")
+        return temp_path, temp_path, "C"
+
+    def _config_for_mode(self, mode: str, depth_bound: int) -> dict[str, Any]:
+        if mode == "llexiext":
+            return {
+                "depth_bound": depth_bound,
+                "template_strategy": "LINEAR",
+                "sample_strategy": "ENLARGE",
+            }
+        if mode == "lmultiext":
+            return {
+                "depth_bound": depth_bound,
+                "template_strategy": "LINEAR",
+                "sample_strategy": "ENLARGE",
+                "cutting_strategy": "MINI",
+            }
+        if mode == "lpiecewiseext":
+            return {
+                "template_strategy": "LINEAR",
+                "max_iters": 60,
+            }
+        return {
+            "depth_bound": depth_bound,
+            "template_strategy": "LINEAR",
+            "sample_strategy": "ENLARGE",
+        }
+
+    def _enhanced_config_for_mode(self, mode: str, depth_bound: int) -> dict[str, Any]:
+        if mode == "llexiext":
+            return {
+                "depth_bound": max(depth_bound, 4),
+                "template_strategy": "QUAD",
+                "sample_strategy": "ENLARGE",
+            }
+        if mode == "lmultiext":
+            return {
+                "depth_bound": max(depth_bound, 2),
+                "template_strategy": "QUAD",
+                "sample_strategy": "ENLARGE",
+                "cutting_strategy": "MINI",
+            }
+        if mode == "lpiecewiseext":
+            return {
+                "template_strategy": "QUAD",
+                "max_iters": 100,
+            }
+        return {
+            "depth_bound": max(depth_bound, 2),
+            "template_strategy": "QUAD",
+            "sample_strategy": "ENLARGE",
+        }
+
+    def _run_cli(
+        self,
+        mode: str,
+        file_path: Path,
+        config: dict[str, Any],
+        predicates: List[str],
+        filetype: Optional[str],
+    ) -> Tuple[int, str, Optional[str]]:
+        cmd = [sys.executable, str(self.cli_main), mode]
+
+        if mode in {"llexiext", "lmultiext"}:
+            cmd.extend(["--depth_bound", str(config.get("depth_bound", 1))])
+            cmd.extend(["--template_strategy", str(config.get("template_strategy", "LINEAR"))])
+            cmd.extend(["--sample_strategy", str(config.get("sample_strategy", "ENLARGE"))])
+            if mode == "lmultiext":
+                cmd.extend(["--cutting_strategy", str(config.get("cutting_strategy", "MINI"))])
+        elif mode == "lpiecewiseext":
+            cmd.extend(["--template_strategy", str(config.get("template_strategy", "LINEAR"))])
+            cmd.extend(["--max_iters", str(config.get("max_iters", 60))])
+            for pred in predicates:
+                cmd.extend(["--pred", pred])
+
+        cmd.extend(["--print_level", DEFAULT_PRINT_LEVEL])
+        if filetype:
+            cmd.extend(["--filetype", filetype])
+
+        save_rf_path = None
+        if mode == "lpiecewiseext":
+            tmp_rf = tempfile.NamedTemporaryFile(mode="w", suffix=".txt", delete=False, encoding="utf-8")
+            tmp_rf.close()
+            save_rf_path = Path(tmp_rf.name)
+            cmd.extend(["--print_rf", "--save_rf", str(save_rf_path)])
+
+        cmd.append(str(file_path))
+
+        result = subprocess.run(cmd, capture_output=True, text=True, timeout=180)
+        output = ""
+        if result.stdout:
+            output += result.stdout
+        if result.stderr:
+            if output:
+                output += "\n"
+            output += result.stderr
+
+        piecewise_rf = None
+        if save_rf_path:
+            try:
+                if save_rf_path.exists():
+                    content = save_rf_path.read_text(encoding="utf-8").strip()
+                    if content:
+                        piecewise_rf = content
+            finally:
+                save_rf_path.unlink(missing_ok=True)
+
+        return result.returncode, output, piecewise_rf
 
     def run(
         self,
         file_path: Path,
         mode: str = "lnested",
         depth: int = 1,
-        sample_strategy: Optional[str] = None,
-        cutting_strategy: Optional[str] = None,
-        template_strategy: Optional[str] = None,
-        print_level: Optional[int] = None,
-    ) -> Tuple[str, Optional[str], List[str], str]:
+        predicates: Optional[List[str]] = None,
+        enhance_on_unknown: bool = True,
+    ) -> Tuple[str, Optional[str], List[str], Optional[str], str]:
         """
         Run SVMRanker on the given file.
-        
-        Args:
-            file_path: Path to the file (C or Boogie).
-            mode: "lnested" or "lmulti".
-            depth: Depth bound.
-            
+
         Returns:
-            Tuple containing:
-            - result_status: "TERMINATE", "NONTERM", "UNKNOWN", or "ERROR"
-            - ranking_function: The first valid ranking function string (if any)
-            - rf_list: List of all generated ranking functions
-            - log: Collected stdout/stderr log
+            (status, ranking_function, ranking_functions, piecewise_rf, log)
         """
         log_buffer = io.StringIO()
-        log_buffer.write(f"[Config] mode={mode} depth={depth}\n")
-        if not self._modules_loaded:
-            log_buffer.write("[Error] SVMRanker modules not loaded.\n")
-            return "ERROR", None, [], log_buffer.getvalue()
+        mode = self._normalize_mode(mode)
+        depth_bound = max(1, int(depth)) if isinstance(depth, int) or str(depth).isdigit() else 1
+        predicates = self._normalize_predicates(predicates)
 
-        abs_file_path = file_path.resolve()
-        log_buffer.write(f"[Input] path={abs_file_path}\n")
-        temp_path: Optional[Path] = None
-        temp_bpl_path: Optional[Path] = None
-        if abs_file_path.suffix.lower() in {".c", ".h", ".cpp", ".cc", ".cxx"}:
-            try:
-                # Read original code
-                raw_code = abs_file_path.read_text(encoding="utf-8")
-                
-                # Sanitize code (remove includes)
-                sanitized_code = self._build_minimal_c(raw_code)
-                
-                # Write to a temporary file for processing
-                temp_c = tempfile.NamedTemporaryFile(mode="w", suffix=".c", delete=False, encoding="utf-8")
-                temp_c.write(sanitized_code)
-                temp_c.close()
-                process_file_path = Path(temp_c.name)
-                temp_path = process_file_path # Mark for cleanup
+        log_buffer.write(f"[Config] mode={mode} depth_bound={depth_bound} print_level={DEFAULT_PRINT_LEVEL}\n")
+        log_buffer.write(f"[Input] path={file_path.resolve()}\n")
+        if predicates:
+            log_buffer.write(f"[Config] predicates={len(predicates)}\n")
 
-                # Debug log
-                debug_path = Path.cwd() / "svmranker_last_input.c"
-                debug_path.write_text(sanitized_code, encoding="utf-8")
-                log_buffer.write(f"[Input] kind=c temp_c={process_file_path}\n")
-                
-            except OSError as e:
-                msg = f"[Error] Failed to prepare input file: {e}"
-                print(msg)
-                log_buffer.write(msg + "\n")
-                return "ERROR", None, [], log_buffer.getvalue()
-        else:
-            # For non-C files (e.g. .bpl), use as is
-            process_file_path = abs_file_path
-        
-        # Configuration based on guide
-        default_sample = "ENLARGE"
-        default_cutting = "MINI"
-        default_template = "SINGLEFULL"
-        default_print_level = 0  # Suppress internal printing
-        sample_strategy = sample_strategy or default_sample
-        cutting_strategy = cutting_strategy or default_cutting
-        template_strategy = template_strategy or default_template
-        if print_level is None:
-            print_level = default_print_level
-        log_buffer.write(
-            "[Config] "
-            f"sample={sample_strategy} cutting={cutting_strategy} template={template_strategy} "
-            f"print_level={print_level}\n"
-        )
+        if not self._cli_available:
+            log_buffer.write("[Error] SVMRanker CLIMain.py not available.\n")
+            return "ERROR", None, [], None, log_buffer.getvalue()
 
-        with SVM_RANKER_LOCK:
-            try:
-                # Switch cwd to SVMRanker/src because it generates temporary files there
+        temp_path = None
+        cleanup_path = None
+        filetype = None
+        try:
+            process_file_path, cleanup_path, filetype = self._prepare_input(file_path, log_buffer)
+            temp_path = cleanup_path
+
+            with SVM_RANKER_LOCK:
                 old_cwd = os.getcwd()
                 os.chdir(self.src_dir)
-                
                 try:
-                    if abs_file_path.suffix.lower() in {".c", ".h", ".cpp", ".cc", ".cxx"}:
-                        temp_bpl = tempfile.NamedTemporaryFile(mode="w", suffix=".bpl", delete=False, encoding="utf-8")
-                        temp_bpl_path = Path(temp_bpl.name)
-                        temp_bpl.close()
-                        cli_main = self.src_dir / "CLIMain.py"
-                        # Use process_file_path (sanitized temp file) instead of abs_file_path
-                        cmd = [sys.executable, str(cli_main), "parsectoboogie", str(process_file_path), str(temp_bpl_path)]
-                        
-                        log_buffer.write(f"Executing: {' '.join(cmd)}\n")
-                        log_buffer.write(f"[Input] kind=boogie temp_bpl={temp_bpl_path}\n")
-                        result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
-                        
-                        log_buffer.write(f"Return Code: {result.returncode}\n")
-                        if result.stdout:
-                            log_buffer.write(f"STDOUT:\n{result.stdout}\n")
-                        if result.stderr:
-                            log_buffer.write(f"STDERR:\n{result.stderr}\n")
+                    default_config = self._config_for_mode(mode, depth_bound)
+                    status, rf_list, piecewise_rf, log_text = self._execute_attempt(
+                        process_file_path,
+                        mode,
+                        default_config,
+                        predicates,
+                        filetype,
+                        attempt_label="default",
+                    )
+                    default_rf_list = list(rf_list)
+                    default_piecewise_rf = piecewise_rf
+                    log_buffer.write(log_text)
 
-                        try:
-                            debug_log = Path.cwd() / "svmranker_last_log.txt"
-                            log_body = (
-                                "command: " + " ".join(cmd) + "\n"
-                                + "returncode: " + str(result.returncode) + "\n"
-                                + "stdout:\n" + (result.stdout or "") + "\n"
-                                + "stderr:\n" + (result.stderr or "") + "\n"
-                            )
-                            debug_log.write_text(log_body, encoding="utf-8")
-                        except OSError:
-                            pass
-                        if result.returncode != 0:
-                            msg = (result.stderr or result.stdout or "parseCtoBoogie failed").strip()
-                            print(f"[Error] parseCtoBoogie failed: {msg}")
-                            return "ERROR", None, [], log_buffer.getvalue()
-                        stderr_text = result.stderr or ""
-                        if "Traceback" in stderr_text or "Exception" in stderr_text:
-                            msg = "parseCtoBoogie reported a crash in stderr"
-                            print(f"[Error] {msg}")
-                            log_buffer.write(f"[Error] {msg}\n")
-                            return "ERROR", None, [], log_buffer.getvalue()
-                        if not temp_bpl_path or not temp_bpl_path.exists():
-                            msg = "parseCtoBoogie did not produce a .bpl file"
-                            print(f"[Error] {msg}")
-                            log_buffer.write(f"[Error] {msg}\n")
-                            return "ERROR", None, [], log_buffer.getvalue()
-                        try:
-                            if temp_bpl_path.stat().st_size == 0:
-                                msg = "parseCtoBoogie produced an empty .bpl file"
-                                print(f"[Error] {msg}")
-                                log_buffer.write(f"[Error] {msg}\n")
-                                return "ERROR", None, [], log_buffer.getvalue()
-                        except OSError as e:
-                            msg = f"Failed to stat .bpl file: {e}"
-                            print(f"[Error] {msg}")
-                            log_buffer.write(f"[Error] {msg}\n")
-                            return "ERROR", None, [], log_buffer.getvalue()
-                        try:
-                            debug_bpl = Path.cwd() / "svmranker_last_input.bpl"
-                            debug_bpl.write_text(temp_bpl_path.read_text(encoding="utf-8"), encoding="utf-8")
-                        except OSError:
-                            pass
-                        abs_file_path = temp_bpl_path
-
-                    # Step A: Parse
-                    # The guide says parseBoogieProgramMulti takes a .bpl file.
-                    # If the user says C is supported, we assume this parser handles it 
-                    # or we are passing a .bpl file converted elsewhere.
-                    # For now, we pass the file path as is.
-                    # Warning: parseBoogieProgramMulti expects the boogie file path if we just converted it?
-                    # The original code passed abs_file_path, but if we did conversion, we should pass temp_bpl_path?
-                    # However, SVMLearnMulti takes 'sourceFilePath'. 
-                    # Based on flow: parseCtoBoogie -> output.bpl. 
-                    # Then we likely parse the output.bpl.
-                    target_bpl = temp_bpl_path if temp_bpl_path else process_file_path
-                    
-                    log_buffer.write(f"\n--- calling parseBoogieProgramMulti on {target_bpl} ---\n")
-                    
-                    with contextlib.redirect_stdout(log_buffer), contextlib.redirect_stderr(log_buffer):
-                        (sourceFilePath, sourceFileName, 
-                        templatePath, templateFileName, 
-                        Info, 
-                        parse_oldtime, parse_newtime) = parseBoogieProgramMulti(str(target_bpl), "OneLoop.py")
-
-                        # Step B: Learn
-                        log_buffer.write(f"\n--- calling SVMLearnMulti ---\n")
-                        result, rf_list = SVMLearnMulti(
-                            sourceFilePath, 
-                            sourceFileName, 
-                            depth,
-                            parse_oldtime, 
-                            parse_newtime, 
-                            sample_strategy, 
-                            cutting_strategy, 
-                            template_strategy, 
-                            print_level
+                    if status == "UNKNOWN" and enhance_on_unknown:
+                        enhanced_config = self._enhanced_config_for_mode(mode, depth_bound)
+                        status, rf_list, piecewise_rf, log_text = self._execute_attempt(
+                            process_file_path,
+                            mode,
+                            enhanced_config,
+                            predicates,
+                            filetype,
+                            attempt_label="enhanced",
                         )
-                    
+                        if not rf_list:
+                            rf_list = default_rf_list
+                        if not piecewise_rf:
+                            piecewise_rf = default_piecewise_rf
+                        log_buffer.write(log_text)
+
                     first_rf = rf_list[0] if rf_list else None
-                    return result, first_rf, rf_list, log_buffer.getvalue()
-
+                    return status, first_rf, rf_list, piecewise_rf, log_buffer.getvalue()
                 finally:
-                    # Restore cwd
                     os.chdir(old_cwd)
-                    if temp_path:
-                        temp_path.unlink(missing_ok=True)
-                    if temp_bpl_path:
-                        temp_bpl_path.unlink(missing_ok=True)
+        except Exception as exc:
+            msg = f"[Error] SVMRanker execution exception: {exc}"
+            log_buffer.write(msg + "\n")
+            return "ERROR", None, [], None, log_buffer.getvalue()
+        finally:
+            if temp_path:
+                temp_path.unlink(missing_ok=True)
 
-            except Exception as e:
-                msg = f"[Error] SVMRanker execution exception: {e}"
-                print(msg)
-                log_buffer.write(f"\n{msg}\n")
-                return "ERROR", None, [], log_buffer.getvalue()
+    def _execute_attempt(
+        self,
+        process_file_path: Path,
+        mode: str,
+        config: dict[str, Any],
+        predicates: List[str],
+        filetype: Optional[str],
+        attempt_label: str,
+    ) -> Tuple[str, List[str], Optional[str], str]:
+        log_buffer = io.StringIO()
+        log_buffer.write(f"\n[Attempt] {attempt_label}\n")
+        log_buffer.write(f"[Config] {config}\n")
+        log_buffer.write(f"[Command] {self.cli_main} {mode} {process_file_path}\n")
+
+        returncode, output, piecewise_rf = self._run_cli(mode, process_file_path, config, predicates, filetype)
+        log_buffer.write(f"[ReturnCode] {returncode}\n")
+        if output:
+            log_buffer.write(output)
+            if not output.endswith("\n"):
+                log_buffer.write("\n")
+
+        status = self._extract_learning_result(output)
+        if returncode != 0 and status is None:
+            status = "ERROR"
+        if status is None:
+            status = "UNKNOWN"
+
+        rf_list = self._extract_ranking_functions(output)
+        return status, rf_list, piecewise_rf, log_buffer.getvalue()
 
 
 def run_svmranker_worker(
@@ -283,27 +338,24 @@ def run_svmranker_worker(
     file_path: str,
     mode: str,
     depth: int,
-    sample_strategy: Optional[str],
-    cutting_strategy: Optional[str],
-    template_strategy: Optional[str],
-    print_level: Optional[int],
+    predicates: Optional[List[str]],
+    enhance_on_unknown: bool,
 ) -> None:
     try:
         client = SVMRankerClient(svm_ranker_root)
-        status, rf, rf_list, log = client.run(
+        status, rf, rf_list, piecewise_rf, log = client.run(
             Path(file_path),
             mode=mode,
             depth=depth,
-            sample_strategy=sample_strategy,
-            cutting_strategy=cutting_strategy,
-            template_strategy=template_strategy,
-            print_level=print_level,
+            predicates=predicates,
+            enhance_on_unknown=enhance_on_unknown,
         )
         result_queue.put(
             {
                 "status": status,
                 "ranking_function": rf,
                 "ranking_functions": rf_list,
+                "piecewise_rf": piecewise_rf,
                 "log": log,
             }
         )
@@ -313,6 +365,7 @@ def run_svmranker_worker(
                 "status": "ERROR",
                 "ranking_function": None,
                 "ranking_functions": [],
+                "piecewise_rf": None,
                 "log": f"[Error] isolated SVMRanker run exception: {exc}",
             }
         )
