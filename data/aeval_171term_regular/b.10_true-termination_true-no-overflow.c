@@ -10,8 +10,6 @@ int main() {
         } else {
             if (y > 0) {
                 y = y - 1;
-            } else {
-                
             }
         }
     }
