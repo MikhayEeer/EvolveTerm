@@ -8,6 +8,7 @@ data/**/*.error
 results/**/*.c
 results/**/*.yml
 results/**/*.yaml
+results/**/*.json
 results/**/*.txt
 
 # vscode configurations
