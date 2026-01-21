@@ -1,4 +1,4 @@
-source_path: trex03_false-unreach-call_true-termination-simpl.c
+source_path: data/aeval_171term_regular/trex03_false-unreach-call_true-termination-simpl.c
 task: extract
 command: /home/clexma/Desktop/fox3/TermDB/EvolveTerm/.venv_evolve/bin/evolveterm extract
   --input data/aeval_171term_regular/ --output results/aeval171termregular/extract_v2_glm47_0121/
