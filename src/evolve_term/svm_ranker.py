@@ -57,6 +57,52 @@ class SVMRankerClient:
         return cleaned
 
     @staticmethod
+    def _is_valid_linear_expr(expr: str) -> bool:
+        expr = expr.strip()
+        if not expr:
+            return False
+        if not re.match(r"^[0-9xX\s+\-()*]+$", expr):
+            return False
+        if re.search(r"\bx(?!\d)", expr, re.IGNORECASE):
+            return False
+        if re.search(r"x\d+\s*x\d+", expr):
+            return False
+        if re.search(r"x\d+\s*\*\s*x\d+", expr):
+            return False
+        if re.search(r"x\d+\s*\*\s*\([^)]*x\d+", expr):
+            return False
+        if re.search(r"\([^)]*x\d+[^)]*\)\s*\*\s*x\d+", expr):
+            return False
+        return True
+
+    @classmethod
+    def _is_valid_piecewise_predicate(cls, predicate: str) -> bool:
+        match = re.search(r"(<=|>=|==|!=|<|>)", predicate)
+        if not match:
+            return False
+        left = predicate[:match.start()].strip()
+        right = predicate[match.end():].strip()
+        if not left or not right:
+            return False
+        if re.search(r"(<=|>=|==|!=|<|>)", right):
+            return False
+        return cls._is_valid_linear_expr(left) and cls._is_valid_linear_expr(right)
+
+    def _filter_predicates(self, predicates: Optional[List[str] | str], log_buffer: io.StringIO) -> List[str]:
+        cleaned = self._normalize_predicates(predicates)
+        if not cleaned:
+            return []
+        valid: List[str] = []
+        for pred in cleaned:
+            if self._is_valid_piecewise_predicate(pred):
+                valid.append(pred)
+            else:
+                log_buffer.write(f"[Config] drop invalid predicate: {pred}\n")
+        if cleaned and not valid:
+            log_buffer.write("[Config] no valid predicates; fallback to auto predicates\n")
+        return valid
+
+    @staticmethod
     def _extract_learning_result(output: str) -> Optional[str]:
         match = re.search(r"LEARNING RESULT:\s*(TERMINATE|UNKNOWN|NONTERM)", output)
         if match:
@@ -238,10 +284,12 @@ class SVMRankerClient:
         log_buffer = io.StringIO()
         mode = self._normalize_mode(mode)
         depth_bound = max(1, int(depth)) if isinstance(depth, int) or str(depth).isdigit() else 1
-        predicates = self._normalize_predicates(predicates)
-
         log_buffer.write(f"[Config] mode={mode} depth_bound={depth_bound} print_level={DEFAULT_PRINT_LEVEL}\n")
         log_buffer.write(f"[Input] path={file_path.resolve()}\n")
+        if mode == "lpiecewiseext":
+            predicates = self._filter_predicates(predicates, log_buffer)
+        else:
+            predicates = self._normalize_predicates(predicates)
         if predicates:
             log_buffer.write(f"[Config] predicates={len(predicates)}\n")
 
