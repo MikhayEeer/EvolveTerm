@@ -416,3 +416,100 @@ class RankingHandler:
                             
                 except Exception as e:
                     console.print(f"[red]Error processing {f.name}: {e}[/red]")
+
+    def rerun_piecewise(
+        self,
+        input_path: Path,
+        references_file: Optional[Path],
+        output: Path,
+        recursive: bool,
+        retry_empty: int,
+    ) -> None:
+        def is_piecewise_template(value: Any) -> bool:
+            return "piecewise" in str(value or "").lower()
+
+        def ensure_output_path(src: Path, output_is_dir: bool) -> Path:
+            if output_is_dir:
+                try:
+                    rel_path = src.relative_to(input_path) if input_path.is_dir() else src.name
+                except ValueError:
+                    rel_path = src.name
+                return output / rel_path
+            return output
+
+        references = load_references(references_file)
+        retry_empty = max(0, retry_empty)
+
+        if input_path.is_file():
+            files = [input_path]
+            if output.exists() and output.is_dir():
+                output_is_dir = True
+            elif output.suffix.lower() in {".yml", ".yaml"}:
+                output_is_dir = False
+            else:
+                output_is_dir = True
+        else:
+            files = collect_files(input_path, recursive, extensions={".yml", ".yaml"})
+            output_is_dir = True
+
+        if input_path.is_dir():
+            if output.exists() and not output.is_dir():
+                raise typer.BadParameter("Output must be a directory when input is a directory.")
+            output.mkdir(parents=True, exist_ok=True)
+        elif output_is_dir:
+            output.mkdir(parents=True, exist_ok=True)
+
+        if not files:
+            console.print("[yellow]No YAML files found for piecewise rerun.[/yellow]")
+            return
+
+        for f in files:
+            try:
+                content = yaml.safe_load(f.read_text(encoding="utf-8"))
+            except Exception as e:
+                console.print(f"[red]Error parsing YAML {f}: {e}[/red]")
+                continue
+
+            entries: List[Dict[str, Any]] = []
+            if isinstance(content, dict) and "ranking_results" in content:
+                entries = content.get("ranking_results") or []
+            elif isinstance(content, list):
+                entries = content
+
+            if not entries:
+                continue
+
+            changed = False
+            for entry in entries:
+                if not isinstance(entry, dict):
+                    continue
+                template_type = entry.get("template_type") or entry.get("type")
+                if not is_piecewise_template(template_type):
+                    continue
+                code = entry.get("code", "")
+                if not isinstance(code, str) or not code.strip():
+                    console.print(f"[yellow]Skip piecewise entry with empty code in {f.name}[/yellow]")
+                    continue
+                invs = entry.get("invariants", [])
+                if not isinstance(invs, list):
+                    invs = []
+                loop_id = entry.get("loop_id") or entry.get("id")
+                preds = self.predictor.infer_piecewise_predicates(
+                    code,
+                    invs,
+                    references,
+                    retry_empty=retry_empty,
+                    log_prefix=f"{f.name} loop {loop_id} piecewise",
+                )
+                if preds:
+                    entry["template_predicates"] = preds
+                    changed = True
+
+            if not changed:
+                continue
+
+            out_path = ensure_output_path(f, output_is_dir)
+            out_path.parent.mkdir(parents=True, exist_ok=True)
+            with open(out_path, "w", encoding="utf-8") as yf:
+                yaml.dump(content, yf, Dumper=LiteralDumper, sort_keys=False, allow_unicode=True)
+            console.print(f"[green]Updated piecewise predicates: {out_path}[/green]")

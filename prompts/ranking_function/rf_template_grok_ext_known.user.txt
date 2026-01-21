@@ -9,5 +9,4 @@ END_CODE
 Identified Loop Invariants:
 ${invariants}
 
-List predicates to partition the loop for piecewise ranking.
-Only use SVMRanker variable names like x0, x1, x2.
+Determine the SVMRanker template (type and depth) that can prove it.
