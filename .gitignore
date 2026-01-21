@@ -9,6 +9,7 @@ results/**/*.yml
 results/**/*.yaml
 results/**/*.json
 results/**/*.txt
+!results/aeval171*/**/*.yml
 
 # vscode configurations
 .vscode/*
