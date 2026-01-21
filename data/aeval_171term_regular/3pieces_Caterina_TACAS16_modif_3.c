@@ -6,11 +6,9 @@ int main()
   int y = __VERIFIER_nondet_int();
   int N = __VERIFIER_nondet_int();
 
-  if (y<=0 && N>0) {
-  while (x != 0)
-  {
+  while (x != 0 && (y<=0 && N>0)) {
+
     if (x < N) x = x +1; else x = y;
-  }
   }
 
 }

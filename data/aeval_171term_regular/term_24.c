@@ -6,8 +6,7 @@ int main()
   int y = __VERIFIER_nondet_int();
   int z = __VERIFIER_nondet_int();
   
-  if (x > z || y > z) return 0;
-  while (x != y)
+  while ((x <= z && y <= z)&& x != y)
   {
     x = x +1; y = y +1;
     if (x > z) x = z;

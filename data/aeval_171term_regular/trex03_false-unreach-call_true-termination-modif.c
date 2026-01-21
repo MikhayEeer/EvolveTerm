@@ -9,9 +9,7 @@ int main()
   int d2=__VERIFIER_nondet_int();
   int d3=__VERIFIER_nondet_int();
   
-  if (d1 < 1 || d2 < 1 || d3 < 1) return 0;
-  
-  while(x1>0 && x2>0 && x3>0)
+  while((!(d1 < 1 || d2 < 1 || d3 < 1)) && x1>0 && x2>0 && x3>0)
   {
     if (__VERIFIER_nondet_int() == 0) x1=x1-d1;
     else if (__VERIFIER_nondet_int() == 0) x2=x2-d2;

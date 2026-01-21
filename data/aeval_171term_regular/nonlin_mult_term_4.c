@@ -7,10 +7,8 @@ int main()
   int d = __VERIFIER_nondet_int();
   int b = __VERIFIER_nondet_int();
   
-  if (b <= 1) return 0;
-  if (b <= d) return 0;
-  
-  while (i >= j)
+  while (i >= j &&
+    b > 1 && b > d)
   {
     i = i*d;
     j = j*b;

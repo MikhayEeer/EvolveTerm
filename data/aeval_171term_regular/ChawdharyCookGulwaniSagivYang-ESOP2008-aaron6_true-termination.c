@@ -7,8 +7,7 @@ int main() {
   y = __VERIFIER_nondet_int();
   ty = __VERIFIER_nondet_int();
   n = __VERIFIER_nondet_int();
-  if (x + y >= 0) {
-  while (x <= n && x >= 2 * tx + y && y >= ty + 1 && x >= tx + 1) {
+  while ( x+y >= 0 && x <= n && x >= 2 * tx + y && y >= ty + 1 && x >= tx + 1) {
     if (__VERIFIER_nondet_int() != 0) {
       tx = x;
       ty = y;
@@ -19,6 +18,5 @@ int main() {
       x = __VERIFIER_nondet_int();
     }
   }
-  }	
   return 0;
 }

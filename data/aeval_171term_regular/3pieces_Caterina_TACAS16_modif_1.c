@@ -5,10 +5,8 @@ int main()
   int x = __VERIFIER_nondet_int();
   int y = __VERIFIER_nondet_int();
 
-  if (y<=0) {
-  while (x != 0)
-  {
+  while (x != 0 && (y<=0)) {
+
     if (x < 10) x = x +1; else x = y;
-  }
   }
 }

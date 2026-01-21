@@ -6,11 +6,10 @@ int main()
     int y;
     x = __VERIFIER_nondet_int();
     y = __VERIFIER_nondet_int();
-    if (x + y <= 0) { 
-        while (x > 0) {
+    while (x > 0 && (x + y <= 0)) {
+
             x = x + x + y;
             y = y - 1;
-        }
     }
     return 0;
 }
