@@ -9,7 +9,10 @@ results/**/*.yml
 results/**/*.yaml
 results/**/*.json
 results/**/*.txt
-!results/aeval171*/**/*.yml
+#!results/aeval171*/**/*.yml
+# 保存部分样例即可
+!results/aeval171*/**/[3-4]*.yml
+!results/aeval171*/**/[at]*.yml
 
 # vscode configurations
 .vscode/*
