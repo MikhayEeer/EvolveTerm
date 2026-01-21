@@ -218,7 +218,7 @@ class SVMRankerClient:
         config: dict[str, Any],
         predicates: List[str],
         filetype: Optional[str],
-    ) -> Tuple[int, str, Optional[str]]:
+    ) -> Tuple[int, str, Optional[str], str]:
         cmd = [sys.executable, str(self.cli_main), mode]
 
         if mode in {"llexiext", "lmultiext"}:
@@ -246,6 +246,7 @@ class SVMRankerClient:
 
         cmd.append(str(file_path))
 
+        cmd_str = " ".join(cmd)
         result = subprocess.run(cmd, capture_output=True, text=True, timeout=180)
         output = ""
         if result.stdout:
@@ -265,7 +266,7 @@ class SVMRankerClient:
             finally:
                 save_rf_path.unlink(missing_ok=True)
 
-        return result.returncode, output, piecewise_rf
+        return result.returncode, output, piecewise_rf, cmd_str
 
     def run(
         self,
@@ -363,7 +364,8 @@ class SVMRankerClient:
         log_buffer.write(f"[Config] {config}\n")
         log_buffer.write(f"[Command] {self.cli_main} {mode} {process_file_path}\n")
 
-        returncode, output, piecewise_rf = self._run_cli(mode, process_file_path, config, predicates, filetype)
+        returncode, output, piecewise_rf, cmd_str = self._run_cli(mode, process_file_path, config, predicates, filetype)
+        log_buffer.write(f"[Command] {cmd_str}\n")
         log_buffer.write(f"[ReturnCode] {returncode}\n")
         if output:
             log_buffer.write(output)
