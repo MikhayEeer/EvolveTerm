@@ -27,3 +27,17 @@ svmranker_result:
   input_code_source: boogie_path
   input_code_path: /home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval_171term_regular/term_07.bpl
   input_boogie_path: /home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval_171term_regular/term_07.bpl
+  input_source_path: data/aeval_171term_regular/term_07.c
+  input_loop:
+    loop_id: 1
+    code: "while (x > 0)\n{\n  if (y == 2) x = x - 3; else x = x + 1;\n  if (y ==\
+      \ 2) y = 0; else y = y + 1;\n}"
+    invariants:
+    - x >= 0
+    - y >= 0
+    - y <= 3
+    explanation: 'Two phases: Phase 1 progresses via y increasing (0->1->2), Phase
+      2 progresses via x decreasing (when y=2).'
+    template_type: lmultiext
+    template_depth: 2
+source_path: data/aeval_171term_regular/term_07.c

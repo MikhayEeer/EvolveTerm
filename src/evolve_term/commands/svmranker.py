@@ -20,7 +20,7 @@ from ..utils import LiteralDumper
 console = Console()
 REPO_ROOT = Path(__file__).resolve().parents[3]
 BOOGIE_ROOT = Path("/home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie")
-RERUN_UNKNOWN_TIMEOUT_SEC = 180
+DEFAULT_TIMEOUT_SEC = 180
 
 def resolve_svm_ranker_root(path: Path) -> Path:
     if not path.exists():
@@ -38,9 +38,10 @@ def resolve_svm_ranker_root(path: Path) -> Path:
     raise typer.BadParameter("SVMRanker 路径无效，未找到 src/CLIMain.py。")
 
 class SVMRankerHandler:
-    def __init__(self, svm_ranker_path: Path):
+    def __init__(self, svm_ranker_path: Path, timeout_sec: int = DEFAULT_TIMEOUT_SEC):
         self.root = resolve_svm_ranker_root(svm_ranker_path)
         self.client = SVMRankerClient(str(self.root))
+        self.timeout_sec = timeout_sec
 
     @staticmethod
     def _normalize_template_mode(template_type: Any) -> str:
@@ -96,6 +97,7 @@ class SVMRankerHandler:
                 depth,
                 predicates,
                 enhance_on_unknown,
+                timeout_sec,
             ),
         )
         proc.daemon = True
@@ -167,53 +169,40 @@ class SVMRankerHandler:
             lines.append(f"[Template] predicates={len(predicates)}")
         return "\n".join(lines) + "\n"
 
-    def run(self, input_path: Path, output: Path, recursive: bool, skip_certain: bool = False):
+    def run(
+        self,
+        input_path: Path,
+        output: Path,
+        recursive: bool,
+        skip_certain: bool = False,
+        skip_exist: bool = False,
+    ):
         if output is None:
             raise typer.BadParameter("Output directory is required.")
         if output.exists() and not output.is_dir():
             raise typer.BadParameter("Output must be a directory.")
         output.mkdir(parents=True, exist_ok=True)
 
-        suffix_tokens = {
-            "autoverus",
-            "seahorn",
-            "inv",
-            "rf",
-            "rftpl",
-            "template",
-            "ranking",
-            "ext",
-            "known",
-            "fewshot",
-            "svmranker",
-            "svm",
-        }
-
         input_file_cache: Dict[str, Optional[str]] = {}
 
-        def normalize_source_name(name: str) -> str:
-            base = Path(name).name
-            lower = base.lower()
-            while lower.endswith((".yml", ".yaml")):
-                base = base[: -4] if lower.endswith(".yml") else base[: -5]
-                lower = base.lower()
-            tokens = base.split("_")
-            while tokens:
-                tok = tokens[-1].lower()
-                if tok in suffix_tokens or re.fullmatch(r"v\d+", tok) or re.fullmatch(r"\d+", tok):
-                    tokens.pop()
-                    continue
-                break
-            base = "_".join(tokens) if tokens else base
-            return base.lower()
-
-        def normalize_source_path(source_path: Optional[str]) -> Optional[str]:
-            if not source_path:
+        def normalize_source_path_value(value: Optional[str]) -> Optional[str]:
+            if value is None:
+                return None
+            text = str(value).strip()
+            if not text:
                 return None
             try:
-                return Path(str(source_path)).stem.lower()
+                return Path(text).as_posix()
             except Exception:
+                return text
+
+        def extract_source_path(content: Any) -> Optional[str]:
+            if not isinstance(content, dict):
                 return None
+            source_path = content.get("source_path")
+            if isinstance(source_path, str):
+                return normalize_source_path_value(source_path)
+            return None
 
         def resolve_source_path_from_input_file(input_file: Optional[str]) -> Optional[str]:
             if not input_file:
@@ -232,47 +221,41 @@ class SVMRankerHandler:
                 except Exception:
                     continue
                 if isinstance(content, dict):
-                    source_path = content.get("source_path")
-                    if isinstance(source_path, str) and source_path.strip():
+                    source_path = extract_source_path(content)
+                    if source_path:
                         input_file_cache[input_file] = source_path
                         return source_path
                 break
             input_file_cache[input_file] = None
             return None
 
-        def load_existing_certain() -> set[str]:
-            certain_dir = output / "certain"
-            if not certain_dir.exists():
-                return set()
+        def load_existing_source_paths(dirs: List[Path]) -> set[str]:
             names: set[str] = set()
-            for path in list(certain_dir.rglob("*.yml")) + list(certain_dir.rglob("*.yaml")):
-                try:
-                    content = yaml.safe_load(path.read_text(encoding="utf-8"))
-                except Exception:
-                    content = None
-                names.add(normalize_source_name(path.name))
-                if isinstance(content, dict):
-                    source_file = content.get("source_file")
-                    if source_file:
-                        names.add(normalize_source_name(str(source_file)))
-                    input_file = content.get("input_file")
-                    source_path = resolve_source_path_from_input_file(str(input_file)) if input_file else None
-                    source_key = normalize_source_path(source_path)
-                    if source_key:
-                        names.add(source_key)
-                    entries = content.get("svmranker_result") or []
-                    if isinstance(entries, list):
-                        for entry in entries:
-                            if not isinstance(entry, dict):
-                                continue
-                            stem = entry.get("input_source_stem")
-                            if stem:
-                                names.add(str(stem).lower())
-                                continue
-                            entry_source_path = entry.get("input_source_path")
-                            entry_key = normalize_source_path(entry_source_path)
-                            if entry_key:
-                                names.add(entry_key)
+            for root in dirs:
+                if not root.exists():
+                    continue
+                for path in list(root.rglob("*.yml")) + list(root.rglob("*.yaml")):
+                    try:
+                        content = yaml.safe_load(path.read_text(encoding="utf-8"))
+                    except Exception:
+                        content = None
+                    if isinstance(content, dict):
+                        source_path = extract_source_path(content)
+                        if source_path:
+                            names.add(source_path)
+                        input_file = content.get("input_file")
+                        resolved = resolve_source_path_from_input_file(str(input_file)) if input_file else None
+                        if resolved:
+                            names.add(resolved)
+                        entries = content.get("svmranker_result") or []
+                        if isinstance(entries, list):
+                            for entry in entries:
+                                if not isinstance(entry, dict):
+                                    continue
+                                entry_source_path = entry.get("input_source_path")
+                                entry_key = normalize_source_path_value(entry_source_path)
+                                if entry_key:
+                                    names.add(entry_key)
             return names
         
         def _check_yaml_required_keys(path: Path, content: Any, strict: bool) -> bool:
@@ -410,6 +393,7 @@ class SVMRankerHandler:
                     mode=mode,
                     depth=depth_val,
                     predicates=template_predicates,
+                    timeout_sec=self.timeout_sec,
                 )
             else:
                 with tempfile.NamedTemporaryFile(mode="w", suffix=".c", delete=False, encoding="utf-8") as tmp:
@@ -422,6 +406,7 @@ class SVMRankerHandler:
                         mode=mode,
                         depth=depth_val,
                         predicates=template_predicates,
+                        timeout_sec=self.timeout_sec,
                     )
                 finally:
                     Path(tmp_path).unlink(missing_ok=True)
@@ -480,30 +465,32 @@ class SVMRankerHandler:
 
             return result, log_prefix + log
 
-        existing_certain = load_existing_certain() if skip_certain else set()
+        existing_certain = (
+            load_existing_source_paths([output / "certain"]) if skip_certain else set()
+        )
+        existing_any = (
+            load_existing_source_paths([output / "failed", output / "certain", output / "unknown"])
+            if skip_exist
+            else set()
+        )
 
-        def should_skip_certain(content: Any, path: Path) -> bool:
-            if not skip_certain:
+        if skip_exist:
+            existing_set = existing_any
+            skip_label = "existing output"
+        elif skip_certain:
+            existing_set = existing_certain
+            skip_label = "existing certain"
+        else:
+            existing_set = set()
+            skip_label = "existing"
+
+        def should_skip_existing(content: Any) -> bool:
+            if not (skip_certain or skip_exist):
                 return False
-            candidates = {normalize_source_name(path.name)}
-            if isinstance(content, dict):
-                source_path = content.get("source_path")
-                source_key = normalize_source_path(source_path)
-                if source_key:
-                    candidates.add(source_key)
-                source_name = content.get("source_file")
-                if source_name:
-                    candidates.add(normalize_source_name(str(source_name)))
-                entries = content.get("ranking_results") or []
-                if isinstance(entries, list):
-                    for entry in entries:
-                        if not isinstance(entry, dict):
-                            continue
-                        entry_source_path = entry.get("source_path")
-                        entry_key = normalize_source_path(entry_source_path)
-                        if entry_key:
-                            candidates.add(entry_key)
-            return any(name in existing_certain for name in candidates if name)
+            source_path = extract_source_path(content)
+            if not source_path:
+                return False
+            return source_path in existing_set
 
         def summarize_attempts(log_text: str) -> Tuple[List[str], bool, Optional[str]]:
             commands: List[str] = []
@@ -526,8 +513,8 @@ class SVMRankerHandler:
             if not _check_yaml_required_keys(f, content, strict):
                 return None, "YAML validation failed", False, []
 
-            if should_skip_certain(content, f):
-                return {"source_file": f.name, "skipped": True}, "Skipped (existing certain)", True, []
+            if should_skip_existing(content):
+                return {"source_file": f.name, "skipped": True}, f"Skipped ({skip_label})", True, []
 
             entries = parse_results(content)
             base_dir = f.parent
@@ -572,7 +559,7 @@ class SVMRankerHandler:
             console.print(f"[blue]==> Processing {input_path.name}[/blue]")
             result, full_log, skipped, summaries = process_yaml(input_path, True)
             if skipped:
-                console.print(f"[yellow]Skip existing certain: {input_path.name}[/yellow]")
+                console.print(f"[yellow]Skip {skip_label}: {input_path.name}[/yellow]")
                 return
             if result is None:
                 raise typer.Exit(code=1)
@@ -603,13 +590,44 @@ class SVMRankerHandler:
         elif input_path.is_dir():
             files = collect_files(input_path, recursive, extensions={".yml", ".yaml"})
             total_files = len(files)
+            if skip_certain or skip_exist:
+                skip_count = 0
+                missing_source = 0
+                parse_errors = 0
+                for f in files:
+                    try:
+                        content = yaml.safe_load(f.read_text(encoding="utf-8"))
+                    except Exception:
+                        parse_errors += 1
+                        continue
+                    source_path = extract_source_path(content)
+                    if not source_path:
+                        missing_source += 1
+                        continue
+                    if source_path in existing_set:
+                        skip_count += 1
+                to_run = total_files - skip_count
+                console.print(
+                    f"[blue]Skip-{ 'exist' if skip_exist else 'certain' } precheck: "
+                    f"total={total_files} skip={skip_count} run={to_run}[/blue]"
+                )
+                if missing_source:
+                    console.print(
+                        f"[yellow]Skip-{ 'exist' if skip_exist else 'certain' } precheck: "
+                        f"{missing_source} files missing source_path (will not skip)[/yellow]"
+                    )
+                if parse_errors:
+                    console.print(
+                        f"[yellow]Skip-{ 'exist' if skip_exist else 'certain' } precheck: "
+                        f"{parse_errors} files failed to parse (will not skip)[/yellow]"
+                    )
 
             for idx, f in enumerate(files, start=1):
                 try:
                     console.print(f"[blue]==> Processing {f.name} ({idx}/{total_files})[/blue]")
                     result, full_log, skipped, summaries = process_yaml(f, False)
                     if skipped:
-                        console.print(f"[yellow]Skip existing certain: {f.name}[/yellow]")
+                        console.print(f"[yellow]Skip {skip_label}: {f.name}[/yellow]")
                         continue
                     if not result: continue
                     for entry_idx, summary in enumerate(summaries, start=1):
@@ -746,6 +764,7 @@ class SVMRankerHandler:
                     mode=mode,
                     depth=depth_val,
                     predicates=template_predicates,
+                    timeout_sec=self.timeout_sec,
                 )
             finally:
                 if temp_path:
@@ -1010,7 +1029,7 @@ class SVMRankerHandler:
                     depth=depth_val,
                     predicates=template_predicates,
                     enhance_on_unknown=True,
-                    timeout_sec=RERUN_UNKNOWN_TIMEOUT_SEC,
+                    timeout_sec=self.timeout_sec,
                 )
             finally:
                 if temp_path:

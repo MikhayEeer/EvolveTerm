@@ -49,3 +49,19 @@ svmranker_result:
   input_code_source: boogie_path
   input_code_path: /home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval_171term_regular/term_19.bpl
   input_boogie_path: /home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval_171term_regular/term_19.bpl
+  input_source_path: data/aeval_171term_regular/term_19.c
+  input_loop:
+    loop_id: 1
+    code: "while (x != 2*y && (x > 10)) {\n\n    if (x % 5 == 1) x = x +1;\n     \
+      \ else x = x - 2;\n}"
+    invariants:
+    - x != 2*y
+    - x > 10
+    - x >= 0
+    - y >= 0
+    explanation: Variable x is not strictly monotonic (it increases in one branch),
+      requiring a multi-phase ranking function to capture the overall decrease toward
+      the bound.
+    template_type: lmultiext
+    template_depth: 1
+source_path: data/aeval_171term_regular/term_19.c

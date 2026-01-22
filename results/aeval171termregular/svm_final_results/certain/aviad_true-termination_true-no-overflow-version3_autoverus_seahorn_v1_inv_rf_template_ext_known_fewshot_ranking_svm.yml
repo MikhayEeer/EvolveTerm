@@ -12,3 +12,14 @@ svmranker_result:
   input_code_source: boogie_path
   input_code_path: /home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval_171term_regular/aviad_true-termination_true-no-overflow-version3.bpl
   input_boogie_path: /home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval_171term_regular/aviad_true-termination_true-no-overflow-version3.bpl
+  input_source_path: data/aeval_171term_regular/aviad_true-termination_true-no-overflow-version3.c
+  input_loop:
+    loop_id: 1
+    code: "while (a > 1) {\n  if (a % 10 == 0) a = a / 10;\n    else a = a - 1;\n}"
+    invariants:
+    - a >= 1
+    - a >= 0
+    explanation: Single variable monotone decrease.
+    template_type: llexiext
+    template_depth: 1
+source_path: data/aeval_171term_regular/aviad_true-termination_true-no-overflow-version3.c

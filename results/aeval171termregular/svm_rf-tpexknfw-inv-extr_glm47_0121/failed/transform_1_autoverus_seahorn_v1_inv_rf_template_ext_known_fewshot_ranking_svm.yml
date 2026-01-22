@@ -12,3 +12,21 @@ svmranker_result:
   input_code_source: boogie_path
   input_code_path: /home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval_171term_regular/transform_1.bpl
   input_boogie_path: /home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval_171term_regular/transform_1.bpl
+  input_source_path: data/aeval_171term_regular/transform_1.c
+  input_loop:
+    loop_id: 1
+    code: "while (x > 0) {\n    x = x - y;\n    y = y - z;\n    if (z == 0) z = 13;\n\
+      \        else if (z == 13) z = -20;\n          else if (z == -20) z = 7;\n \
+      \           else z = 0;\n}"
+    invariants:
+    - x >= 0
+    - y >= 0
+    - z >= -20
+    - z <= 13
+    - x >= y
+    - y >= z
+    explanation: Variable x decreases monotonically in every iteration and is bounded
+      below by 0.
+    template_type: llexiext
+    template_depth: 1
+source_path: data/aeval_171term_regular/transform_1.c

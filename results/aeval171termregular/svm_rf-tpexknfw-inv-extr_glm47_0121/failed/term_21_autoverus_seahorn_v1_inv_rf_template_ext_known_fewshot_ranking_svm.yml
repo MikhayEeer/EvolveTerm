@@ -15,3 +15,18 @@ svmranker_result:
   - z % 5 == 4
   input_code_path: /home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval_171term_regular/term_21.bpl
   input_boogie_path: /home/clexma/Desktop/fox3/TermDB/TerminationDatabase/Data_boogie/aeval_171term_regular/term_21.bpl
+  input_source_path: data/aeval_171term_regular/term_21.c
+  input_loop:
+    loop_id: 1
+    code: "while (z >= 0) {\n    if (z % 5 == 0) z = z - 5;\n      else z = z +1;\n\
+      }"
+    invariants:
+    - z >= 0
+    - z % 5 >= 0
+    explanation: Lexicographic tuple (z % 5, z) decreases across all branches.
+    template_type: lpiecewiseext
+    template_depth: 2
+    template_predicates:
+    - z % 5 == 0
+    - z % 5 == 4
+source_path: data/aeval_171term_regular/term_21.c
