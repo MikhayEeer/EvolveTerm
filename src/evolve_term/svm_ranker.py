@@ -14,6 +14,7 @@ SVM_RANKER_LOCK = threading.Lock()
 C_EXTENSIONS = {".c", ".h", ".cpp", ".cc", ".cxx"}
 
 DEFAULT_PRINT_LEVEL = "DEBUG"
+DEFAULT_TIMEOUT_SEC = 180
 
 class SVMRankerClient:
     def __init__(self, tool_root: str | Path):
@@ -218,6 +219,7 @@ class SVMRankerClient:
         config: dict[str, Any],
         predicates: List[str],
         filetype: Optional[str],
+        timeout_sec: int,
     ) -> Tuple[int, str, Optional[str], str]:
         cmd = [sys.executable, str(self.cli_main), mode]
 
@@ -247,7 +249,7 @@ class SVMRankerClient:
         cmd.append(str(file_path))
 
         cmd_str = " ".join(cmd)
-        result = subprocess.run(cmd, capture_output=True, text=True, timeout=180)
+        result = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout_sec)
         output = ""
         if result.stdout:
             output += result.stdout
@@ -275,6 +277,7 @@ class SVMRankerClient:
         depth: int = 1,
         predicates: Optional[List[str]] = None,
         enhance_on_unknown: bool = True,
+        timeout_sec: int = DEFAULT_TIMEOUT_SEC,
     ) -> Tuple[str, Optional[str], List[str], Optional[str], str]:
         """
         Run SVMRanker on the given file.
@@ -285,7 +288,10 @@ class SVMRankerClient:
         log_buffer = io.StringIO()
         mode = self._normalize_mode(mode)
         depth_bound = max(1, int(depth)) if isinstance(depth, int) or str(depth).isdigit() else 1
-        log_buffer.write(f"[Config] mode={mode} depth_bound={depth_bound} print_level={DEFAULT_PRINT_LEVEL}\n")
+        log_buffer.write(
+            f"[Config] mode={mode} depth_bound={depth_bound} "
+            f"print_level={DEFAULT_PRINT_LEVEL} timeout_sec={timeout_sec}\n"
+        )
         log_buffer.write(f"[Input] path={file_path.resolve()}\n")
         if mode == "lpiecewiseext":
             predicates = self._filter_predicates(predicates, log_buffer)
@@ -316,6 +322,7 @@ class SVMRankerClient:
                         default_config,
                         predicates,
                         filetype,
+                        timeout_sec,
                         attempt_label="default",
                     )
                     default_rf_list = list(rf_list)
@@ -330,6 +337,7 @@ class SVMRankerClient:
                             enhanced_config,
                             predicates,
                             filetype,
+                            timeout_sec,
                             attempt_label="enhanced",
                         )
                         if not rf_list:
@@ -357,6 +365,7 @@ class SVMRankerClient:
         config: dict[str, Any],
         predicates: List[str],
         filetype: Optional[str],
+        timeout_sec: int,
         attempt_label: str,
     ) -> Tuple[str, List[str], Optional[str], str]:
         log_buffer = io.StringIO()
@@ -364,7 +373,14 @@ class SVMRankerClient:
         log_buffer.write(f"[Config] {config}\n")
         log_buffer.write(f"[Command] {self.cli_main} {mode} {process_file_path}\n")
 
-        returncode, output, piecewise_rf, cmd_str = self._run_cli(mode, process_file_path, config, predicates, filetype)
+        returncode, output, piecewise_rf, cmd_str = self._run_cli(
+            mode,
+            process_file_path,
+            config,
+            predicates,
+            filetype,
+            timeout_sec,
+        )
         log_buffer.write(f"[Command] {cmd_str}\n")
         log_buffer.write(f"[ReturnCode] {returncode}\n")
         if output:
@@ -390,6 +406,7 @@ def run_svmranker_worker(
     depth: int,
     predicates: Optional[List[str]],
     enhance_on_unknown: bool,
+    timeout_sec: int,
 ) -> None:
     try:
         client = SVMRankerClient(svm_ranker_root)
@@ -399,6 +416,7 @@ def run_svmranker_worker(
             depth=depth,
             predicates=predicates,
             enhance_on_unknown=enhance_on_unknown,
+            timeout_sec=timeout_sec,
         )
         result_queue.put(
             {
