@@ -400,6 +400,7 @@ def svmranker(
     input: Path = typer.Option(..., exists=True, help="Input ranking-template YAML file/dir, or an svmranker output dir when rerunning"),
     svm_ranker_path: Path = typer.Option(..., "--svm-ranker", "--svmranker", help=SVM_RANKER_HELP),
     output: Path = typer.Option(..., file_okay=False, dir_okay=True, help="Output directory"),
+    timeout: int = typer.Option(180, "--timeout", help="Timeout seconds per SVMRanker run."),
     recursive: bool = typer.Option(False, "--recursive", "-r", help="Recursively search for files if input is directory"),
     rerun_failed: bool = typer.Option(
         False,
@@ -419,7 +420,12 @@ def svmranker(
     skip_certain: bool = typer.Option(
         False,
         "--skip-certain",
-        help="Skip entries that already exist in output/certain based on source_file name.",
+        help="Skip entries whose source_path already exists in output/certain.",
+    ),
+    skip_exist: bool = typer.Option(
+        False,
+        "--skip-exist",
+        help="Skip entries whose source_path already exists in output/(failed|certain|unknown).",
     ),
 ) -> None:
     """
@@ -428,7 +434,7 @@ def svmranker(
     When rerunning, input should be the failed/unknown directory or its parent output directory,
     and output should be a target directory for the new results.
     """
-    handler = SVMRankerHandler(svm_ranker_path)
+    handler = SVMRankerHandler(svm_ranker_path, timeout_sec=timeout)
     if rerun_failed and rerun_unknown:
         raise typer.BadParameter("Choose only one of --rerun-failed or --rerun-unknown.")
     if rerun_failed:
@@ -441,7 +447,13 @@ def svmranker(
             depth_bump=rerun_unknown_depth_bump,
         )
     else:
-        handler.run(input, output, recursive, skip_certain=skip_certain)
+        handler.run(
+            input,
+            output,
+            recursive,
+            skip_certain=skip_certain,
+            skip_exist=skip_exist,
+        )
 
 
 @app.command()
