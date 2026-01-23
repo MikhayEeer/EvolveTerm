@@ -8,7 +8,7 @@ from rich.console import Console
 from evolve_term.llm_client import build_llm_client
 from evolve_term.cli_utils import collect_files, ensure_output_dir, load_json_or_yaml
 from evolve_term.prompts_loader import PromptRepository
-from evolve_term.verifier import Z3Verifier
+from evolve_term.verifiers.llm_z3_verifier import Z3Verifier
 
 console = Console()
 

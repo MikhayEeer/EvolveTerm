@@ -17,7 +17,7 @@ SRC_ROOT = CURRENT_FILE.parents[1] / "src"
 if str(SRC_ROOT) not in sys.path:
     sys.path.insert(0, str(SRC_ROOT))
 
-from evolve_term.sea_verify import SeaHornVerifier, DEFAULT_SEAHORN_IMAGE
+from evolve_term.verifiers.seahorn_verifier import SeaHornVerifier, DEFAULT_SEAHORN_IMAGE
 
 
 DEFAULT_OUTPUT_ROOT = Path("src/prompts_playground/output")
