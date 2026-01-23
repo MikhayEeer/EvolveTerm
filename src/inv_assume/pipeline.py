@@ -4,9 +4,9 @@ from .inv_generator import InvariantGenerator
 from .injector import Injector
 
 class ASTInstrumentationPipeline:
-    def __init__(self, llm_config="llm_config.json"):
+    def __init__(self, llm_config="llm_config.json", strategy="simple"):
         self.parser = CParser()
-        self.generator = InvariantGenerator(config_name=llm_config)
+        self.generator = InvariantGenerator(config_name=llm_config, strategy=strategy)
         self.injector = Injector()
 
     def run(self, input_file: str, output_file: str = None):
@@ -24,14 +24,17 @@ class ASTInstrumentationPipeline:
         print(f"Found {len(loops)} loops.")
         
         for loop in loops:
-            print(f"Generating invariant for loop at offset {loop['node'].start_byte}...")
+            print(f"Generating invariant for loop at offset {loop['node'].start_byte} using strategy '{self.generator.strategy_name}'...")
             context = loop['code_context']
-            invariant = self.generator.generate_invariant(context)
-            print(f"  -> Generated: {invariant}")
-            
-            # Injection point is inside the loop body
-            offset = loop['insertion_point']
-            injections.append((offset, invariant))
+            try:
+                invariant = self.generator.generate_invariant(context)
+                print(f"  -> Generated: {invariant}")
+                
+                # Injection point is inside the loop body
+                offset = loop['insertion_point']
+                injections.append((offset, invariant))
+            except Exception as e:
+                print(f"  -> Error generating invariant: {e}")
 
         # 3. Add Header Definitions (if needed)
         source_with_header = self.injector.add_header(source_code)
@@ -67,11 +70,17 @@ class ASTInstrumentationPipeline:
             }
 
 if __name__ == "__main__":
-    import sys
-    if len(sys.argv) < 2:
-        print("Usage: python -m src.inv_assume.pipeline <c_file>")
-        sys.exit(1)
-        
-    input_c = sys.argv[1]
-    pipeline = ASTInstrumentationPipeline()
-    pipeline.run(input_c, input_c + ".instrumented.c")
+    import argparse
+    parser = argparse.ArgumentParser(description="Inject invariants into C code using AST analysis.")
+    parser.add_argument("input_file", help="Path to the C source file")
+    parser.add_argument("--output", help="Output file path", default=None)
+    parser.add_argument("--strategy", choices=["simple", "2stage"], default="simple", 
+                        help="Invariant generation strategy (simple=one-shot, 2stage=atom-filter-candidate)")
+    parser.add_argument("--config", default="llm_config.json", help="LLM configuration file")
+    
+    args = parser.parse_args()
+    
+    output_path = args.output if args.output else args.input_file + ".instrumented.c"
+    
+    pipeline = ASTInstrumentationPipeline(llm_config=args.config, strategy=args.strategy)
+    pipeline.run(args.input_file, output_path)
