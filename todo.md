@@ -43,59 +43,48 @@
 
 ---
 
-## 4. 数据集准备: `examples/minirecur/`
-**难度评估**: <font color="green">Low</font>
+## 4. RAG 增强：多维特征存储与检索架构
+**难度评估**: <font color="red">High</font>
 
 **任务描述**:
-为任务 1 准备典型的递归程序集。
+重构 RAG 存储结构，使其支持代码源码、摘要、特征、不变量、秩函数等多维信息的存储与检索。
 
-**计划包含的程序 (6个)**:
-1.  `fib_tail.c`: 斐波那契数列（尾递归版）。
-2.  `fact_tail.c`: 阶乘（尾递归版）。
-3.  `gcd_tail.c`: 最大公约数（欧几里得算法，天然尾递归）。
-4.  `sum_array.c`: 数组求和（指针移动递归）。
-5.  `is_even.c`: 互递归示例（IsEven/IsOdd，挑战项）。
-6.  `fib_non_tail.c`: 斐波那契（普通递归，作为负样本或挑战项）。
+**改造计划**:
+*   [ ] **Step 1: 模型重构**: 更新 `models.py/KnowledgeCase`，增加 `summary`, `features`, `invariants`, `ranking_function` 字段。
+*   [ ] **Step 2: 提取器解耦**: 从 `commands/feature.py` 中拆解出独立的 `FeatureExtractor` 类，支持输入源码返回特征字典（含 LLM Summary）。
+*   [ ] **Step 3: 增强 Ingestion**: 改造 `rag add` 命令，集成 FeatureExtractor，并增加可选参数支持调用 Predictor 填充 Invariants/RF。
+*   [ ] **Step 4: 多维 Embedding**: 设计新的 Embedding 文本构造策略（如 `[Summary] ... [Features] ... [Code] ...`），并在 `pipeline.py` 中更新检索逻辑。
+*   [ ] **Step 5: 验证**: 使用 `minirag` 数据集验证多维检索的准确性提升。
+
+### 推荐改造路径
+推荐改造路径：
+
+第一阶段: 仅集成 "Summary" 和 "Features"（利用现有 feature 模块）。这能极大提升“意图检索”的能力。
+第二阶段: 增加不变量和秩函数的可选填充。不强制每次 add 都生成，而是作为一个额外的 --enrich 选项。
 
 ---
 
-## 5. RAG 模块现状评估
-**难度评估**: <font color="orange">Medium</font>
-
-**任务描述**:
-深入审查 `src/evolve_term/rag_index.py` 和 `knowledge_base.py`。
-
-**检查点**:
-*   **HNSW 索引**: `hnswlib` 的保存与加载机制是否健壮？维度是否与现在的 Embedding 模型匹配？
-*   **数据一致性**: `data/knowledge_base.json` 与索引文件是否脱节？
-*   **检索效果**: 对比简单的余弦相似度，HNSW 是否配置正确？
+## 5. RAG 模块现状评估 (已并入 Task 4)
+**状态**: [x] Merged into Task 4
 
 ---
 
-## 6. 数据集准备: `examples/minirag/`
-**难度评估**: <font color="green">Low</font>
+## 6. 数据集准备: `examples/minirag/` (已完成)
+**状态**: [x] Completed
 
-**任务描述**:
-构建一个小型的、受控的测试集，用于证明 RAG 确实检索到了正确的参考代码。
-
-**计划内容**:
-*   **Knowledge Base**: 包含 3 个典型的终止模式（例如：简单计数器、嵌套循环、位操作）。
-*   **Query Code**: 3 个与上述 KB 高度相似但在变量名/结构上略有变形的代码。
-*   **预期**: 运行 Pipeline 后，验证 Report 中的 `neighbors` 字段是否精确命中了对应的 KB Case。
+**执行结果**:
+*   已在 `examples/minirag` 下建立了 `knowledge` 和 `query` 目录。
+*   包含 3 个非线性终止案例作为知识库，1 个案例作为查询。
+*   已编写 `docs/rag_module_guide.md` 指导如何构建和测试。
 
 ---
 
-## 7. RAG Pipeline 验证说明
-**难度评估**: <font color="green">Low</font>
+## 7. RAG Pipeline 验证说明 (已完成)
+**状态**: [x] Completed
 
-**任务描述**:
-编写文档或脚本，说明如何使用 Task 6 的数据来验证 Pipeline 中的 RAG 组件工作正常。
-
-**验证方法**:
-1.  构建小型 KB 索引。
-2.  使用 `evolveterm analyze --use-rag-reasoning` 运行 Query。
-3.  检查生成的 YAML Report，确认 `rag_retrieval` 阶段有输出，且 `reasoning` 中提到了参考案例。
-4.  进行对比实验：`--no-rag-reasoning`，观察结果差异。
+**执行结果**:
+*   相关指南已包含在 `docs/rag_module_guide.md` 中。
+*   实现了独立的 `rag` CLI 命令组（status, add, rebuild, search）方便独立验证。
 
 ---
 
