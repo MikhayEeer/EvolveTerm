@@ -1,15 +1,25 @@
 from src.evolve_term.llm_client import APILLMClient
+from src.inv_assume.strategies.two_stage import TwoStageStrategy
 
 class InvariantGenerator:
-    def __init__(self, config_name: str = "llm_config.json"):
+    def __init__(self, config_name: str = "llm_config.json", strategy: str = "simple"):
+        self.config_name = config_name
+        self.strategy_name = strategy
         self.llm_client = APILLMClient(config_name=config_name)
+        
+        self.strategy_impl = None
+        if strategy == "2stage":
+            self.strategy_impl = TwoStageStrategy(llm_config=config_name)
 
     def generate_invariant(self, code_context: str) -> str:
         """
         Input: C code snippet (loop).
         Output: C boolean expression (e.g. "i < n && x > 0").
         """
-        
+        if self.strategy_impl:
+            return self.strategy_impl.generate(code_context)
+            
+        # Default Simple Strategy
         prompt = f"""
 You are an expert in C program verification.
 I will provide you with a C loop.
