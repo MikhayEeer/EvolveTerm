@@ -13,7 +13,7 @@ import re
 from rich.console import Console
 import typer
 
-from ..svm_ranker import SVMRankerClient, run_svmranker_worker
+from ..ranking.svm_ranker_wrapper import SVMRankerClient, run_svmranker_worker
 from ..cli_utils import collect_files, validate_yaml_required_keys
 from ..utils import LiteralDumper
 

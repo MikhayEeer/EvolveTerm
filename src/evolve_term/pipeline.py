@@ -17,12 +17,12 @@ from .models import KnowledgeCase, Label, PendingReviewCase, PredictionResult
 from .prompts_loader import PromptRepository
 from .rag_index import HNSWIndexManager
 from .translator import CodeTranslator
-from .verifier import Z3Verifier
-from .sea_verify import SeaHornVerifier, DEFAULT_SEAHORN_IMAGE
+from .verifiers.llm_z3_verifier import Z3Verifier
+from .verifiers.seahorn_verifier import SeaHornVerifier, DEFAULT_SEAHORN_IMAGE
 from .report_manager import ReportManager
 from .predict import Predictor
-from .svm_ranker import SVMRankerClient
-from .smt_ranker import SMTLinearRankSynthesizer
+from .ranking.svm_ranker_wrapper import SVMRankerClient
+from .ranking.smt_poly_gen_experimental import SMTLinearRankSynthesizer
 import tempfile
 import os
 
@@ -83,8 +83,11 @@ class TerminationPipeline:
                 # Ablation parameters
                 extraction_prompt_version: str = "v2", 
                 use_loops_for_embedding: bool = True,
-                use_loops_for_reasoning: bool = True
+                use_loops_for_reasoning: bool = True,
+                output_path: Optional[Path] = None,
+                metadata: Optional[Dict[str, Any]] = None
                 ) -> PredictionResult:
+
         """Run full analysis and produce a report+log capturing each stage.
 
         The report JSON will include: input code, loop extraction (loops + method + llm_response),
@@ -423,11 +426,18 @@ class TerminationPipeline:
             "prediction": prediction,
         }
 
-        report_path = self.report_manager.persist_report(report_payload)
-        # Also write a human-readable log
-        self.report_manager.persist_log(report_payload, report_path.stem)
+        # Inject injected metadata for report
+        if metadata:
+            # We want meta to be the first key if possible, but python dict ensures insertion order
+            # in 3.7+. We create a new dict to put meta first.
+            new_payload = {"meta": metadata}
+            new_payload.update(report_payload)
+            report_payload = new_payload
+
+        report_path = self.report_manager.persist_report(report_payload, custom_path=output_path)
 
         end_time = datetime.now()
+
         duration = (end_time - start_time).total_seconds()
         end_llm_calls = getattr(self.llm_client, "call_count", 0)
         llm_calls = end_llm_calls - start_llm_calls

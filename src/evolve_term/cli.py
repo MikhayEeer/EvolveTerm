@@ -5,8 +5,9 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Optional
 import json
-
-import typer
+import yaml
+import re # Added for safe filename generation
+from datetime import datetime
 from rich.console import Console
 from rich.table import Table
 
@@ -64,8 +65,10 @@ def analyze(
     # Ablation parameters
     extraction_prompt_version: str = typer.Option("v2", "--prompt-version", "-p", help="Prompt version for loop extraction (v1 or v2)"),
     use_loops_for_embedding: bool = typer.Option(True, "--embed-loops/--embed-code", help="Use extracted loops for embedding vs full code"),
-    use_loops_for_reasoning: bool = typer.Option(True, "--reason-loops/--reason-code", help="Use extracted loops for reasoning vs full code")
+    use_loops_for_reasoning: bool = typer.Option(True, "--reason-loops/--reason-code", help="Use extracted loops for reasoning vs full code"),
+    output: Optional[Path] = typer.Option(None, "--output", "-o", help="Custom path for report output (file or directory). Default: auto-generated filename."),
 ) -> None:
+
     """分析 C/C++ 代码的终止性 (支持单文件或批量目录)。
 
     示例（可直接复制）:
@@ -106,6 +109,31 @@ def analyze(
         seahorn_docker_image=seahorn_image,
         seahorn_timeout=seahorn_timeout,
     )
+
+    # Determine output path logic
+    final_output_path = None
+    model_name = getattr(pipeline.llm_client, "model_name", "unknown") or "unknown"
+    safe_model = re.sub(r"[^\w\-]", "", str(model_name))
+    date_str = datetime.now().strftime("%Y%m%d_%H%M")
+    default_filename = f"{code_file.stem}_pipeline_{safe_model}_{date_str}.yml"
+
+    if output:
+        if output.is_dir():
+            # If directory, append auto-generated filename
+            if not output.exists():
+                 output.mkdir(parents=True, exist_ok=True)
+            final_output_path = output / default_filename
+        else:
+            # If file path, use it directly (ensure parent exists)
+            if not output.parent.exists():
+                output.parent.mkdir(parents=True, exist_ok=True)
+            final_output_path = output
+    else:
+        # Default: results/reports/<auto_name>
+        report_dir = Path("results/reports")
+        report_dir.mkdir(parents=True, exist_ok=True)
+        final_output_path = report_dir / default_filename
+
     code = code_file.read_text(encoding="utf-8")
     result = pipeline.analyze(
         code, 
@@ -116,15 +144,25 @@ def analyze(
         known_terminating=known_terminating,
         extraction_prompt_version=extraction_prompt_version,
         use_loops_for_embedding=use_loops_for_embedding,
-        use_loops_for_reasoning=use_loops_for_reasoning
+        use_loops_for_reasoning=use_loops_for_reasoning,
+        output_path=final_output_path,
+        metadata={
+            "source_command": "analyze",
+            "stages": ["translation", "extraction", "embedding", "rag", "reasoning", "verification"],
+            "input_file": str(code_file),
+            "model": model_name,
+            "timestamp": datetime.now().isoformat()
+        }
     )
+
 
     # Show translation info if applicable
     if enable_translation and result.report_path:
         with open(result.report_path, 'r', encoding='utf-8') as f:
-            report = json.load(f)
+            report = yaml.safe_load(f)
         translation = report.get("translation", {})
         if translation.get("translated"):
+
             console.print("[bright_green]SUCCESS: Code was translated to C++[/bright_green]")
 
     console.rule("Prediction")
