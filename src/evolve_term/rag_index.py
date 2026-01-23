@@ -20,11 +20,11 @@ INDEX_META_PATH = DATA_DIR / "hnsw_meta.json"
 class HNSWIndexManager:
     """Wraps hnswlib index creation, persistence, and queries."""
 
-    def __init__(self, dimension: int, space: str = "cosine"):
+    def __init__(self, dimension: int, space: str = "cosine", index_path: Path | None = None, meta_path: Path | None = None):
         self.dimension = dimension
         self.space = space
-        self.index_path = INDEX_PATH
-        self.meta_path = INDEX_META_PATH
+        self.index_path = index_path or INDEX_PATH
+        self.meta_path = meta_path or INDEX_META_PATH
         self.index: hnswlib.Index | None = None
         self.case_ids: List[str] = []
         self._load_if_available()

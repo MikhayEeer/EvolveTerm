@@ -36,6 +36,7 @@ from .commands.sea_verify import SeaVerifyHandler
 from .commands.batch import BatchHandler
 from .commands.translate import TranslateHandler
 from .commands.feature import FeatureHandler
+from .commands.rag import RAGHandler
 
 app = typer.Typer(help="EvolveTerm CLI - analyze and curate C termination cases")
 console = Console()
@@ -565,3 +566,52 @@ def ping_llm(
 ) -> None:
     """Ping LLM API with default tag."""
     _run_llm_ping(llm_config, prompt)
+
+# --- RAG Subcommands ---
+rag_app = typer.Typer(help="Manage RAG Knowledge Base and Index")
+app.add_typer(rag_app, name="rag")
+
+@rag_app.command("status")
+def rag_status(
+    kb: Optional[Path] = typer.Option(None, "--kb", help="Path to knowledge base JSON (default: data/knowledge_base.json)"),
+    config: str = typer.Option("embed_config.json", help="Embedding config file")
+):
+    """Show RAG index status."""
+    handler = RAGHandler(kb_path=kb, embed_config=config)
+    handler.status()
+
+@rag_app.command("add")
+def rag_add(
+    files: List[Path] = typer.Argument(..., help="Files to add to knowledge base"),
+    label: str = typer.Option("unknown", help="Label for the cases (terminating/non-terminating/unknown)"),
+    kb: Optional[Path] = typer.Option(None, "--kb", help="Path to knowledge base JSON"),
+    use_loops: bool = typer.Option(True, help="Extract loops for embedding"),
+    embed_config: str = typer.Option("embed_config.json", help="Embedding config file"),
+    llm_config: str = typer.Option("llm_config.json", help="LLM config for loop extraction")
+):
+    """Add files to the knowledge base."""
+    handler = RAGHandler(kb_path=kb, embed_config=embed_config, llm_config=llm_config)
+    handler.add(files, label=label, use_loops=use_loops)
+
+@rag_app.command("rebuild")
+def rag_rebuild(
+    kb: Optional[Path] = typer.Option(None, "--kb", help="Path to knowledge base JSON"),
+    config: str = typer.Option("embed_config.json", help="Embedding config file")
+):
+    """Force rebuild of the HNSW index."""
+    handler = RAGHandler(kb_path=kb, embed_config=config)
+    handler.rebuild()
+
+@rag_app.command("search")
+def rag_search(
+    query_file: Optional[Path] = typer.Option(None, "--file", "-f", help="Query file"),
+    text: Optional[str] = typer.Option(None, "--text", "-t", help="Query text"),
+    kb: Optional[Path] = typer.Option(None, "--kb", help="Path to knowledge base JSON"),
+    top_k: int = typer.Option(5, help="Number of results"),
+    use_loops: bool = typer.Option(True, help="Extract loops from query file"),
+    embed_config: str = typer.Option("embed_config.json", help="Embedding config file"),
+    llm_config: str = typer.Option("llm_config.json", help="LLM config for loop extraction")
+):
+    """Search the knowledge base."""
+    handler = RAGHandler(kb_path=kb, embed_config=embed_config, llm_config=llm_config)
+    handler.search(query_file=query_file, text=text, top_k=top_k, use_loops=use_loops)
