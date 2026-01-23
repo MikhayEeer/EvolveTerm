@@ -49,7 +49,20 @@ class TerminationPipeline:
         self.embedding_client = build_embedding_client(embed_config)
         self.knowledge_base = KnowledgeBase(rebuild_threshold=rebuild_threshold, 
                                             storage_path=knowledge_base_path)
-        self.index_manager = HNSWIndexManager(dimension=self.embedding_client.dimension)
+        
+        # Derive index paths from KB path if provided
+        idx_path = None
+        idx_meta = None
+        if knowledge_base_path:
+            p = Path(knowledge_base_path)
+            idx_path = p.parent / (p.stem + "_index.bin")
+            idx_meta = p.parent / (p.stem + "_index_meta.json")
+            
+        self.index_manager = HNSWIndexManager(
+            dimension=self.embedding_client.dimension,
+            index_path=idx_path,
+            meta_path=idx_meta
+        )
         self.enable_translation = enable_translation
         self.translator = CodeTranslator(config_name=llm_config) if enable_translation else None
         self.verifier_backend = verifier_backend.lower()
