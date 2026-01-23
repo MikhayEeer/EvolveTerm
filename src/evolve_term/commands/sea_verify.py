@@ -8,7 +8,7 @@ import yaml
 from rich.console import Console
 
 from evolve_term.cli_utils import collect_files, ensure_output_dir
-from evolve_term.sea_verify import SeaHornVerifier, DEFAULT_SEAHORN_IMAGE
+from evolve_term.verifiers.seahorn_verifier import SeaHornVerifier, DEFAULT_SEAHORN_IMAGE
 
 console = Console()
 
