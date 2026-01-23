@@ -39,7 +39,7 @@ from .commands.feature import FeatureHandler
 app = typer.Typer(help="EvolveTerm CLI - analyze and curate C termination cases")
 console = Console()
 VALID_LABELS = {"terminating", "non-terminating", "unknown"}
-SVM_RANKER_EXAMPLE = "evolveterm analyze --code-file examples/llm_nested_term_samples/generated1229program1/program.c --svm-ranker /path/to/SVMRanker"
+SVM_RANKER_EXAMPLE = "evolveterm analyze --input examples/llm_nested_term_samples/generated1229program1/program.c --svm-ranker /path/to/SVMRanker"
 SVM_RANKER_HELP = (
     "SVMRanker 仓库根目录（包含 src/CLIMain.py）。"
     " 若传入的是 src 目录或 CLIMain.py 文件，会自动纠正到根目录。"
@@ -48,10 +48,11 @@ SVM_RANKER_HELP = (
 
 @app.command()
 def analyze(
-    code_file: Path = typer.Option(..., exists=True, readable=True, help="Path to a source file"),
+    input: Path = typer.Option(..., exists=True, readable=True, file_okay=True, dir_okay=True, help="Path to a source file or directory"),
     top_k: int = 5,
     enable_translation: bool = typer.Option(False, "--enable-translation", "-t", help="Enable LLM-based translation to C++ for non-C/C++ files"),
     knowledge_base: Optional[Path] = typer.Option(None, "--kb", help="Path to a custom knowledge base JSON file"),
+    recursive: bool = typer.Option(False, "--recursive", "-r", help="Recursively search for files (if input is a directory)"),
     use_rag_reasoning: bool = typer.Option(True, "--use-rag-reasoning/--no-rag-reasoning", 
                                            help="Use RAG references for invariant and ranking function inference; Default is enabled"),
     svm_ranker_path: Optional[Path] = typer.Option(None, "--svm-ranker", "--svmranker", help=SVM_RANKER_HELP),
@@ -65,12 +66,25 @@ def analyze(
     use_loops_for_embedding: bool = typer.Option(True, "--embed-loops/--embed-code", help="Use extracted loops for embedding vs full code"),
     use_loops_for_reasoning: bool = typer.Option(True, "--reason-loops/--reason-code", help="Use extracted loops for reasoning vs full code")
 ) -> None:
-    """分析 C/C++ 代码的终止性。
+    """分析 C/C++ 代码的终止性 (支持单文件或批量目录)。
 
     示例（可直接复制）:
         {example}
     """.format(example=SVM_RANKER_EXAMPLE)
 
+    # Dispatch to batch handler if input is a directory
+    if input.is_dir():
+        handler = BatchHandler()
+        handler.run(
+            input, top_k, enable_translation, knowledge_base, recursive, 
+            use_rag_reasoning, svm_ranker_path, use_smt_synth, known_terminating, 
+            extraction_prompt_version, use_loops_for_embedding, use_loops_for_reasoning,
+            verifier_backend, seahorn_image, seahorn_timeout
+        )
+        return
+
+    # Single file handling
+    code_file = input
     # Check file extension
     suffix = code_file.suffix.lower()
     is_cpp = suffix in {".c", ".cpp", ".h", ".hpp", ".cc", ".cxx"}
@@ -140,35 +154,6 @@ def analyze(
             similarity_str = str(similarity)
         table.add_row(ref.case_id, ref.label, similarity_str)
     console.print(table)
-
-
-@app.command()
-def batch_analyze(
-    input_dir: Path = typer.Option(..., exists=True, file_okay=False, dir_okay=True, help="Directory containing source files"),
-    top_k: int = 5,
-    enable_translation: bool = typer.Option(False, "--enable-translation", "-t", help="Enable LLM-based translation"),
-    knowledge_base: Optional[Path] = typer.Option(None, "--kb", help="Path to a custom knowledge base JSON file"),
-    recursive: bool = typer.Option(False, "--recursive", "-r", help="Recursively search for files"),
-    use_rag_reasoning: bool = typer.Option(True, "--use-rag-reasoning/--no-rag-reasoning", help="Use RAG references for invariant and ranking function inference"),
-    svm_ranker_path: Optional[Path] = typer.Option(None, "--svm-ranker", "--svmranker", help=SVM_RANKER_HELP),
-    use_smt_synth: bool = typer.Option(False, "--smt-synth/--no-smt-synth", help="Enable SMT-based piecewise linear ranking synthesis (experimental)"),
-    known_terminating: bool = typer.Option(False, "--known-terminating", help="Hint that the program is known to terminate"),
-    verifier_backend: str = typer.Option("seahorn", "--verifier", help="Verification backend (strict mode): seahorn"),
-    seahorn_image: str = typer.Option("seahorn/seahorn-llvm14:nightly", "--seahorn-image", help="SeaHorn docker image"),
-    seahorn_timeout: int = typer.Option(60, "--seahorn-timeout", help="SeaHorn timeout seconds"),
-    # Ablation parameters
-    extraction_prompt_version: str = typer.Option("v2", "--prompt-version", "-p", help="Prompt version for loop extraction (v1 or v2)"),
-    use_loops_for_embedding: bool = typer.Option(True, "--embed-loops/--embed-code", help="Use extracted loops for embedding vs full code"),
-    use_loops_for_reasoning: bool = typer.Option(True, "--reason-loops/--reason-code", help="Use extracted loops for reasoning vs full code")
-) -> None:
-    """Batch analyze all C/C++ files in a directory."""
-    handler = BatchHandler()
-    handler.run(
-        input_dir, top_k, enable_translation, knowledge_base, recursive, 
-        use_rag_reasoning, svm_ranker_path, use_smt_synth, known_terminating, 
-        extraction_prompt_version, use_loops_for_embedding, use_loops_for_reasoning,
-        verifier_backend, seahorn_image, seahorn_timeout
-    )
 
 
 @app.command()
@@ -325,22 +310,6 @@ def ranking(
     """
     handler = RankingHandler(llm_config)
     handler.run(input, invariants_file, references_file, output, recursive, mode, ranking_mode, retry_empty)
-
-
-@app.command("rerun-piecewise")
-def rerun_piecewise(
-    input: Path = typer.Option(..., exists=True, help="Input ranking-template YAML file or directory"),
-    references_file: Optional[Path] = typer.Option(None, help="JSON or YAML file containing reference cases"),
-    output: Path = typer.Option(..., help="Output file or directory for updated YAML"),
-    llm_config: str = typer.Option("llm_config.json", help="Path to LLM config"),
-    recursive: bool = typer.Option(False, "--recursive", "-r", help="Recursively search for files if input is directory"),
-    retry_empty: int = typer.Option(2, "--retry-empty", help="Max retries when piecewise predicates are empty"),
-) -> None:
-    """
-    Re-generate piecewise predicates for ranking-template YAMLs.
-    """
-    handler = RankingHandler(llm_config)
-    handler.rerun_piecewise(input, references_file, output, recursive, retry_empty)
 
 
 @app.command()
