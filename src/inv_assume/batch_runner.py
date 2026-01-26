@@ -1,8 +1,7 @@
 import os
 import glob
 import pandas as pd
-from typing import List, Dict
-import time
+from typing import Optional
 from .pipeline import ASTInstrumentationPipeline
 from .verifier import SeaHornVerifier
 
@@ -11,18 +10,23 @@ class BatchRunner:
                  input_dir: str, 
                  output_dir: str, 
                  llm_config: str = "llm_config.json",
+                 strategy: str = "simple",
                  enable_verification: bool = False,
-                 verifier_command: str = "sea pf {file}"):
+                 verifier: Optional[SeaHornVerifier] = None,
+                 verify_timeout: int = 60):
         
         self.input_dir = input_dir
         self.output_dir = output_dir
         self.enable_verification = enable_verification
-        self.pipeline = ASTInstrumentationPipeline(llm_config=llm_config)
-        
-        if enable_verification:
-            self.verifier = SeaHornVerifier(command_template=verifier_command)
-        else:
-            self.verifier = None
+        self.verify_timeout = verify_timeout
+        self.pipeline = ASTInstrumentationPipeline(
+            llm_config=llm_config,
+            strategy=strategy,
+            verifier=verifier,
+        )
+
+        if enable_verification and self.pipeline.verifier is None:
+            self.pipeline.verifier = SeaHornVerifier()
 
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
@@ -37,47 +41,35 @@ class BatchRunner:
             file_name = os.path.basename(file_path)
             print(f"[{idx+1}/{len(c_files)}] Processing {file_name}...")
             
-            output_file = os.path.join(self.output_dir, file_name)
-            
             # Record execution metadata
             result_entry = {
                 "file": file_name,
                 "status": "pending",
                 "loops_found": 0,
                 "invariants_generated": 0,
+                "output_path": "",
                 "verification_status": "n/a",
+                "verification_verdict": "n/a",
                 "verification_output": "",
                 "error": ""
             }
             
             try:
-                # 1. Pipeline Execution
-                # We need to hook into pipeline to count loops/invariants if we want stats.
-                # For now, let's just run it.
-                # To get stats, we might want to modify ASTInstrumentationPipeline to return info.
-                # Let's interact with pipeline components directly or update pipeline.py later.
-                # Assuming pipeline simply runs for now:
-                
-                # We read file to count loops just for stats (inefficient but safe or rely on logs)
-                # Let's assume pipeline runs successfully.
-                
-                # To capture detailed loop info, we would modify pipeline.run to return it.
-                # I will modify pipeline.py in next step to return metadata.
-                # For now assuming it returns None or path.
-                
-                pipeline_result = self.pipeline.run(file_path, output_file)
+                pipeline_result = self.pipeline.run(
+                    file_path,
+                    self.output_dir,
+                    verify=self.enable_verification,
+                    verify_timeout=self.verify_timeout,
+                )
                 result_entry["status"] = "instrumented"
                 if isinstance(pipeline_result, dict):
                     result_entry["loops_found"] = pipeline_result.get("loops_count", 0)
                     result_entry["invariants_generated"] = pipeline_result.get("injections_count", 0)
-                
-                # 2. Verification (Optional)
-                if self.enable_verification and self.verifier:
-                    print(f"  Verifying {file_name}...")
-                    v_status, v_out = self.verifier.verify(output_file)
-                    result_entry["verification_status"] = v_status
-                    result_entry["verification_output"] = v_out[-200:] # Log last 200 chars
-                    print(f"  -> Result: {v_status}")
+                    result_entry["output_path"] = pipeline_result.get("output_path", "")
+                    if self.enable_verification:
+                        result_entry["verification_status"] = pipeline_result.get("verification_status", "n/a")
+                        result_entry["verification_verdict"] = pipeline_result.get("verification_verdict", "n/a")
+                        result_entry["verification_output"] = pipeline_result.get("verification_output", "")
                     
             except Exception as e:
                 print(f"  Error processing {file_name}: {e}")
@@ -97,15 +89,30 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Batch run invariant instrumentation and verification")
     parser.add_argument("--input_dir", required=True, help="Directory containing .c files")
     parser.add_argument("--output_dir", required=True, help="Directory to save instrumented files")
-    parser.add_argument("--verify", action="store_true", help="Enable SeaHorn verification")
-    parser.add_argument("--cmd", default="sea pf {file}", help="Verification command template")
+    parser.add_argument("--strategy", choices=["simple", "2stage"], default="simple",
+                        help="Invariant generation strategy (simple=one-shot, 2stage=atom-filter-candidate)")
+    parser.add_argument("--config", default="llm_config.json", help="LLM configuration file")
+    parser.add_argument("--verify", action="store_true", help="Enable SeaHorn verification (Docker)")
+    parser.add_argument("--seahorn-image", default="seahorn/seahorn-llvm14:nightly", help="SeaHorn docker image")
+    parser.add_argument("--seahorn-timeout", type=int, default=60, help="SeaHorn timeout seconds")
+    parser.add_argument("--docker-mount-root", default=None, help="Optional docker mount root (must contain output dir)")
     
     args = parser.parse_args()
-    
+
+    verifier = None
+    if args.verify:
+        verifier = SeaHornVerifier(
+            docker_image=args.seahorn_image,
+            docker_mount_root=args.docker_mount_root,
+        )
+
     runner = BatchRunner(
         input_dir=args.input_dir,
         output_dir=args.output_dir,
+        llm_config=args.config,
+        strategy=args.strategy,
         enable_verification=args.verify,
-        verifier_command=args.cmd
+        verifier=verifier,
+        verify_timeout=args.seahorn_timeout,
     )
     runner.run()
