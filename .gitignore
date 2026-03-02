@@ -19,6 +19,9 @@ testout/
 # vscode configurations
 .vscode/*
 
+# claude code configurations
+.claude/
+
 # qoder configurations
 .qoder/
 
