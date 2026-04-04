@@ -31,8 +31,25 @@ evolveterm/
 .venv_*/
 # some LLM service api key
 *.key
-*_config.json*
+*_config.json
 .*accesskey
+
+# experiment outputs and analysis
+src/prompts_playground/inv_output/
+src/prompts_playground/rf_out_*/
+src/prompts_playground/rf_output_*/
+examples/llm_nested_term_samples/
+examples/demo_samples_*_result/
+
+# thesis analysis docs
+docs/0302毕设-*.md
+docs/附录*.txt
+
+# analysis scripts (moved to TerminationDatabase)
+scripts/ablation_*.py
+scripts/select_invariants.py
+scripts/check_benchmarks.py
+scripts/rag_similarity_analysis.py
 
 # test reports
 report_*.json
