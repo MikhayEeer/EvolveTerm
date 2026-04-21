@@ -28,7 +28,10 @@ from .yaml_schema import validate_yaml_file as validate_yaml_file_full
 
 # Handlers
 from .commands.extract import ExtractHandler
-from .commands.invariant import InvariantHandler
+try:
+    from invariant_module.command import InvariantHandler
+except ImportError:  # pragma: no cover - supports python -m src....
+    from src.invariant_module.command import InvariantHandler
 from .commands.ranking import RankingHandler
 from .commands.predict import PredictHandler
 from .commands.svmranker import SVMRankerHandler

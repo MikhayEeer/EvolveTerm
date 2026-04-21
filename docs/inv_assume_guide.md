@@ -1,6 +1,6 @@
 # `inv_assume` 验证指南
 
-本指南说明如何使用 `src/inv_assume` 生成带 `assume(...)` 的插桩代码，并通过 Docker 版 SeaHorn 进行验证。
+本指南说明如何使用 `src/invariant_module/inv_assume` 生成带 `assume(...)` 的插桩代码，并通过 Docker 版 SeaHorn 进行验证。
 
 ## 1. 环境准备
 
@@ -14,19 +14,19 @@
 
 ### 2.1 单文件
 ```bash
-python -m src.inv_assume.pipeline examples/miniaevalterm/nonlin_div_term_1.c --output results/inv_assume
+python -m src.invariant_module.inv_assume.pipeline examples/miniaevalterm/nonlin_div_term_1.c --output results/inv_assume
 ```
 
 可选策略（生成质量更高但更慢）：
 ```bash
-python -m src.inv_assume.pipeline examples/miniaevalterm/nonlin_div_term_1.c --output results/inv_assume --strategy 2stage
+python -m src.invariant_module.inv_assume.pipeline examples/miniaevalterm/nonlin_div_term_1.c --output results/inv_assume --strategy 2stage
 ```
 
 输出文件存放在 `--output` 目录，命名为 `*.instrumented.c`。
 
 ### 2.2 批量处理（可选）
 ```bash
-python -m src.inv_assume.pipeline examples/miniaevalterm --output results/inv_assume --strategy 2stage
+python -m src.invariant_module.inv_assume.pipeline examples/miniaevalterm --output results/inv_assume --strategy 2stage
 ```
 
 ## 3. Docker + SeaHorn 验证
@@ -39,7 +39,7 @@ docker pull seahorn/seahorn-llvm14:nightly
 ### 3.2 运行验证
 使用内置验证（推荐）：
 ```bash
-python -m src.inv_assume.pipeline examples/miniaevalterm/nonlin_div_term_1.c \
+python -m src.invariant_module.inv_assume.pipeline examples/miniaevalterm/nonlin_div_term_1.c \
   --output results/inv_assume --verify
 ```
 

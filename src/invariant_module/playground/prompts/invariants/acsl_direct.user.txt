@@ -1,0 +1,10 @@
+Context loops (extracted from target):
+${loops}
+
+Reference cases (retrieved from knowledge base):
+${references}
+
+Target code:
+```c
+${code}
+```

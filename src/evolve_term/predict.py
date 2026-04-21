@@ -2,13 +2,19 @@ from __future__ import annotations
 from typing import List
 import json
 from .models import KnowledgeCase
-from .utils import parse_acsl_invariants, parse_llm_json_array, parse_llm_json_object, parse_llm_yaml
+from .utils import parse_llm_yaml
 from .exceptions import LLMUnavailableError
+
+try:
+    from invariant_module.predictor import InvariantPredictor
+except ImportError:  # pragma: no cover - supports python -m src....
+    from src.invariant_module.predictor import InvariantPredictor
 
 class Predictor:
     def __init__(self, llm_client, prompt_repo):
         self.llm_client = llm_client
         self.prompt_repo = prompt_repo
+        self.invariant_predictor = InvariantPredictor(llm_client, prompt_repo)
         self.last_ranking_response = None
 
     @staticmethod
@@ -26,42 +32,7 @@ class Predictor:
         return False
 
     def infer_invariants(self, code: str, references: List[KnowledgeCase], prompt_version: str = "acsl_cot") -> List[str]:
-        prompt_name = f"invariants/{prompt_version}"
-        prompt = self.prompt_repo.render(
-            prompt_name,
-            code=code,
-            references=json.dumps([ref.__dict__ for ref in references], ensure_ascii=False, indent=2)
-        )
-        if prompt_version.endswith("_cot") or prompt_version.endswith("_cot_fewshot"):
-            prompt["max_tokens"] = 8192
-        response = self.llm_client.complete(prompt)
-        
-        # Use YAML parsing (accept dict or list)
-        data = parse_llm_yaml(response)
-        invariants = []
-        if isinstance(data, dict):
-            invariants = (
-                data.get("invariants")
-                or data.get("loop_invariants")
-                or data.get("loop_invariant")
-                or []
-            )
-        elif isinstance(data, list):
-            for item in data:
-                if isinstance(item, dict):
-                    candidate = item.get("invariant") or item.get("expr") or item.get("formula")
-                    if candidate is not None:
-                        invariants.append(candidate)
-                else:
-                    invariants.append(item)
-        if not invariants:
-            invariants = parse_acsl_invariants(response)
-            
-        print("[Debug] Module Predict Invariant End...\n")
-        if not invariants:
-            print(f"[Debug] Invariant Parsing Failed or Empty. Raw Response:\n{response}\n")
-            return []
-        return [str(item) for item in invariants if str(item).strip()]
+        return self.invariant_predictor.infer_invariants(code, references, prompt_version)
 
     def infer_ranking(
         self,

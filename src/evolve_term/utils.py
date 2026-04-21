@@ -1,6 +1,10 @@
 import json
-import re
 import yaml
+
+try:
+    from invariant_module.parsing import parse_acsl_invariants
+except ImportError:  # pragma: no cover - supports python -m src....
+    from src.invariant_module.parsing import parse_acsl_invariants
 
 def strip_markdown_fences(text: str) -> str:
     text = text.strip()
@@ -89,20 +93,6 @@ def parse_llm_yaml(response_text: str) -> object | None:
         return yaml.safe_load(cleaned)
     except Exception:
         return None
-
-
-def parse_acsl_invariants(response_text: str) -> list[str]:
-    cleaned = strip_markdown_fences(response_text)
-    invariants: list[str] = []
-    pattern = re.compile(r"\bloop invariant\b\s*(.*?);", re.IGNORECASE)
-    for match in pattern.finditer(cleaned):
-        expr = match.group(1).strip()
-        expr = expr.replace("*/", "").strip()
-        if expr.startswith(":"):
-            expr = expr[1:].strip()
-        if expr:
-            invariants.append(expr)
-    return invariants
 
 
 class LiteralDumper(yaml.SafeDumper):

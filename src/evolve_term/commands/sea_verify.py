@@ -9,6 +9,10 @@ from rich.console import Console
 
 from evolve_term.cli_utils import collect_files, ensure_output_dir
 from evolve_term.verifiers.seahorn_verifier import SeaHornVerifier, DEFAULT_SEAHORN_IMAGE
+try:
+    from invariant_module.io import parse_invariants_content
+except ImportError:  # pragma: no cover - supports python -m src....
+    from src.invariant_module.io import parse_invariants_content
 
 console = Console()
 
@@ -38,43 +42,6 @@ def _parse_ranking_content(content: Any) -> Dict[int, str]:
                     rankings[int(loop_id)] = str(entry.get("ranking_function"))
         return rankings
     return rankings
-
-
-def _parse_invariants_content(content: Any) -> Dict[int, List[str]]:
-    invariants: Dict[int, List[str]] = {}
-    if isinstance(content, list):
-        if all(isinstance(item, str) for item in content):
-            invariants[1] = [str(item) for item in content]
-        else:
-            for idx, entry in enumerate(content, start=1):
-                if not isinstance(entry, dict):
-                    continue
-                loop_id = entry.get("loop_id") or entry.get("id") or idx
-                invs = entry.get("invariants") or []
-                if isinstance(invs, list):
-                    invariants[int(loop_id)] = [str(item) for item in invs]
-        return invariants
-    if isinstance(content, dict):
-        if "invariants" in content and isinstance(content["invariants"], list):
-            invariants[1] = [str(item) for item in content["invariants"]]
-        elif "invariants_result" in content:
-            for idx, entry in enumerate(content.get("invariants_result") or [], start=1):
-                if not isinstance(entry, dict):
-                    continue
-                loop_id = entry.get("loop_id") or entry.get("id") or idx
-                invs = entry.get("invariants") or []
-                if isinstance(invs, list):
-                    invariants[int(loop_id)] = [str(item) for item in invs]
-        elif "ranking_results" in content:
-            for idx, entry in enumerate(content.get("ranking_results") or [], start=1):
-                if not isinstance(entry, dict):
-                    continue
-                loop_id = entry.get("loop_id") or entry.get("id") or idx
-                invs = entry.get("invariants") or []
-                if isinstance(invs, list):
-                    invariants[int(loop_id)] = [str(item) for item in invs]
-        return invariants
-    return invariants
 
 
 def _load_structured_file(path: Path) -> Tuple[Optional[Any], Optional[str]]:
@@ -147,13 +114,13 @@ class SeaVerifyHandler:
                 if err:
                     console.print(f"[yellow]Failed to read invariants file {candidate}: {err}[/yellow]")
                     return {}, str(candidate)
-                return _parse_invariants_content(content), str(candidate)
+                return parse_invariants_content(content), str(candidate)
             if target and target.exists():
                 content, err = _load_structured_file(target)
                 if err:
                     console.print(f"[yellow]Failed to read invariants file {target}: {err}[/yellow]")
                     return {}, str(target)
-                return _parse_invariants_content(content), str(target)
+                return parse_invariants_content(content), str(target)
 
             if ranking_file:
                 if ranking_file.is_dir():
@@ -168,12 +135,12 @@ class SeaVerifyHandler:
                     if err:
                         console.print(f"[yellow]Failed to read ranking file {candidate}: {err}[/yellow]")
                         return {}, str(candidate)
-                    return _parse_invariants_content(content), str(candidate)
+                    return parse_invariants_content(content), str(candidate)
                 content, err = _load_structured_file(ranking_file)
                 if err:
                     console.print(f"[yellow]Failed to read ranking file {ranking_file}: {err}[/yellow]")
                     return {}, str(ranking_file)
-                return _parse_invariants_content(content), str(ranking_file)
+                return parse_invariants_content(content), str(ranking_file)
             return {}, None
 
         def process_file(f: Path) -> str:

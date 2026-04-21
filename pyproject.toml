@@ -24,6 +24,13 @@ dependencies = [
 
 [project.scripts]
 evolveterm = "evolve_term.cli:app"
+evolveterm-invariant-mcp = "invariant_module.mcp_server:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"invariant_module.playground" = ["prompts/invariants/*.txt"]
 
 [project.optional-dependencies]
 test = ["pytest>=7.4.0"]
