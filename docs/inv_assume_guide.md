@@ -4,11 +4,78 @@
 
 ## 1. 环境准备
 
-- Python 依赖：`tree-sitter`, `tree-sitter-c`
-  ```bash
-  pip install tree-sitter tree-sitter-c
-  ```
-- Docker：用于运行 SeaHorn 镜像（确保 Docker 正在运行）
+### 1.1 Python 版本
+
+- **Python >= 3.10** (项目最低要求)
+
+### 1.2 Python 依赖
+
+#### 核心依赖（项目级）
+```bash
+pip3 install typer rich numpy hnswlib openai z3-solver
+```
+
+#### inv_assume 特有依赖（C 解析 + AST）
+```bash
+pip3 install tree-sitter==0.25.2 tree-sitter-c==0.24.2
+```
+
+> **版本兼容性注意**: tree-sitter 和 tree-sitter-c 版本必须匹配：
+> - ✓ tree-sitter 0.25.2 + tree-sitter-c 0.24.2
+> - ✗ tree-sitter 0.24.0 + tree-sitter-c 0.24.2 (Language version 15 vs 13-14 不兼容)
+
+#### 一键安装全部依赖
+```bash
+pip3 install typer rich numpy hnswlib openai z3-solver tree-sitter==0.25.2 tree-sitter-c==0.24.2
+```
+
+### 1.3 Docker 验证环境
+
+SeaHorn 形式化验证工具（约 3.6GB）：
+```bash
+docker pull seahorn/seahorn-llvm14:nightly
+```
+
+验证 Docker 是否正常：
+```bash
+docker run --rm seahorn/seahorn-llvm14:nightly sea --version
+```
+
+### 1.4 LLM 配置
+
+需要有效的 `config/llm_config.json` 配置文件，包含：
+- API Key (如 OpenAI、Qwen、GLM 等)
+- Base URL
+- 模型名称
+
+检查配置：
+```bash
+cat config/llm_config.json
+```
+
+### 1.5 依赖检查脚本
+
+运行以下命令快速检查环境完整性：
+```bash
+# 检查 Python 版本
+python3 --version
+
+# 检查 Python 包
+python3 -c "import tree_sitter, tree_sitter_c, hnswlib, openai, typer, rich; print('All Python dependencies OK')"
+
+# 检查 Docker
+docker --version && docker images | grep seahorn
+
+# 检查 LLM 配置
+test -f config/llm_config.json && echo "LLM config OK"
+```
+
+### 1.6 代理注意事项
+
+若系统设置了 `socks://` 代理，httpx 库会报错。运行前需禁用：
+```bash
+unset http_proxy https_proxy HTTP_PROXY HTTPS_PROXY all_proxy ALL_PROXY
+```
 
 ## 2. 生成插桩代码
 
@@ -66,5 +133,11 @@ docker run --rm \
 
 ## 4. 常见问题
 
-- **找不到文件**：确认 `-v` 挂载路径与 `sea pf` 使用的路径一致。
-- **Docker 无权限**：确保当前用户已加入 Docker 组或使用具备权限的终端。
+| 问题 | 原因 | 解决方案 |
+|------|------|----------|
+| `Unknown scheme for proxy URL` | socks 代理不兼容 httpx | 禁用代理：`unset http_proxy https_proxy ...` |
+| `Incompatible Language version 15` | tree-sitter 版本不匹配 | 升级 tree-sitter：`pip3 install tree-sitter==0.25.2` |
+| `ModuleNotFoundError: hnswlib` | 缺少依赖 | 安装：`pip3 install hnswlib` |
+| Docker 无权限 | 用户未加入 docker 组 | `sudo usermod -aG docker $USER` 后重新登录 |
+| 找不到文件 | 挂载路径错误 | 确保 `-v` 挂载路径与 `sea pf` 文件路径一致 |
+| LLM API 调用失败 | 配置无效或网络问题 | 检查 `config/llm_config.json` 和网络连接 |
